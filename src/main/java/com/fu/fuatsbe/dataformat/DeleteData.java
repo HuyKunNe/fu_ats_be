@@ -1,4 +1,4 @@
-package com.fu.fuatsbe.response;
+package com.fu.fuatsbe.dataformat;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoleResponse {
+public class DeleteData {
 
-    private int id;
-    private String name;
-    private int status;
+    private String message;
+    private String status;
 }

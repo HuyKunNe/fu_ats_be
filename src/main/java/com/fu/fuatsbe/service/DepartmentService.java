@@ -13,7 +13,7 @@ public interface DepartmentService {
 
     DepartmentResponse getDepartmentById(int id);
 
-    DepartmentResponse getDepartmentByName(String name);
+    List<DepartmentResponse> getDepartmentByName(String name);
 
     DepartmentResponse updateDepartment(int id, DepartmentUpdateDTO departmentUpdateDTO);
 
