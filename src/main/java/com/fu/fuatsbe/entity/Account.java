@@ -34,7 +34,7 @@ public class Account {
 
     private String password;
     private String email;
-    private int status;
+    private String status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)

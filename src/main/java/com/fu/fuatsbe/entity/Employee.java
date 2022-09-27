@@ -37,7 +37,7 @@ public class Employee {
     private String EmployeeCode;
     private String phone;
     private String address;
-    private int status;
+    private String status;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id", referencedColumnName = "id")

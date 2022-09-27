@@ -14,6 +14,6 @@ public class EmployeeResponse {
     private String employeeCode;
     private String phone;
     private String address;
-    private int status;
+    private String status;
     private String department;
 }
