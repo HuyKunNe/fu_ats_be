@@ -1,6 +1,7 @@
 package com.fu.fuatsbe.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -24,4 +25,6 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
     int deleteDepartmentById(int id);
 
     boolean existsByName(String name);
+
+    Optional<Department> findDepartmentByName(String name);
 }

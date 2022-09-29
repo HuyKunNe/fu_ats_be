@@ -76,12 +76,10 @@ public class RoleController {
         RoleData result = new RoleData();
         try {
             Role role = roleService.createRole(createDTO);
-            System.out.println(role);
             RoleResponse roleResponse = new RoleResponse();
             if (role != null) {
                 roleResponse.setId(role.getId());
                 roleResponse.setName(role.getName());
-                roleResponse.setStatus(role.getStatus());
 
                 result.setMessage("create role successfully");
                 result.setData(roleResponse);

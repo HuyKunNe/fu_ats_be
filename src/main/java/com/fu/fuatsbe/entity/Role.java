@@ -30,7 +30,6 @@ public class Role {
     private int id;
 
     private String name;
-    private int status;
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Include

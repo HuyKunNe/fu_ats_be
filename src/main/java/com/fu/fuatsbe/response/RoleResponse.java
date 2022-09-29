@@ -11,5 +11,4 @@ public class RoleResponse {
 
     private int id;
     private String name;
-    private int status;
 }

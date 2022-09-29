@@ -3,6 +3,7 @@ package com.fu.fuatsbe.serviceImp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fu.fuatsbe.constant.role.RoleName;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.RoleCreateDTO;
@@ -30,7 +31,6 @@ public class RoleServiceImp implements RoleService {
                 RoleResponse roleResponse = new RoleResponse();
                 roleResponse.setId(role.getId());
                 roleResponse.setName(role.getName());
-                roleResponse.setStatus(role.getStatus());
                 result.add(roleResponse);
             }
         return result;
@@ -43,7 +43,6 @@ public class RoleServiceImp implements RoleService {
             Role role = roleRepository.findById(id).get();
             result.setId(id);
             result.setName(role.getName());
-            result.setStatus(role.getStatus());
         } else
             result = null;
         return result;
@@ -53,7 +52,6 @@ public class RoleServiceImp implements RoleService {
     public Role createRole(RoleCreateDTO createDTO) {
         Role role = new Role();
         role.setName(createDTO.getName());
-        role.setStatus(0);
         return roleRepository.save(role);
     }
 
@@ -64,18 +62,10 @@ public class RoleServiceImp implements RoleService {
         role.setName(updateDTO.getName());
         roleRepository.save(role);
         result.setId(id);
-        result.setStatus(role.getStatus());
         result.setName(role.getName());
         return result;
     }
 
-    @Override
-    public boolean deleteRoleById(int id) {
-        boolean result = false;
-        if (roleRepository.deleteRoleById(id) != 0) {
-            result = true;
-        }
-        return result;
-    }
+
 
 }

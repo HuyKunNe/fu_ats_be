@@ -1,6 +1,7 @@
 package com.fu.fuatsbe.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -18,5 +19,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     @Modifying
     @Query("select e from Employee e where department_id = ?1")
     List<Employee> findEmployeesByDepartmentId(int id);
+
+    Optional<Employee> findById(int id);
 
 }

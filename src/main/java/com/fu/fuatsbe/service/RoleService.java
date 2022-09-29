@@ -17,5 +17,4 @@ public interface RoleService {
 
     RoleResponse updateRole(int id, RoleUpdateDTO updateDTO);
 
-    boolean deleteRoleById(int id);
 }

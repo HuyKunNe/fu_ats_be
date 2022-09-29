@@ -1,6 +1,7 @@
 package com.fu.fuatsbe.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -15,9 +16,11 @@ import com.fu.fuatsbe.entity.Role;
 public interface RoleRepository extends JpaRepository<Role, Integer> {
     List<Role> findAll();
 
-    List<Role> findByStatus(int status);
+    Optional<Role> findByName(String name);
 
-    @Modifying
-    @Query("update Role set status = 1 where id = ?1")
-    int deleteRoleById(int id);
+
+
+//    @Modifying
+//    @Query("update Role where id = ?1")
+//    int deleteRoleById(int id);
 }

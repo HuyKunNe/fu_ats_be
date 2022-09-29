@@ -32,7 +32,7 @@ public class Department {
     private String room;
     private String name;
     private String phone;
-    private int status;
+    private String status;
 
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Include

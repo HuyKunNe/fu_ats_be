@@ -1,12 +1,18 @@
 package com.fu.fuatsbe.controller;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.fu.fuatsbe.DTO.LoginResponseDto;
+import com.fu.fuatsbe.DTO.ResponseDTO;
+import com.fu.fuatsbe.service.AccountService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping
+@RequestMapping("/account")
 @CrossOrigin("*")
+@RequiredArgsConstructor
 public class AccountController {
+
     
 }

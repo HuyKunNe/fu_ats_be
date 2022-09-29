@@ -3,6 +3,12 @@ package com.fu.fuatsbe.serviceImp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fu.fuatsbe.constant.account.AccountErrorMessage;
+import com.fu.fuatsbe.constant.account.AccountStatus;
+import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.EmployeeCreateDTO;
@@ -13,13 +19,14 @@ import com.fu.fuatsbe.response.EmployeeResponse;
 import com.fu.fuatsbe.service.EmployeeService;
 
 @Service
+@RequiredArgsConstructor
 public class EmployeeServiceImp implements EmployeeService {
 
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
 
-    public EmployeeServiceImp(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
-    }
+    private final ModelMapper modelMapper;
+
+
 
     @Override
     public List<EmployeeResponse> getAllEmployees() {
@@ -29,8 +36,10 @@ public class EmployeeServiceImp implements EmployeeService {
 
     @Override
     public EmployeeResponse getEmployeeById(int id) {
-        // TODO Auto-generated method stub
-        return null;
+        Employee employee = employeeRepository.findById(id).orElseThrow(() ->
+                new IllegalStateException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+        EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
+        return employeeResponse;
     }
 
     @Override
@@ -52,7 +61,7 @@ public class EmployeeServiceImp implements EmployeeService {
                 response.setPhone(employee.getPhone());
                 response.setAddress(employee.getAddress());
                 response.setStatus(employee.getStatus());
-                response.setDepartment(employee.getDepartment().getName());
+                response.setDepartment(employee.getDepartment());
                 result.add(response);
             }
         return result;
@@ -71,9 +80,18 @@ public class EmployeeServiceImp implements EmployeeService {
     }
 
     @Override
-    public boolean deleteEmployeeById(int id) {
-        // TODO Auto-generated method stub
-        return false;
+    public Employee deleteEmployeeById(int id) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+        if(employee.getAccount()!=null) {
+            if(employee.getAccount().getStatus().equals(AccountStatus.DISABLED)){
+                throw new IllegalStateException(AccountErrorMessage.ACCOUNT_ALREADY_DELETED);
+            }
+            employee.getAccount().setStatus(AccountStatus.DISABLED);
+            Employee  employeeSaved = employeeRepository.save(employee);
+            return employeeSaved;
+        }
+        return null;
     }
 
 }

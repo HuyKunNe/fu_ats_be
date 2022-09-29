@@ -21,5 +21,5 @@ public interface EmployeeService {
 
     EmployeeResponse updateEmployee(int id, EmployeeUpdateDTO updateDTO);
 
-    boolean deleteEmployeeById(int id);
+    Employee deleteEmployeeById(int id);
 }

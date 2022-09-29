@@ -93,7 +93,7 @@ public class DepartmentServiceImp implements DepartmentService {
         department.setName(createDTO.getName());
         department.setRoom(createDTO.getRoom());
         department.setPhone(createDTO.getPhone());
-        department.setStatus(0);
+        department.setStatus("NEW");
         return departmentRepository.save(department);
     }
 
