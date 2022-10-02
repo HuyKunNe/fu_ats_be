@@ -1,4 +1,4 @@
-package com.fu.fuatsbe.DTO;
+package com.fu.fuatsbe.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LoginResponseDto {
+public class RegisterResponseDto {
     private int accountId;
 
-    private String token;
     private String roleName;
     private String email;
     private String status;

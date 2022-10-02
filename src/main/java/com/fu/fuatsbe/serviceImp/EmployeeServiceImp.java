@@ -26,18 +26,23 @@ public class EmployeeServiceImp implements EmployeeService {
 
     private final ModelMapper modelMapper;
 
-
-
     @Override
     public List<EmployeeResponse> getAllEmployees() {
-        // TODO Auto-generated method stub
-        return null;
+        List<Employee> list = employeeRepository.findAll();
+        List<EmployeeResponse> result = new ArrayList<EmployeeResponse>();
+        if (list.size() > 0) {
+            for (Employee employee : list) {
+                EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
+                result.add(employeeResponse);
+            }
+        }
+        return result;
     }
 
     @Override
     public EmployeeResponse getEmployeeById(int id) {
-        Employee employee = employeeRepository.findById(id).orElseThrow(() ->
-                new IllegalStateException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
         EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
         return employeeResponse;
     }
@@ -68,12 +73,6 @@ public class EmployeeServiceImp implements EmployeeService {
     }
 
     @Override
-    public Employee createEmployee(EmployeeCreateDTO createDTO) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public EmployeeResponse updateEmployee(int id, EmployeeUpdateDTO updateDTO) {
         // TODO Auto-generated method stub
         return null;
@@ -83,12 +82,12 @@ public class EmployeeServiceImp implements EmployeeService {
     public Employee deleteEmployeeById(int id) {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
-        if(employee.getAccount()!=null) {
-            if(employee.getAccount().getStatus().equals(AccountStatus.DISABLED)){
+        if (employee.getAccount() != null) {
+            if (employee.getAccount().getStatus().equals(AccountStatus.DISABLED)) {
                 throw new IllegalStateException(AccountErrorMessage.ACCOUNT_ALREADY_DELETED);
             }
             employee.getAccount().setStatus(AccountStatus.DISABLED);
-            Employee  employeeSaved = employeeRepository.save(employee);
+            Employee employeeSaved = employeeRepository.save(employee);
             return employeeSaved;
         }
         return null;

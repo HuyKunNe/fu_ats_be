@@ -1,6 +1,8 @@
 package com.fu.fuatsbe.entity;
 
-import javax.persistence.Column;
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -8,45 +10,55 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 @Entity
+@Table(name = "recruitmentPlan")
 @Data
-@Table(name = "account")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Account {
+public class RecruitmentPlan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private int id;
 
-    private String password;
-    private String email;
+    private String period;
+    private int amount;
     private String status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)
-    @JoinColumn(name = "roleId")
-
+    @JoinColumn(name = "approverId")
     @EqualsAndHashCode.Include
     @ToString.Include
-    private Role role;
+    private Employee approver;
 
-    @OneToOne(mappedBy = "account")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
+    @JoinColumn(name = "creatorId")
     @EqualsAndHashCode.Include
     @ToString.Include
-    private Employee employee;
+    private Employee creator;
 
-    @OneToOne(mappedBy = "account")
+    @OneToMany(mappedBy = "recruitmentPlan", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Include
     @ToString.Include
-    private Candidate candidate;
+    @JsonIgnore
+    private Collection<PlanDetail> planDetails;
+   
 }

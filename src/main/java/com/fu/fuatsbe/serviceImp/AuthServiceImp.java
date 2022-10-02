@@ -15,6 +15,8 @@ import com.fu.fuatsbe.repository.AccountRepository;
 import com.fu.fuatsbe.repository.DepartmentRepository;
 import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.RoleRepository;
+import com.fu.fuatsbe.response.LoginResponseDto;
+import com.fu.fuatsbe.response.RegisterResponseDto;
 import com.fu.fuatsbe.service.AuthService;
 import com.fu.fuatsbe.utils.Utils;
 import lombok.RequiredArgsConstructor;
@@ -38,9 +40,6 @@ public class AuthServiceImp implements AuthService {
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
     private final SecretKey secretKey;
-
-
-
     private final JwtConfig jwtConfig;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;

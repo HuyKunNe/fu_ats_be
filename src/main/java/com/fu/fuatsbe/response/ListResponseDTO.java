@@ -1,4 +1,6 @@
-package com.fu.fuatsbe.DTO;
+package com.fu.fuatsbe.response;
+
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ResponseDTO<T> {
+public class ListResponseDTO<T> {
+
     private String successMessage;
-    private T data;
+    private List<T> data;
     private String errorMessage;
 }

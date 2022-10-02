@@ -1,7 +1,7 @@
 package com.fu.fuatsbe.controller;
 
-import com.fu.fuatsbe.DTO.LoginResponseDto;
-import com.fu.fuatsbe.DTO.ResponseDTO;
+import com.fu.fuatsbe.response.LoginResponseDto;
+import com.fu.fuatsbe.response.ResponseDTO;
 import com.fu.fuatsbe.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
