@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fu.fuatsbe.DTO.RoleCreateDTO;
 import com.fu.fuatsbe.DTO.RoleUpdateDTO;
+import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.dataformat.DeleteData;
 import com.fu.fuatsbe.dataformat.ListRoleData;
 import com.fu.fuatsbe.dataformat.RoleData;
@@ -34,6 +36,7 @@ public class RoleController {
     }
 
     @GetMapping("/role/getAll")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ListRoleData getAllRoles() {
         ListRoleData result = new ListRoleData();
         try {
@@ -72,6 +75,7 @@ public class RoleController {
     }
 
     @PostMapping("/role/create")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public RoleData createRole(@RequestBody RoleCreateDTO createDTO) {
         RoleData result = new RoleData();
         try {
@@ -96,6 +100,7 @@ public class RoleController {
     }
 
     @PutMapping("/role/edit/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public RoleData updateRole(@PathVariable int id, @RequestBody RoleUpdateDTO updateDTO) {
         RoleData result = new RoleData();
         try {

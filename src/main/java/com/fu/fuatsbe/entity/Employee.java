@@ -37,7 +37,7 @@ public class Employee {
     private int id;
 
     private String name;
-    private String EmployeeCode;
+    private String employeeCode;
     private String phone;
     private String address;
     private String status;

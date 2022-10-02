@@ -3,15 +3,18 @@ package com.fu.fuatsbe.serviceImp;
 import com.fu.fuatsbe.DTO.*;
 import com.fu.fuatsbe.constant.account.AccountErrorMessage;
 import com.fu.fuatsbe.constant.account.AccountStatus;
+import com.fu.fuatsbe.constant.candidate.CandidateStatus;
 import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.role.RoleName;
 import com.fu.fuatsbe.entity.Account;
+import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.Department;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.Role;
 import com.fu.fuatsbe.jwt.JwtConfig;
 import com.fu.fuatsbe.repository.AccountRepository;
+import com.fu.fuatsbe.repository.CandidateRepository;
 import com.fu.fuatsbe.repository.DepartmentRepository;
 import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.RoleRepository;
@@ -44,9 +47,34 @@ public class AuthServiceImp implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final ModelMapper modelMapper;
+    private final CandidateRepository candidateRepository;
+
     @Override
-    public RegisterResponseDto register(RegisterCandidateDto candidate) throws RoleNotFoundException {
-        return null;
+    public RegisterResponseDto register(RegisterCandidateDto registerDTO) throws RoleNotFoundException {
+        Optional<Account> optionalUser = accountRepository.findAccountByEmail(registerDTO.getEmail());
+        if (optionalUser.isPresent()) {
+            throw new IllegalStateException(EmployeeErrorMessage.EMAIL_EXIST);
+        }
+        Role role = roleRepository.findByName("CANDIDATE")
+                .orElseThrow(() -> new IllegalStateException("this role does not exist"));
+
+        Candidate candidate = Candidate.builder().name(registerDTO.getName()).email(registerDTO.getEmail())
+                .phone(registerDTO.getPhone()).address(registerDTO.getAddress()).status(CandidateStatus.ACTIVATED)
+                .build();
+        ;
+
+        Account account = Account.builder()
+                .email(candidate.getEmail())
+                .role(role)
+                .candidate(candidate)
+                .status(AccountStatus.ACTIVATED)
+                .password(passwordEncoder.encode(registerDTO.getPassword())).build();
+        candidateRepository.save(candidate);
+        Account credentialInRepo = accountRepository.save(account);
+        candidate.setAccount(credentialInRepo);
+        candidateRepository.save(candidate);
+        RegisterResponseDto registerResponseDto = modelMapper.map(credentialInRepo, RegisterResponseDto.class);
+        return registerResponseDto;
     }
 
     @Override
@@ -55,13 +83,17 @@ public class AuthServiceImp implements AuthService {
         if (optionalUser.isPresent()) {
             throw new IllegalStateException(EmployeeErrorMessage.EMAIL_EXIST);
         }
-        Optional<Department> optionalDepartment = departmentRepository.findDepartmentByName(registerDto.getDepartmentName());
+        Optional<Department> optionalDepartment = departmentRepository
+                .findDepartmentByName(registerDto.getDepartmentName());
         if (!optionalDepartment.isPresent()) {
             throw new IllegalStateException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION);
         }
-        Employee employee = Employee.builder().name(registerDto.getName()).EmployeeCode(registerDto.getEmployeeCode()).status(AccountStatus.ACTIVATED)
-                .phone(registerDto.getPhone()).department(optionalDepartment.get()).address(registerDto.getAddress()).build();
-        Role role = roleRepository.findByName(registerDto.getRole()).orElseThrow(() -> new IllegalStateException("this role does not exist"));
+        Employee employee = Employee.builder().name(registerDto.getName()).employeeCode(registerDto.getEmployeeCode())
+                .status(AccountStatus.ACTIVATED)
+                .phone(registerDto.getPhone()).department(optionalDepartment.get()).address(registerDto.getAddress())
+                .build();
+        Role role = roleRepository.findByName(registerDto.getRole())
+                .orElseThrow(() -> new IllegalStateException("this role does not exist"));
         Account account = Account.builder()
                 .email(registerDto.getEmail())
                 .role(role)
@@ -78,7 +110,8 @@ public class AuthServiceImp implements AuthService {
 
     @Override
     public LoginResponseDto login(LoginDto employee) {
-        Authentication authentication = new UsernamePasswordAuthenticationToken(employee.getEmail(), employee.getPassword());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(employee.getEmail(),
+                employee.getPassword());
         LoginResponseDto loginResponseDTO = null;
         Authentication authenticate = authenticationManager.authenticate(authentication);
         if (authenticate.isAuthenticated()) {

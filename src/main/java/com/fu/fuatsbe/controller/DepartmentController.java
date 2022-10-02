@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fu.fuatsbe.DTO.DepartmentCreateDTO;
 import com.fu.fuatsbe.DTO.DepartmentUpdateDTO;
+import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.dataformat.DeleteData;
 import com.fu.fuatsbe.dataformat.DepartmentData;
 import com.fu.fuatsbe.dataformat.ListDepartmentData;
@@ -37,7 +39,8 @@ public class DepartmentController {
     }
 
     @GetMapping("/department/getAll")
-    public ListDepartmentData getAllRoles() {
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ListDepartmentData getAllDepartments() {
         ListDepartmentData result = new ListDepartmentData();
         try {
             result.setData(departmentService.getAllDepartments());
@@ -56,6 +59,7 @@ public class DepartmentController {
     }
 
     @GetMapping("/department/getById/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public DepartmentData getDepartmentById(@PathVariable int id) {
         DepartmentData result = new DepartmentData();
         try {
@@ -75,6 +79,7 @@ public class DepartmentController {
     }
 
     @GetMapping("/department/getByName/{name}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ListDepartmentData getDepartmentByName(@PathVariable String name) {
         ListDepartmentData result = new ListDepartmentData();
         try {
@@ -94,6 +99,7 @@ public class DepartmentController {
     }
 
     @PutMapping("/department/edit/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public DepartmentData updateDepartment(@PathVariable int id, @RequestBody DepartmentUpdateDTO updateDTO) {
         DepartmentData result = new DepartmentData();
         try {
@@ -116,6 +122,7 @@ public class DepartmentController {
     }
 
     @PostMapping("/department/create")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public DepartmentData createDepartment(@RequestBody DepartmentCreateDTO createDTO) {
         DepartmentData result = new DepartmentData();
         try {
@@ -143,6 +150,7 @@ public class DepartmentController {
     }
 
     @DeleteMapping("/department/delete/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public DeleteData deleteDepartmnetById(@PathVariable int id) {
         DeleteData result = new DeleteData();
         try {

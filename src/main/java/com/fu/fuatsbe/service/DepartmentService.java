@@ -9,15 +9,15 @@ import com.fu.fuatsbe.response.DepartmentResponse;
 
 public interface DepartmentService {
 
-    List<DepartmentResponse> getAllDepartments();
+    public List<DepartmentResponse> getAllDepartments();
 
-    DepartmentResponse getDepartmentById(int id);
+    public DepartmentResponse getDepartmentById(int id);
 
-    List<DepartmentResponse> getDepartmentByName(String name);
+    public List<DepartmentResponse> getDepartmentByName(String name);
 
-    DepartmentResponse updateDepartment(int id, DepartmentUpdateDTO departmentUpdateDTO);
+    public DepartmentResponse updateDepartment(int id, DepartmentUpdateDTO departmentUpdateDTO);
 
-    Department createDepartment(DepartmentCreateDTO departmentCreateDTO);
+    public Department createDepartment(DepartmentCreateDTO departmentCreateDTO);
 
-    boolean deleteDepartmentById(int id);
+    public boolean deleteDepartmentById(int id);
 }

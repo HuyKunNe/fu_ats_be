@@ -49,8 +49,10 @@ public class EmployeeServiceImp implements EmployeeService {
 
     @Override
     public EmployeeResponse getEmployeeByCode(String code) {
-        // TODO Auto-generated method stub
-        return null;
+        Employee employee = employeeRepository.findByEmployeeCode(code)
+                .orElseThrow(() -> new IllegalStateException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+        EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
+        return employeeResponse;
     }
 
     @Override

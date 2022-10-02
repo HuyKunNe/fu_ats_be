@@ -26,6 +26,7 @@ public class EmployeeController {
     private final EmployeeService employeeService;
 
     @GetMapping("/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getEmployeeById(@PathVariable(name = "id") int employeeId) {
         ResponseDTO<EmployeeResponse> responseDTO = new ResponseDTO();
         EmployeeResponse employee = employeeService.getEmployeeById(employeeId);
@@ -44,13 +45,13 @@ public class EmployeeController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PostMapping("/create")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ListResponseDTO> createEmployeeByAdmin(@Validated @RequestBody EmployeeCreateDTO createDTO) {
-        ListResponseDTO<EmployeeResponse> responseDTO = new ListResponseDTO();
-        List<EmployeeResponse> list = employeeService.getAllEmployees();
-        responseDTO.setData(list);
-        responseDTO.setSuccessMessage(EmployeeSuccessMessage.GET_ALL_EMPLOYEE_SUCCESS);
+    @GetMapping("/{code}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getEmployeeByEmployeeCode(@PathVariable(name = "code") String employeeCode) {
+        ResponseDTO<EmployeeResponse> responseDTO = new ResponseDTO();
+        EmployeeResponse employee = employeeService.getEmployeeByCode(employeeCode);
+        responseDTO.setData(employee);
+        responseDTO.setSuccessMessage(EmployeeSuccessMessage.GET_EMPLOYEE_BY_ID_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
