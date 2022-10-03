@@ -4,12 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.candidate.CandidateSuccessMessage;
@@ -53,9 +48,9 @@ public class CandidateController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/{phone}")
+    @GetMapping("/getCandidateByPhone")
     @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
-    public ResponseEntity<ResponseDTO> getCandidateByPhone(@PathVariable String phone) {
+    public ResponseEntity<ResponseDTO> getCandidateByPhone(@RequestParam("phone") String phone) {
         ResponseDTO<CandidateResponseDTO> responseDTO = new ResponseDTO();
         CandidateResponseDTO candidate = candidateService.getCandidateByPhone(phone);
         responseDTO.setData(candidate);
@@ -66,9 +61,9 @@ public class CandidateController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/{email}")
+    @GetMapping("/getCandidateByEmail")
     @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
-    public ResponseEntity<ResponseDTO> getCandidateByEmail(@PathVariable String email) {
+    public ResponseEntity<ResponseDTO> getCandidateByEmail(@RequestParam("email") String email) {
         ResponseDTO<CandidateResponseDTO> responseDTO = new ResponseDTO();
         CandidateResponseDTO candidate = candidateService.getCandidateByEmail(email);
         responseDTO.setData(candidate);

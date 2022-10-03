@@ -42,9 +42,9 @@ public class EmployeeController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/{code}")
+    @GetMapping("/getEmployeeByCode")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> getEmployeeByEmployeeCode(@PathVariable(name = "code") String employeeCode) {
+    public ResponseEntity<ResponseDTO> getEmployeeByEmployeeCode(@RequestParam("code") String employeeCode) {
         ResponseDTO<EmployeeResponse> responseDTO = new ResponseDTO();
         EmployeeResponse employee = employeeService.getEmployeeByCode(employeeCode);
         responseDTO.setData(employee);

@@ -6,6 +6,7 @@ import java.util.List;
 import com.fu.fuatsbe.constant.account.AccountErrorMessage;
 import com.fu.fuatsbe.constant.account.AccountStatus;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
+import com.fu.fuatsbe.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,7 @@ public class EmployeeServiceImp implements EmployeeService {
     @Override
     public EmployeeResponse getEmployeeById(int id) {
         Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+                .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
         EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
         return employeeResponse;
     }

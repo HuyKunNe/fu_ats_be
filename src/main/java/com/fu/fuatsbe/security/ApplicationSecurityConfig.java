@@ -37,7 +37,6 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 and().addFilterBefore(new TokenVerifier(jwtConfig), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests().antMatchers("/auth/register",
                         "/auth/login",
-                        "/auth/register",
                         "/swagger-resources/**",
                         "/v2/api-docs",
                         "/webjars/**",
@@ -45,8 +44,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/swagger-ui.html/**",
                         "/v3/api-docs/",
                         "/swagger-ui/**"
-                        )
-                .permitAll().anyRequest().authenticated();
+                )
+                .permitAll()
+                .anyRequest().authenticated();
+
     }
 
     @Bean
