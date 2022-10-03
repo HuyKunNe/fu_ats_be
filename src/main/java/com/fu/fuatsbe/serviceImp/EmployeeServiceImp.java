@@ -8,10 +8,8 @@ import com.fu.fuatsbe.constant.account.AccountStatus;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.fu.fuatsbe.DTO.EmployeeCreateDTO;
 import com.fu.fuatsbe.DTO.EmployeeUpdateDTO;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.repository.EmployeeRepository;

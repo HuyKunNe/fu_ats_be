@@ -1,12 +1,10 @@
 package com.fu.fuatsbe.serviceImp;
 
 import com.fu.fuatsbe.DTO.*;
-import com.fu.fuatsbe.constant.account.AccountErrorMessage;
 import com.fu.fuatsbe.constant.account.AccountStatus;
 import com.fu.fuatsbe.constant.candidate.CandidateStatus;
 import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
-import com.fu.fuatsbe.constant.role.RoleName;
 import com.fu.fuatsbe.entity.Account;
 import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.Department;

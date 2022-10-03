@@ -1,14 +1,11 @@
 package com.fu.fuatsbe.controller;
 
 import com.fu.fuatsbe.DTO.*;
-import com.fu.fuatsbe.constant.role.RoleName;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.response.LoginResponseDto;
 import com.fu.fuatsbe.response.RegisterResponseDto;
 import com.fu.fuatsbe.response.ResponseDTO;
-import com.fu.fuatsbe.service.AccountService;
 import com.fu.fuatsbe.service.AuthService;
-import com.fu.fuatsbe.serviceImp.AuthServiceImp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,17 +29,21 @@ public class AuthController {
         responseDTO.setSuccessMessage("Login success");
         return ResponseEntity.ok().body(responseDTO);
     }
+
     @PostMapping("/register")
-    public ResponseEntity<ResponseDTO> register(@Validated @RequestBody RegisterCandidateDto candidate) throws RoleNotFoundException {
+    public ResponseEntity<ResponseDTO> register(@Validated @RequestBody RegisterCandidateDto candidate)
+            throws RoleNotFoundException {
         ResponseDTO<RegisterResponseDto> responseDTO = new ResponseDTO();
         RegisterResponseDto registerResponseDto = authService.register(candidate);
         responseDTO.setData(registerResponseDto);
         responseDTO.setSuccessMessage("Register success");
         return ResponseEntity.ok().body(responseDTO);
     }
+
     @PostMapping("/registerByAdmin")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDTO> registerByAdmin(@Validated @RequestBody RegisterDto user) throws RoleNotFoundException {
+    public ResponseEntity<ResponseDTO> registerByAdmin(@Validated @RequestBody RegisterDto user)
+            throws RoleNotFoundException {
         ResponseDTO<RegisterResponseDto> responseDTO = new ResponseDTO();
         RegisterResponseDto registerResponseDto = authService.registerByAdmin(user);
         responseDTO.setData(registerResponseDto);

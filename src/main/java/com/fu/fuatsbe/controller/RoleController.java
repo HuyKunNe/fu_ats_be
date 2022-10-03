@@ -2,7 +2,6 @@ package com.fu.fuatsbe.controller;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fu.fuatsbe.DTO.RoleCreateDTO;
 import com.fu.fuatsbe.DTO.RoleUpdateDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
-import com.fu.fuatsbe.dataformat.DeleteData;
 import com.fu.fuatsbe.dataformat.ListRoleData;
 import com.fu.fuatsbe.dataformat.RoleData;
 import com.fu.fuatsbe.entity.Role;

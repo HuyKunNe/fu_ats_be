@@ -1,9 +1,7 @@
 package com.fu.fuatsbe.controller;
 
-import com.fu.fuatsbe.DTO.EmployeeCreateDTO;
 import com.fu.fuatsbe.constant.employee.EmployeeSuccessMessage;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
-import com.fu.fuatsbe.dataformat.ListEmployeeData;
 import com.fu.fuatsbe.response.EmployeeResponse;
 import com.fu.fuatsbe.response.ListResponseDTO;
 import com.fu.fuatsbe.response.ResponseDTO;
@@ -14,7 +12,6 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

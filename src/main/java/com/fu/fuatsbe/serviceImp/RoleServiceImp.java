@@ -3,7 +3,6 @@ package com.fu.fuatsbe.serviceImp;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fu.fuatsbe.constant.role.RoleName;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.RoleCreateDTO;

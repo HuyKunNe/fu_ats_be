@@ -5,7 +5,6 @@ import java.util.List;
 import com.fu.fuatsbe.DTO.RecruimentPlanUpdateDTO;
 import com.fu.fuatsbe.DTO.RecruitmentPlanActionDTO;
 import com.fu.fuatsbe.DTO.RecruitmentPlanCreateDTO;
-import com.fu.fuatsbe.entity.RecruitmentPlan;
 import com.fu.fuatsbe.response.RecruitmentPlanResponse;
 
 public interface RecruitmentPlanService {
