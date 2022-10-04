@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class FuAtsBeApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void addDefaultAdminAccount() throws Exception {
 	}
 
 }

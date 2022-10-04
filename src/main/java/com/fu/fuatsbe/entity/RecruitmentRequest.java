@@ -41,7 +41,6 @@ public class RecruitmentRequest {
 
     private Date date;
     private Date expiryDate;
-    private String position;
     private String industry;
     private int amount;
     private String jobLevel;
@@ -72,5 +71,12 @@ public class RecruitmentRequest {
     @ToString.Include
     @JsonIgnore
     private Collection<JobApply> jobApplies;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
+    @JoinColumn(name = "positionId")
+    @EqualsAndHashCode.Include
+    @ToString.Include
+    private Position position;
 
 }

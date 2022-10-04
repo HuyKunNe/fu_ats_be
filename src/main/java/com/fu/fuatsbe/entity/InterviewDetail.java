@@ -33,9 +33,8 @@ public class InterviewDetail {
 
     private Date startAt;
     private Date endAt;
-    private String position;
     private String result;
-    private String round;
+    private String recordMeeting;
     @Column(columnDefinition = "text")
     private String description;
 

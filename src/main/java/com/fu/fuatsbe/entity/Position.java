@@ -1,6 +1,5 @@
 package com.fu.fuatsbe.entity;
 
-import java.sql.Date;
 import java.util.Collection;
 
 import javax.persistence.CascadeType;
@@ -10,8 +9,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
@@ -27,52 +28,41 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
+@Table(name = "position")
 @Data
-@Table(name = "jobApply")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class JobApply {
+public class Position {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private Date date;
-    private String expectSalary;
-    private String status;
+    private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Fetch(FetchMode.JOIN)
-    @JoinColumn(name = "recruitmentRequestId")
-    @EqualsAndHashCode.Include
-    @ToString.Include
-    private RecruitmentRequest recruitmentRequest;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Fetch(FetchMode.JOIN)
-    @JoinColumn(name = "applierId")
-    @EqualsAndHashCode.Include
-    @ToString.Include
-    private Employee applier;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Fetch(FetchMode.JOIN)
-    @JoinColumn(name = "candidateId")
-    @EqualsAndHashCode.Include
-    @ToString.Include
-    private Candidate candidate;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Fetch(FetchMode.JOIN)
-    @JoinColumn(name = "cvId")
-    @EqualsAndHashCode.Include
-    @ToString.Include
-    private CV cv;
-
-    @OneToMany(mappedBy = "jobApply", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "position", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Include
     @ToString.Include
     @JsonIgnore
-    private Collection<Interview> interviews;
+    private Collection<RecruitmentRequest> recruitmentRequests;
+
+    @ManyToMany(mappedBy = "positions")
+    private Collection<Candidate> candidates;
+
+    @ManyToMany(mappedBy = "positions")
+    private Collection<CV> cvs;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
+    @JoinColumn(name = "departmentId")
+    @EqualsAndHashCode.Include
+    @ToString.Include
+    private Department department;
+
+    @OneToOne(mappedBy = "position")
+    @EqualsAndHashCode.Include
+    @ToString.Include
+    private Employee employee;
+
 }

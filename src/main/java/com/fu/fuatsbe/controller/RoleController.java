@@ -1,5 +1,7 @@
 package com.fu.fuatsbe.controller;
 
+import javax.annotation.security.PermitAll;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,18 +22,16 @@ import com.fu.fuatsbe.repository.RoleRepository;
 import com.fu.fuatsbe.response.RoleResponse;
 import com.fu.fuatsbe.service.RoleService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @CrossOrigin("*")
 @RequestMapping("")
+@RequiredArgsConstructor
 public class RoleController {
 
     private RoleService roleService;
     private RoleRepository roleRepository;
-
-    public RoleController(RoleService roleService, RoleRepository roleRepository) {
-        this.roleService = roleService;
-        this.roleRepository = roleRepository;
-    }
 
     @GetMapping("/role/getAll")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)

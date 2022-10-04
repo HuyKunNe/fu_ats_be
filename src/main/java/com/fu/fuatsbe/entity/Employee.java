@@ -91,4 +91,11 @@ public class Employee {
     @ManyToMany
     @JoinTable(name = "employee_interview", joinColumns = @JoinColumn(name = "interview_id"), inverseJoinColumns = @JoinColumn(name = "employee_id"))
     private Collection<Interview> interviews;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "position_id", referencedColumnName = "id")
+    @EqualsAndHashCode.Include
+    @ToString.Include
+    private Position position;
+
 }

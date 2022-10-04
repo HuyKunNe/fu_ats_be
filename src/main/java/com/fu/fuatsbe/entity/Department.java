@@ -39,4 +39,10 @@ public class Department {
     @ToString.Include
     @JsonIgnore
     private Collection<Employee> employees;
+
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Include
+    @ToString.Include
+    @JsonIgnore
+    private Collection<Position> positions;
 }

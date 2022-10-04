@@ -10,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -40,7 +42,6 @@ public class CV {
 
     private String linkCV;
     private String result;
-    private String position;
     private String suitablePosition;
     @Column(columnDefinition = "text")
     private String note;
@@ -57,4 +58,8 @@ public class CV {
     @EqualsAndHashCode.Include
     @ToString.Include
     private Candidate candidate;
+
+    @ManyToMany
+    @JoinTable(name = "cv_position", joinColumns = @JoinColumn(name = "position_id"), inverseJoinColumns = @JoinColumn(name = "cv_id"))
+    private Collection<Position> positions;
 }
