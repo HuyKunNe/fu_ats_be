@@ -1,5 +1,8 @@
 package com.fu.fuatsbe.controller;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fu.fuatsbe.DTO.DepartmentCreateDTO;
 import com.fu.fuatsbe.DTO.DepartmentUpdateDTO;
+import com.fu.fuatsbe.constant.department.DepartmentSuccessMessage;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.dataformat.DeleteData;
 import com.fu.fuatsbe.dataformat.DepartmentData;
@@ -20,164 +24,80 @@ import com.fu.fuatsbe.dataformat.ListDepartmentData;
 import com.fu.fuatsbe.entity.Department;
 import com.fu.fuatsbe.repository.DepartmentRepository;
 import com.fu.fuatsbe.response.DepartmentResponse;
+import com.fu.fuatsbe.response.ListResponseDTO;
+import com.fu.fuatsbe.response.ResponseDTO;
 import com.fu.fuatsbe.service.DepartmentService;
 import com.fu.fuatsbe.service.EmployeeService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping
 @CrossOrigin("*")
+@RequiredArgsConstructor
 public class DepartmentController {
-    private DepartmentRepository departmentRepository;
+
     private DepartmentService departmentService;
     private EmployeeService employeeService;
 
-    public DepartmentController(DepartmentRepository departmentRepository, DepartmentService departmentService,
-            EmployeeService employeeService) {
-        this.departmentRepository = departmentRepository;
-        this.departmentService = departmentService;
-        this.employeeService = employeeService;
-    }
-
     @GetMapping("/department/getAll")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ListDepartmentData getAllDepartments() {
-        ListDepartmentData result = new ListDepartmentData();
-        try {
-            result.setData(departmentService.getAllDepartments());
-            if (result.getData().isEmpty()) {
-                result.setMessage("list is empty");
-                result.setStatus("SUCCESS");
-            } else {
-                result.setMessage("get all departments is successfully");
-                result.setStatus("SUCCESS");
-            }
-        } catch (Exception e) {
-            result.setMessage(e.getMessage());
-            result.setStatus("ERROR");
-        }
-        return result;
+    public ResponseEntity<ListResponseDTO> getAllDepartments() {
+        ListResponseDTO<DepartmentResponse> response = new ListResponseDTO();
+        List<DepartmentResponse> list = departmentService.getAllDepartments();
+        response.setData(list);
+        response.setSuccessMessage(DepartmentSuccessMessage.GET_ALL_DEPARTMENT);
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/department/getById/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public DepartmentData getDepartmentById(@PathVariable int id) {
-        DepartmentData result = new DepartmentData();
-        try {
-            result.setData(departmentService.getDepartmentById(id));
-            if (result.getData() != null) {
-                result.setMessage("find department by id successfully");
-                result.setStatus("SUCCESS");
-            } else {
-                result.setMessage("department id is not exist");
-                result.setStatus("SUCCESS");
-            }
-        } catch (Exception e) {
-            result.setMessage(e.getMessage());
-            result.setStatus("ERROR");
-        }
-        return result;
+    public ResponseEntity<ResponseDTO> getDepartmentById(@PathVariable int id) {
+        ResponseDTO<DepartmentResponse> responseDTO = new ResponseDTO();
+        DepartmentResponse departmentResponse = departmentService.getDepartmentById(id);
+        responseDTO.setData(departmentResponse);
+        responseDTO.setSuccessMessage(DepartmentSuccessMessage.GET_DEPARTMENT_BY_ID);
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @GetMapping("/department/getByName/{name}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ListDepartmentData getDepartmentByName(@PathVariable String name) {
-        ListDepartmentData result = new ListDepartmentData();
-        try {
-            result.setData(departmentService.getDepartmentByName(name));
-            if (result.getData().isEmpty()) {
-                result.setMessage("department is not exist");
-                result.setStatus("SUCCESS");
-            } else {
-                result.setMessage("find department successfully");
-                result.setStatus("SUCCESS");
-            }
-        } catch (Exception e) {
-            result.setMessage(e.getMessage());
-            result.setStatus("ERROR");
-        }
-        return result;
+    public ResponseEntity<ListResponseDTO> getDepartmentByName(@PathVariable String name) {
+        ListResponseDTO<DepartmentResponse> response = new ListResponseDTO();
+        List<DepartmentResponse> list = departmentService.getDepartmentByName(name);
+        response.setData(list);
+        response.setSuccessMessage(DepartmentSuccessMessage.GET_DEPARTMENT_BY_NAME);
+        return ResponseEntity.ok().body(response);
     }
 
     @PutMapping("/department/edit/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public DepartmentData updateDepartment(@PathVariable int id, @RequestBody DepartmentUpdateDTO updateDTO) {
-        DepartmentData result = new DepartmentData();
-        try {
-            if (departmentRepository.existsById(id)) {
-                DepartmentResponse response = departmentService.updateDepartment(id, updateDTO);
-                if (response != null) {
-                    result.setData(response);
-                    result.setStatus("SUCCESS");
-                    result.setMessage("department updated successfully");
-                }
-            } else {
-                result.setMessage("department is not exist");
-                result.setStatus("FAILURE");
-            }
-        } catch (Exception e) {
-            result.setMessage(e.getMessage());
-            result.setStatus("ERROR");
-        }
-        return result;
+    public ResponseEntity<ResponseDTO> updateDepartment(@PathVariable int id,
+            @RequestBody DepartmentUpdateDTO updateDTO) {
+        ResponseDTO<DepartmentResponse> responseDTO = new ResponseDTO();
+        DepartmentResponse department = departmentService.updateDepartment(id, updateDTO);
+        responseDTO.setData(department);
+        responseDTO.setSuccessMessage("Update department successfully");
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping("/department/create")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public DepartmentData createDepartment(@RequestBody DepartmentCreateDTO createDTO) {
-        DepartmentData result = new DepartmentData();
-        try {
-            Department department = departmentService.createDepartment(createDTO);
-            DepartmentResponse response = new DepartmentResponse();
-            if (department != null) {
-                response.setId(department.getId());
-                response.setName(department.getName());
-                response.setRoom(department.getRoom());
-                response.setPhone(department.getPhone());
-                response.setStatus(department.getStatus());
-
-                result.setMessage("create department successfully");
-                result.setData(response);
-                result.setStatus("SUCCESS");
-            } else {
-                result.setMessage("create department failure");
-                result.setStatus("FAILURE");
-            }
-        } catch (Exception e) {
-            result.setMessage(e.getMessage());
-            result.setStatus("ERROR");
-        }
-        return result;
+    public ResponseEntity<ResponseDTO> createDepartment(@RequestBody DepartmentCreateDTO createDTO) {
+        ResponseDTO<Department> responseDTO = new ResponseDTO();
+        Department department = departmentService.createDepartment(createDTO);
+        responseDTO.setData(department);
+        responseDTO.setSuccessMessage("Create department successfully");
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @DeleteMapping("/department/delete/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public DeleteData deleteDepartmnetById(@PathVariable int id) {
-        DeleteData result = new DeleteData();
-        try {
-            if (departmentRepository.existsById(id)) {
-
-                if (employeeService.getAllEmployeeByDepartment(id).isEmpty()) {
-                    if (departmentService.deleteDepartmentById(id)) {
-                        result.setMessage("delete department successfully");
-                        result.setStatus("SUCCESS");
-                    } else {
-                        result.setMessage("delete department failure");
-                        result.setStatus("FAILURE");
-                    }
-                } else {
-                    result.setMessage("Can't delete because this department is still staffed");
-                    result.setStatus("FAILURE");
-                }
-
-            } else {
-                result.setMessage("department id is not exist");
-                result.setStatus("FAILURE");
-            }
-        } catch (Exception e) {
-            result.setMessage(e.getMessage());
-            result.setStatus("ERROR");
-        }
-        return result;
+    public ResponseEntity deleteDepartmnetById(@PathVariable int id) {
+        ResponseDTO<Department> responseDTO = new ResponseDTO();
+        departmentService.deleteDepartmentById(id);
+        responseDTO.setSuccessMessage("delete department successfully");
+        return ResponseEntity.ok().body(responseDTO);
     }
 
 }

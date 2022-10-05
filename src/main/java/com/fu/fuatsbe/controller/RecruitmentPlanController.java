@@ -60,7 +60,6 @@ public class RecruitmentPlanController {
     @GetMapping("/getAllRejectedRecruitmentPlans")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ListResponseDTO> getAllRejectedRecruitmentPlans() {
-
         ListResponseDTO<RecruitmentPlanResponse> response = new ListResponseDTO();
         List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllRejectedRecruitmentPlans();
         response.setData(list);
@@ -96,6 +95,7 @@ public class RecruitmentPlanController {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
         RecruitmentPlanResponse recruitmentPlan = recruitmentPlanService.getRecruitmentPlanById(id);
         responseDTO.setData(recruitmentPlan);
+        responseDTO.setSuccessMessage(RecruitmentPlanSuccessMessage.GET_RECRUITMENT_PLAN_BY_ID_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 

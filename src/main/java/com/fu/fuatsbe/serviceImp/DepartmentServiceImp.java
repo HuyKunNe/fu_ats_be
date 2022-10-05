@@ -2,108 +2,100 @@ package com.fu.fuatsbe.serviceImp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.DepartmentCreateDTO;
 import com.fu.fuatsbe.DTO.DepartmentUpdateDTO;
+import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
+import com.fu.fuatsbe.constant.department.DepartmentStatus;
 import com.fu.fuatsbe.entity.Department;
 import com.fu.fuatsbe.repository.DepartmentRepository;
 import com.fu.fuatsbe.response.DepartmentResponse;
 import com.fu.fuatsbe.service.DepartmentService;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class DepartmentServiceImp implements DepartmentService {
 
     private DepartmentRepository departmentRepository;
 
-    public DepartmentServiceImp(DepartmentRepository departmentRepository) {
-        this.departmentRepository = departmentRepository;
-    }
+    private final ModelMapper modelMapper;
 
     @Override
     public List<DepartmentResponse> getAllDepartments() {
         List<Department> list = departmentRepository.findAll();
         List<DepartmentResponse> result = new ArrayList<DepartmentResponse>();
-        if (list.size() > 0)
+        if (list.size() > 0) {
             for (Department department : list) {
-                DepartmentResponse response = new DepartmentResponse();
-                response.setId(department.getId());
-                response.setRoom(department.getRoom());
-                response.setName(department.getName());
-                response.setPhone(department.getPhone());
-                response.setStatus(department.getStatus());
+                DepartmentResponse response = modelMapper.map(department, DepartmentResponse.class);
                 result.add(response);
             }
+        } else
+            throw new IllegalStateException(DepartmentErrorMessage.DEPARTMENT_EMPTY_EXCEPTION);
         return result;
     }
 
     @Override
     public DepartmentResponse getDepartmentById(int id) {
-        DepartmentResponse result = new DepartmentResponse();
-        if (departmentRepository.existsById(id)) {
-            Department department = departmentRepository.findById(id).get();
-            result.setId(id);
-            result.setRoom(department.getRoom());
-            result.setName(department.getName());
-            result.setPhone(department.getPhone());
-            result.setStatus(department.getStatus());
-        } else
-            result = null;
-        return result;
+        Department department = departmentRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException(
+                        DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
+        DepartmentResponse response = modelMapper.map(department, DepartmentResponse.class);
+        return response;
     }
 
     @Override
     public List<DepartmentResponse> getDepartmentByName(String name) {
         List<Department> list = departmentRepository.findByNameContaining(name);
         List<DepartmentResponse> result = new ArrayList<DepartmentResponse>();
-        if (list.size() > 0)
+        if (list.size() > 0) {
             for (Department department : list) {
-                DepartmentResponse response = new DepartmentResponse();
-                response.setId(department.getId());
-                response.setRoom(department.getRoom());
-                response.setName(department.getName());
-                response.setPhone(department.getPhone());
-                response.setStatus(department.getStatus());
+                DepartmentResponse response = modelMapper.map(department, DepartmentResponse.class);
                 result.add(response);
             }
+        } else
+            throw new IllegalStateException(DepartmentErrorMessage.DEPARTMENT_EMPTY_EXCEPTION);
         return result;
     }
 
     @Override
     public DepartmentResponse updateDepartment(int id, DepartmentUpdateDTO departmentUpdateDTO) {
-        DepartmentResponse result = new DepartmentResponse();
-        Department department = departmentRepository.findById(id).get();
+        Department department = departmentRepository.findById(id).orElseThrow(() -> new IllegalStateException(
+                DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
         department.setName(departmentUpdateDTO.getName());
         department.setRoom(departmentUpdateDTO.getRoom());
         department.setPhone(departmentUpdateDTO.getPhone());
         department.setStatus(departmentUpdateDTO.getStatus());
         departmentRepository.save(department);
-        result.setId(id);
-        result.setName(department.getName());
-        result.setRoom(department.getRoom());
-        result.setPhone(department.getPhone());
-        result.setStatus(department.getStatus());
-        return result;
+        DepartmentResponse response = modelMapper.map(department, DepartmentResponse.class);
+        return response;
     }
 
     @Override
     public Department createDepartment(DepartmentCreateDTO createDTO) {
-        Department department = new Department();
-        department.setName(createDTO.getName());
-        department.setRoom(createDTO.getRoom());
-        department.setPhone(createDTO.getPhone());
-        department.setStatus("NEW");
-        return departmentRepository.save(department);
+        Optional<Department> optionalDepartment = departmentRepository.findDepartmentByName(createDTO.getName());
+        if (optionalDepartment.isPresent())
+            throw new IllegalStateException(DepartmentErrorMessage.DEPARTMENT_IS_EXIST_EXCEPTION);
+        else {
+            Department department = Department.builder().name(createDTO.getName()).phone(createDTO.getPhone())
+                    .room(createDTO.getRoom()).status(DepartmentStatus.DEPARTMENT_ACTIVE).build();
+            Department result = departmentRepository.save(department);
+            return result;
+        }
     }
 
     @Override
     public boolean deleteDepartmentById(int id) {
-        boolean result = false;
-        if (departmentRepository.deleteDepartmentById(id) != 0) {
-            result = true;
-        }
-        return result;
+        Department department = departmentRepository.findById(id).orElseThrow(() -> new IllegalStateException(
+                DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
+        department.setStatus(DepartmentStatus.DEPARTMENT_DISABLE);
+        departmentRepository.save(department);
+        return true;
     }
 
 }
