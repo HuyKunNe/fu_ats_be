@@ -45,83 +45,72 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
 
     @Override
     public RecruitmentPlanResponse getRecruitmentPlanById(int id) {
-        try {
-            RecruitmentPlan recruitmentPlan = recruitmentPlanRepository.findById(id)
-                    .orElseThrow(() -> new IllegalStateException(
-                            RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION));
-            RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
-            return response;
-        } catch (Exception e) {
-            return null;
-        }
+
+        RecruitmentPlan recruitmentPlan = recruitmentPlanRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException(
+                        RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION));
+        RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
+        return response;
+
     }
 
     @Override
     public List<RecruitmentPlanResponse> getAllApprovedRecruitmentPlan() {
-        try {
-            List<RecruitmentPlan> list = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.APPROVED);
-            List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
-            if (list.size() > 0) {
-                for (RecruitmentPlan recruitmentPlan : list) {
-                    RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
-                    result.add(response);
-                }
+
+        List<RecruitmentPlan> list = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.APPROVED);
+        List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
+        if (list.size() > 0) {
+            for (RecruitmentPlan recruitmentPlan : list) {
+                RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
+                result.add(response);
             }
-            return result;
-        } catch (Exception e) {
-            return null;
         }
+        return result;
+
     }
 
     @Override
     public List<RecruitmentPlanResponse> getAllCanceledRecruitmentPlans() {
-        try {
-            List<RecruitmentPlan> list = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.CANCELED);
-            List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
-            if (list.size() > 0) {
-                for (RecruitmentPlan recruitmentPlan : list) {
-                    RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
-                    result.add(response);
-                }
+
+        List<RecruitmentPlan> list = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.CANCELED);
+        List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
+        if (list.size() > 0) {
+            for (RecruitmentPlan recruitmentPlan : list) {
+                RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
+                result.add(response);
             }
-            return result;
-        } catch (Exception e) {
-            return null;
         }
+        return result;
+
     }
 
     @Override
     public List<RecruitmentPlanResponse> getAllRejectedRecruitmentPlans() {
-        try {
-            List<RecruitmentPlan> list = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.REJECTED);
-            List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
-            if (list.size() > 0) {
-                for (RecruitmentPlan recruitmentPlan : list) {
-                    RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
-                    result.add(response);
-                }
+
+        List<RecruitmentPlan> list = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.REJECTED);
+        List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
+        if (list.size() > 0) {
+            for (RecruitmentPlan recruitmentPlan : list) {
+                RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
+                result.add(response);
             }
-            return result;
-        } catch (Exception e) {
-            return null;
         }
+        return result;
+
     }
 
     @Override
     public List<RecruitmentPlanResponse> getAllPedingRecruitmentPlans() {
-        try {
-            List<RecruitmentPlan> list = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.PENDING);
-            List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
-            if (list.size() > 0) {
-                for (RecruitmentPlan recruitmentPlan : list) {
-                    RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
-                    result.add(response);
-                }
+
+        List<RecruitmentPlan> list = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.PENDING);
+        List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
+        if (list.size() > 0) {
+            for (RecruitmentPlan recruitmentPlan : list) {
+                RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
+                result.add(response);
             }
-            return result;
-        } catch (Exception e) {
-            return null;
         }
+        return result;
     }
 
     @Override
@@ -147,111 +136,96 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
 
     @Override
     public RecruitmentPlanResponse approvedRecruitmentPlan(RecruitmentPlanActionDTO actionDTO) {
-        try {
-            RecruitmentPlan recruitmentPlan = recruitmentPlanRepository.findById(actionDTO.getId())
+        RecruitmentPlan recruitmentPlan = recruitmentPlanRepository.findById(actionDTO.getId())
+                .orElseThrow(() -> new IllegalStateException(
+                        RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION));
+        if (recruitmentPlan != null) {
+            Employee approver = employeeRepository.findById(actionDTO.getEmployeeId())
                     .orElseThrow(() -> new IllegalStateException(
-                            RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION));
-            if (recruitmentPlan != null) {
-                Employee approver = employeeRepository.findById(actionDTO.getEmployeeId())
-                        .orElseThrow(() -> new IllegalStateException(
-                                EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
-                if (approver != null) {
-                    recruitmentPlan.setStatus(RecruitmentPlanStatus.APPROVED);
-                    recruitmentPlan.setApprover(approver);
-                    RecruitmentPlan recruitmentPlanSaved = recruitmentPlanRepository.save(recruitmentPlan);
-                    RecruitmentPlanResponse response = modelMapper.map(recruitmentPlanSaved,
-                            RecruitmentPlanResponse.class);
-                    return response;
-                }
+                            EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+            if (approver != null) {
+                recruitmentPlan.setStatus(RecruitmentPlanStatus.APPROVED);
+                recruitmentPlan.setApprover(approver);
+                RecruitmentPlan recruitmentPlanSaved = recruitmentPlanRepository.save(recruitmentPlan);
+                RecruitmentPlanResponse response = modelMapper.map(recruitmentPlanSaved,
+                        RecruitmentPlanResponse.class);
+                return response;
             }
-            return null;
-        } catch (Exception e) {
-            return null;
         }
+        return null;
+
     }
 
     @Override
     public List<RecruitmentPlanResponse> getAllRecruitmentPlansByApprover(int approverId) {
-        try {
-            List<RecruitmentPlan> list = recruitmentPlanRepository.findByApproverId(approverId);
-            List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
-            if (list.size() > 0) {
-                for (RecruitmentPlan recruitmentPlan : list) {
-                    RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
-                    result.add(response);
-                }
+        List<RecruitmentPlan> list = recruitmentPlanRepository.findByApproverId(approverId);
+        List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
+        if (list.size() > 0) {
+            for (RecruitmentPlan recruitmentPlan : list) {
+                RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
+                result.add(response);
             }
-            return result;
-        } catch (Exception e) {
-            return null;
         }
+        return result;
     }
 
     @Override
     public List<RecruitmentPlanResponse> getAllRecruitmentPlansByCreator(int creatorId) {
-        try {
-            List<RecruitmentPlan> list = recruitmentPlanRepository.findByCreatorId(creatorId);
-            List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
-            if (list.size() > 0) {
-                for (RecruitmentPlan recruitmentPlan : list) {
-                    RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
-                    result.add(response);
-                }
+        List<RecruitmentPlan> list = recruitmentPlanRepository.findByCreatorId(creatorId);
+        List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
+        if (list.size() > 0) {
+            for (RecruitmentPlan recruitmentPlan : list) {
+                RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
+                result.add(response);
             }
-            return result;
-        } catch (Exception e) {
-            return null;
         }
+        return result;
+
     }
 
     @Override
     public RecruitmentPlanResponse canceledRecruitmentPlan(RecruitmentPlanActionDTO actionDTO) {
-        try {
-            RecruitmentPlan recruitmentPlan = recruitmentPlanRepository.findById(actionDTO.getId())
+        RecruitmentPlan recruitmentPlan = recruitmentPlanRepository.findById(actionDTO.getId())
+                .orElseThrow(() -> new IllegalStateException(
+                        RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION));
+        if (recruitmentPlan != null) {
+            Employee approver = employeeRepository.findById(actionDTO.getEmployeeId())
                     .orElseThrow(() -> new IllegalStateException(
-                            RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION));
-            if (recruitmentPlan != null) {
-                Employee approver = employeeRepository.findById(actionDTO.getEmployeeId())
-                        .orElseThrow(() -> new IllegalStateException(
-                                EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
-                if (approver != null) {
-                    recruitmentPlan.setStatus(RecruitmentPlanStatus.CANCELED);
-                    recruitmentPlan.setApprover(approver);
-                    RecruitmentPlan recruitmentPlanSaved = recruitmentPlanRepository.save(recruitmentPlan);
-                    RecruitmentPlanResponse response = modelMapper.map(recruitmentPlanSaved,
-                            RecruitmentPlanResponse.class);
-                    return response;
-                }
+                            EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+            if (approver != null) {
+                recruitmentPlan.setStatus(RecruitmentPlanStatus.CANCELED);
+                recruitmentPlan.setApprover(approver);
+                RecruitmentPlan recruitmentPlanSaved = recruitmentPlanRepository.save(recruitmentPlan);
+                RecruitmentPlanResponse response = modelMapper.map(recruitmentPlanSaved,
+                        RecruitmentPlanResponse.class);
+                return response;
             }
-            return null;
-        } catch (Exception e) {
-            return null;
         }
+        return null;
+
     }
 
     @Override
     public RecruitmentPlanResponse rejectedRecruitmentPlan(RecruitmentPlanActionDTO actionDTO) {
-        try {
-            RecruitmentPlan recruitmentPlan = recruitmentPlanRepository.findById(actionDTO.getId())
+
+        RecruitmentPlan recruitmentPlan = recruitmentPlanRepository.findById(actionDTO.getId())
+                .orElseThrow(() -> new IllegalStateException(
+                        RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION));
+        if (recruitmentPlan != null) {
+            Employee approver = employeeRepository.findById(actionDTO.getEmployeeId())
                     .orElseThrow(() -> new IllegalStateException(
-                            RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION));
-            if (recruitmentPlan != null) {
-                Employee approver = employeeRepository.findById(actionDTO.getEmployeeId())
-                        .orElseThrow(() -> new IllegalStateException(
-                                EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
-                if (approver != null) {
-                    recruitmentPlan.setStatus(RecruitmentPlanStatus.REJECTED);
-                    recruitmentPlan.setApprover(approver);
-                    RecruitmentPlan recruitmentPlanSaved = recruitmentPlanRepository.save(recruitmentPlan);
-                    RecruitmentPlanResponse response = modelMapper.map(recruitmentPlanSaved,
-                            RecruitmentPlanResponse.class);
-                    return response;
-                }
+                            EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+            if (approver != null) {
+                recruitmentPlan.setStatus(RecruitmentPlanStatus.REJECTED);
+                recruitmentPlan.setApprover(approver);
+                RecruitmentPlan recruitmentPlanSaved = recruitmentPlanRepository.save(recruitmentPlan);
+                RecruitmentPlanResponse response = modelMapper.map(recruitmentPlanSaved,
+                        RecruitmentPlanResponse.class);
+                return response;
             }
-            return null;
-        } catch (Exception e) {
-            return null;
         }
+        return null;
+
     }
 
 }

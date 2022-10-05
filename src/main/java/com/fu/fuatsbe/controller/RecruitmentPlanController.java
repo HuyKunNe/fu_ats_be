@@ -96,10 +96,6 @@ public class RecruitmentPlanController {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
         RecruitmentPlanResponse recruitmentPlan = recruitmentPlanService.getRecruitmentPlanById(id);
         responseDTO.setData(recruitmentPlan);
-        if (recruitmentPlan == null) {
-            responseDTO.setErrorMessage(RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION);
-        } else
-            responseDTO.setSuccessMessage(RecruitmentPlanSuccessMessage.GET_RECRUITMENT_PLAN_BY_ID_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 

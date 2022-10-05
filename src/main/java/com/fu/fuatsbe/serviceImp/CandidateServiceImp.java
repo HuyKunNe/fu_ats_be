@@ -40,38 +40,29 @@ public class CandidateServiceImp implements CandidateService {
 
     @Override
     public CandidateResponseDTO getCandidateById(int id) {
-        try {
-            Candidate candidate = candidateRepository.findById(id)
-                    .orElseThrow(() -> new IllegalStateException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
-            CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
-            return candidateResponseDTO;
-        } catch (Exception e) {
-            return null;
-        }
+
+        Candidate candidate = candidateRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+        CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
+        return candidateResponseDTO;
+
     }
 
     @Override
     public CandidateResponseDTO getCandidateByEmail(String email) {
-        try {
-            Candidate candidate = candidateRepository.findByEmail(email)
-                    .orElseThrow(() -> new IllegalStateException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
-            CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
-            return candidateResponseDTO;
-        } catch (Exception e) {
-            return null;
-        }
+        Candidate candidate = candidateRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalStateException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+        CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
+        return candidateResponseDTO;
+
     }
 
     @Override
     public CandidateResponseDTO getCandidateByPhone(String phone) {
-        try {
-            Candidate candidate = candidateRepository.findByPhone(phone)
-                    .orElseThrow(() -> new IllegalStateException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
-            CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
-            return candidateResponseDTO;
-        } catch (Exception e) {
-            return null;
-        }
+        Candidate candidate = candidateRepository.findByPhone(phone)
+                .orElseThrow(() -> new IllegalStateException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+        CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
+        return candidateResponseDTO;
     }
 
     @Override
