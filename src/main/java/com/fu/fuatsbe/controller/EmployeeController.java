@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.controller;
 
+import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeSuccessMessage;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.response.EmployeeResponse;
@@ -27,6 +28,10 @@ public class EmployeeController {
     public ResponseEntity<ResponseDTO> getEmployeeById(@PathVariable(name = "id") int employeeId) {
         ResponseDTO<EmployeeResponse> responseDTO = new ResponseDTO();
         EmployeeResponse employee = employeeService.getEmployeeById(employeeId);
+        if(employee == null){
+            responseDTO.setErrorMessage(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION);
+            return ResponseEntity.ok().body(responseDTO);
+        }
         responseDTO.setData(employee);
         responseDTO.setSuccessMessage(EmployeeSuccessMessage.GET_EMPLOYEE_BY_ID_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
