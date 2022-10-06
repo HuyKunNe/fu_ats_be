@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class RecruitmentPlanResponse {
 
     private int id;
-    private String preriod;
+    private String period;
     private int amount;
     private String status;
     private EmployeeResponse approver;

@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -35,17 +36,16 @@ public class Account {
     @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "roleId")
-
     @EqualsAndHashCode.Include
     @ToString.Include
     private Role role;
 
-    @OneToOne(mappedBy = "account")
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Include
     @ToString.Include
     private Employee employee;
 
-    @OneToOne(mappedBy = "account")
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Include
     @ToString.Include
     private Candidate candidate;

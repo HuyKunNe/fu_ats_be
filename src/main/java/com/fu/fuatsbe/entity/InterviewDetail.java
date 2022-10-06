@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Nationalized;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,6 +35,7 @@ public class InterviewDetail {
 
     private Date startAt;
     private Date endAt;
+    @Nationalized
     private String result;
     private String recordMeeting;
     @Column(columnDefinition = "text")

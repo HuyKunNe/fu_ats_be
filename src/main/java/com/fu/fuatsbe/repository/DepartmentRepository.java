@@ -14,8 +14,6 @@ import com.fu.fuatsbe.entity.Department;
 @Transactional
 public interface DepartmentRepository extends JpaRepository<Department, Integer> {
 
-    List<Department> findAll();
-
     List<Department> findByNameContaining(String name);
 
     boolean existsByName(String name);

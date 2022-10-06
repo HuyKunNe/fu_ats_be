@@ -19,6 +19,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Nationalized;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -40,12 +41,16 @@ public class Interview {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Nationalized
     private String subject;
+    @Nationalized
     private String purpose;
     private Date date;
+    @Nationalized
     private String address;
     private String linkMeeting;
     private String room;
+    @Nationalized
     private String round;
     @Column(columnDefinition = "text")
     private String description;

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class RecruitmentPlanCreateDTO {
-    
+
     private String period;
     private int amount;
     private int creatorId;

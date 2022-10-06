@@ -5,16 +5,19 @@ import com.fu.fuatsbe.constant.account.AccountStatus;
 import com.fu.fuatsbe.constant.candidate.CandidateStatus;
 import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
+import com.fu.fuatsbe.constant.postion.PositionErrorMessage;
 import com.fu.fuatsbe.entity.Account;
 import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.Department;
 import com.fu.fuatsbe.entity.Employee;
+import com.fu.fuatsbe.entity.Position;
 import com.fu.fuatsbe.entity.Role;
 import com.fu.fuatsbe.jwt.JwtConfig;
 import com.fu.fuatsbe.repository.AccountRepository;
 import com.fu.fuatsbe.repository.CandidateRepository;
 import com.fu.fuatsbe.repository.DepartmentRepository;
 import com.fu.fuatsbe.repository.EmployeeRepository;
+import com.fu.fuatsbe.repository.PositionRepository;
 import com.fu.fuatsbe.repository.RoleRepository;
 import com.fu.fuatsbe.response.LoginResponseDto;
 import com.fu.fuatsbe.response.RegisterResponseDto;
@@ -40,6 +43,7 @@ public class AuthServiceImp implements AuthService {
     private final RoleRepository roleRepository;
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
+    private final PositionRepository PositionRepository;
     private final SecretKey secretKey;
     private final JwtConfig jwtConfig;
     private final PasswordEncoder passwordEncoder;
@@ -86,9 +90,16 @@ public class AuthServiceImp implements AuthService {
         if (!optionalDepartment.isPresent()) {
             throw new IllegalStateException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION);
         }
+
+        Optional<Position> optionalPosition = PositionRepository.findPositionByName(registerDto.getPositionName());
+        if (!optionalPosition.isPresent()) {
+            throw new IllegalStateException(PositionErrorMessage.POSITION_NOT_EXIST);
+        }
+
         Employee employee = Employee.builder().name(registerDto.getName()).employeeCode(registerDto.getEmployeeCode())
                 .status(AccountStatus.ACTIVATED)
                 .phone(registerDto.getPhone()).department(optionalDepartment.get()).address(registerDto.getAddress())
+                .position(optionalPosition.get())
                 .build();
         Role role = roleRepository.findByName(registerDto.getRole())
                 .orElseThrow(() -> new IllegalStateException("this role does not exist"));

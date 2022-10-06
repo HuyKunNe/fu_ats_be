@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @Builder
 public class RegisterDto {
     @NotBlank(message = ValidationMessage.PASSWORD_VALID_MESSAGE)
-    @Size(min = ValidationSize.PASSWORD_MIN,max = ValidationSize.PASSWORD_MAX, message = ValidationMessage.PASSWORD_SIZE_VALID_MESSAGE)
+    @Size(min = ValidationSize.PASSWORD_MIN, max = ValidationSize.PASSWORD_MAX, message = ValidationMessage.PASSWORD_SIZE_VALID_MESSAGE)
     private String password;
     @Email(message = ValidationMessage.EMAIL_VALID_MESSAGE)
     private String email;
@@ -25,10 +25,12 @@ public class RegisterDto {
     @NotBlank(message = ValidationMessage.EMPLOYEE_CODE_VALID_MESSAGE)
     private String EmployeeCode;
     @NotBlank(message = ValidationMessage.PHONE_NOT_EMPTY_VALID_MESSAGE)
-    @Size(min = ValidationSize.PHONE_MIN,max = ValidationSize.PHONE_MAX, message = ValidationMessage.PHONE_SIZE_VALID_MESSAGE)
+    @Size(min = ValidationSize.PHONE_MIN, max = ValidationSize.PHONE_MAX, message = ValidationMessage.PHONE_SIZE_VALID_MESSAGE)
     private String phone;
     @NotBlank(message = ValidationMessage.ADDRESS_VALID_MESSAGE)
     private String address;
     @NotBlank(message = ValidationMessage.DEPARTMENT_VALID_MESSAGE)
     private String departmentName;
+    @NotBlank(message = ValidationMessage.POSITION_VALID_MESSAGE)
+    private String positionName;
 }

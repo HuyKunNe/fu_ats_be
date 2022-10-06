@@ -39,7 +39,8 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
                 RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
                 result.add(response);
             }
-        }
+        } else
+            throw new IllegalStateException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
     }
 
@@ -64,7 +65,8 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
                 RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
                 result.add(response);
             }
-        }
+        } else
+            throw new IllegalStateException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
 
     }
@@ -79,7 +81,8 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
                 RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
                 result.add(response);
             }
-        }
+        } else
+            throw new IllegalStateException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
 
     }
@@ -94,7 +97,8 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
                 RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
                 result.add(response);
             }
-        }
+        } else
+            throw new IllegalStateException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
 
     }
@@ -109,7 +113,8 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
                 RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
                 result.add(response);
             }
-        }
+        } else
+            throw new IllegalStateException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
     }
 
@@ -130,7 +135,7 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
             RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
             return response;
         } else {
-            return null;
+            throw new IllegalStateException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION);
         }
     }
 
@@ -139,20 +144,15 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
         RecruitmentPlan recruitmentPlan = recruitmentPlanRepository.findById(actionDTO.getId())
                 .orElseThrow(() -> new IllegalStateException(
                         RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION));
-        if (recruitmentPlan != null) {
-            Employee approver = employeeRepository.findById(actionDTO.getEmployeeId())
-                    .orElseThrow(() -> new IllegalStateException(
-                            EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
-            if (approver != null) {
-                recruitmentPlan.setStatus(RecruitmentPlanStatus.APPROVED);
-                recruitmentPlan.setApprover(approver);
-                RecruitmentPlan recruitmentPlanSaved = recruitmentPlanRepository.save(recruitmentPlan);
-                RecruitmentPlanResponse response = modelMapper.map(recruitmentPlanSaved,
-                        RecruitmentPlanResponse.class);
-                return response;
-            }
-        }
-        return null;
+        Employee approver = employeeRepository.findById(actionDTO.getEmployeeId())
+                .orElseThrow(() -> new IllegalStateException(
+                        EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+        recruitmentPlan.setStatus(RecruitmentPlanStatus.APPROVED);
+        recruitmentPlan.setApprover(approver);
+        RecruitmentPlan recruitmentPlanSaved = recruitmentPlanRepository.save(recruitmentPlan);
+        RecruitmentPlanResponse response = modelMapper.map(recruitmentPlanSaved,
+                RecruitmentPlanResponse.class);
+        return response;
 
     }
 
@@ -165,7 +165,8 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
                 RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
                 result.add(response);
             }
-        }
+        } else
+            throw new IllegalStateException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
     }
 
@@ -178,7 +179,8 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
                 RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
                 result.add(response);
             }
-        }
+        } else
+            throw new IllegalStateException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
 
     }
@@ -188,20 +190,15 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
         RecruitmentPlan recruitmentPlan = recruitmentPlanRepository.findById(actionDTO.getId())
                 .orElseThrow(() -> new IllegalStateException(
                         RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION));
-        if (recruitmentPlan != null) {
-            Employee approver = employeeRepository.findById(actionDTO.getEmployeeId())
-                    .orElseThrow(() -> new IllegalStateException(
-                            EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
-            if (approver != null) {
-                recruitmentPlan.setStatus(RecruitmentPlanStatus.CANCELED);
-                recruitmentPlan.setApprover(approver);
-                RecruitmentPlan recruitmentPlanSaved = recruitmentPlanRepository.save(recruitmentPlan);
-                RecruitmentPlanResponse response = modelMapper.map(recruitmentPlanSaved,
-                        RecruitmentPlanResponse.class);
-                return response;
-            }
-        }
-        return null;
+        Employee approver = employeeRepository.findById(actionDTO.getEmployeeId())
+                .orElseThrow(() -> new IllegalStateException(
+                        EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+        recruitmentPlan.setStatus(RecruitmentPlanStatus.CANCELED);
+        recruitmentPlan.setApprover(approver);
+        RecruitmentPlan recruitmentPlanSaved = recruitmentPlanRepository.save(recruitmentPlan);
+        RecruitmentPlanResponse response = modelMapper.map(recruitmentPlanSaved,
+                RecruitmentPlanResponse.class);
+        return response;
 
     }
 
@@ -211,20 +208,15 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
         RecruitmentPlan recruitmentPlan = recruitmentPlanRepository.findById(actionDTO.getId())
                 .orElseThrow(() -> new IllegalStateException(
                         RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION));
-        if (recruitmentPlan != null) {
-            Employee approver = employeeRepository.findById(actionDTO.getEmployeeId())
-                    .orElseThrow(() -> new IllegalStateException(
-                            EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
-            if (approver != null) {
-                recruitmentPlan.setStatus(RecruitmentPlanStatus.REJECTED);
-                recruitmentPlan.setApprover(approver);
-                RecruitmentPlan recruitmentPlanSaved = recruitmentPlanRepository.save(recruitmentPlan);
-                RecruitmentPlanResponse response = modelMapper.map(recruitmentPlanSaved,
-                        RecruitmentPlanResponse.class);
-                return response;
-            }
-        }
-        return null;
+        Employee approver = employeeRepository.findById(actionDTO.getEmployeeId())
+                .orElseThrow(() -> new IllegalStateException(
+                        EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+        recruitmentPlan.setStatus(RecruitmentPlanStatus.REJECTED);
+        recruitmentPlan.setApprover(approver);
+        RecruitmentPlan recruitmentPlanSaved = recruitmentPlanRepository.save(recruitmentPlan);
+        RecruitmentPlanResponse response = modelMapper.map(recruitmentPlanSaved,
+                RecruitmentPlanResponse.class);
+        return response;
 
     }
 

@@ -18,16 +18,11 @@ import com.fu.fuatsbe.DTO.DepartmentCreateDTO;
 import com.fu.fuatsbe.DTO.DepartmentUpdateDTO;
 import com.fu.fuatsbe.constant.department.DepartmentSuccessMessage;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
-import com.fu.fuatsbe.dataformat.DeleteData;
-import com.fu.fuatsbe.dataformat.DepartmentData;
-import com.fu.fuatsbe.dataformat.ListDepartmentData;
 import com.fu.fuatsbe.entity.Department;
-import com.fu.fuatsbe.repository.DepartmentRepository;
 import com.fu.fuatsbe.response.DepartmentResponse;
 import com.fu.fuatsbe.response.ListResponseDTO;
 import com.fu.fuatsbe.response.ResponseDTO;
 import com.fu.fuatsbe.service.DepartmentService;
-import com.fu.fuatsbe.service.EmployeeService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -37,8 +32,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DepartmentController {
 
-    private DepartmentService departmentService;
-    private EmployeeService employeeService;
+    private final DepartmentService departmentService;
 
     @GetMapping("/department/getAll")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)

@@ -30,8 +30,12 @@ public class CandidateController {
     public ResponseEntity<ListResponseDTO> getAllCandidates() {
         ListResponseDTO<CandidateResponseDTO> responseDTO = new ListResponseDTO();
         List<CandidateResponseDTO> list = candidateService.getAllCandidates();
-        responseDTO.setData(list);
-        responseDTO.setSuccessMessage(CandidateSuccessMessage.GET_ALL_CANDIDATE_SUCCESS);
+        if (list.isEmpty()) {
+            responseDTO.setErrorMessage(CandidateErrorMessage.LIST_CANDIDATE_IS_EMPTY);
+        } else {
+            responseDTO.setData(list);
+            responseDTO.setSuccessMessage(CandidateSuccessMessage.GET_ALL_CANDIDATE_SUCCESS);
+        }
         return ResponseEntity.ok().body(responseDTO);
     }
 

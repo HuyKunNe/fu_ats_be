@@ -3,6 +3,7 @@ package com.fu.fuatsbe.entity;
 import java.util.Collection;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,7 +18,9 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Nationalized;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
@@ -39,6 +42,7 @@ public class Position {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Nationalized
     private String name;
 
     @OneToMany(mappedBy = "position", cascade = CascadeType.ALL)
@@ -48,11 +52,14 @@ public class Position {
     private Collection<RecruitmentRequest> recruitmentRequests;
 
     @ManyToMany(mappedBy = "positions")
+    @JsonIgnore
     private Collection<Candidate> candidates;
 
     @ManyToMany(mappedBy = "positions")
+    @JsonIgnore
     private Collection<CV> cvs;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "departmentId")
@@ -60,9 +67,14 @@ public class Position {
     @ToString.Include
     private Department department;
 
+    @JsonBackReference
     @OneToOne(mappedBy = "position")
+    private Employee employee;
+
+    @OneToMany(mappedBy = "position", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Include
     @ToString.Include
-    private Employee employee;
+    @JsonIgnore
+    private Collection<PlanDetail> planDetails;
 
 }
