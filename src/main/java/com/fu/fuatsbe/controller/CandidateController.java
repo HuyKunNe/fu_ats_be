@@ -80,7 +80,7 @@ public class CandidateController {
 
     @DeleteMapping("/delete/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> deleteCandidateById(@PathVariable(name = "id") int id) {
+    public ResponseEntity<ResponseDTO> deleteCandidateById(@RequestParam(name = "id") int id) {
         ResponseDTO<Boolean> responseDTO = new ResponseDTO();
         Candidate candidate = candidateService.deleteCandidateById(id);
         responseDTO.setData(true);

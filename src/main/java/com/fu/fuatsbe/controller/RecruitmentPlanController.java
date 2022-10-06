@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fu.fuatsbe.DTO.RecruitmentPlanActionDTO;
@@ -89,9 +90,9 @@ public class RecruitmentPlanController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getById")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> getRecruitmentPlanById(@PathVariable int id) {
+    public ResponseEntity<ResponseDTO> getRecruitmentPlanById(@RequestParam("id") int id) {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
         RecruitmentPlanResponse recruitmentPlan = recruitmentPlanService.getRecruitmentPlanById(id);
         responseDTO.setData(recruitmentPlan);
@@ -99,9 +100,9 @@ public class RecruitmentPlanController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/getByApprover/{id}")
+    @GetMapping("/getByApprover")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getByApproverId(@PathVariable int id) {
+    public ResponseEntity<ListResponseDTO> getByApproverId(@RequestParam("id") int id) {
 
         ListResponseDTO<RecruitmentPlanResponse> response = new ListResponseDTO();
         List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllRecruitmentPlansByApprover(id);
@@ -110,9 +111,9 @@ public class RecruitmentPlanController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/getByCreator/{id}")
+    @GetMapping("/getByCreator")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getByCreatorId(@PathVariable int id) {
+    public ResponseEntity<ListResponseDTO> getByCreatorId(@RequestParam("id") int id) {
 
         ListResponseDTO<RecruitmentPlanResponse> response = new ListResponseDTO();
         List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllRecruitmentPlansByCreator(id);

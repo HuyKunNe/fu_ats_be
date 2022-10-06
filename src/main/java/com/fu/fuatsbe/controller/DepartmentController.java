@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fu.fuatsbe.DTO.DepartmentCreateDTO;
@@ -44,9 +45,9 @@ public class DepartmentController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/department/getById/{id}")
+    @GetMapping("/department/getById")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> getDepartmentById(@PathVariable int id) {
+    public ResponseEntity<ResponseDTO> getDepartmentById(@RequestParam("id") int id) {
         ResponseDTO<DepartmentResponse> responseDTO = new ResponseDTO();
         DepartmentResponse departmentResponse = departmentService.getDepartmentById(id);
         responseDTO.setData(departmentResponse);
@@ -54,9 +55,9 @@ public class DepartmentController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/department/getByName/{name}")
+    @GetMapping("/department/getByName")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getDepartmentByName(@PathVariable String name) {
+    public ResponseEntity<ListResponseDTO> getDepartmentByName(@RequestParam("name") String name) {
         ListResponseDTO<DepartmentResponse> response = new ListResponseDTO();
         List<DepartmentResponse> list = departmentService.getDepartmentByName(name);
         response.setData(list);
@@ -64,9 +65,9 @@ public class DepartmentController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PutMapping("/department/edit/{id}")
+    @PutMapping("/department/edit/")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDTO> updateDepartment(@PathVariable int id,
+    public ResponseEntity<ResponseDTO> updateDepartment(@RequestParam("id") int id,
             @RequestBody DepartmentUpdateDTO updateDTO) {
         ResponseDTO<DepartmentResponse> responseDTO = new ResponseDTO();
         DepartmentResponse department = departmentService.updateDepartment(id, updateDTO);
@@ -85,9 +86,9 @@ public class DepartmentController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @DeleteMapping("/department/delete/{id}")
+    @DeleteMapping("/department/delete")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity deleteDepartmnetById(@PathVariable int id) {
+    public ResponseEntity deleteDepartmnetById(@RequestParam("id") int id) {
         ResponseDTO<Department> responseDTO = new ResponseDTO();
         departmentService.deleteDepartmentById(id);
         responseDTO.setSuccessMessage("delete department successfully");
