@@ -39,9 +39,9 @@ public class CandidateController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getCandidateById")
     @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
-    public ResponseEntity<ResponseDTO> getCandidateById(@PathVariable(name = "id") int id) {
+    public ResponseEntity<ResponseDTO> getCandidateById(@RequestParam("id") int id) {
         ResponseDTO<CandidateResponseDTO> responseDTO = new ResponseDTO();
         CandidateResponseDTO candidate = candidateService.getCandidateById(id);
         responseDTO.setData(candidate);

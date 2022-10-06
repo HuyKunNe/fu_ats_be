@@ -42,10 +42,14 @@ public class EmployeeServiceImp implements EmployeeService {
 
     @Override
     public EmployeeResponse getEmployeeById(int id) {
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
-        EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
-        return employeeResponse;
+       try {
+           Employee employee = employeeRepository.findById(id)
+                   .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+           EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
+           return employeeResponse;
+       } catch (Exception e){
+          return null;
+       }
     }
 
     @Override
