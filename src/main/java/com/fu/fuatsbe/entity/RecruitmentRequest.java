@@ -17,6 +17,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Nationalized;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -41,9 +42,11 @@ public class RecruitmentRequest {
 
     private Date date;
     private Date expiryDate;
+    @Nationalized
     private String industry;
     private int amount;
     private String jobLevel;
+    @Nationalized
     private String experience;
     private String salary;
     private String typeOfWork;

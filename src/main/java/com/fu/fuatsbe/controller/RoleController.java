@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fu.fuatsbe.DTO.RoleCreateDTO;
@@ -42,8 +43,8 @@ public class RoleController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/role/getById/{id}")
-    public ResponseEntity<ResponseDTO> getRoleById(@PathVariable int id) {
+    @GetMapping("/role/getById")
+    public ResponseEntity<ResponseDTO> getRoleById(@RequestParam("id") int id) {
         ResponseDTO<RoleResponse> responseDTO = new ResponseDTO();
         RoleResponse role = roleService.getRoleById(id);
         responseDTO.setData(role);
@@ -61,13 +62,13 @@ public class RoleController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PutMapping("/role/edit/{id}")
+    @PutMapping("/role/edit")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDTO> updateRole(@PathVariable int id, @RequestBody RoleUpdateDTO updateDTO) {
+    public ResponseEntity<ResponseDTO> updateRole(@RequestParam("id") int id, @RequestBody RoleUpdateDTO updateDTO) {
         ResponseDTO<RoleResponse> responseDTO = new ResponseDTO();
         RoleResponse role = roleService.updateRole(id, updateDTO);
         responseDTO.setData(role);
-        responseDTO.setSuccessMessage("updte role success");
+        responseDTO.setSuccessMessage("update role success");
         return ResponseEntity.ok().body(responseDTO);
     }
 }

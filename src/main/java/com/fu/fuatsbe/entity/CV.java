@@ -18,6 +18,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Nationalized;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -42,6 +43,7 @@ public class CV {
 
     private String linkCV;
     private String result;
+    @Nationalized
     private String suitablePosition;
     @Column(columnDefinition = "text")
     private String note;

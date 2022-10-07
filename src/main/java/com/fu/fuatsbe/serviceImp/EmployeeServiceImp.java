@@ -8,6 +8,8 @@ import com.fu.fuatsbe.constant.account.AccountStatus;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -64,15 +66,8 @@ public class EmployeeServiceImp implements EmployeeService {
         List<EmployeeResponse> result = new ArrayList<EmployeeResponse>();
         if (list.size() > 0)
             for (Employee employee : list) {
-                EmployeeResponse response = new EmployeeResponse();
-                response.setId(employee.getId());
-                response.setEmployeeCode(employee.getEmployeeCode());
-                response.setName(employee.getName());
-                response.setPhone(employee.getPhone());
-                response.setAddress(employee.getAddress());
-                response.setStatus(employee.getStatus());
-                response.setDepartment(employee.getDepartment());
-                result.add(response);
+                EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
+                result.add(employeeResponse);
             }
         return result;
     }

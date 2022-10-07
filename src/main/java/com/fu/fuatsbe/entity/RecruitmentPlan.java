@@ -3,6 +3,7 @@ package com.fu.fuatsbe.entity;
 import java.util.Collection;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -15,6 +16,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Nationalized;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -37,6 +39,7 @@ public class RecruitmentPlan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Nationalized
     private String period;
     private int amount;
     private String status;

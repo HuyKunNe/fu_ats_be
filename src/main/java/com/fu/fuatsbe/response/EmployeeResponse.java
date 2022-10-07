@@ -1,6 +1,8 @@
 package com.fu.fuatsbe.response;
 
 import com.fu.fuatsbe.entity.Department;
+import com.fu.fuatsbe.entity.Position;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,4 +19,5 @@ public class EmployeeResponse {
     private String address;
     private String status;
     private Department department;
+    private Position position;
 }

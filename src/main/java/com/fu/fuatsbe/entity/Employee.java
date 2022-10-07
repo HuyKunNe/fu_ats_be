@@ -20,7 +20,9 @@ import javax.persistence.Table;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Nationalized;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -36,13 +38,17 @@ public class Employee {
     @Column(name = "id")
     private int id;
 
+    @Nationalized
     private String name;
     private String employeeCode;
     private String phone;
+    @Nationalized
     private String address;
     private String status;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @JsonBackReference
+    @OneToOne(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     @EqualsAndHashCode.Include
     @ToString.Include
@@ -86,13 +92,17 @@ public class Employee {
     private Collection<JobApply> jobApplies;
 
     @ManyToMany(mappedBy = "employees")
+    @JsonIgnore
     private Collection<Notification> notifications;
 
     @ManyToMany
     @JoinTable(name = "employee_interview", joinColumns = @JoinColumn(name = "interview_id"), inverseJoinColumns = @JoinColumn(name = "employee_id"))
+    @JsonIgnore
     private Collection<Interview> interviews;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @JsonBackReference
+    @OneToOne(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "position_id", referencedColumnName = "id")
     @EqualsAndHashCode.Include
     @ToString.Include

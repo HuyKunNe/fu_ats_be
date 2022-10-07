@@ -9,10 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RecruitmentPlanCreateDTO {
+public class PlanDetailUpdateDTO {
 
-    private String period;
     private int amount;
-    private int creatorId;
+    private String skills;
 
 }

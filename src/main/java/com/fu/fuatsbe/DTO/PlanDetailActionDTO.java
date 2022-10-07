@@ -1,4 +1,4 @@
-package com.fu.fuatsbe.dataformat;
+package com.fu.fuatsbe.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeleteData {
+public class PlanDetailActionDTO {
 
-    private String message;
-    private String status;
+    private int id;
+    private int employeeId;
+
 }

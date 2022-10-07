@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DepartmentServiceImp implements DepartmentService {
 
-    private DepartmentRepository departmentRepository;
+    private final DepartmentRepository departmentRepository;
 
     private final ModelMapper modelMapper;
 
@@ -35,8 +35,7 @@ public class DepartmentServiceImp implements DepartmentService {
                 DepartmentResponse response = modelMapper.map(department, DepartmentResponse.class);
                 result.add(response);
             }
-        } else
-            throw new IllegalStateException(DepartmentErrorMessage.DEPARTMENT_EMPTY_EXCEPTION);
+        }
         return result;
     }
 

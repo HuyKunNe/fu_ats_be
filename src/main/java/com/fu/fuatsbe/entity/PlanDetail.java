@@ -39,7 +39,6 @@ public class PlanDetail {
     private int id;
 
     private int amount;
-    private String position;
     private Date date;
     private String skills;
     private String status;
@@ -63,4 +62,11 @@ public class PlanDetail {
     @ToString.Include
     @JsonIgnore
     private Collection<RecruitmentRequest> recruitmentRequests;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
+    @JoinColumn(name = "positionId")
+    @EqualsAndHashCode.Include
+    @ToString.Include
+    private Position position;
 }
