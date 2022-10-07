@@ -126,7 +126,7 @@ public class AuthServiceImp implements AuthService {
                     .email(accountAuthencated.getEmail())
                     .status(accountAuthencated.getStatus())
                     .roleName(accountAuthencated.getRole().getName())
-                    .token(jwtConfig.getTokenPrefix() + token).build();
+                    .token(token).build();
         }
         return loginResponseDTO;
     }
