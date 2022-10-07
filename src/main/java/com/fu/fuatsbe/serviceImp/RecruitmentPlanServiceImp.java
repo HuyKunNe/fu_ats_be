@@ -1,5 +1,11 @@
 package com.fu.fuatsbe.serviceImp;
 
+import java.sql.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -130,7 +136,12 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     public RecruitmentPlanResponse createRecruitmentPlan(RecruitmentPlanCreateDTO createDTO) {
         Optional<Employee> optionalCreator = employeeRepository.findById(createDTO.getCreatorId());
         if (optionalCreator.isPresent()) {
-            RecruitmentPlan recruitmentPlan = RecruitmentPlan.builder().period(createDTO.getPeriod())
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate periodFrom = LocalDate.parse(createDTO.getPeriodFrom().toString(), format);
+            LocalDate periodTo = LocalDate.parse(createDTO.getPeriodTo().toString(), format);
+
+            RecruitmentPlan recruitmentPlan = RecruitmentPlan.builder().periodFrom(Date.valueOf(periodFrom))
+                    .periodTo(Date.valueOf(periodTo))
                     .amount(createDTO.getAmount()).status(RecruitmentPlanStatus.PENDING).creator(optionalCreator.get())
                     .build();
             recruitmentPlanRepository.save(recruitmentPlan);

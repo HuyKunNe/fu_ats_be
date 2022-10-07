@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -14,6 +15,8 @@ import com.fu.fuatsbe.entity.Candidate;
 public interface CandidateRepository extends JpaRepository<Candidate, Integer> {
 
     Optional<Candidate> findById(int id);
+
+    List<Candidate> findByStatus(String status);
 
     Optional<Candidate> findByEmail(String email);
 

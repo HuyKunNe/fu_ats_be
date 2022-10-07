@@ -1,5 +1,7 @@
 package com.fu.fuatsbe.DTO;
 
+import java.sql.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +13,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RecruitmentPlanCreateDTO {
 
-    private String period;
+    private Date periodFrom;
+    private Date periodTo;
     private int amount;
     private int creatorId;
 

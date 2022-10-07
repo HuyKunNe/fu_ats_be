@@ -13,6 +13,7 @@ public class PlanDetailCreateDTO {
 
     private int amount;
     private String skills;
-    private int creatorId;
+    private int positionId;
+    private int recruitmentPlanId;
 
 }

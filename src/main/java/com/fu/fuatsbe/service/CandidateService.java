@@ -9,6 +9,10 @@ import com.fu.fuatsbe.response.CandidateResponseDTO;
 public interface CandidateService {
     public List<CandidateResponseDTO> getAllCandidates();
 
+    public List<CandidateResponseDTO> getActivateCandidates();
+
+    public List<CandidateResponseDTO> getDisableCandidates();
+
     public CandidateResponseDTO getCandidateById(int id);
 
     public CandidateResponseDTO getCandidateByEmail(String email);

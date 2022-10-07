@@ -37,7 +37,29 @@ public class CandidateController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/getCandidateById")
+    @GetMapping("/getAllActivateCandidates")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ListResponseDTO> getAllActivateCandidates() {
+        ListResponseDTO<CandidateResponseDTO> responseDTO = new ListResponseDTO();
+        List<CandidateResponseDTO> list = candidateService.getActivateCandidates();
+        responseDTO.setData(list);
+        responseDTO.setMessage(CandidateSuccessMessage.GET_ALL_CANDIDATE_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/getAllDisableCandidates")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ListResponseDTO> getAllDisableCandidates() {
+        ListResponseDTO<CandidateResponseDTO> responseDTO = new ListResponseDTO();
+        List<CandidateResponseDTO> list = candidateService.getDisableCandidates();
+        responseDTO.setData(list);
+        responseDTO.setMessage(CandidateSuccessMessage.GET_ALL_CANDIDATE_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/getCandidateById/{id}")
     @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity<ResponseDTO> getCandidateById(@RequestParam("id") int id) {
         ResponseDTO<CandidateResponseDTO> responseDTO = new ResponseDTO();
@@ -48,7 +70,7 @@ public class CandidateController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/getCandidateByPhone")
+    @GetMapping("/getCandidateByPhone/{phone}")
     @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity<ResponseDTO> getCandidateByPhone(@RequestParam("phone") String phone) {
         ResponseDTO<CandidateResponseDTO> responseDTO = new ResponseDTO();
@@ -59,7 +81,7 @@ public class CandidateController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/getCandidateByEmail")
+    @GetMapping("/getCandidateByEmail/{email}")
     @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity<ResponseDTO> getCandidateByEmail(@RequestParam("email") String email) {
         ResponseDTO<CandidateResponseDTO> responseDTO = new ResponseDTO();

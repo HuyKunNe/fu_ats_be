@@ -6,9 +6,11 @@ import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.candidate.CandidateStatus;
 import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
+import com.fu.fuatsbe.constant.employee.EmployeeStatus;
 import com.fu.fuatsbe.constant.postion.PositionErrorMessage;
 import com.fu.fuatsbe.constant.role.RoleErrorMessage;
 import com.fu.fuatsbe.constant.role.RoleName;
+import com.fu.fuatsbe.constant.validation_message.ValidationMessage;
 import com.fu.fuatsbe.entity.Account;
 import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.Department;
@@ -16,6 +18,7 @@ import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.Position;
 import com.fu.fuatsbe.entity.Role;
 import com.fu.fuatsbe.exceptions.EmailExistException;
+import com.fu.fuatsbe.exceptions.ExistException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.jwt.JwtConfig;
 import com.fu.fuatsbe.repository.AccountRepository;
@@ -65,6 +68,10 @@ public class AuthServiceImp implements AuthService {
         Role role = roleRepository.findByName(RoleName.ROLE_CANDIDATE)
                 .orElseThrow(() -> new NotFoundException(RoleErrorMessage.ROLE_NOT_EXIST));
 
+        Optional<Candidate> optionalCandidate = candidateRepository.findByPhone(registerDTO.getPhone());
+        if (optionalCandidate.isPresent()) {
+            throw new ExistException(ValidationMessage.PHONE_IS_EXIST);
+        }
         Candidate candidate = Candidate.builder().name(registerDTO.getName()).email(registerDTO.getEmail())
                 .phone(registerDTO.getPhone()).address(registerDTO.getAddress()).status(CandidateStatus.ACTIVATED)
                 .build();
@@ -101,8 +108,13 @@ public class AuthServiceImp implements AuthService {
             throw new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST);
         }
 
+        Optional<Employee> optionalEmployee = employeeRepository.findByPhone(registerDto.getPhone());
+        if (optionalEmployee.isPresent()) {
+            throw new ExistException(ValidationMessage.PHONE_IS_EXIST);
+        }
+
         Employee employee = Employee.builder().name(registerDto.getName()).employeeCode(registerDto.getEmployeeCode())
-                .status(AccountStatus.ACTIVATED)
+                .status(EmployeeStatus.ACTIVATE)
                 .phone(registerDto.getPhone()).department(optionalDepartment.get()).address(registerDto.getAddress())
                 .position(optionalPosition.get())
                 .build();

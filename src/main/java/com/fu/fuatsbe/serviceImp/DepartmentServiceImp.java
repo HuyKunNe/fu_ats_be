@@ -11,7 +11,9 @@ import com.fu.fuatsbe.DTO.DepartmentCreateDTO;
 import com.fu.fuatsbe.DTO.DepartmentUpdateDTO;
 import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.constant.department.DepartmentStatus;
+import com.fu.fuatsbe.constant.employee.EmployeeStatus;
 import com.fu.fuatsbe.entity.Department;
+import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.exceptions.ExistException;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
@@ -96,8 +98,15 @@ public class DepartmentServiceImp implements DepartmentService {
     public boolean deleteDepartmentById(int id) {
         Department department = departmentRepository.findById(id).orElseThrow(() -> new NotFoundException(
                 DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
-        department.setStatus(DepartmentStatus.DEPARTMENT_DISABLE);
-        departmentRepository.save(department);
+        if (department != null) {
+            for (Employee employee : department.getEmployees()) {
+                if (employee.getStatus().equalsIgnoreCase(EmployeeStatus.ACTIVATE))
+                    throw new ExistException(DepartmentErrorMessage.DEPARTMENT_ALREADY_HAVE_EMPLOYEE_EXCEPTION);
+            }
+            department.setStatus(DepartmentStatus.DEPARTMENT_DISABLE);
+            departmentRepository.save(department);
+        } else
+            throw new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION);
         return true;
     }
 

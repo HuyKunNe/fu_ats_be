@@ -96,7 +96,7 @@ public class RecruitmentPlanController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/getById")
+    @GetMapping("/getById/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getRecruitmentPlanById(@RequestParam("id") int id) {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
@@ -107,7 +107,7 @@ public class RecruitmentPlanController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/getByApprover")
+    @GetMapping("/getByApprover/")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ListResponseDTO> getByApproverId(@RequestParam("id") int id) {
 
@@ -132,7 +132,7 @@ public class RecruitmentPlanController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> createRecruitmentPlan(@RequestBody RecruitmentPlanCreateDTO createDTO) {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
         RecruitmentPlanResponse recruitmentPlanResponse = recruitmentPlanService.createRecruitmentPlan(createDTO);

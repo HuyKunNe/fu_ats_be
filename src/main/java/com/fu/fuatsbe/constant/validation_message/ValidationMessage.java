@@ -18,4 +18,6 @@ public final class ValidationMessage {
     public static final String ADDRESS_VALID_MESSAGE = "Address must be filled";
     public static final String EMPLOYEE_CODE_VALID_MESSAGE = "Employee Code must be filled";
 
+    public static final String PHONE_IS_EXIST = "Phone number is already exist";
+
 }

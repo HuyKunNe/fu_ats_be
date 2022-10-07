@@ -1,5 +1,7 @@
 package com.fu.fuatsbe.response;
 
+import java.sql.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +12,8 @@ import lombok.NoArgsConstructor;
 public class RecruitmentPlanResponse {
 
     private int id;
-    private String period;
+    private Date periodFrom;
+    private Date periodTo;
     private int amount;
     private String status;
     private EmployeeResponse approver;

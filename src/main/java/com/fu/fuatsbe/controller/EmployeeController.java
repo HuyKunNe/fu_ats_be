@@ -1,6 +1,5 @@
 package com.fu.fuatsbe.controller;
 
-import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeSuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
@@ -24,9 +23,9 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/getById/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> getEmployeeById(@PathVariable(name = "id") int employeeId) {
+    public ResponseEntity<ResponseDTO> getEmployeeById(@RequestParam(name = "id") int employeeId) {
         ResponseDTO<EmployeeResponse> responseDTO = new ResponseDTO();
         EmployeeResponse employee = employeeService.getEmployeeById(employeeId);
         responseDTO.setData(employee);
@@ -46,7 +45,7 @@ public class EmployeeController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/getEmployeeByCode")
+    @GetMapping("/getEmployeeByCode/{code}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getEmployeeByEmployeeCode(@RequestParam("code") String employeeCode) {
         ResponseDTO<EmployeeResponse> responseDTO = new ResponseDTO();

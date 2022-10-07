@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.fu.fuatsbe.entity.PlanDetail;
+import com.fu.fuatsbe.entity.RecruitmentPlan;
 
 @Transactional
 @Repository
@@ -19,11 +20,9 @@ public interface PlanDetailRepository extends JpaRepository<PlanDetail, Integer>
 
     List<PlanDetail> findByStatus(String status);
 
+    List<PlanDetail> findByRecruitmentPlan(RecruitmentPlan recruitmentPlan);
+
     @Modifying
     @Query(value = "select * from plan_detail p where p.approver_id = ?1", nativeQuery = true)
     List<PlanDetail> findByApproverId(int id);
-
-    @Modifying
-    @Query(value = "select * from plan_detail p where p.creator_id = ?1", nativeQuery = true)
-    List<PlanDetail> findByCreatorId(int id);
 }

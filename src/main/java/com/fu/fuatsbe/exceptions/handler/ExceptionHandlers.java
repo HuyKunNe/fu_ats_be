@@ -7,6 +7,7 @@ import com.fu.fuatsbe.exceptions.EmailExistException;
 import com.fu.fuatsbe.exceptions.ExistException;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
+import com.fu.fuatsbe.exceptions.NotValidException;
 import com.fu.fuatsbe.response.ListResponseDTO;
 import com.fu.fuatsbe.response.ResponseDTO;
 import org.springframework.http.HttpStatus;
@@ -71,6 +72,14 @@ public class ExceptionHandlers extends RuntimeException {
 
     @ExceptionHandler(value = ExistException.class)
     public ResponseEntity<Object> existException(ExistException exception) {
+        ResponseDTO dto = new ResponseDTO();
+        dto.setMessage(exception.getMessage());
+        dto.setStatus(ResponseStatusDTO.FAILURE);
+        return ResponseEntity.badRequest().body(dto);
+    }
+
+    @ExceptionHandler(value = NotValidException.class)
+    public ResponseEntity<Object> notValidException(NotValidException exception) {
         ResponseDTO dto = new ResponseDTO();
         dto.setMessage(exception.getMessage());
         dto.setStatus(ResponseStatusDTO.FAILURE);

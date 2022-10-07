@@ -6,10 +6,10 @@ import java.util.List;
 import com.fu.fuatsbe.constant.account.AccountErrorMessage;
 import com.fu.fuatsbe.constant.account.AccountStatus;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
+import com.fu.fuatsbe.constant.employee.EmployeeStatus;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -44,14 +44,10 @@ public class EmployeeServiceImp implements EmployeeService {
 
     @Override
     public EmployeeResponse getEmployeeById(int id) {
-        try {
-            Employee employee = employeeRepository.findById(id)
-                    .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
-            EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
-            return employeeResponse;
-        } catch (Exception e) {
-            return null;
-        }
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+        EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
+        return employeeResponse;
     }
 
     @Override
@@ -92,6 +88,7 @@ public class EmployeeServiceImp implements EmployeeService {
                 throw new NotFoundException(AccountErrorMessage.ACCOUNT_ALREADY_DELETED);
             }
             employee.getAccount().setStatus(AccountStatus.DISABLED);
+            employee.setStatus(EmployeeStatus.DISABLE);
             Employee employeeSaved = employeeRepository.save(employee);
             return employeeSaved;
         }

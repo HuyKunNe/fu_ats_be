@@ -78,18 +78,44 @@ public class CandidateServiceImp implements CandidateService {
     public Candidate deleteCandidateById(int id) {
         Candidate candidate = candidateRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
-        if (candidate.getAccount() != null) {
-            if (candidate.getAccount().getStatus().equals(CandidateStatus.DISABLED)) {
-                throw new NotFoundException(AccountErrorMessage.ACCOUNT_ALREADY_DELETED);
-            }
-            if (candidate.getStatus().equals(CandidateStatus.SUSPENDED)) {
-                throw new NotFoundException(CandidateErrorMessage.CANDIDATE_ALREADY_SUSPENDED);
-            }
-            candidate.getAccount().setStatus(AccountStatus.DISABLED);
-            Candidate candidateSaved = candidateRepository.save(candidate);
-            return candidateSaved;
+        if (candidate.getAccount().getStatus().equals(CandidateStatus.DISABLED)) {
+            throw new NotFoundException(AccountErrorMessage.ACCOUNT_ALREADY_DELETED);
         }
-        return null;
+        if (candidate.getStatus().equals(CandidateStatus.SUSPENDED)) {
+            throw new NotFoundException(CandidateErrorMessage.CANDIDATE_ALREADY_SUSPENDED);
+        }
+        candidate.getAccount().setStatus(AccountStatus.DISABLED);
+        candidate.setStatus(CandidateStatus.DISABLED);
+        Candidate candidateSaved = candidateRepository.save(candidate);
+        return candidateSaved;
+    }
+
+    @Override
+    public List<CandidateResponseDTO> getActivateCandidates() {
+        List<Candidate> list = candidateRepository.findByStatus(CandidateStatus.ACTIVATED);
+        List<CandidateResponseDTO> result = new ArrayList<CandidateResponseDTO>();
+        if (list.size() > 0) {
+            for (Candidate candidate : list) {
+                CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
+                result.add(candidateResponseDTO);
+            }
+        } else
+            throw new ListEmptyException(CandidateErrorMessage.LIST_CANDIDATE_IS_EMPTY);
+        return result;
+    }
+
+    @Override
+    public List<CandidateResponseDTO> getDisableCandidates() {
+        List<Candidate> list = candidateRepository.findByStatus(CandidateStatus.DISABLED);
+        List<CandidateResponseDTO> result = new ArrayList<CandidateResponseDTO>();
+        if (list.size() > 0) {
+            for (Candidate candidate : list) {
+                CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
+                result.add(candidateResponseDTO);
+            }
+        } else
+            throw new ListEmptyException(CandidateErrorMessage.LIST_CANDIDATE_IS_EMPTY);
+        return result;
     }
 
 }

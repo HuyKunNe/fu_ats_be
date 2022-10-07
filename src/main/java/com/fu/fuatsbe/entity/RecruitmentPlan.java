@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.entity;
 
+import java.sql.Date;
 import java.util.Collection;
 
 import javax.persistence.CascadeType;
@@ -38,9 +39,8 @@ public class RecruitmentPlan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @Nationalized
-    private String period;
+    private Date periodFrom;
+    private Date periodTo;
     private int amount;
     private String status;
 
@@ -63,5 +63,5 @@ public class RecruitmentPlan {
     @ToString.Include
     @JsonIgnore
     private Collection<PlanDetail> planDetails;
-   
+
 }
