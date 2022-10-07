@@ -6,6 +6,7 @@ import java.util.List;
 import com.fu.fuatsbe.constant.account.AccountErrorMessage;
 import com.fu.fuatsbe.constant.account.AccountStatus;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
+import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,26 +37,27 @@ public class EmployeeServiceImp implements EmployeeService {
                 EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
                 result.add(employeeResponse);
             }
-        }
+        } else
+            throw new ListEmptyException(EmployeeErrorMessage.LIST_EMPTY_EXCEPTION);
         return result;
     }
 
     @Override
     public EmployeeResponse getEmployeeById(int id) {
-       try {
-           Employee employee = employeeRepository.findById(id)
-                   .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
-           EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
-           return employeeResponse;
-       } catch (Exception e){
-          return null;
-       }
+        try {
+            Employee employee = employeeRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+            EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
+            return employeeResponse;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
     public EmployeeResponse getEmployeeByCode(String code) {
         Employee employee = employeeRepository.findByEmployeeCode(code)
-                .orElseThrow(() -> new IllegalStateException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+                .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
         EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
         return employeeResponse;
     }
@@ -69,6 +71,9 @@ public class EmployeeServiceImp implements EmployeeService {
                 EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
                 result.add(employeeResponse);
             }
+        else
+            throw new ListEmptyException(EmployeeErrorMessage.LIST_EMPTY_EXCEPTION);
+
         return result;
     }
 
@@ -81,10 +86,10 @@ public class EmployeeServiceImp implements EmployeeService {
     @Override
     public Employee deleteEmployeeById(int id) {
         Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+                .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
         if (employee.getAccount() != null) {
             if (employee.getAccount().getStatus().equals(AccountStatus.DISABLED)) {
-                throw new IllegalStateException(AccountErrorMessage.ACCOUNT_ALREADY_DELETED);
+                throw new NotFoundException(AccountErrorMessage.ACCOUNT_ALREADY_DELETED);
             }
             employee.getAccount().setStatus(AccountStatus.DISABLED);
             Employee employeeSaved = employeeRepository.save(employee);

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.candidate.CandidateSuccessMessage;
+import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.response.CandidateResponseDTO;
@@ -30,12 +31,9 @@ public class CandidateController {
     public ResponseEntity<ListResponseDTO> getAllCandidates() {
         ListResponseDTO<CandidateResponseDTO> responseDTO = new ListResponseDTO();
         List<CandidateResponseDTO> list = candidateService.getAllCandidates();
-        if (list.isEmpty()) {
-            responseDTO.setErrorMessage(CandidateErrorMessage.LIST_CANDIDATE_IS_EMPTY);
-        } else {
-            responseDTO.setData(list);
-            responseDTO.setSuccessMessage(CandidateSuccessMessage.GET_ALL_CANDIDATE_SUCCESS);
-        }
+        responseDTO.setData(list);
+        responseDTO.setMessage(CandidateSuccessMessage.GET_ALL_CANDIDATE_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -45,10 +43,8 @@ public class CandidateController {
         ResponseDTO<CandidateResponseDTO> responseDTO = new ResponseDTO();
         CandidateResponseDTO candidate = candidateService.getCandidateById(id);
         responseDTO.setData(candidate);
-        if (candidate == null) {
-            responseDTO.setErrorMessage(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION);
-        } else
-            responseDTO.setSuccessMessage(CandidateSuccessMessage.GET_CANDIDATE_BY_ID_SUCCESS);
+        responseDTO.setMessage(CandidateSuccessMessage.GET_CANDIDATE_BY_ID_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -58,10 +54,8 @@ public class CandidateController {
         ResponseDTO<CandidateResponseDTO> responseDTO = new ResponseDTO();
         CandidateResponseDTO candidate = candidateService.getCandidateByPhone(phone);
         responseDTO.setData(candidate);
-        if (candidate == null) {
-            responseDTO.setErrorMessage(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION);
-        } else
-            responseDTO.setSuccessMessage(CandidateSuccessMessage.GET_CANDIDATE_BY_PHONE_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        responseDTO.setMessage(CandidateSuccessMessage.GET_CANDIDATE_BY_PHONE_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -71,10 +65,8 @@ public class CandidateController {
         ResponseDTO<CandidateResponseDTO> responseDTO = new ResponseDTO();
         CandidateResponseDTO candidate = candidateService.getCandidateByEmail(email);
         responseDTO.setData(candidate);
-        if (candidate == null) {
-            responseDTO.setErrorMessage(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION);
-        } else
-            responseDTO.setSuccessMessage(CandidateSuccessMessage.GET_CANDIDATE_BY_EMAIL_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        responseDTO.setMessage(CandidateSuccessMessage.GET_CANDIDATE_BY_EMAIL_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -84,10 +76,8 @@ public class CandidateController {
         ResponseDTO<Boolean> responseDTO = new ResponseDTO();
         Candidate candidate = candidateService.deleteCandidateById(id);
         responseDTO.setData(true);
-        if (candidate == null) {
-            responseDTO.setErrorMessage(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION);
-        } else
-            responseDTO.setSuccessMessage(CandidateSuccessMessage.DELETE_CANDIDATE_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        responseDTO.setMessage(CandidateSuccessMessage.DELETE_CANDIDATE_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 

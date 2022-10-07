@@ -15,6 +15,8 @@ import com.fu.fuatsbe.constant.recruitmentPlan.RecruitmentPlanErrorMessage;
 import com.fu.fuatsbe.constant.recruitmentPlan.RecruitmentPlanStatus;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.RecruitmentPlan;
+import com.fu.fuatsbe.exceptions.ListEmptyException;
+import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.RecruitmentPlanRepository;
 import com.fu.fuatsbe.response.RecruitmentPlanResponse;
@@ -40,7 +42,7 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
                 result.add(response);
             }
         } else
-            throw new IllegalStateException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
+            throw new ListEmptyException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
     }
 
@@ -48,7 +50,7 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     public RecruitmentPlanResponse getRecruitmentPlanById(int id) {
 
         RecruitmentPlan recruitmentPlan = recruitmentPlanRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException(
+                .orElseThrow(() -> new NotFoundException(
                         RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION));
         RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
         return response;
@@ -66,7 +68,7 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
                 result.add(response);
             }
         } else
-            throw new IllegalStateException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
+            throw new ListEmptyException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
 
     }
@@ -82,7 +84,7 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
                 result.add(response);
             }
         } else
-            throw new IllegalStateException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
+            throw new ListEmptyException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
 
     }
@@ -98,7 +100,7 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
                 result.add(response);
             }
         } else
-            throw new IllegalStateException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
+            throw new ListEmptyException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
 
     }
@@ -114,7 +116,7 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
                 result.add(response);
             }
         } else
-            throw new IllegalStateException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
+            throw new ListEmptyException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
     }
 
@@ -135,17 +137,17 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
             RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
             return response;
         } else {
-            throw new IllegalStateException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION);
+            throw new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION);
         }
     }
 
     @Override
     public RecruitmentPlanResponse approvedRecruitmentPlan(RecruitmentPlanActionDTO actionDTO) {
         RecruitmentPlan recruitmentPlan = recruitmentPlanRepository.findById(actionDTO.getId())
-                .orElseThrow(() -> new IllegalStateException(
+                .orElseThrow(() -> new NotFoundException(
                         RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION));
         Employee approver = employeeRepository.findById(actionDTO.getEmployeeId())
-                .orElseThrow(() -> new IllegalStateException(
+                .orElseThrow(() -> new NotFoundException(
                         EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
         recruitmentPlan.setStatus(RecruitmentPlanStatus.APPROVED);
         recruitmentPlan.setApprover(approver);
@@ -166,7 +168,7 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
                 result.add(response);
             }
         } else
-            throw new IllegalStateException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
+            throw new ListEmptyException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
     }
 
@@ -180,7 +182,7 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
                 result.add(response);
             }
         } else
-            throw new IllegalStateException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
+            throw new ListEmptyException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
 
     }
@@ -188,10 +190,10 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     @Override
     public RecruitmentPlanResponse canceledRecruitmentPlan(RecruitmentPlanActionDTO actionDTO) {
         RecruitmentPlan recruitmentPlan = recruitmentPlanRepository.findById(actionDTO.getId())
-                .orElseThrow(() -> new IllegalStateException(
+                .orElseThrow(() -> new NotFoundException(
                         RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION));
         Employee approver = employeeRepository.findById(actionDTO.getEmployeeId())
-                .orElseThrow(() -> new IllegalStateException(
+                .orElseThrow(() -> new NotFoundException(
                         EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
         recruitmentPlan.setStatus(RecruitmentPlanStatus.CANCELED);
         recruitmentPlan.setApprover(approver);
@@ -206,10 +208,10 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     public RecruitmentPlanResponse rejectedRecruitmentPlan(RecruitmentPlanActionDTO actionDTO) {
 
         RecruitmentPlan recruitmentPlan = recruitmentPlanRepository.findById(actionDTO.getId())
-                .orElseThrow(() -> new IllegalStateException(
+                .orElseThrow(() -> new NotFoundException(
                         RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION));
         Employee approver = employeeRepository.findById(actionDTO.getEmployeeId())
-                .orElseThrow(() -> new IllegalStateException(
+                .orElseThrow(() -> new NotFoundException(
                         EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
         recruitmentPlan.setStatus(RecruitmentPlanStatus.REJECTED);
         recruitmentPlan.setApprover(approver);

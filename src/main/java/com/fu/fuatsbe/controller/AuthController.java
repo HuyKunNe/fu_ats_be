@@ -1,6 +1,7 @@
 package com.fu.fuatsbe.controller;
 
 import com.fu.fuatsbe.DTO.*;
+import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.response.LoginResponseDto;
 import com.fu.fuatsbe.response.RegisterResponseDto;
@@ -26,7 +27,8 @@ public class AuthController {
         ResponseDTO<LoginResponseDto> responseDTO = new ResponseDTO();
         LoginResponseDto loginResponseDTO = authService.login(employee);
         responseDTO.setData(loginResponseDTO);
-        responseDTO.setSuccessMessage("Login success");
+        responseDTO.setMessage("Login success");
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -36,7 +38,8 @@ public class AuthController {
         ResponseDTO<RegisterResponseDto> responseDTO = new ResponseDTO();
         RegisterResponseDto registerResponseDto = authService.register(candidate);
         responseDTO.setData(registerResponseDto);
-        responseDTO.setSuccessMessage("Register success");
+        responseDTO.setMessage("Register success");
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -47,12 +50,14 @@ public class AuthController {
         ResponseDTO<RegisterResponseDto> responseDTO = new ResponseDTO();
         RegisterResponseDto registerResponseDto = authService.registerByAdmin(user);
         responseDTO.setData(registerResponseDto);
-        responseDTO.setSuccessMessage("Register success");
+        responseDTO.setMessage("Register success");
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
-//    @PostMapping("/forgetPassword")
-//    public ResponseEntity<ResponseDTO> forgetPassword(@RequestParam("email") String email){
-//
-//    }
+    // @PostMapping("/forgetPassword")
+    // public ResponseEntity<ResponseDTO> forgetPassword(@RequestParam("email")
+    // String email){
+    //
+    // }
 }

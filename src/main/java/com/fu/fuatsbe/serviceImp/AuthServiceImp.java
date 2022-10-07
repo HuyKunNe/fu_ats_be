@@ -2,10 +2,13 @@ package com.fu.fuatsbe.serviceImp;
 
 import com.fu.fuatsbe.DTO.*;
 import com.fu.fuatsbe.constant.account.AccountStatus;
+import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.candidate.CandidateStatus;
 import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.postion.PositionErrorMessage;
+import com.fu.fuatsbe.constant.role.RoleErrorMessage;
+import com.fu.fuatsbe.constant.role.RoleName;
 import com.fu.fuatsbe.entity.Account;
 import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.Department;
@@ -13,6 +16,7 @@ import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.Position;
 import com.fu.fuatsbe.entity.Role;
 import com.fu.fuatsbe.exceptions.EmailExistException;
+import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.jwt.JwtConfig;
 import com.fu.fuatsbe.repository.AccountRepository;
 import com.fu.fuatsbe.repository.CandidateRepository;
@@ -58,8 +62,8 @@ public class AuthServiceImp implements AuthService {
         if (optionalUser.isPresent()) {
             throw new EmailExistException(EmployeeErrorMessage.EMAIL_EXIST);
         }
-        Role role = roleRepository.findByName("CANDIDATE")
-                .orElseThrow(() -> new IllegalStateException("this role does not exist"));
+        Role role = roleRepository.findByName(RoleName.ROLE_CANDIDATE)
+                .orElseThrow(() -> new NotFoundException(RoleErrorMessage.ROLE_NOT_EXIST));
 
         Candidate candidate = Candidate.builder().name(registerDTO.getName()).email(registerDTO.getEmail())
                 .phone(registerDTO.getPhone()).address(registerDTO.getAddress()).status(CandidateStatus.ACTIVATED)
@@ -84,17 +88,17 @@ public class AuthServiceImp implements AuthService {
     public RegisterResponseDto registerByAdmin(RegisterDto registerDto) throws RoleNotFoundException {
         Optional<Account> optionalUser = accountRepository.findAccountByEmail(registerDto.getEmail());
         if (optionalUser.isPresent()) {
-            throw new IllegalStateException(EmployeeErrorMessage.EMAIL_EXIST);
+            throw new EmailExistException(EmployeeErrorMessage.EMAIL_EXIST);
         }
         Optional<Department> optionalDepartment = departmentRepository
                 .findDepartmentByName(registerDto.getDepartmentName());
         if (!optionalDepartment.isPresent()) {
-            throw new IllegalStateException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION);
+            throw new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION);
         }
 
         Optional<Position> optionalPosition = PositionRepository.findPositionByName(registerDto.getPositionName());
         if (!optionalPosition.isPresent()) {
-            throw new IllegalStateException(PositionErrorMessage.POSITION_NOT_EXIST);
+            throw new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST);
         }
 
         Employee employee = Employee.builder().name(registerDto.getName()).employeeCode(registerDto.getEmployeeCode())
@@ -103,7 +107,7 @@ public class AuthServiceImp implements AuthService {
                 .position(optionalPosition.get())
                 .build();
         Role role = roleRepository.findByName(registerDto.getRole())
-                .orElseThrow(() -> new IllegalStateException("this role does not exist"));
+                .orElseThrow(() -> new NotFoundException(RoleErrorMessage.ROLE_NOT_EXIST));
         Account account = Account.builder()
                 .email(registerDto.getEmail())
                 .role(role)
@@ -129,7 +133,7 @@ public class AuthServiceImp implements AuthService {
             Account accountAuthencated = accountAuthencatedOptional.get();
             if (accountAuthencated.getEmployee() != null) {
                 if (!accountAuthencated.getEmployee().getStatus().equals(AccountStatus.ACTIVATED)) {
-                    throw new IllegalStateException(EmployeeErrorMessage.EMPLOYEE_UNAVAILABLE);
+                    throw new NotFoundException(EmployeeErrorMessage.EMPLOYEE_UNAVAILABLE);
                 }
             }
             String token = Utils.buildJWT(authenticate, accountAuthencated, secretKey, jwtConfig);

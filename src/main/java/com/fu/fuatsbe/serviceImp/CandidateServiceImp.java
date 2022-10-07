@@ -12,6 +12,8 @@ import com.fu.fuatsbe.constant.account.AccountStatus;
 import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.candidate.CandidateStatus;
 import com.fu.fuatsbe.entity.Candidate;
+import com.fu.fuatsbe.exceptions.ListEmptyException;
+import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.repository.CandidateRepository;
 import com.fu.fuatsbe.response.CandidateResponseDTO;
 import com.fu.fuatsbe.service.CandidateService;
@@ -34,7 +36,8 @@ public class CandidateServiceImp implements CandidateService {
                 CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
                 result.add(candidateResponseDTO);
             }
-        }
+        } else
+            throw new ListEmptyException(CandidateErrorMessage.LIST_CANDIDATE_IS_EMPTY);
         return result;
     }
 
@@ -42,7 +45,7 @@ public class CandidateServiceImp implements CandidateService {
     public CandidateResponseDTO getCandidateById(int id) {
 
         Candidate candidate = candidateRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+                .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
         CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
         return candidateResponseDTO;
 
@@ -51,7 +54,7 @@ public class CandidateServiceImp implements CandidateService {
     @Override
     public CandidateResponseDTO getCandidateByEmail(String email) {
         Candidate candidate = candidateRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalStateException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+                .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
         CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
         return candidateResponseDTO;
 
@@ -60,7 +63,7 @@ public class CandidateServiceImp implements CandidateService {
     @Override
     public CandidateResponseDTO getCandidateByPhone(String phone) {
         Candidate candidate = candidateRepository.findByPhone(phone)
-                .orElseThrow(() -> new IllegalStateException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+                .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
         CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
         return candidateResponseDTO;
     }
@@ -74,13 +77,13 @@ public class CandidateServiceImp implements CandidateService {
     @Override
     public Candidate deleteCandidateById(int id) {
         Candidate candidate = candidateRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+                .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
         if (candidate.getAccount() != null) {
             if (candidate.getAccount().getStatus().equals(CandidateStatus.DISABLED)) {
-                throw new IllegalStateException(AccountErrorMessage.ACCOUNT_ALREADY_DELETED);
+                throw new NotFoundException(AccountErrorMessage.ACCOUNT_ALREADY_DELETED);
             }
             if (candidate.getStatus().equals(CandidateStatus.SUSPENDED)) {
-                throw new IllegalStateException(CandidateErrorMessage.CANDIDATE_ALREADY_SUSPENDED);
+                throw new NotFoundException(CandidateErrorMessage.CANDIDATE_ALREADY_SUSPENDED);
             }
             candidate.getAccount().setStatus(AccountStatus.DISABLED);
             Candidate candidateSaved = candidateRepository.save(candidate);

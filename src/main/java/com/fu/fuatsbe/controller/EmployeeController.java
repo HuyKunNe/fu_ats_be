@@ -2,6 +2,7 @@ package com.fu.fuatsbe.controller;
 
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeSuccessMessage;
+import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.response.EmployeeResponse;
 import com.fu.fuatsbe.response.ListResponseDTO;
@@ -28,12 +29,9 @@ public class EmployeeController {
     public ResponseEntity<ResponseDTO> getEmployeeById(@PathVariable(name = "id") int employeeId) {
         ResponseDTO<EmployeeResponse> responseDTO = new ResponseDTO();
         EmployeeResponse employee = employeeService.getEmployeeById(employeeId);
-        if(employee == null){
-            responseDTO.setErrorMessage(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION);
-            return ResponseEntity.ok().body(responseDTO);
-        }
         responseDTO.setData(employee);
-        responseDTO.setSuccessMessage(EmployeeSuccessMessage.GET_EMPLOYEE_BY_ID_SUCCESS);
+        responseDTO.setMessage(EmployeeSuccessMessage.GET_EMPLOYEE_BY_ID_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -43,7 +41,8 @@ public class EmployeeController {
         ListResponseDTO<EmployeeResponse> responseDTO = new ListResponseDTO();
         List<EmployeeResponse> list = employeeService.getAllEmployees();
         responseDTO.setData(list);
-        responseDTO.setSuccessMessage(EmployeeSuccessMessage.GET_ALL_EMPLOYEE_SUCCESS);
+        responseDTO.setMessage(EmployeeSuccessMessage.GET_ALL_EMPLOYEE_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -53,7 +52,8 @@ public class EmployeeController {
         ResponseDTO<EmployeeResponse> responseDTO = new ResponseDTO();
         EmployeeResponse employee = employeeService.getEmployeeByCode(employeeCode);
         responseDTO.setData(employee);
-        responseDTO.setSuccessMessage(EmployeeSuccessMessage.GET_EMPLOYEE_BY_ID_SUCCESS);
+        responseDTO.setMessage(EmployeeSuccessMessage.GET_EMPLOYEE_BY_ID_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 

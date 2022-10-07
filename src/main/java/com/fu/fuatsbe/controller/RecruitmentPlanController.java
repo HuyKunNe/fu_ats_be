@@ -19,6 +19,7 @@ import com.fu.fuatsbe.DTO.RecruitmentPlanActionDTO;
 import com.fu.fuatsbe.DTO.RecruitmentPlanCreateDTO;
 import com.fu.fuatsbe.constant.recruitmentPlan.RecruitmentPlanErrorMessage;
 import com.fu.fuatsbe.constant.recruitmentPlan.RecruitmentPlanSuccessMessage;
+import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.response.ListResponseDTO;
 import com.fu.fuatsbe.response.RecruitmentPlanResponse;
@@ -43,7 +44,8 @@ public class RecruitmentPlanController {
         ListResponseDTO<RecruitmentPlanResponse> response = new ListResponseDTO();
         List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllRecruitmentPlans();
         response.setData(list);
-        response.setSuccessMessage(RecruitmentPlanSuccessMessage.GET_ALL_RECRUITMENT_PLAN_SUCCESS);
+        response.setMessage(RecruitmentPlanSuccessMessage.GET_ALL_RECRUITMENT_PLAN_SUCCESS);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
 
@@ -54,7 +56,8 @@ public class RecruitmentPlanController {
         ListResponseDTO<RecruitmentPlanResponse> response = new ListResponseDTO();
         List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllApprovedRecruitmentPlan();
         response.setData(list);
-        response.setSuccessMessage(RecruitmentPlanSuccessMessage.GET_APPROVED_RECRUITMENT_PLAN_SUCCESS);
+        response.setMessage(RecruitmentPlanSuccessMessage.GET_APPROVED_RECRUITMENT_PLAN_SUCCESS);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
 
@@ -64,7 +67,8 @@ public class RecruitmentPlanController {
         ListResponseDTO<RecruitmentPlanResponse> response = new ListResponseDTO();
         List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllRejectedRecruitmentPlans();
         response.setData(list);
-        response.setSuccessMessage(RecruitmentPlanSuccessMessage.GET_REJECTED_RECRUITMENT_PLAN_SUCCESS);
+        response.setMessage(RecruitmentPlanSuccessMessage.GET_REJECTED_RECRUITMENT_PLAN_SUCCESS);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
 
@@ -75,7 +79,8 @@ public class RecruitmentPlanController {
         ListResponseDTO<RecruitmentPlanResponse> response = new ListResponseDTO();
         List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllPedingRecruitmentPlans();
         response.setData(list);
-        response.setSuccessMessage(RecruitmentPlanSuccessMessage.GET_PENDING_RECRUITMENT_PLAN_SUCCESS);
+        response.setMessage(RecruitmentPlanSuccessMessage.GET_PENDING_RECRUITMENT_PLAN_SUCCESS);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
 
@@ -86,7 +91,8 @@ public class RecruitmentPlanController {
         ListResponseDTO<RecruitmentPlanResponse> response = new ListResponseDTO();
         List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllPedingRecruitmentPlans();
         response.setData(list);
-        response.setSuccessMessage(RecruitmentPlanSuccessMessage.GET_CANCELED_RECRUITMENT_PLAN_SUCCESS);
+        response.setMessage(RecruitmentPlanSuccessMessage.GET_CANCELED_RECRUITMENT_PLAN_SUCCESS);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
 
@@ -96,7 +102,8 @@ public class RecruitmentPlanController {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
         RecruitmentPlanResponse recruitmentPlan = recruitmentPlanService.getRecruitmentPlanById(id);
         responseDTO.setData(recruitmentPlan);
-        responseDTO.setSuccessMessage(RecruitmentPlanSuccessMessage.GET_RECRUITMENT_PLAN_BY_ID_SUCCESS);
+        responseDTO.setMessage(RecruitmentPlanSuccessMessage.GET_RECRUITMENT_PLAN_BY_ID_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -107,7 +114,8 @@ public class RecruitmentPlanController {
         ListResponseDTO<RecruitmentPlanResponse> response = new ListResponseDTO();
         List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllRecruitmentPlansByApprover(id);
         response.setData(list);
-        response.setSuccessMessage(RecruitmentPlanSuccessMessage.GET_RECRUITMENT_PLAN_BY_APPROVER_ID_SUCCESS);
+        response.setMessage(RecruitmentPlanSuccessMessage.GET_RECRUITMENT_PLAN_BY_APPROVER_ID_SUCCESS);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
 
@@ -118,7 +126,8 @@ public class RecruitmentPlanController {
         ListResponseDTO<RecruitmentPlanResponse> response = new ListResponseDTO();
         List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllRecruitmentPlansByCreator(id);
         response.setData(list);
-        response.setSuccessMessage(RecruitmentPlanSuccessMessage.GET_RECRUITMENT_PLAN_BY_CREATOR_ID_SUCCESS);
+        response.setMessage(RecruitmentPlanSuccessMessage.GET_RECRUITMENT_PLAN_BY_CREATOR_ID_SUCCESS);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
 
@@ -128,7 +137,8 @@ public class RecruitmentPlanController {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
         RecruitmentPlanResponse recruitmentPlanResponse = recruitmentPlanService.createRecruitmentPlan(createDTO);
         responseDTO.setData(recruitmentPlanResponse);
-        responseDTO.setSuccessMessage("create recruitment plan success");
+        responseDTO.setMessage("create recruitment plan success");
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -138,7 +148,8 @@ public class RecruitmentPlanController {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
         RecruitmentPlanResponse recruitmentPlanResponse = recruitmentPlanService.approvedRecruitmentPlan(actionDTO);
         responseDTO.setData(recruitmentPlanResponse);
-        responseDTO.setSuccessMessage("approved recruitment plan success");
+        responseDTO.setMessage("approved recruitment plan success");
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -148,7 +159,8 @@ public class RecruitmentPlanController {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
         RecruitmentPlanResponse recruitmentPlanResponse = recruitmentPlanService.rejectedRecruitmentPlan(actionDTO);
         responseDTO.setData(recruitmentPlanResponse);
-        responseDTO.setSuccessMessage("rejected recruitment plan success");
+        responseDTO.setMessage("rejected recruitment plan success");
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -158,7 +170,8 @@ public class RecruitmentPlanController {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
         RecruitmentPlanResponse recruitmentPlanResponse = recruitmentPlanService.canceledRecruitmentPlan(actionDTO);
         responseDTO.setData(recruitmentPlanResponse);
-        responseDTO.setSuccessMessage("canceled recruitment plan success");
+        responseDTO.setMessage("canceled recruitment plan success");
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 

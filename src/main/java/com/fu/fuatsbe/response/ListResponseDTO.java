@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ListResponseDTO<T> {
 
-    private String successMessage;
+    private String message;
     private List<T> data;
-    private String errorMessage;
+    private String status;
 }

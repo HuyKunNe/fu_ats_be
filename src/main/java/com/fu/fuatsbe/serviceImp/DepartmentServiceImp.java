@@ -12,6 +12,9 @@ import com.fu.fuatsbe.DTO.DepartmentUpdateDTO;
 import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.constant.department.DepartmentStatus;
 import com.fu.fuatsbe.entity.Department;
+import com.fu.fuatsbe.exceptions.ExistException;
+import com.fu.fuatsbe.exceptions.ListEmptyException;
+import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.repository.DepartmentRepository;
 import com.fu.fuatsbe.response.DepartmentResponse;
 import com.fu.fuatsbe.service.DepartmentService;
@@ -35,14 +38,15 @@ public class DepartmentServiceImp implements DepartmentService {
                 DepartmentResponse response = modelMapper.map(department, DepartmentResponse.class);
                 result.add(response);
             }
-        }
+        } else
+            throw new ListEmptyException(DepartmentErrorMessage.LIST_DEPARTMENT_EMPTY_EXCEPTION);
         return result;
     }
 
     @Override
     public DepartmentResponse getDepartmentById(int id) {
         Department department = departmentRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException(
+                .orElseThrow(() -> new NotFoundException(
                         DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
         DepartmentResponse response = modelMapper.map(department, DepartmentResponse.class);
         return response;
@@ -58,13 +62,13 @@ public class DepartmentServiceImp implements DepartmentService {
                 result.add(response);
             }
         } else
-            throw new IllegalStateException(DepartmentErrorMessage.DEPARTMENT_EMPTY_EXCEPTION);
+            throw new ListEmptyException(DepartmentErrorMessage.LIST_DEPARTMENT_EMPTY_EXCEPTION);
         return result;
     }
 
     @Override
     public DepartmentResponse updateDepartment(int id, DepartmentUpdateDTO departmentUpdateDTO) {
-        Department department = departmentRepository.findById(id).orElseThrow(() -> new IllegalStateException(
+        Department department = departmentRepository.findById(id).orElseThrow(() -> new NotFoundException(
                 DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
         department.setName(departmentUpdateDTO.getName());
         department.setRoom(departmentUpdateDTO.getRoom());
@@ -79,7 +83,7 @@ public class DepartmentServiceImp implements DepartmentService {
     public Department createDepartment(DepartmentCreateDTO createDTO) {
         Optional<Department> optionalDepartment = departmentRepository.findDepartmentByName(createDTO.getName());
         if (optionalDepartment.isPresent())
-            throw new IllegalStateException(DepartmentErrorMessage.DEPARTMENT_IS_EXIST_EXCEPTION);
+            throw new ExistException(DepartmentErrorMessage.DEPARTMENT_IS_EXIST_EXCEPTION);
         else {
             Department department = Department.builder().name(createDTO.getName()).phone(createDTO.getPhone())
                     .room(createDTO.getRoom()).status(DepartmentStatus.DEPARTMENT_ACTIVE).build();
@@ -90,7 +94,7 @@ public class DepartmentServiceImp implements DepartmentService {
 
     @Override
     public boolean deleteDepartmentById(int id) {
-        Department department = departmentRepository.findById(id).orElseThrow(() -> new IllegalStateException(
+        Department department = departmentRepository.findById(id).orElseThrow(() -> new NotFoundException(
                 DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
         department.setStatus(DepartmentStatus.DEPARTMENT_DISABLE);
         departmentRepository.save(department);

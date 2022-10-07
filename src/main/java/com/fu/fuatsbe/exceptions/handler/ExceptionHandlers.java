@@ -1,9 +1,13 @@
 package com.fu.fuatsbe.exceptions.handler;
 
-
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
+import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.exceptions.UsernameOrPasswordNotFoundException;
 import com.fu.fuatsbe.exceptions.EmailExistException;
+import com.fu.fuatsbe.exceptions.ExistException;
+import com.fu.fuatsbe.exceptions.ListEmptyException;
+import com.fu.fuatsbe.exceptions.NotFoundException;
+import com.fu.fuatsbe.response.ListResponseDTO;
 import com.fu.fuatsbe.response.ResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,21 +37,43 @@ public class ExceptionHandlers extends RuntimeException {
         return errors;
     }
 
-    @ExceptionHandler(value = {UsernameOrPasswordNotFoundException.class, AuthenticationException.class})
+    @ExceptionHandler(value = { UsernameOrPasswordNotFoundException.class, AuthenticationException.class })
     public ResponseEntity<Object> usernameOrPasswordNotFound(AuthenticationException exception) {
         ResponseDTO dto = new ResponseDTO();
-        dto.setErrorMessage(EmployeeErrorMessage.EMAIL_OR_PASSWORD_INCORRECT);
+        dto.setMessage(EmployeeErrorMessage.EMAIL_OR_PASSWORD_INCORRECT);
+        dto.setStatus(ResponseStatusDTO.FAILURE);
         return ResponseEntity.badRequest().body(dto);
     }
 
     @ExceptionHandler(value = EmailExistException.class)
-    public ResponseEntity<Object> EmailExistException(EmailExistException exception) {
+    public ResponseEntity<Object> emailExistException(EmailExistException exception) {
         ResponseDTO dto = new ResponseDTO();
-        dto.setErrorMessage(exception.getMessage());
+        dto.setMessage(exception.getMessage());
+        dto.setStatus(ResponseStatusDTO.FAILURE);
         return ResponseEntity.badRequest().body(dto);
     }
 
+    @ExceptionHandler(value = NotFoundException.class)
+    public ResponseEntity<Object> notFoundException(NotFoundException exception) {
+        ResponseDTO dto = new ResponseDTO();
+        dto.setMessage(exception.getMessage());
+        dto.setStatus(ResponseStatusDTO.FAILURE);
+        return ResponseEntity.badRequest().body(dto);
+    }
 
+    @ExceptionHandler(value = ListEmptyException.class)
+    public ResponseEntity<Object> listEmptyException(ListEmptyException exception) {
+        ListResponseDTO dto = new ListResponseDTO();
+        dto.setMessage(exception.getMessage());
+        dto.setStatus(ResponseStatusDTO.FAILURE);
+        return ResponseEntity.badRequest().body(dto);
+    }
 
-
+    @ExceptionHandler(value = ExistException.class)
+    public ResponseEntity<Object> existException(ExistException exception) {
+        ResponseDTO dto = new ResponseDTO();
+        dto.setMessage(exception.getMessage());
+        dto.setStatus(ResponseStatusDTO.FAILURE);
+        return ResponseEntity.badRequest().body(dto);
+    }
 }

@@ -11,6 +11,9 @@ import com.fu.fuatsbe.DTO.RoleCreateDTO;
 import com.fu.fuatsbe.DTO.RoleUpdateDTO;
 import com.fu.fuatsbe.constant.role.RoleErrorMessage;
 import com.fu.fuatsbe.entity.Role;
+import com.fu.fuatsbe.exceptions.ExistException;
+import com.fu.fuatsbe.exceptions.ListEmptyException;
+import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.repository.RoleRepository;
 import com.fu.fuatsbe.response.RoleResponse;
 import com.fu.fuatsbe.service.RoleService;
@@ -34,14 +37,14 @@ public class RoleServiceImp implements RoleService {
                 result.add(response);
             }
         } else
-            throw new IllegalStateException(RoleErrorMessage.LIST_ROLE_EMPTY);
+            throw new ListEmptyException(RoleErrorMessage.LIST_ROLE_EMPTY);
         return result;
     }
 
     @Override
     public RoleResponse getRoleById(int id) {
         Role role = roleRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException(
+                .orElseThrow(() -> new NotFoundException(
                         RoleErrorMessage.ROLE_NOT_EXIST));
         RoleResponse response = modelMapper.map(role, RoleResponse.class);
         return response;
@@ -51,7 +54,7 @@ public class RoleServiceImp implements RoleService {
     public RoleResponse createRole(RoleCreateDTO createDTO) {
         Optional<Role> optionalRole = roleRepository.findByName(createDTO.getName());
         if (optionalRole.isPresent())
-            throw new IllegalStateException(RoleErrorMessage.ROLE_EXIST_EXCEPTION);
+            throw new ExistException(RoleErrorMessage.ROLE_EXIST_EXCEPTION);
         else {
             Role role = Role.builder().name(createDTO.getName()).build();
             roleRepository.save(role);
@@ -63,7 +66,7 @@ public class RoleServiceImp implements RoleService {
     @Override
     public RoleResponse updateRole(int id, RoleUpdateDTO updateDTO) {
         Role role = roleRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException(
+                .orElseThrow(() -> new NotFoundException(
                         RoleErrorMessage.ROLE_NOT_EXIST));
         role.setName(updateDTO.getName());
         roleRepository.save(role);

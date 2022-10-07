@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fu.fuatsbe.DTO.DepartmentCreateDTO;
 import com.fu.fuatsbe.DTO.DepartmentUpdateDTO;
 import com.fu.fuatsbe.constant.department.DepartmentSuccessMessage;
+import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.entity.Department;
 import com.fu.fuatsbe.response.DepartmentResponse;
@@ -43,7 +44,8 @@ public class DepartmentController {
         ListResponseDTO<DepartmentResponse> response = new ListResponseDTO();
         List<DepartmentResponse> list = departmentService.getAllDepartments();
         response.setData(list);
-        response.setSuccessMessage(DepartmentSuccessMessage.GET_ALL_DEPARTMENT);
+        response.setMessage(DepartmentSuccessMessage.GET_ALL_DEPARTMENT);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
 
@@ -53,7 +55,8 @@ public class DepartmentController {
         ResponseDTO<DepartmentResponse> responseDTO = new ResponseDTO();
         DepartmentResponse departmentResponse = departmentService.getDepartmentById(id);
         responseDTO.setData(departmentResponse);
-        responseDTO.setSuccessMessage(DepartmentSuccessMessage.GET_DEPARTMENT_BY_ID);
+        responseDTO.setMessage(DepartmentSuccessMessage.GET_DEPARTMENT_BY_ID);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -63,7 +66,8 @@ public class DepartmentController {
         ListResponseDTO<DepartmentResponse> response = new ListResponseDTO();
         List<DepartmentResponse> list = departmentService.getDepartmentByName(name);
         response.setData(list);
-        response.setSuccessMessage(DepartmentSuccessMessage.GET_DEPARTMENT_BY_NAME);
+        response.setMessage(DepartmentSuccessMessage.GET_DEPARTMENT_BY_NAME);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
 
@@ -74,7 +78,8 @@ public class DepartmentController {
         ResponseDTO<DepartmentResponse> responseDTO = new ResponseDTO();
         DepartmentResponse department = departmentService.updateDepartment(id, updateDTO);
         responseDTO.setData(department);
-        responseDTO.setSuccessMessage("Update department successfully");
+        responseDTO.setMessage("Update department successfully");
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -84,7 +89,8 @@ public class DepartmentController {
         ResponseDTO<Department> responseDTO = new ResponseDTO();
         Department department = departmentService.createDepartment(createDTO);
         responseDTO.setData(department);
-        responseDTO.setSuccessMessage("Create department successfully");
+        responseDTO.setMessage("Create department successfully");
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -93,7 +99,8 @@ public class DepartmentController {
     public ResponseEntity deleteDepartmnetById(@RequestParam("id") int id) {
         ResponseDTO<Department> responseDTO = new ResponseDTO();
         departmentService.deleteDepartmentById(id);
-        responseDTO.setSuccessMessage("delete department successfully");
+        responseDTO.setMessage("delete department successfully");
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 

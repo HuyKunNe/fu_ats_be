@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fu.fuatsbe.DTO.RoleCreateDTO;
 import com.fu.fuatsbe.DTO.RoleUpdateDTO;
+import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.constant.role.RoleSuccessMessage;
 import com.fu.fuatsbe.response.ListResponseDTO;
@@ -39,7 +40,8 @@ public class RoleController {
         ListResponseDTO<RoleResponse> response = new ListResponseDTO();
         List<RoleResponse> list = roleService.getAllRoles();
         response.setData(list);
-        response.setSuccessMessage(RoleSuccessMessage.GET_ALL_ROLE);
+        response.setMessage(RoleSuccessMessage.GET_ALL_ROLE);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
 
@@ -48,7 +50,8 @@ public class RoleController {
         ResponseDTO<RoleResponse> responseDTO = new ResponseDTO();
         RoleResponse role = roleService.getRoleById(id);
         responseDTO.setData(role);
-        responseDTO.setSuccessMessage(RoleSuccessMessage.GET_ROLE_BY_ID);
+        responseDTO.setMessage(RoleSuccessMessage.GET_ROLE_BY_ID);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -58,7 +61,8 @@ public class RoleController {
         ResponseDTO<RoleResponse> responseDTO = new ResponseDTO();
         RoleResponse role = roleService.createRole(createDTO);
         responseDTO.setData(role);
-        responseDTO.setSuccessMessage("create role success");
+        responseDTO.setMessage("create role success");
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -68,7 +72,8 @@ public class RoleController {
         ResponseDTO<RoleResponse> responseDTO = new ResponseDTO();
         RoleResponse role = roleService.updateRole(id, updateDTO);
         responseDTO.setData(role);
-        responseDTO.setSuccessMessage("update role success");
+        responseDTO.setMessage("update role success");
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 }
