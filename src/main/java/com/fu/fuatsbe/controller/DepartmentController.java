@@ -27,6 +27,8 @@ import com.fu.fuatsbe.service.DepartmentService;
 
 import lombok.RequiredArgsConstructor;
 
+import javax.annotation.security.PermitAll;
+
 @RestController
 @RequestMapping
 @CrossOrigin("*")

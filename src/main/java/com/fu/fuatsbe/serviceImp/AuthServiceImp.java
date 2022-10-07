@@ -12,6 +12,7 @@ import com.fu.fuatsbe.entity.Department;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.Position;
 import com.fu.fuatsbe.entity.Role;
+import com.fu.fuatsbe.exceptions.EmailExistException;
 import com.fu.fuatsbe.jwt.JwtConfig;
 import com.fu.fuatsbe.repository.AccountRepository;
 import com.fu.fuatsbe.repository.CandidateRepository;
@@ -55,7 +56,7 @@ public class AuthServiceImp implements AuthService {
     public RegisterResponseDto register(RegisterCandidateDto registerDTO) throws RoleNotFoundException {
         Optional<Account> optionalUser = accountRepository.findAccountByEmail(registerDTO.getEmail());
         if (optionalUser.isPresent()) {
-            throw new IllegalStateException(EmployeeErrorMessage.EMAIL_EXIST);
+            throw new EmailExistException(EmployeeErrorMessage.EMAIL_EXIST);
         }
         Role role = roleRepository.findByName("CANDIDATE")
                 .orElseThrow(() -> new IllegalStateException("this role does not exist"));

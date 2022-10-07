@@ -50,4 +50,9 @@ public class AuthController {
         responseDTO.setSuccessMessage("Register success");
         return ResponseEntity.ok().body(responseDTO);
     }
+
+//    @PostMapping("/forgetPassword")
+//    public ResponseEntity<ResponseDTO> forgetPassword(@RequestParam("email") String email){
+//
+//    }
 }
