@@ -15,7 +15,7 @@ public class RegisterDto {
     @NotBlank(message = ValidationMessage.PASSWORD_VALID_MESSAGE)
     @Size(min = ValidationSize.PASSWORD_MIN, max = ValidationSize.PASSWORD_MAX, message = ValidationMessage.PASSWORD_SIZE_VALID_MESSAGE)
     private String password;
-    @Email(message = ValidationMessage.EMAIL_VALID_MESSAGE, regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$/")
+    @Email(message = ValidationMessage.EMAIL_VALID_MESSAGE)
     private String email;
     @NotBlank(message = ValidationMessage.ROLE_VALID_MESSAGE)
     private String role;

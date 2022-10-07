@@ -44,6 +44,7 @@ public class Position {
 
     @Nationalized
     private String name;
+    private String status;
 
     @OneToMany(mappedBy = "position", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Include

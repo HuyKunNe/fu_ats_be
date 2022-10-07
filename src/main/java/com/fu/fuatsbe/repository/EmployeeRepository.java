@@ -26,4 +26,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     Optional<Employee> findByPhone(String phone);
 
+    @Modifying
+    @Query(value = "select * from employee where position_id =?1 and status = ?2", nativeQuery = true)
+    List<Employee> findbyPositionIdAndStatus(int id, String status);
+
 }
