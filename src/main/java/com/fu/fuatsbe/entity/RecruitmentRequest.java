@@ -57,10 +57,10 @@ public class RecruitmentRequest {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)
-    @JoinColumn(name = "approverId")
+    @JoinColumn(name = "creatorId")
     @EqualsAndHashCode.Include
     @ToString.Include
-    private Employee approver;
+    private Employee creator;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)

@@ -79,7 +79,7 @@ public class Employee {
     @JsonIgnore
     private Collection<PlanDetail> planDetails;
 
-    @OneToMany(mappedBy = "approver", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Include
     @ToString.Include
     @JsonIgnore

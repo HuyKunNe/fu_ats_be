@@ -111,7 +111,8 @@ public class PlanDetailServiceImpl implements PlanDetailService {
                 .date(Date.valueOf(dateFormat))
                 .position(optionalPosition.get()).recruitmentPlan(optionalRecruitmentPlan.get())
                 .status(PlanDetailStatus.PENDING).build();
-        PlanDetailResponseDTO responseDTO = modelMapper.map(planDetail, PlanDetailResponseDTO.class);
+        PlanDetail planDetailSaved = planDetailRepository.save(planDetail);
+        PlanDetailResponseDTO responseDTO = modelMapper.map(planDetailSaved, PlanDetailResponseDTO.class);
         return responseDTO;
     }
 

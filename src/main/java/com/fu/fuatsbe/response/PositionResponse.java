@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class PositionResponse {
+    private int id;
     private String name;
     private Department department;
 }
