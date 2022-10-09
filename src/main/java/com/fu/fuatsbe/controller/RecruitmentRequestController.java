@@ -25,6 +25,8 @@ import com.fu.fuatsbe.service.RecruitmentRequestService;
 
 import lombok.RequiredArgsConstructor;
 
+import javax.annotation.security.PermitAll;
+
 @RestController
 @RequestMapping("/recruitmentRequest")
 @CrossOrigin("*")
@@ -34,6 +36,7 @@ public class RecruitmentRequestController {
     private final RecruitmentRequestService recruitmentRequestService;
 
     @GetMapping("/getAll")
+    @PermitAll
     public ResponseEntity<ListResponseDTO> getAllRecruitmentRequests() {
 
         ListResponseDTO<RecruitmentRequestResponse> response = new ListResponseDTO();
