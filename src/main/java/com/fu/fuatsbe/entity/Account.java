@@ -16,6 +16,8 @@ import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Data
 @Table(name = "account")
@@ -40,11 +42,13 @@ public class Account {
     @ToString.Include
     private Role role;
 
+    @JsonBackReference
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Include
     @ToString.Include
     private Employee employee;
 
+    @JsonBackReference
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Include
     @ToString.Include

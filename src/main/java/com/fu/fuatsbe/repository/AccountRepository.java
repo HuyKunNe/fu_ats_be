@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.fu.fuatsbe.entity.Account;
 import com.fu.fuatsbe.entity.Role;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,5 +17,9 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     public Optional<Account> findAccountByEmail(String email);
 
     public boolean existsByRole(Role role);
+
+    public List<Account> findByRole(Role role);
+
+    public List<Account> findByStatus(String status);
 
 }

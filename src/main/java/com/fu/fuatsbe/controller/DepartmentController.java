@@ -28,14 +28,14 @@ import com.fu.fuatsbe.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping
+@RequestMapping("/department")
 @CrossOrigin("*")
 @RequiredArgsConstructor
 public class DepartmentController {
 
     private final DepartmentService departmentService;
 
-    @GetMapping("/department/getAll")
+    @GetMapping("getAll")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity<ListResponseDTO> getAllDepartments() {
         ListResponseDTO<DepartmentResponse> response = new ListResponseDTO();
@@ -46,7 +46,7 @@ public class DepartmentController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/department/getById")
+    @GetMapping("getById/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getDepartmentById(@RequestParam("id") int id) {
         ResponseDTO<DepartmentResponse> responseDTO = new ResponseDTO();
@@ -57,7 +57,7 @@ public class DepartmentController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/department/getByName")
+    @GetMapping("getByName")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ListResponseDTO> getDepartmentByName(@RequestParam("name") String name) {
         ListResponseDTO<DepartmentResponse> response = new ListResponseDTO();
@@ -68,7 +68,7 @@ public class DepartmentController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PutMapping("/department/edit/")
+    @PutMapping("edit/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity<ResponseDTO> updateDepartment(@RequestParam("id") int id,
             @RequestBody DepartmentUpdateDTO updateDTO) {
@@ -80,7 +80,7 @@ public class DepartmentController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PostMapping("/department/create")
+    @PostMapping("create")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity<ResponseDTO> createDepartment(@RequestBody DepartmentCreateDTO createDTO) {
         ResponseDTO<Department> responseDTO = new ResponseDTO();
@@ -91,7 +91,7 @@ public class DepartmentController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @DeleteMapping("/department/delete")
+    @DeleteMapping("delete/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity deleteDepartmnetById(@RequestParam("id") int id) {
         ResponseDTO<Department> responseDTO = new ResponseDTO();

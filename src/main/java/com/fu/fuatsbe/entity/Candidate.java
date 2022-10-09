@@ -56,9 +56,11 @@ public class Candidate {
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     @EqualsAndHashCode.Include
     @ToString.Include
+    @JsonIgnore
     private Account account;
 
     @ManyToMany(mappedBy = "candidates")
+    @JsonIgnore
     private Collection<Notification> notifications;
 
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
@@ -75,6 +77,7 @@ public class Candidate {
 
     @ManyToMany
     @JoinTable(name = "cadidate_position", joinColumns = @JoinColumn(name = "position_id"), inverseJoinColumns = @JoinColumn(name = "cadidate_id"))
+    @JsonIgnore
     private Collection<Position> positions;
 
 }

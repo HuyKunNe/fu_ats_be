@@ -48,6 +48,7 @@ public class RecruitmentRequestController {
     }
 
     @GetMapping("/getById/{id}")
+    @PermitAll
     public ResponseEntity<ResponseDTO> getRecruitmentRequestById(@RequestParam("id") int id) {
         ResponseDTO<RecruitmentRequestResponse> responseDTO = new ResponseDTO();
         RecruitmentRequestResponse positionResponse = recruitmentRequestService.getRecruitmentRequestById(id);
@@ -58,6 +59,7 @@ public class RecruitmentRequestController {
     }
 
     @GetMapping("/getOpenRecruitmentRequest")
+    @PermitAll
     public ResponseEntity<ListResponseDTO> getAllOpenRecruitmentRequest() {
         ListResponseDTO<RecruitmentRequestResponse> response = new ListResponseDTO();
         List<RecruitmentRequestResponse> list = recruitmentRequestService.getAllOpenRecruitmentRequest();
