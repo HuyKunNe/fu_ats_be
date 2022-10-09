@@ -59,7 +59,7 @@ public class PositionController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> createPosition(@RequestBody PositionCreateDTO createDTO) {
         ResponseDTO<PositionResponse> responseDTO = new ResponseDTO();
         PositionResponse positionResponse = positionService.createPosition(createDTO);
@@ -70,7 +70,7 @@ public class PositionController {
     }
 
     @PutMapping("/edit/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> editPosition(@RequestParam("id") int id,
             @RequestBody PositionUpdateDTO updateDTO) {
         ResponseDTO<PositionResponse> responseDTO = new ResponseDTO();

@@ -35,7 +35,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/getAllEmployees")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ListResponseDTO> getAllEmployees() {
         ListResponseDTO<EmployeeResponse> responseDTO = new ListResponseDTO();
         List<EmployeeResponse> list = employeeService.getAllEmployees();

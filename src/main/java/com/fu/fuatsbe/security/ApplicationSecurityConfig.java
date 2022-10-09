@@ -1,6 +1,5 @@
 package com.fu.fuatsbe.security;
 
-
 import com.fu.fuatsbe.auth.ApplicationUserService;
 import com.fu.fuatsbe.jwt.JwtConfig;
 import com.fu.fuatsbe.jwt.TokenVerifier;
@@ -21,7 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
@@ -33,10 +31,13 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
-                and().addFilterBefore(new TokenVerifier(jwtConfig), UsernamePasswordAuthenticationFilter.class)
+        http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().addFilterBefore(new TokenVerifier(jwtConfig), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests().antMatchers("/auth/register",
                         "/auth/login",
+                        "/recruitmentRequest/getAll",
+                        "/recruitmentRequest/getById",
+                        "/recruitmentRequest/getOpenRecruitmentRequest",
                         "/swagger-resources/**",
                         "/v2/api-docs",
                         "/webjars/**",

@@ -34,7 +34,6 @@ public class RecruitmentRequestController {
     private final RecruitmentRequestService recruitmentRequestService;
 
     @GetMapping("/getAll")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ListResponseDTO> getAllRecruitmentRequests() {
 
         ListResponseDTO<RecruitmentRequestResponse> response = new ListResponseDTO();
@@ -46,7 +45,6 @@ public class RecruitmentRequestController {
     }
 
     @GetMapping("/getById/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getRecruitmentRequestById(@RequestParam("id") int id) {
         ResponseDTO<RecruitmentRequestResponse> responseDTO = new ResponseDTO();
         RecruitmentRequestResponse positionResponse = recruitmentRequestService.getRecruitmentRequestById(id);
@@ -57,7 +55,6 @@ public class RecruitmentRequestController {
     }
 
     @GetMapping("/getOpenRecruitmentRequest")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ListResponseDTO> getAllOpenRecruitmentRequest() {
         ListResponseDTO<RecruitmentRequestResponse> response = new ListResponseDTO();
         List<RecruitmentRequestResponse> list = recruitmentRequestService.getAllOpenRecruitmentRequest();
