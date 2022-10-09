@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.fasterxml.jackson.core.FormatFeature;
+import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fu.fuatsbe.constant.account.AccountStatus;
 import com.fu.fuatsbe.constant.role.RoleName;
 import com.fu.fuatsbe.entity.Account;
@@ -35,4 +37,9 @@ class FuAtsBeApplicationTests {
     // accountRepository.save(account);
 
     // }
+
+    @Test
+    void test(String text){
+
+    }
 }
