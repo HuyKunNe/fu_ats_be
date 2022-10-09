@@ -38,8 +38,4 @@ class FuAtsBeApplicationTests {
 
     // }
 
-    @Test
-    void test(String text){
-
-    }
 }
