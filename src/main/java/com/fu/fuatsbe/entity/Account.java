@@ -49,4 +49,9 @@ public class Account {
     @EqualsAndHashCode.Include
     @ToString.Include
     private Candidate candidate;
+
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Include
+    @ToString.Include
+    private VerificationToken verificationToken;
 }

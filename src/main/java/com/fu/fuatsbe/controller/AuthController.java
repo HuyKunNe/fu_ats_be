@@ -55,9 +55,4 @@ public class AuthController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    // @PostMapping("/forgetPassword")
-    // public ResponseEntity<ResponseDTO> forgetPassword(@RequestParam("email")
-    // String email){
-    //
-    // }
 }
