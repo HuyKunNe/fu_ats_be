@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.controller;
 
+import com.fu.fuatsbe.DTO.ResetPasswordDto;
 import com.fu.fuatsbe.constant.employee.EmployeeSuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
@@ -70,5 +72,13 @@ public class EmployeeController {
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
-
+    @PermitAll
+    @PatchMapping("/reset-password")
+    public ResponseEntity<ResponseDTO> resetPassword(@Validated @RequestBody ResetPasswordDto resetPasswordDto){
+        ResponseDTO<Void> responseDTO = new ResponseDTO();
+        emailService.resetPassword(resetPasswordDto.getEmail(), resetPasswordDto.getToken(), resetPasswordDto.getNewPassword());
+        responseDTO.setMessage(EmployeeSuccessMessage.RESET_PASSWORD_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }

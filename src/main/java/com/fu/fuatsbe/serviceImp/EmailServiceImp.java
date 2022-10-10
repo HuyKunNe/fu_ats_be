@@ -4,10 +4,12 @@ import com.fu.fuatsbe.constant.account.AccountErrorMessage;
 import com.fu.fuatsbe.entity.Account;
 import com.fu.fuatsbe.entity.VerificationToken;
 import com.fu.fuatsbe.exceptions.NotFoundException;
+import com.fu.fuatsbe.exceptions.PermissionException;
 import com.fu.fuatsbe.repository.AccountRepository;
 import com.fu.fuatsbe.repository.VerificationRepository;
 import com.fu.fuatsbe.service.EmailService;
 import com.fu.fuatsbe.service.VerificationTokenService;
+import com.fu.fuatsbe.constant.common.CommonMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -57,7 +59,7 @@ public class EmailServiceImp implements EmailService {
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
         mimeMessageHelper.setTo(account.getEmail());
         mimeMessageHelper.setSubject("Reset password from ATS");
-        mimeMessageHelper.setText("if u forget my password, nah bro. u do not deserve to use my system ");
+        mimeMessageHelper.setText("if u forget my password, nah bro. u do not deserve to use my system " + token);
 //        mimeMessageHelper.setText("Lấy lại mật khẩu thành công, vui lòng nhấn đường link bên dưới để đặt lại mật khẩu  \n"+"http://podoc.store/auth/reset-password/"
 //                +account.getEmail()+"/"
 //                +token
@@ -74,6 +76,13 @@ public class EmailServiceImp implements EmailService {
 
     @Override
     public void resetPassword(String email, String token, String password) {
-
+        Account account = accountRepository.findAccountByEmail(email).orElseThrow(() -> new NotFoundException(AccountErrorMessage.ACCOUNT_NOT_FOUND));
+        VerificationToken verificationToken = verificationTokenService.findByToken(token);
+        Timestamp currentTimeStamp = new Timestamp(System.currentTimeMillis());
+        if(verificationToken.getExpiryDate().before(currentTimeStamp)){
+            throw new PermissionException(CommonMessage.TOKEN_EXPIRED_EXCEPTION);
+        }
+        account.setPassword(passwordEncoder.encode(password));
+        accountRepository.save(account);
     }
 }
