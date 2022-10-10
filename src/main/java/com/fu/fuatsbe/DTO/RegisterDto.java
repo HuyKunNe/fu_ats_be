@@ -27,6 +27,9 @@ public class RegisterDto {
     @NotBlank(message = ValidationMessage.PHONE_NOT_EMPTY_VALID_MESSAGE)
     @Size(min = ValidationSize.PHONE_MIN, max = ValidationSize.PHONE_MAX, message = ValidationMessage.PHONE_SIZE_VALID_MESSAGE)
     private String phone;
+
+    private String image;
+
     @NotBlank(message = ValidationMessage.ADDRESS_VALID_MESSAGE)
     private String address;
     @NotBlank(message = ValidationMessage.DEPARTMENT_VALID_MESSAGE)

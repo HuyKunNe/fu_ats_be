@@ -22,6 +22,7 @@ public class RegisterCandidateDto {
 
     @NotBlank(message = ValidationMessage.NAME_VALID_MESSAGE)
     private String name;
+    private String image;
     @NotBlank(message = ValidationMessage.PHONE_NOT_EMPTY_VALID_MESSAGE)
     @Size(min = ValidationSize.PHONE_MIN, max = ValidationSize.PHONE_MAX, message = ValidationMessage.PHONE_SIZE_VALID_MESSAGE)
     private String phone;

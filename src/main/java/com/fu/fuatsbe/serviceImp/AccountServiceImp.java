@@ -6,14 +6,11 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import com.fu.fuatsbe.DTO.AccountCreateDTO;
-import com.fu.fuatsbe.DTO.AccountUpdateDTO;
 import com.fu.fuatsbe.constant.account.AccountErrorMessage;
 import com.fu.fuatsbe.constant.account.AccountStatus;
 import com.fu.fuatsbe.constant.candidate.CandidateStatus;
 import com.fu.fuatsbe.constant.employee.EmployeeStatus;
 import com.fu.fuatsbe.constant.role.RoleErrorMessage;
-import com.fu.fuatsbe.constant.role.RoleName;
 import com.fu.fuatsbe.entity.Account;
 import com.fu.fuatsbe.entity.Role;
 import com.fu.fuatsbe.exceptions.ListEmptyException;

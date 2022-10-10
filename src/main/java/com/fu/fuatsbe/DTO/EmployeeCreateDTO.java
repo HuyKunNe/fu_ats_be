@@ -19,6 +19,7 @@ public class EmployeeCreateDTO {
 
     @NotBlank(message = ValidationMessage.NAME_VALID_MESSAGE)
     private String name;
+    private String image;
     private String employeeCode;
     @NotBlank(message = ValidationMessage.PHONE_NOT_EMPTY_VALID_MESSAGE)
     @Size(min = ValidationSize.PHONE_MIN, max = ValidationSize.PHONE_MAX, message = ValidationMessage.PHONE_SIZE_VALID_MESSAGE)

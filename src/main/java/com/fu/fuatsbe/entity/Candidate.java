@@ -3,7 +3,6 @@ package com.fu.fuatsbe.entity;
 import java.util.Collection;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -41,6 +40,7 @@ public class Candidate {
     @Nationalized
     private String name;
     private String phone;
+    private String image;
     private String email;
     @Nationalized
     private String address;

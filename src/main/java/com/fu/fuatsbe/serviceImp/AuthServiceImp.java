@@ -2,7 +2,6 @@ package com.fu.fuatsbe.serviceImp;
 
 import com.fu.fuatsbe.DTO.*;
 import com.fu.fuatsbe.constant.account.AccountStatus;
-import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.candidate.CandidateStatus;
 import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
@@ -73,7 +72,8 @@ public class AuthServiceImp implements AuthService {
             throw new ExistException(ValidationMessage.PHONE_IS_EXIST);
         }
         Candidate candidate = Candidate.builder().name(registerDTO.getName()).email(registerDTO.getEmail())
-                .phone(registerDTO.getPhone()).address(registerDTO.getAddress()).status(CandidateStatus.ACTIVATED)
+                .phone(registerDTO.getPhone()).image(registerDTO.getImage()).address(registerDTO.getAddress())
+                .status(CandidateStatus.ACTIVATED)
                 .build();
         ;
 
@@ -114,6 +114,7 @@ public class AuthServiceImp implements AuthService {
         }
 
         Employee employee = Employee.builder().name(registerDto.getName()).employeeCode(registerDto.getEmployeeCode())
+                .image(registerDto.getImage())
                 .status(EmployeeStatus.ACTIVATE)
                 .phone(registerDto.getPhone()).department(optionalDepartment.get()).address(registerDto.getAddress())
                 .position(optionalPosition.get())
@@ -156,9 +157,9 @@ public class AuthServiceImp implements AuthService {
                     .roleName(accountAuthencated.getRole().getName())
                     .token(token).build();
             if (accountAuthencated.getRole().getName().equalsIgnoreCase(RoleName.ROLE_EMPLOYEE)) {
-                loginResponseDTO.setName(accountAuthencated.getEmployee().getName());
+                loginResponseDTO.setEmployee(accountAuthencated.getEmployee());
             } else if (accountAuthencated.getRole().getName().equalsIgnoreCase(RoleName.ROLE_CANDIDATE))
-                loginResponseDTO.setName(accountAuthencated.getCandidate().getName());
+                loginResponseDTO.setCandidate(accountAuthencated.getCandidate());
         }
         return loginResponseDTO;
     }

@@ -41,6 +41,7 @@ public class Employee {
     @Nationalized
     private String name;
     private String employeeCode;
+    private String image;
     private String phone;
     @Nationalized
     private String address;

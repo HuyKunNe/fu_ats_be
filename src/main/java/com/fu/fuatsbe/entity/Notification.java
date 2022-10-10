@@ -3,7 +3,6 @@ package com.fu.fuatsbe.entity;
 import java.sql.Date;
 import java.util.Collection;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
