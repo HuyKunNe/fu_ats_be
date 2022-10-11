@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fu.fuatsbe.constant.validation_message.ValidationMessage;
 import com.fu.fuatsbe.constant.validation_size.ValidationSize;
 import lombok.Builder;
@@ -8,6 +9,7 @@ import lombok.Data;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 @Data
 @Builder
@@ -29,6 +31,10 @@ public class RegisterDto {
     private String phone;
 
     private String image;
+    @NotBlank(message = ValidationMessage.GENDER_VALID_MESSAGE)
+    private String gender;
+    @NotBlank(message = ValidationMessage.DOB_VALID_MESSAGE)
+    private Date dob;
 
     @NotBlank(message = ValidationMessage.ADDRESS_VALID_MESSAGE)
     private String address;
