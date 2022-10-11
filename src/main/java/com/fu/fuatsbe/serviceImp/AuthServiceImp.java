@@ -40,6 +40,9 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import javax.management.relation.RoleNotFoundException;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Service
@@ -71,8 +74,11 @@ public class AuthServiceImp implements AuthService {
         if (optionalCandidate.isPresent()) {
             throw new ExistException(ValidationMessage.PHONE_IS_EXIST);
         }
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dob = LocalDate.parse(registerDTO.getDob().toString(), format);
         Candidate candidate = Candidate.builder().name(registerDTO.getName()).email(registerDTO.getEmail())
-                .phone(registerDTO.getPhone()).image(registerDTO.getImage()).address(registerDTO.getAddress())
+                .phone(registerDTO.getPhone()).image(registerDTO.getImage()).Dob(Date.valueOf(dob))
+                .gender(registerDTO.getGender()).address(registerDTO.getAddress())
                 .status(CandidateStatus.ACTIVATED)
                 .build();
         ;
@@ -113,8 +119,12 @@ public class AuthServiceImp implements AuthService {
             throw new ExistException(ValidationMessage.PHONE_IS_EXIST);
         }
 
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dob = LocalDate.parse(registerDto.getDob().toString(), format);
         Employee employee = Employee.builder().name(registerDto.getName()).employeeCode(registerDto.getEmployeeCode())
                 .image(registerDto.getImage())
+                .gender(registerDto.getGender())
+                .Dob(Date.valueOf(dob))
                 .status(EmployeeStatus.ACTIVATE)
                 .phone(registerDto.getPhone()).department(optionalDepartment.get()).address(registerDto.getAddress())
                 .position(optionalPosition.get())
@@ -128,10 +138,10 @@ public class AuthServiceImp implements AuthService {
                 .status(AccountStatus.ACTIVATED)
                 .password(passwordEncoder.encode(registerDto.getPassword())).build();
         employeeRepository.save(employee);
-        Account credentialInRepo = accountRepository.save(account);
-        employee.setAccount(credentialInRepo);
+        Account accountInRepo = accountRepository.save(account);
+        employee.setAccount(accountInRepo);
         employeeRepository.save(employee);
-        RegisterResponseDto registerResponseDto = modelMapper.map(credentialInRepo, RegisterResponseDto.class);
+        RegisterResponseDto registerResponseDto = modelMapper.map(accountInRepo, RegisterResponseDto.class);
         return registerResponseDto;
     }
 

@@ -1,6 +1,7 @@
 package com.fu.fuatsbe.entity;
 
 import java.util.Collection;
+import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -41,6 +42,8 @@ public class Candidate {
     private String name;
     private String phone;
     private String image;
+    private String gender;
+    private Date Dob;
     private String email;
     @Nationalized
     private String address;

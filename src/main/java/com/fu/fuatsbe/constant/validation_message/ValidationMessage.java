@@ -21,4 +21,6 @@ public final class ValidationMessage {
     public static final String PHONE_IS_EXIST = "Phone number is already exist";
 
     public static final String TOKEN_VALID_MESSAGE = "Token must be filled";
+    public static final String GENDER_VALID_MESSAGE = "Gender must be filled";
+    public static final String DOB_VALID_MESSAGE = "Day of birth must be filled";
 }

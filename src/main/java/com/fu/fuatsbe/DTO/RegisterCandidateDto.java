@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fu.fuatsbe.constant.validation_message.ValidationMessage;
 import com.fu.fuatsbe.constant.validation_size.ValidationSize;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.sql.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,6 +25,10 @@ public class RegisterCandidateDto {
     @NotBlank(message = ValidationMessage.NAME_VALID_MESSAGE)
     private String name;
     private String image;
+    @NotBlank(message = ValidationMessage.GENDER_VALID_MESSAGE)
+    private String gender;
+    @NotBlank(message = ValidationMessage.DOB_VALID_MESSAGE)
+    private Date dob;
     @NotBlank(message = ValidationMessage.PHONE_NOT_EMPTY_VALID_MESSAGE)
     @Size(min = ValidationSize.PHONE_MIN, max = ValidationSize.PHONE_MAX, message = ValidationMessage.PHONE_SIZE_VALID_MESSAGE)
     private String phone;
