@@ -5,13 +5,13 @@ import com.fu.fuatsbe.response.AccountResponse;
 
 public interface AccountService {
 
-    List<AccountResponse> getAllAccounts();
+    List<AccountResponse> getAllAccounts(int pageNo, int pageSize);
 
-    List<AccountResponse> getActivateAccounts();
+    List<AccountResponse> getActivateAccounts(int pageNo, int pageSize);
 
-    List<AccountResponse> getDisableAccounts();
+    List<AccountResponse> getDisableAccounts(int pageNo, int pageSize);
 
-    List<AccountResponse> getAllAccountsByRole(int roleId);
+    List<AccountResponse> getAllAccountsByRole(int roleId, int pageNo, int pageSize);
 
     AccountResponse getAccountByEmail(String email);
 

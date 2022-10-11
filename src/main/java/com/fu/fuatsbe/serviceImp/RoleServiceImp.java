@@ -24,8 +24,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RoleServiceImp implements RoleService {
 
-    private RoleRepository roleRepository;
-    private ModelMapper modelMapper;
+    private final RoleRepository roleRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public List<RoleResponse> getAllRoles() {
@@ -57,8 +57,8 @@ public class RoleServiceImp implements RoleService {
             throw new ExistException(RoleErrorMessage.ROLE_EXIST_EXCEPTION);
         else {
             Role role = Role.builder().name(createDTO.getName()).build();
-            roleRepository.save(role);
-            RoleResponse response = modelMapper.map(role, RoleResponse.class);
+            Role roleSaved = roleRepository.save(role);
+            RoleResponse response = modelMapper.map(roleSaved, RoleResponse.class);
             return response;
         }
     }

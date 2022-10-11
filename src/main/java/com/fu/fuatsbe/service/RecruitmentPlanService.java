@@ -9,21 +9,21 @@ import com.fu.fuatsbe.response.RecruitmentPlanResponse;
 
 public interface RecruitmentPlanService {
 
-    public List<RecruitmentPlanResponse> getAllRecruitmentPlans();
+    public List<RecruitmentPlanResponse> getAllRecruitmentPlans(int pageNo, int pageSize);
 
     public RecruitmentPlanResponse getRecruitmentPlanById(int id);
 
-    public List<RecruitmentPlanResponse> getAllApprovedRecruitmentPlan();
+    public List<RecruitmentPlanResponse> getAllApprovedRecruitmentPlan(int pageNo, int pageSize);
 
-    public List<RecruitmentPlanResponse> getAllCanceledRecruitmentPlans();
+    public List<RecruitmentPlanResponse> getAllCanceledRecruitmentPlans(int pageNo, int pageSize);
 
-    public List<RecruitmentPlanResponse> getAllRejectedRecruitmentPlans();
+    public List<RecruitmentPlanResponse> getAllRejectedRecruitmentPlans(int pageNo, int pageSize);
 
-    public List<RecruitmentPlanResponse> getAllPedingRecruitmentPlans();
+    public List<RecruitmentPlanResponse> getAllPedingRecruitmentPlans(int pageNo, int pageSize);
 
-    public List<RecruitmentPlanResponse> getAllRecruitmentPlansByApprover(int approverId);
+    public List<RecruitmentPlanResponse> getAllRecruitmentPlansByApprover(int approverId, int pageNo, int pageSize);
 
-    public List<RecruitmentPlanResponse> getAllRecruitmentPlansByCreator(int creatorId);
+    public List<RecruitmentPlanResponse> getAllRecruitmentPlansByCreator(int creatorId, int pageNo, int pageSize);
 
     public RecruitmentPlanResponse updateRecruitmentPlan(int id, RecruimentPlanUpdateDTO updateDTO);
 

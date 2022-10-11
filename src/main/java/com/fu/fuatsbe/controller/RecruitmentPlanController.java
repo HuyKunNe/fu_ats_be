@@ -39,10 +39,11 @@ public class RecruitmentPlanController {
 
     @GetMapping("/getAllRecruitmentPlans")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllRecruitmentPlans() {
+    public ResponseEntity<ListResponseDTO> getAllRecruitmentPlans(@RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
 
         ListResponseDTO<RecruitmentPlanResponse> response = new ListResponseDTO();
-        List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllRecruitmentPlans();
+        List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllRecruitmentPlans(pageNo, pageSize);
         response.setData(list);
         response.setMessage(RecruitmentPlanSuccessMessage.GET_ALL_RECRUITMENT_PLAN_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);
@@ -51,10 +52,11 @@ public class RecruitmentPlanController {
 
     @GetMapping("/getAllApprovedRecruitmentPlans")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllApprovedRecruitmentPlans() {
+    public ResponseEntity<ListResponseDTO> getAllApprovedRecruitmentPlans(@RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
 
         ListResponseDTO<RecruitmentPlanResponse> response = new ListResponseDTO();
-        List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllApprovedRecruitmentPlan();
+        List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllApprovedRecruitmentPlan(pageNo, pageSize);
         response.setData(list);
         response.setMessage(RecruitmentPlanSuccessMessage.GET_APPROVED_RECRUITMENT_PLAN_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);
@@ -63,9 +65,10 @@ public class RecruitmentPlanController {
 
     @GetMapping("/getAllRejectedRecruitmentPlans")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllRejectedRecruitmentPlans() {
+    public ResponseEntity<ListResponseDTO> getAllRejectedRecruitmentPlans(@RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
         ListResponseDTO<RecruitmentPlanResponse> response = new ListResponseDTO();
-        List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllRejectedRecruitmentPlans();
+        List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllRejectedRecruitmentPlans(pageNo, pageSize);
         response.setData(list);
         response.setMessage(RecruitmentPlanSuccessMessage.GET_REJECTED_RECRUITMENT_PLAN_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);
@@ -74,10 +77,11 @@ public class RecruitmentPlanController {
 
     @GetMapping("/getAllPendingRecruitmentPlans")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllPendingRecruitmentPlans() {
+    public ResponseEntity<ListResponseDTO> getAllPendingRecruitmentPlans(@RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
 
         ListResponseDTO<RecruitmentPlanResponse> response = new ListResponseDTO();
-        List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllPedingRecruitmentPlans();
+        List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllPedingRecruitmentPlans(pageNo, pageSize);
         response.setData(list);
         response.setMessage(RecruitmentPlanSuccessMessage.GET_PENDING_RECRUITMENT_PLAN_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);
@@ -86,10 +90,11 @@ public class RecruitmentPlanController {
 
     @GetMapping("/getAllCanceledRecruitmentPlans")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllCanceledRecruitmentPlans() {
+    public ResponseEntity<ListResponseDTO> getAllCanceledRecruitmentPlans(@RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
 
         ListResponseDTO<RecruitmentPlanResponse> response = new ListResponseDTO();
-        List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllPedingRecruitmentPlans();
+        List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllPedingRecruitmentPlans(pageNo, pageSize);
         response.setData(list);
         response.setMessage(RecruitmentPlanSuccessMessage.GET_CANCELED_RECRUITMENT_PLAN_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);
@@ -109,10 +114,13 @@ public class RecruitmentPlanController {
 
     @GetMapping("/getByApprover/")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getByApproverId(@RequestParam("id") int id) {
+    public ResponseEntity<ListResponseDTO> getByApproverId(@RequestParam("id") int id,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
 
         ListResponseDTO<RecruitmentPlanResponse> response = new ListResponseDTO();
-        List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllRecruitmentPlansByApprover(id);
+        List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllRecruitmentPlansByApprover(id, pageNo,
+                pageSize);
         response.setData(list);
         response.setMessage(RecruitmentPlanSuccessMessage.GET_RECRUITMENT_PLAN_BY_APPROVER_ID_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);
@@ -121,10 +129,13 @@ public class RecruitmentPlanController {
 
     @GetMapping("/getByCreator")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getByCreatorId(@RequestParam("id") int id) {
+    public ResponseEntity<ListResponseDTO> getByCreatorId(@RequestParam("id") int id,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
 
         ListResponseDTO<RecruitmentPlanResponse> response = new ListResponseDTO();
-        List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllRecruitmentPlansByCreator(id);
+        List<RecruitmentPlanResponse> list = recruitmentPlanService.getAllRecruitmentPlansByCreator(id, pageNo,
+                pageSize);
         response.setData(list);
         response.setMessage(RecruitmentPlanSuccessMessage.GET_RECRUITMENT_PLAN_BY_CREATOR_ID_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);

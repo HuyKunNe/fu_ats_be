@@ -5,18 +5,25 @@ import java.util.List;
 
 import com.fu.fuatsbe.constant.account.AccountErrorMessage;
 import com.fu.fuatsbe.constant.account.AccountStatus;
+import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeStatus;
+import com.fu.fuatsbe.entity.Department;
+import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
+import com.fu.fuatsbe.repository.DepartmentRepository;
+import com.fu.fuatsbe.repository.EmployeeRepository;
+
 import lombok.RequiredArgsConstructor;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.EmployeeUpdateDTO;
-import com.fu.fuatsbe.entity.Employee;
-import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.response.EmployeeResponse;
 import com.fu.fuatsbe.service.EmployeeService;
 
@@ -25,15 +32,18 @@ import com.fu.fuatsbe.service.EmployeeService;
 public class EmployeeServiceImp implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final DepartmentRepository departmentRepository;
 
     private final ModelMapper modelMapper;
 
     @Override
-    public List<EmployeeResponse> getAllEmployees() {
-        List<Employee> list = employeeRepository.findAll();
+    public List<EmployeeResponse> getAllEmployees(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Employee> pageResult = employeeRepository.findAll(pageable);
+
         List<EmployeeResponse> result = new ArrayList<EmployeeResponse>();
-        if (list.size() > 0) {
-            for (Employee employee : list) {
+        if (pageResult.hasContent()) {
+            for (Employee employee : pageResult.getContent()) {
                 EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
                 result.add(employeeResponse);
             }
@@ -59,15 +69,21 @@ public class EmployeeServiceImp implements EmployeeService {
     }
 
     @Override
-    public List<EmployeeResponse> getAllEmployeeByDepartment(int departmentId) {
-        List<Employee> list = employeeRepository.findEmployeesByDepartmentId(departmentId);
+    public List<EmployeeResponse> getAllEmployeeByDepartment(int departmentId, int pageNo, int pageSize) {
+
+        Department department = departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Employee> pageResult = employeeRepository.findByDepartment(department, pageable);
+
         List<EmployeeResponse> result = new ArrayList<EmployeeResponse>();
-        if (list.size() > 0)
-            for (Employee employee : list) {
+        if (pageResult.hasContent()) {
+            for (Employee employee : pageResult.getContent()) {
                 EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
                 result.add(employeeResponse);
             }
-        else
+        } else
             throw new ListEmptyException(EmployeeErrorMessage.LIST_EMPTY_EXCEPTION);
 
         return result;

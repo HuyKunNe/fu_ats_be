@@ -8,13 +8,13 @@ import com.fu.fuatsbe.response.EmployeeResponse;
 
 public interface EmployeeService {
 
-    List<EmployeeResponse> getAllEmployees();
+    List<EmployeeResponse> getAllEmployees(int pageNo, int pageSize);
 
     EmployeeResponse getEmployeeById(int id);
 
     EmployeeResponse getEmployeeByCode(String code);
 
-    List<EmployeeResponse> getAllEmployeeByDepartment(int departmentId);
+    List<EmployeeResponse> getAllEmployeeByDepartment(int departmentId, int pageNo, int pageSize);
 
     EmployeeResponse updateEmployee(int id, EmployeeUpdateDTO updateDTO);
 

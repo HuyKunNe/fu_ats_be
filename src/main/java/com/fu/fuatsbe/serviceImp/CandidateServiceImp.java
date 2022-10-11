@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.CandidateUpdateDTO;
@@ -28,11 +31,13 @@ public class CandidateServiceImp implements CandidateService {
     private final CandidateRepository candidateRepository;
 
     @Override
-    public List<CandidateResponseDTO> getAllCandidates() {
-        List<Candidate> list = candidateRepository.findAll();
+    public List<CandidateResponseDTO> getAllCandidates(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Candidate> pageResult = candidateRepository.findAll(pageable);
+
         List<CandidateResponseDTO> result = new ArrayList<CandidateResponseDTO>();
-        if (list.size() > 0) {
-            for (Candidate candidate : list) {
+        if (pageResult.hasContent()) {
+            for (Candidate candidate : pageResult.getContent()) {
                 CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
                 result.add(candidateResponseDTO);
             }
@@ -91,11 +96,14 @@ public class CandidateServiceImp implements CandidateService {
     }
 
     @Override
-    public List<CandidateResponseDTO> getActivateCandidates() {
-        List<Candidate> list = candidateRepository.findByStatus(CandidateStatus.ACTIVATED);
+    public List<CandidateResponseDTO> getActivateCandidates(int pageNo, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Candidate> pageResult = candidateRepository.findByStatus(CandidateStatus.ACTIVATED, pageable);
+
         List<CandidateResponseDTO> result = new ArrayList<CandidateResponseDTO>();
-        if (list.size() > 0) {
-            for (Candidate candidate : list) {
+        if (pageResult.hasContent()) {
+            for (Candidate candidate : pageResult.getContent()) {
                 CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
                 result.add(candidateResponseDTO);
             }
@@ -105,11 +113,13 @@ public class CandidateServiceImp implements CandidateService {
     }
 
     @Override
-    public List<CandidateResponseDTO> getDisableCandidates() {
-        List<Candidate> list = candidateRepository.findByStatus(CandidateStatus.DISABLED);
+    public List<CandidateResponseDTO> getDisableCandidates(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Candidate> pageResult = candidateRepository.findByStatus(CandidateStatus.DISABLED, pageable);
+
         List<CandidateResponseDTO> result = new ArrayList<CandidateResponseDTO>();
-        if (list.size() > 0) {
-            for (Candidate candidate : list) {
+        if (pageResult.hasContent()) {
+            for (Candidate candidate : pageResult.getContent()) {
                 CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
                 result.add(candidateResponseDTO);
             }

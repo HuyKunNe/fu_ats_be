@@ -37,9 +37,10 @@ public class DepartmentController {
 
     @GetMapping("getAll")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ListResponseDTO> getAllDepartments() {
+    public ResponseEntity<ListResponseDTO> getAllDepartments(@RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
         ListResponseDTO<DepartmentResponse> response = new ListResponseDTO();
-        List<DepartmentResponse> list = departmentService.getAllDepartments();
+        List<DepartmentResponse> list = departmentService.getAllDepartments(pageNo, pageSize);
         response.setData(list);
         response.setMessage(DepartmentSuccessMessage.GET_ALL_DEPARTMENT);
         response.setStatus(ResponseStatusDTO.SUCCESS);
@@ -59,9 +60,11 @@ public class DepartmentController {
 
     @GetMapping("getByName")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getDepartmentByName(@RequestParam("name") String name) {
+    public ResponseEntity<ListResponseDTO> getDepartmentByName(@RequestParam("name") String name,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
         ListResponseDTO<DepartmentResponse> response = new ListResponseDTO();
-        List<DepartmentResponse> list = departmentService.getDepartmentByName(name);
+        List<DepartmentResponse> list = departmentService.getDepartmentByName(name, pageNo, pageSize);
         response.setData(list);
         response.setMessage(DepartmentSuccessMessage.GET_DEPARTMENT_BY_NAME);
         response.setStatus(ResponseStatusDTO.SUCCESS);

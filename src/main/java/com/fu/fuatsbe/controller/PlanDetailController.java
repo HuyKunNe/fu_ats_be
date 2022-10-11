@@ -35,9 +35,10 @@ public class PlanDetailController {
 
     @GetMapping("/getAll")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllPlanDetails() {
+    public ResponseEntity<ListResponseDTO> getAllPlanDetails(@RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
         ListResponseDTO<PlanDetailResponseDTO> responseDTO = new ListResponseDTO();
-        List<PlanDetailResponseDTO> list = planDetailService.getAllPlanDetails();
+        List<PlanDetailResponseDTO> list = planDetailService.getAllPlanDetails(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(PlanDetailSuccessMessage.GET_ALL_PLAN_DETAIL_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -46,9 +47,11 @@ public class PlanDetailController {
 
     @GetMapping("/getByRecruitmentPlan")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getByRecuitmentPlan(@RequestParam("id") int recruitmentId) {
+    public ResponseEntity<ListResponseDTO> getByRecuitmentPlan(@RequestParam("id") int recruitmentId,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
         ListResponseDTO<PlanDetailResponseDTO> responseDTO = new ListResponseDTO();
-        List<PlanDetailResponseDTO> list = planDetailService.getAllByRecruitmentPlans(recruitmentId);
+        List<PlanDetailResponseDTO> list = planDetailService.getAllByRecruitmentPlans(recruitmentId, pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(PlanDetailSuccessMessage.GET_PLAN_DETAIL_BY_RECRUITMENT_PLAN_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -79,9 +82,10 @@ public class PlanDetailController {
 
     @GetMapping("/getPendingPlanDetails")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getPendingPlanDetails() {
+    public ResponseEntity<ListResponseDTO> getPendingPlanDetails(@RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
         ListResponseDTO<PlanDetailResponseDTO> responseDTO = new ListResponseDTO();
-        List<PlanDetailResponseDTO> list = planDetailService.getPendingPlanDetails();
+        List<PlanDetailResponseDTO> list = planDetailService.getPendingPlanDetails(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(PlanDetailSuccessMessage.GET_ALL_PLAN_DETAIL_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -90,9 +94,10 @@ public class PlanDetailController {
 
     @GetMapping("/getApprovedPlanDetails")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getApprovedPlanDetails() {
+    public ResponseEntity<ListResponseDTO> getApprovedPlanDetails(@RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
         ListResponseDTO<PlanDetailResponseDTO> responseDTO = new ListResponseDTO();
-        List<PlanDetailResponseDTO> list = planDetailService.getApprovedPlanDetails();
+        List<PlanDetailResponseDTO> list = planDetailService.getApprovedPlanDetails(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(PlanDetailSuccessMessage.GET_ALL_PLAN_DETAIL_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -101,9 +106,10 @@ public class PlanDetailController {
 
     @GetMapping("/getCanceledPlanDetails")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getCanceledPlanDetails() {
+    public ResponseEntity<ListResponseDTO> getCanceledPlanDetails(@RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
         ListResponseDTO<PlanDetailResponseDTO> responseDTO = new ListResponseDTO();
-        List<PlanDetailResponseDTO> list = planDetailService.getCanceledPlanDetails();
+        List<PlanDetailResponseDTO> list = planDetailService.getCanceledPlanDetails(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(PlanDetailSuccessMessage.GET_ALL_PLAN_DETAIL_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -128,6 +134,19 @@ public class PlanDetailController {
         PlanDetailResponseDTO planDetailDTO = planDetailService.canceledPlanDetails(actionDTO);
         responseDTO.setData(planDetailDTO);
         responseDTO.setMessage("canceled plan detail success");
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/getPlanDetailByApprover")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ListResponseDTO> getPlanDetailByApprover(@RequestParam("id") int approverId,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        ListResponseDTO<PlanDetailResponseDTO> responseDTO = new ListResponseDTO();
+        List<PlanDetailResponseDTO> list = planDetailService.getPlanDetailByApprover(approverId, pageNo, pageSize);
+        responseDTO.setData(list);
+        responseDTO.setMessage(PlanDetailSuccessMessage.GET_ALL_PLAN_DETAIL_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }

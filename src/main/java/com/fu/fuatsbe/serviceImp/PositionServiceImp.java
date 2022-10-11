@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.PositionCreateDTO;
@@ -38,11 +41,14 @@ public class PositionServiceImp implements PositionService {
     private final EmployeeRepository employeeRepository;
 
     @Override
-    public List<PositionResponse> getAllPositions() {
-        List<Position> list = positionRepository.findAll();
+    public List<PositionResponse> getAllPositions(int pageNo, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Position> pageResult = positionRepository.findAll(pageable);
         List<PositionResponse> result = new ArrayList<PositionResponse>();
-        if (list.size() > 0) {
-            for (Position position : list) {
+
+        if (pageResult.hasContent()) {
+            for (Position position : pageResult.getContent()) {
                 PositionResponse response = modelMapper.map(position, PositionResponse.class);
                 result.add(response);
             }
@@ -95,23 +101,27 @@ public class PositionServiceImp implements PositionService {
     public Position deletePosition(int id) {
         Position position = positionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
-        List<Employee> list = employeeRepository.findbyPositionIdAndStatus(id, EmployeeStatus.ACTIVATE);
+
+        Pageable pageable = PageRequest.of(0, 1);
+        Page<Employee> list = employeeRepository.findByPositionAndStatus(position, EmployeeStatus.ACTIVATE, pageable);
         if (list == null) {
             position.setStatus(PositionStatus.DISABLE);
             Position positionSaved = positionRepository.save(position);
             return positionSaved;
         } else
-            throw new NotValidException("Employee already has this Position");
+            throw new NotValidException("There is still employees in this position");
     }
 
     @Override
-    public List<PositionResponse> getPositionByDepartment(int id) {
+    public List<PositionResponse> getPositionByDepartment(int id, int pageNo, int pageSize) {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
-        List<Position> list = positionRepository.findByDepartment(department);
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Position> pageResult = positionRepository.findByDepartment(department, pageable);
         List<PositionResponse> result = new ArrayList<PositionResponse>();
-        if (list.size() > 0) {
-            for (Position position : list) {
+        if (pageResult.hasContent()) {
+            for (Position position : pageResult.getContent()) {
                 PositionResponse response = modelMapper.map(position, PositionResponse.class);
                 result.add(response);
             }

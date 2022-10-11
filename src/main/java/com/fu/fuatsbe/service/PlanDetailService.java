@@ -9,9 +9,9 @@ import com.fu.fuatsbe.response.PlanDetailResponseDTO;
 
 public interface PlanDetailService {
 
-    public List<PlanDetailResponseDTO> getAllPlanDetails();
+    public List<PlanDetailResponseDTO> getAllPlanDetails(int pageNo, int pageSize);
 
-    public List<PlanDetailResponseDTO> getAllByRecruitmentPlans(int recruitmentPlanId);
+    public List<PlanDetailResponseDTO> getAllByRecruitmentPlans(int recruitmentPlanId, int pageNo, int pageSize);
 
     public PlanDetailResponseDTO getPlanDetailById(int id);
 
@@ -19,14 +19,16 @@ public interface PlanDetailService {
 
     public PlanDetailResponseDTO createPlanDetail(PlanDetailCreateDTO createDTO);
 
-    public List<PlanDetailResponseDTO> getPendingPlanDetails();
+    public List<PlanDetailResponseDTO> getPendingPlanDetails(int pageNo, int pageSize);
 
-    public List<PlanDetailResponseDTO> getApprovedPlanDetails();
+    public List<PlanDetailResponseDTO> getApprovedPlanDetails(int pageNo, int pageSize);
 
-    public List<PlanDetailResponseDTO> getCanceledPlanDetails();
+    public List<PlanDetailResponseDTO> getCanceledPlanDetails(int pageNo, int pageSize);
 
     public PlanDetailResponseDTO approvedPlanDetails(PlanDetailActionDTO actionDTO);
 
     public PlanDetailResponseDTO canceledPlanDetails(PlanDetailActionDTO actionDTO);
+
+    public List<PlanDetailResponseDTO> getPlanDetailByApprover(int approverId, int pageNo, int pageSize);
 
 }

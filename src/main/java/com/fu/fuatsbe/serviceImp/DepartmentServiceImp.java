@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.DepartmentCreateDTO;
@@ -32,11 +35,13 @@ public class DepartmentServiceImp implements DepartmentService {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<DepartmentResponse> getAllDepartments() {
-        List<Department> list = departmentRepository.findAll();
+    public List<DepartmentResponse> getAllDepartments(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Department> pageResult = departmentRepository.findAll(pageable);
+
         List<DepartmentResponse> result = new ArrayList<DepartmentResponse>();
-        if (list.size() > 0) {
-            for (Department department : list) {
+        if (pageResult.hasContent()) {
+            for (Department department : pageResult.getContent()) {
                 DepartmentResponse response = modelMapper.map(department, DepartmentResponse.class);
                 result.add(response);
             }
@@ -55,11 +60,13 @@ public class DepartmentServiceImp implements DepartmentService {
     }
 
     @Override
-    public List<DepartmentResponse> getDepartmentByName(String name) {
-        List<Department> list = departmentRepository.findByNameContaining(name);
+    public List<DepartmentResponse> getDepartmentByName(String name, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Department> pageResult = departmentRepository.findByNameContaining(name, pageable);
+
         List<DepartmentResponse> result = new ArrayList<DepartmentResponse>();
-        if (list.size() > 0) {
-            for (Department department : list) {
+        if (pageResult.hasContent()) {
+            for (Department department : pageResult.getContent()) {
                 DepartmentResponse response = modelMapper.map(department, DepartmentResponse.class);
                 result.add(response);
             }

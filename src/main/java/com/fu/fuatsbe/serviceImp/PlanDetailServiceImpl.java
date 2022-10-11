@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.PlanDetailActionDTO;
@@ -47,7 +50,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
     private final EmployeeRepository employeeRepository;
 
     @Override
-    public List<PlanDetailResponseDTO> getAllPlanDetails() {
+    public List<PlanDetailResponseDTO> getAllPlanDetails(int pageNo, int pageSize) {
         List<PlanDetail> list = planDetailRepository.findAll();
         List<PlanDetailResponseDTO> result = new ArrayList<PlanDetailResponseDTO>();
         if (list.size() > 0) {
@@ -61,14 +64,18 @@ public class PlanDetailServiceImpl implements PlanDetailService {
     }
 
     @Override
-    public List<PlanDetailResponseDTO> getAllByRecruitmentPlans(int recruitmentPlanId) {
+    public List<PlanDetailResponseDTO> getAllByRecruitmentPlans(int recruitmentPlanId, int pageNo, int pageSize) {
         Optional<RecruitmentPlan> optionalRecruitmentPlan = recruitmentPlanRepository.findById(recruitmentPlanId);
         if (!optionalRecruitmentPlan.isPresent())
             throw new NotFoundException(RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION);
-        List<PlanDetail> list = planDetailRepository.findByRecruitmentPlan(optionalRecruitmentPlan.get());
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<PlanDetail> pageResult = planDetailRepository.findByRecruitmentPlan(optionalRecruitmentPlan.get(),
+                pageable);
         List<PlanDetailResponseDTO> result = new ArrayList<PlanDetailResponseDTO>();
-        if (list.size() > 0) {
-            for (PlanDetail planDetail : list) {
+
+        if (pageResult.hasContent()) {
+            for (PlanDetail planDetail : pageResult.getContent()) {
                 PlanDetailResponseDTO planDetailResponse = modelMapper.map(planDetail, PlanDetailResponseDTO.class);
                 result.add(planDetailResponse);
             }
@@ -117,11 +124,14 @@ public class PlanDetailServiceImpl implements PlanDetailService {
     }
 
     @Override
-    public List<PlanDetailResponseDTO> getPendingPlanDetails() {
-        List<PlanDetail> list = planDetailRepository.findByStatus(PlanDetailStatus.PENDING);
+    public List<PlanDetailResponseDTO> getPendingPlanDetails(int pageNo, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<PlanDetail> pageResult = planDetailRepository.findByStatus(PlanDetailStatus.PENDING, pageable);
         List<PlanDetailResponseDTO> result = new ArrayList<PlanDetailResponseDTO>();
-        if (list.size() > 0) {
-            for (PlanDetail planDetail : list) {
+
+        if (pageResult.hasContent()) {
+            for (PlanDetail planDetail : pageResult.getContent()) {
                 PlanDetailResponseDTO planDetailResponse = modelMapper.map(planDetail, PlanDetailResponseDTO.class);
                 result.add(planDetailResponse);
             }
@@ -131,11 +141,13 @@ public class PlanDetailServiceImpl implements PlanDetailService {
     }
 
     @Override
-    public List<PlanDetailResponseDTO> getApprovedPlanDetails() {
-        List<PlanDetail> list = planDetailRepository.findByStatus(PlanDetailStatus.APPROVED);
+    public List<PlanDetailResponseDTO> getApprovedPlanDetails(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<PlanDetail> pageResult = planDetailRepository.findByStatus(PlanDetailStatus.APPROVED, pageable);
         List<PlanDetailResponseDTO> result = new ArrayList<PlanDetailResponseDTO>();
-        if (list.size() > 0) {
-            for (PlanDetail planDetail : list) {
+
+        if (pageResult.hasContent()) {
+            for (PlanDetail planDetail : pageResult.getContent()) {
                 PlanDetailResponseDTO planDetailResponse = modelMapper.map(planDetail, PlanDetailResponseDTO.class);
                 result.add(planDetailResponse);
             }
@@ -145,11 +157,13 @@ public class PlanDetailServiceImpl implements PlanDetailService {
     }
 
     @Override
-    public List<PlanDetailResponseDTO> getCanceledPlanDetails() {
-        List<PlanDetail> list = planDetailRepository.findByStatus(PlanDetailStatus.CANCELED);
+    public List<PlanDetailResponseDTO> getCanceledPlanDetails(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<PlanDetail> pageResult = planDetailRepository.findByStatus(PlanDetailStatus.CANCELED, pageable);
         List<PlanDetailResponseDTO> result = new ArrayList<PlanDetailResponseDTO>();
-        if (list.size() > 0) {
-            for (PlanDetail planDetail : list) {
+
+        if (pageResult.hasContent()) {
+            for (PlanDetail planDetail : pageResult.getContent()) {
                 PlanDetailResponseDTO planDetailResponse = modelMapper.map(planDetail, PlanDetailResponseDTO.class);
                 result.add(planDetailResponse);
             }
@@ -188,6 +202,28 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         PlanDetailResponseDTO response = modelMapper.map(planDetailSaved,
                 PlanDetailResponseDTO.class);
         return response;
+    }
+
+    @Override
+    public List<PlanDetailResponseDTO> getPlanDetailByApprover(int approverId, int pageNo, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+
+        Employee employee = employeeRepository.findById(approverId)
+                .orElseThrow(() -> new NotFoundException(
+                        EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+
+        Page<PlanDetail> pageResult = planDetailRepository.findByApprover(employee, pageable);
+        List<PlanDetailResponseDTO> result = new ArrayList<PlanDetailResponseDTO>();
+
+        if (pageResult.hasContent()) {
+            for (PlanDetail planDetail : pageResult.getContent()) {
+                PlanDetailResponseDTO planDetailResponse = modelMapper.map(planDetail, PlanDetailResponseDTO.class);
+                result.add(planDetailResponse);
+            }
+        } else
+            throw new ListEmptyException(PlanDetailErrorMessage.LIST_EMPTY_EXCEPTION);
+        return result;
     }
 
 }

@@ -7,11 +7,11 @@ import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.response.CandidateResponseDTO;
 
 public interface CandidateService {
-    public List<CandidateResponseDTO> getAllCandidates();
+    public List<CandidateResponseDTO> getAllCandidates(int pageNo, int pageSize);
 
-    public List<CandidateResponseDTO> getActivateCandidates();
+    public List<CandidateResponseDTO> getActivateCandidates(int pageNo, int pageSize);
 
-    public List<CandidateResponseDTO> getDisableCandidates();
+    public List<CandidateResponseDTO> getDisableCandidates(int pageNo, int pageSize);
 
     public CandidateResponseDTO getCandidateById(int id);
 

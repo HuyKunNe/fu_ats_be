@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.RecruimentPlanUpdateDTO;
@@ -36,11 +39,13 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     private final EmployeeRepository employeeRepository;
 
     @Override
-    public List<RecruitmentPlanResponse> getAllRecruitmentPlans() {
-        List<RecruitmentPlan> list = recruitmentPlanRepository.findAll();
+    public List<RecruitmentPlanResponse> getAllRecruitmentPlans(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findAll(pageable);
         List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
-        if (list.size() > 0) {
-            for (RecruitmentPlan recruitmentPlan : list) {
+
+        if (pageResult.hasContent()) {
+            for (RecruitmentPlan recruitmentPlan : pageResult.getContent()) {
                 RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
                 result.add(response);
             }
@@ -61,12 +66,14 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     }
 
     @Override
-    public List<RecruitmentPlanResponse> getAllApprovedRecruitmentPlan() {
+    public List<RecruitmentPlanResponse> getAllApprovedRecruitmentPlan(int pageNo, int pageSize) {
 
-        List<RecruitmentPlan> list = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.APPROVED);
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.APPROVED,
+                pageable);
         List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
-        if (list.size() > 0) {
-            for (RecruitmentPlan recruitmentPlan : list) {
+        if (pageResult.hasContent()) {
+            for (RecruitmentPlan recruitmentPlan : pageResult.getContent()) {
                 RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
                 result.add(response);
             }
@@ -77,12 +84,14 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     }
 
     @Override
-    public List<RecruitmentPlanResponse> getAllCanceledRecruitmentPlans() {
+    public List<RecruitmentPlanResponse> getAllCanceledRecruitmentPlans(int pageNo, int pageSize) {
 
-        List<RecruitmentPlan> list = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.CANCELED);
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.CANCELED,
+                pageable);
         List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
-        if (list.size() > 0) {
-            for (RecruitmentPlan recruitmentPlan : list) {
+        if (pageResult.hasContent()) {
+            for (RecruitmentPlan recruitmentPlan : pageResult.getContent()) {
                 RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
                 result.add(response);
             }
@@ -93,12 +102,14 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     }
 
     @Override
-    public List<RecruitmentPlanResponse> getAllRejectedRecruitmentPlans() {
+    public List<RecruitmentPlanResponse> getAllRejectedRecruitmentPlans(int pageNo, int pageSize) {
 
-        List<RecruitmentPlan> list = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.REJECTED);
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.REJECTED,
+                pageable);
         List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
-        if (list.size() > 0) {
-            for (RecruitmentPlan recruitmentPlan : list) {
+        if (pageResult.hasContent()) {
+            for (RecruitmentPlan recruitmentPlan : pageResult.getContent()) {
                 RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
                 result.add(response);
             }
@@ -109,12 +120,14 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     }
 
     @Override
-    public List<RecruitmentPlanResponse> getAllPedingRecruitmentPlans() {
+    public List<RecruitmentPlanResponse> getAllPedingRecruitmentPlans(int pageNo, int pageSize) {
 
-        List<RecruitmentPlan> list = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.PENDING);
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.PENDING,
+                pageable);
         List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
-        if (list.size() > 0) {
-            for (RecruitmentPlan recruitmentPlan : list) {
+        if (pageResult.hasContent()) {
+            for (RecruitmentPlan recruitmentPlan : pageResult.getContent()) {
                 RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
                 result.add(response);
             }
@@ -167,11 +180,19 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     }
 
     @Override
-    public List<RecruitmentPlanResponse> getAllRecruitmentPlansByApprover(int approverId) {
-        List<RecruitmentPlan> list = recruitmentPlanRepository.findByApproverId(approverId);
+    public List<RecruitmentPlanResponse> getAllRecruitmentPlansByApprover(int approverId, int pageNo, int pageSize) {
+
+        Employee approver = employeeRepository.findById(approverId)
+                .orElseThrow(() -> new NotFoundException(
+                        EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByApprover(approver,
+                pageable);
         List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
-        if (list.size() > 0) {
-            for (RecruitmentPlan recruitmentPlan : list) {
+
+        if (pageResult.hasContent()) {
+            for (RecruitmentPlan recruitmentPlan : pageResult.getContent()) {
                 RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
                 result.add(response);
             }
@@ -181,11 +202,19 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     }
 
     @Override
-    public List<RecruitmentPlanResponse> getAllRecruitmentPlansByCreator(int creatorId) {
-        List<RecruitmentPlan> list = recruitmentPlanRepository.findByCreatorId(creatorId);
+    public List<RecruitmentPlanResponse> getAllRecruitmentPlansByCreator(int creatorId, int pageNo, int pageSize) {
+
+        Employee approver = employeeRepository.findById(creatorId)
+                .orElseThrow(() -> new NotFoundException(
+                        EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByApprover(approver,
+                pageable);
         List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
-        if (list.size() > 0) {
-            for (RecruitmentPlan recruitmentPlan : list) {
+
+        if (pageResult.hasContent()) {
+            for (RecruitmentPlan recruitmentPlan : pageResult.getContent()) {
                 RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
                 result.add(response);
             }

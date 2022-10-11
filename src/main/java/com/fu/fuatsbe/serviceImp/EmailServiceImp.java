@@ -1,8 +1,6 @@
 package com.fu.fuatsbe.serviceImp;
 
 import com.fu.fuatsbe.constant.account.AccountErrorMessage;
-import com.fu.fuatsbe.entity.Account;
-import com.fu.fuatsbe.entity.VerificationToken;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.exceptions.PermissionException;
 import com.fu.fuatsbe.repository.AccountRepository;
@@ -10,6 +8,9 @@ import com.fu.fuatsbe.repository.VerificationRepository;
 import com.fu.fuatsbe.service.EmailService;
 import com.fu.fuatsbe.service.VerificationTokenService;
 import com.fu.fuatsbe.constant.common.CommonMessage;
+import com.fu.fuatsbe.entity.Account;
+import com.fu.fuatsbe.entity.VerificationToken;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;

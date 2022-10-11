@@ -9,11 +9,11 @@ import com.fu.fuatsbe.response.DepartmentResponse;
 
 public interface DepartmentService {
 
-    public List<DepartmentResponse> getAllDepartments();
+    public List<DepartmentResponse> getAllDepartments(int pageNo, int pageSize);
 
     public DepartmentResponse getDepartmentById(int id);
 
-    public List<DepartmentResponse> getDepartmentByName(String name);
+    public List<DepartmentResponse> getDepartmentByName(String name, int pageNo, int pageSize);
 
     public DepartmentResponse updateDepartment(int id, DepartmentUpdateDTO departmentUpdateDTO);
 

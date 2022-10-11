@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.RecruitmentRequestCreateDTO;
@@ -46,11 +49,14 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     private final PositionRepository positionRepository;
 
     @Override
-    public List<RecruitmentRequestResponse> getAllRecruitmentRequests() {
-        List<RecruitmentRequest> list = recruitmentRequestRepository.findAll();
+    public List<RecruitmentRequestResponse> getAllRecruitmentRequests(int pageNo, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<RecruitmentRequest> pageResult = recruitmentRequestRepository.findAll(pageable);
         List<RecruitmentRequestResponse> result = new ArrayList<RecruitmentRequestResponse>();
-        if (list.size() > 0) {
-            for (RecruitmentRequest recruitmentRequest : list) {
+
+        if (pageResult.hasContent()) {
+            for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
                 result.add(response);
@@ -70,11 +76,14 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     }
 
     @Override
-    public List<RecruitmentRequestResponse> getAllOpenRecruitmentRequest() {
-        List<RecruitmentRequest> list = recruitmentRequestRepository.findByStatus(RecruitmentRequestStatus.OPENING);
+    public List<RecruitmentRequestResponse> getAllOpenRecruitmentRequest(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<RecruitmentRequest> pageResult = recruitmentRequestRepository
+                .findByStatus(RecruitmentRequestStatus.OPENING, pageable);
         List<RecruitmentRequestResponse> result = new ArrayList<RecruitmentRequestResponse>();
-        if (list.size() > 0) {
-            for (RecruitmentRequest recruitmentRequest : list) {
+
+        if (pageResult.hasContent()) {
+            for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
                 result.add(response);
@@ -85,11 +94,15 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     }
 
     @Override
-    public List<RecruitmentRequestResponse> getAllFilledRecruitmentRequest() {
-        List<RecruitmentRequest> list = recruitmentRequestRepository.findByStatus(RecruitmentRequestStatus.FILLED);
+    public List<RecruitmentRequestResponse> getAllFilledRecruitmentRequest(int pageNo, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<RecruitmentRequest> pageResult = recruitmentRequestRepository
+                .findByStatus(RecruitmentRequestStatus.FILLED, pageable);
         List<RecruitmentRequestResponse> result = new ArrayList<RecruitmentRequestResponse>();
-        if (list.size() > 0) {
-            for (RecruitmentRequest recruitmentRequest : list) {
+
+        if (pageResult.hasContent()) {
+            for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
                 result.add(response);
@@ -100,11 +113,14 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     }
 
     @Override
-    public List<RecruitmentRequestResponse> getAllClosedRecruitmentRequest() {
-        List<RecruitmentRequest> list = recruitmentRequestRepository.findByStatus(RecruitmentRequestStatus.CLOSED);
+    public List<RecruitmentRequestResponse> getAllClosedRecruitmentRequest(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<RecruitmentRequest> pageResult = recruitmentRequestRepository
+                .findByStatus(RecruitmentRequestStatus.CLOSED, pageable);
         List<RecruitmentRequestResponse> result = new ArrayList<RecruitmentRequestResponse>();
-        if (list.size() > 0) {
-            for (RecruitmentRequest recruitmentRequest : list) {
+
+        if (pageResult.hasContent()) {
+            for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
                 result.add(response);
@@ -180,11 +196,17 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     }
 
     @Override
-    public List<RecruitmentRequestResponse> getAllRecruitmentRequestByCreator(int id) {
-        List<RecruitmentRequest> list = recruitmentRequestRepository.findByCreatorId(id);
+    public List<RecruitmentRequestResponse> getAllRecruitmentRequestByCreator(int id, int pageNo, int pageSize) {
+
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<RecruitmentRequest> pageResult = recruitmentRequestRepository.findByCreator(employee, pageable);
         List<RecruitmentRequestResponse> result = new ArrayList<RecruitmentRequestResponse>();
-        if (list.size() > 0) {
-            for (RecruitmentRequest recruitmentRequest : list) {
+
+        if (pageResult.hasContent()) {
+            for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
                 result.add(response);

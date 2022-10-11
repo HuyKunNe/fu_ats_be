@@ -37,10 +37,11 @@ public class PositionController {
 
     @GetMapping("/getAll")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllPositions() {
+    public ResponseEntity<ListResponseDTO> getAllPositions(@RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
 
         ListResponseDTO<PositionResponse> response = new ListResponseDTO();
-        List<PositionResponse> list = positionService.getAllPositions();
+        List<PositionResponse> list = positionService.getAllPositions(pageNo, pageSize);
         response.setData(list);
         response.setMessage(PositionSuccessMessage.GET_ALL_POSITION_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);

@@ -1,10 +1,11 @@
 package com.fu.fuatsbe.repository;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +17,7 @@ public interface CandidateRepository extends JpaRepository<Candidate, Integer> {
 
     Optional<Candidate> findById(int id);
 
-    List<Candidate> findByStatus(String status);
+    Page<Candidate> findByStatus(String status, Pageable pageable);
 
     Optional<Candidate> findByEmail(String email);
 

@@ -2,6 +2,7 @@ package com.fu.fuatsbe.auth;
 
 import com.fu.fuatsbe.entity.Account;
 import com.fu.fuatsbe.repository.AccountRepository;
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

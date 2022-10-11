@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.constant.account.AccountErrorMessage;
@@ -35,11 +38,13 @@ public class AccountServiceImp implements AccountService {
     private final CandidateRepository candidateRepository;
 
     @Override
-    public List<AccountResponse> getAllAccounts() {
-        List<Account> list = accountRepository.findAll();
+    public List<AccountResponse> getAllAccounts(int pageNo, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Account> pageResult = accountRepository.findAll(pageable);
         List<AccountResponse> result = new ArrayList<AccountResponse>();
-        if (list.size() > 0) {
-            for (Account account : list) {
+        if (pageResult.hasContent()) {
+            for (Account account : pageResult.getContent()) {
                 AccountResponse accountResponse = modelMapper.map(account, AccountResponse.class);
                 result.add(accountResponse);
             }
@@ -49,13 +54,16 @@ public class AccountServiceImp implements AccountService {
     }
 
     @Override
-    public List<AccountResponse> getAllAccountsByRole(int roleId) {
+    public List<AccountResponse> getAllAccountsByRole(int roleId, int pageNo, int pageSize) {
         Role role = roleRepository.findById(roleId)
                 .orElseThrow(() -> new NotFoundException(RoleErrorMessage.ROLE_NOT_EXIST));
-        List<Account> list = accountRepository.findByRole(role);
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Account> pageResult = accountRepository.findByRole(role, pageable);
+
         List<AccountResponse> result = new ArrayList<AccountResponse>();
-        if (list.size() > 0) {
-            for (Account account : list) {
+        if (pageResult.hasContent()) {
+            for (Account account : pageResult.getContent()) {
                 AccountResponse accountResponse = modelMapper.map(account, AccountResponse.class);
                 result.add(accountResponse);
             }
@@ -98,11 +106,14 @@ public class AccountServiceImp implements AccountService {
     }
 
     @Override
-    public List<AccountResponse> getActivateAccounts() {
-        List<Account> list = accountRepository.findByStatus(AccountStatus.ACTIVATED);
+    public List<AccountResponse> getActivateAccounts(int pageNo, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Account> pageResult = accountRepository.findByStatus(AccountStatus.ACTIVATED, pageable);
+
         List<AccountResponse> result = new ArrayList<AccountResponse>();
-        if (list.size() > 0) {
-            for (Account account : list) {
+        if (pageResult.hasContent()) {
+            for (Account account : pageResult.getContent()) {
                 AccountResponse accountResponse = modelMapper.map(account, AccountResponse.class);
                 result.add(accountResponse);
             }
@@ -112,11 +123,14 @@ public class AccountServiceImp implements AccountService {
     }
 
     @Override
-    public List<AccountResponse> getDisableAccounts() {
-        List<Account> list = accountRepository.findByStatus(AccountStatus.DISABLED);
+    public List<AccountResponse> getDisableAccounts(int pageNo, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Account> pageResult = accountRepository.findByStatus(AccountStatus.DISABLED, pageable);
+
         List<AccountResponse> result = new ArrayList<AccountResponse>();
-        if (list.size() > 0) {
-            for (Account account : list) {
+        if (pageResult.hasContent()) {
+            for (Account account : pageResult.getContent()) {
                 AccountResponse accountResponse = modelMapper.map(account, AccountResponse.class);
                 result.add(accountResponse);
             }

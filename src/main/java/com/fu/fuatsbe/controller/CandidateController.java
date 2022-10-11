@@ -28,9 +28,10 @@ public class CandidateController {
 
     @GetMapping("/getAllCandidates")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllCandidates() {
+    public ResponseEntity<ListResponseDTO> getAllCandidates(@RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
         ListResponseDTO<CandidateResponseDTO> responseDTO = new ListResponseDTO();
-        List<CandidateResponseDTO> list = candidateService.getAllCandidates();
+        List<CandidateResponseDTO> list = candidateService.getAllCandidates(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(CandidateSuccessMessage.GET_ALL_CANDIDATE_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -39,9 +40,10 @@ public class CandidateController {
 
     @GetMapping("/getAllActivateCandidates")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllActivateCandidates() {
+    public ResponseEntity<ListResponseDTO> getAllActivateCandidates(@RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
         ListResponseDTO<CandidateResponseDTO> responseDTO = new ListResponseDTO();
-        List<CandidateResponseDTO> list = candidateService.getActivateCandidates();
+        List<CandidateResponseDTO> list = candidateService.getActivateCandidates(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(CandidateSuccessMessage.GET_ALL_CANDIDATE_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -50,9 +52,10 @@ public class CandidateController {
 
     @GetMapping("/getAllDisableCandidates")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllDisableCandidates() {
+    public ResponseEntity<ListResponseDTO> getAllDisableCandidates(@RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
         ListResponseDTO<CandidateResponseDTO> responseDTO = new ListResponseDTO();
-        List<CandidateResponseDTO> list = candidateService.getDisableCandidates();
+        List<CandidateResponseDTO> list = candidateService.getDisableCandidates(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(CandidateSuccessMessage.GET_ALL_CANDIDATE_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);

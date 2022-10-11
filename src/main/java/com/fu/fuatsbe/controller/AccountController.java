@@ -26,9 +26,10 @@ public class AccountController {
 
     @GetMapping("/getAllAccounts")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ListResponseDTO> getAllAccounts() {
+    public ResponseEntity<ListResponseDTO> getAllAccounts(@RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
         ListResponseDTO<AccountResponse> responseDTO = new ListResponseDTO();
-        List<AccountResponse> list = accountService.getAllAccounts();
+        List<AccountResponse> list = accountService.getAllAccounts(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(AccountSuccessMessage.GET_ALL_ACCOUNT_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -37,9 +38,10 @@ public class AccountController {
 
     @GetMapping("/getActivateAccounts")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ListResponseDTO> getActivateAccounts() {
+    public ResponseEntity<ListResponseDTO> getActivateAccounts(@RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
         ListResponseDTO<AccountResponse> responseDTO = new ListResponseDTO();
-        List<AccountResponse> list = accountService.getActivateAccounts();
+        List<AccountResponse> list = accountService.getActivateAccounts(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(AccountSuccessMessage.GET_ALL_ACTIVE_ACCOUNT_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -48,9 +50,10 @@ public class AccountController {
 
     @GetMapping("/getDisableAccounts")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ListResponseDTO> getDisableAccounts() {
+    public ResponseEntity<ListResponseDTO> getDisableAccounts(@RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
         ListResponseDTO<AccountResponse> responseDTO = new ListResponseDTO();
-        List<AccountResponse> list = accountService.getDisableAccounts();
+        List<AccountResponse> list = accountService.getDisableAccounts(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(AccountSuccessMessage.GET_ALL_DISABLE_ACCOUNT_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -59,9 +62,11 @@ public class AccountController {
 
     @GetMapping("/getAllAccountsByRole")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ListResponseDTO> getAllAccountsByRole(@RequestParam("roleId") int roleId) {
+    public ResponseEntity<ListResponseDTO> getAllAccountsByRole(@RequestParam("roleId") int roleId,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
         ListResponseDTO<AccountResponse> responseDTO = new ListResponseDTO();
-        List<AccountResponse> list = accountService.getDisableAccounts();
+        List<AccountResponse> list = accountService.getAllAccountsByRole(roleId, pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(AccountSuccessMessage.GET_ALL_ACCOUNT_BY_ROLE_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);

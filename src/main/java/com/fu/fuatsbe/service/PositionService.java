@@ -8,7 +8,7 @@ import com.fu.fuatsbe.entity.Position;
 import com.fu.fuatsbe.response.PositionResponse;
 
 public interface PositionService {
-    public List<PositionResponse> getAllPositions();
+    public List<PositionResponse> getAllPositions(int pageNo, int pageSize);
 
     public PositionResponse getPosionById(int id);
 
@@ -18,6 +18,6 @@ public interface PositionService {
 
     public Position deletePosition(int id);
 
-    public List<PositionResponse> getPositionByDepartment(int id);
+    public List<PositionResponse> getPositionByDepartment(int id, int pageNo, int pageSize);
 
 }

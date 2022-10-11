@@ -1,15 +1,16 @@
 package com.fu.fuatsbe.repository;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.fu.fuatsbe.entity.Employee;
+import com.fu.fuatsbe.entity.Position;
 import com.fu.fuatsbe.entity.RecruitmentRequest;
 
 @Repository
@@ -18,10 +19,10 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
 
     Optional<RecruitmentRequest> findById(int id);
 
-    List<RecruitmentRequest> findByStatus(String status);
+    Page<RecruitmentRequest> findByStatus(String status, Pageable pageable);
 
-    @Modifying
-    @Query(value = "select * from recruitment_request r where r.creator_id = ?1", nativeQuery = true)
-    List<RecruitmentRequest> findByCreatorId(int id);
+    Page<RecruitmentRequest> findByPosition(Position position, Pageable pageable);
+
+    Page<RecruitmentRequest> findByCreator(Employee employee, Pageable pageable);
 
 }

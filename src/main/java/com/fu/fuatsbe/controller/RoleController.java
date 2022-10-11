@@ -32,7 +32,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RoleController {
 
-    private RoleService roleService;
+    private final RoleService roleService;
 
     @GetMapping("/role/getAll")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)

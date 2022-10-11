@@ -1,33 +1,30 @@
 package com.fu.fuatsbe.repository;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.fu.fuatsbe.entity.Department;
 import com.fu.fuatsbe.entity.Employee;
+import com.fu.fuatsbe.entity.Position;
 
 @Repository
 @Transactional
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
-    @Modifying
-    @Query("select e from Employee e where department_id = ?1")
-    List<Employee> findEmployeesByDepartmentId(int id);
+    public Optional<Employee> findById(int id);
 
-    Optional<Employee> findById(int id);
+    public Optional<Employee> findByEmployeeCode(String employeeCode);
 
-    Optional<Employee> findByEmployeeCode(String employeeCode);
+    public Optional<Employee> findByPhone(String phone);
 
-    Optional<Employee> findByPhone(String phone);
+    public Page<Employee> findByPositionAndStatus(Position position, String status, Pageable pageable);
 
-    @Modifying
-    @Query(value = "select * from employee where position_id =?1 and status = ?2", nativeQuery = true)
-    List<Employee> findbyPositionIdAndStatus(int id, String status);
+    public Page<Employee> findByDepartment(Department department, Pageable pageable);
 
 }

@@ -43,9 +43,23 @@ public class EmployeeController {
 
     @GetMapping("/getAllEmployees")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllEmployees() {
+    public ResponseEntity<ListResponseDTO> getAllEmployees(@RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
         ListResponseDTO<EmployeeResponse> responseDTO = new ListResponseDTO();
-        List<EmployeeResponse> list = employeeService.getAllEmployees();
+        List<EmployeeResponse> list = employeeService.getAllEmployees(pageNo, pageSize);
+        responseDTO.setData(list);
+        responseDTO.setMessage(EmployeeSuccessMessage.GET_ALL_EMPLOYEE_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/getEmployeesByDepartment")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ListResponseDTO> getEmployeesByDepartment(@RequestParam("departmentId") int departmentId,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        ListResponseDTO<EmployeeResponse> responseDTO = new ListResponseDTO();
+        List<EmployeeResponse> list = employeeService.getAllEmployeeByDepartment(departmentId, pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(EmployeeSuccessMessage.GET_ALL_EMPLOYEE_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -72,11 +86,13 @@ public class EmployeeController {
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+
     @PermitAll
     @PatchMapping("/reset-password")
-    public ResponseEntity<ResponseDTO> resetPassword(@Validated @RequestBody ResetPasswordDto resetPasswordDto){
+    public ResponseEntity<ResponseDTO> resetPassword(@Validated @RequestBody ResetPasswordDto resetPasswordDto) {
         ResponseDTO<Void> responseDTO = new ResponseDTO();
-        emailService.resetPassword(resetPasswordDto.getEmail(), resetPasswordDto.getToken(), resetPasswordDto.getNewPassword());
+        emailService.resetPassword(resetPasswordDto.getEmail(), resetPasswordDto.getToken(),
+                resetPasswordDto.getNewPassword());
         responseDTO.setMessage(EmployeeSuccessMessage.RESET_PASSWORD_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
