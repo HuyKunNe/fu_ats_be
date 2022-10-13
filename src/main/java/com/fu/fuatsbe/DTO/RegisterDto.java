@@ -29,11 +29,7 @@ public class RegisterDto {
     private String phone;
 
     private String image;
-    @NotBlank(message = ValidationMessage.GENDER_VALID_MESSAGE)
     private String gender;
-
-//    @Size(min = 1, max = 8)
-    @NotNull(message = ValidationMessage.DOB_VALID_MESSAGE)
     private Date dob;
 
     @NotBlank(message = ValidationMessage.ADDRESS_VALID_MESSAGE)
