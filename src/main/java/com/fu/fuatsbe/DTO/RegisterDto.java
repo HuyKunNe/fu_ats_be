@@ -6,10 +6,8 @@ import com.fu.fuatsbe.constant.validation_size.ValidationSize;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-import java.util.Date;
+import javax.validation.constraints.*;
+import java.sql.Date;
 
 @Data
 @Builder
@@ -33,7 +31,9 @@ public class RegisterDto {
     private String image;
     @NotBlank(message = ValidationMessage.GENDER_VALID_MESSAGE)
     private String gender;
-    @NotBlank(message = ValidationMessage.DOB_VALID_MESSAGE)
+
+//    @Size(min = 1, max = 8)
+    @NotNull(message = ValidationMessage.DOB_VALID_MESSAGE)
     private Date dob;
 
     @NotBlank(message = ValidationMessage.ADDRESS_VALID_MESSAGE)

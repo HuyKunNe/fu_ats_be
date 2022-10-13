@@ -35,6 +35,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().addFilterBefore(new TokenVerifier(jwtConfig), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests().antMatchers("/auth/register",
                         "/auth/login",
+                        "/auth/**",
                         "/recruitmentRequest/getAll",
                         "/recruitmentRequest/getById",
                         "/recruitmentRequest/getOpenRecruitmentRequest",

@@ -60,13 +60,12 @@ public class EmailServiceImp implements EmailService {
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
         mimeMessageHelper.setTo(account.getEmail());
         mimeMessageHelper.setSubject("Reset password from ATS");
-        mimeMessageHelper.setText("if u forget my password, nah bro. u do not deserve to use my system " + token);
-//        mimeMessageHelper.setText("Lấy lại mật khẩu thành công, vui lòng nhấn đường link bên dưới để đặt lại mật khẩu  \n"+"http://podoc.store/auth/reset-password/"
-//                +account.getEmail()+"/"
-//                +token
-//                +"\nChúc bạn một ngày làm việc tốt lành, \n" +
-//                "\n" +
-//                "Trân Trọng, ");
+        mimeMessageHelper.setText("Lấy lại mật khẩu thành công, vui lòng nhấn đường link bên dưới để đặt lại mật khẩu  \n"+"http://localhost:3000/#/reset-password/"
+                +account.getEmail()+"/"
+                +token
+                +"\nChúc bạn một ngày làm việc tốt lành, \n" +
+                "\n" +
+                "Trân Trọng, ");
         javaMailSender.send(mimeMessage);
     }
 

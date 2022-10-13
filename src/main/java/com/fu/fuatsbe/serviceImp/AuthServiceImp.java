@@ -166,10 +166,12 @@ public class AuthServiceImp implements AuthService {
                     .status(accountAuthencated.getStatus())
                     .roleName(accountAuthencated.getRole().getName())
                     .token(token).build();
-            if (accountAuthencated.getRole().getName().equalsIgnoreCase(RoleName.ROLE_EMPLOYEE)) {
-                loginResponseDTO.setEmployee(accountAuthencated.getEmployee());
-            } else if (accountAuthencated.getRole().getName().equalsIgnoreCase(RoleName.ROLE_CANDIDATE))
+            if  (accountAuthencated.getRole().getName().equalsIgnoreCase(RoleName.ROLE_CANDIDATE)) {
                 loginResponseDTO.setCandidate(accountAuthencated.getCandidate());
+            }
+            else {
+                    loginResponseDTO.setEmployee(accountAuthencated.getEmployee());
+            }
         }
         return loginResponseDTO;
     }
