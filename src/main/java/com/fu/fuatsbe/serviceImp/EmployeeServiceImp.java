@@ -91,8 +91,18 @@ public class EmployeeServiceImp implements EmployeeService {
 
     @Override
     public EmployeeResponse updateEmployee(int id, EmployeeUpdateDTO updateDTO) {
-        // TODO Auto-generated method stub
-        return null;
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+
+        employee.setImage(updateDTO.getImage());
+        employee.setGender(updateDTO.getGender());
+        employee.setDob(updateDTO.getDob());
+        employee.setPhone(updateDTO.getPhone());
+        employee.setAddress(updateDTO.getAddress());
+
+        Employee employeeSaved = employeeRepository.save(employee);
+        EmployeeResponse response = modelMapper.map(employeeSaved, EmployeeResponse.class);
+        return response;
     }
 
     @Override

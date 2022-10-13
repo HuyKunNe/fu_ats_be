@@ -19,7 +19,7 @@ public interface CandidateService {
 
     public CandidateResponseDTO getCandidateByPhone(String phone);
 
-    public CandidateResponseDTO updateCandidateById(CandidateUpdateDTO updateDTO);
+    public CandidateResponseDTO updateCandidateById(int id, CandidateUpdateDTO updateDTO);
 
     public Candidate deleteCandidateById(int id);
 }

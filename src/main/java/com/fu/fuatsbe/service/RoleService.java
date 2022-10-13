@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.fu.fuatsbe.DTO.RoleCreateDTO;
 import com.fu.fuatsbe.DTO.RoleUpdateDTO;
-import com.fu.fuatsbe.entity.Role;
 import com.fu.fuatsbe.response.RoleResponse;
 
 public interface RoleService {

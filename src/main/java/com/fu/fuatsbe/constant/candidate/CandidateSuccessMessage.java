@@ -6,5 +6,6 @@ public final class CandidateSuccessMessage {
     public final static String GET_CANDIDATE_BY_EMAIL_SUCCESS = "Get candidate by email successfully";
     public final static String GET_ALL_CANDIDATE_SUCCESS = "Get all candidates successfully";
     public final static String DELETE_CANDIDATE_SUCCESS = "Delete candidate by id successfully";
+    public final static String UPDATE_CANDIDATE_SUCCESS = "Update candidate successfully";
 
 }

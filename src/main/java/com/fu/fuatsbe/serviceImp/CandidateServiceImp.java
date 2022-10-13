@@ -74,9 +74,19 @@ public class CandidateServiceImp implements CandidateService {
     }
 
     @Override
-    public CandidateResponseDTO updateCandidateById(CandidateUpdateDTO updateDTO) {
-        // TODO Auto-generated method stub
-        return null;
+    public CandidateResponseDTO updateCandidateById(int id, CandidateUpdateDTO updateDTO) {
+        Candidate candidate = candidateRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+        candidate.setName(updateDTO.getName());
+        candidate.setPhone(updateDTO.getPhone());
+        candidate.setImage(updateDTO.getImage());
+        candidate.setGender(updateDTO.getGender());
+        candidate.setDob(updateDTO.getDob());
+        candidate.setAddress(updateDTO.getAddress());
+
+        Candidate candidateSaved = candidateRepository.save(candidate);
+        CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidateSaved, CandidateResponseDTO.class);
+        return candidateResponseDTO;
     }
 
     @Override

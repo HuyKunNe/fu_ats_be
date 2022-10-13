@@ -80,7 +80,7 @@ public class AuthServiceImp implements AuthService {
             dob = LocalDate.parse(registerDTO.getDob().toString(), format);
         }
         Candidate candidate = Candidate.builder().name(registerDTO.getName()).email(registerDTO.getEmail())
-                .phone(registerDTO.getPhone()).image(registerDTO.getImage()).Dob(Date.valueOf(dob))
+                .phone(registerDTO.getPhone()).image(registerDTO.getImage()).dob(Date.valueOf(dob))
                 .gender(registerDTO.getGender()).address(registerDTO.getAddress())
                 .status(CandidateStatus.ACTIVATED)
                 .build();
@@ -182,10 +182,10 @@ public class AuthServiceImp implements AuthService {
     public void changePassword(ChangePasswordDTO changePasswordDTO) {
         Account account = accountRepository.findAccountByEmail(changePasswordDTO.getEmail())
                 .orElseThrow(() -> new NotFoundException(AccountErrorMessage.ACCOUNT_NOT_FOUND));
-        if(!passwordEncoder.matches(changePasswordDTO.getOldPassword(), account.getPassword())){
+        if (!passwordEncoder.matches(changePasswordDTO.getOldPassword(), account.getPassword())) {
             throw new NotValidException(AccountErrorMessage.PASSWORD_NOT_MATCH);
         }
-       account.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+        account.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
         accountRepository.save(account);
     }
 }

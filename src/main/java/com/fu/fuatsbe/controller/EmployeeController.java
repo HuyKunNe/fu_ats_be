@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.controller;
 
+import com.fu.fuatsbe.DTO.EmployeeUpdateDTO;
 import com.fu.fuatsbe.DTO.ResetPasswordDto;
 import com.fu.fuatsbe.constant.employee.EmployeeSuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
@@ -97,4 +98,17 @@ public class EmployeeController {
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @PutMapping("update/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> updateEmployee(@RequestParam("id") int id,
+            @RequestBody EmployeeUpdateDTO updateDTO) {
+        ResponseDTO<EmployeeResponse> responseDTO = new ResponseDTO();
+        EmployeeResponse employee = employeeService.updateEmployee(id, updateDTO);
+        responseDTO.setData(employee);
+        responseDTO.setMessage(EmployeeSuccessMessage.UPDATE_EMPLOYEE_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
 }

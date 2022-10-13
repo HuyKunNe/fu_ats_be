@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import com.fu.fuatsbe.DTO.CandidateUpdateDTO;
 import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.candidate.CandidateSuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
@@ -103,6 +104,18 @@ public class CandidateController {
         responseDTO.setData(true);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         responseDTO.setMessage(CandidateSuccessMessage.DELETE_CANDIDATE_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PutMapping("/update/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
+    public ResponseEntity<ResponseDTO> updateCandidateById(@RequestParam("id") int id,
+            @RequestBody CandidateUpdateDTO updateDTO) {
+        ResponseDTO<CandidateResponseDTO> responseDTO = new ResponseDTO();
+        CandidateResponseDTO candidate = candidateService.updateCandidateById(id, updateDTO);
+        responseDTO.setData(candidate);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        responseDTO.setMessage(CandidateSuccessMessage.UPDATE_CANDIDATE_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 

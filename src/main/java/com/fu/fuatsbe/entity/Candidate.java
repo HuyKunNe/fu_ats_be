@@ -43,7 +43,7 @@ public class Candidate {
     private String phone;
     private String image;
     private String gender;
-    private Date Dob;
+    private Date dob;
     private String email;
     @Nationalized
     private String address;
