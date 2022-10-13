@@ -1,12 +1,14 @@
 package com.fu.fuatsbe.DTO;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fu.fuatsbe.constant.validation_message.ValidationMessage;
 import com.fu.fuatsbe.constant.validation_size.ValidationSize;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.sql.Date;
 
 @Data

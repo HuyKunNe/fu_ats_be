@@ -8,4 +8,5 @@ public final class AccountSuccessMessage {
     public final static String GET_ALL_DISABLE_ACCOUNT_SUCCESS = "Get all disable accounts successfully";
     public final static String GET_ALL_ACCOUNT_BY_ROLE_SUCCESS = "Get all accounts by role successfully";
     public final static String DELETE_ACCOUNT_SUCCESS = "Delete account by id successfully";
+    public final static String CHANGE_PASSWORD_ACCOUNT_SUCCESS = "Change password successfully";
 }

@@ -1,8 +1,10 @@
 package com.fu.fuatsbe.serviceImp;
 
 import com.fu.fuatsbe.DTO.*;
+import com.fu.fuatsbe.constant.account.AccountErrorMessage;
 import com.fu.fuatsbe.constant.account.AccountStatus;
 import com.fu.fuatsbe.constant.candidate.CandidateStatus;
+import com.fu.fuatsbe.constant.common.CommonMessage;
 import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeStatus;
@@ -16,9 +18,7 @@ import com.fu.fuatsbe.entity.Department;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.Position;
 import com.fu.fuatsbe.entity.Role;
-import com.fu.fuatsbe.exceptions.EmailExistException;
-import com.fu.fuatsbe.exceptions.ExistException;
-import com.fu.fuatsbe.exceptions.NotFoundException;
+import com.fu.fuatsbe.exceptions.*;
 import com.fu.fuatsbe.jwt.JwtConfig;
 import com.fu.fuatsbe.repository.AccountRepository;
 import com.fu.fuatsbe.repository.CandidateRepository;
@@ -76,8 +76,8 @@ public class AuthServiceImp implements AuthService {
         }
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate dob = LocalDate.parse("2000-01-01", format);
-        if(registerDTO.getDob() != null){
-          dob = LocalDate.parse(registerDTO.getDob().toString(), format);
+        if (registerDTO.getDob() != null) {
+            dob = LocalDate.parse(registerDTO.getDob().toString(), format);
         }
         Candidate candidate = Candidate.builder().name(registerDTO.getName()).email(registerDTO.getEmail())
                 .phone(registerDTO.getPhone()).image(registerDTO.getImage()).Dob(Date.valueOf(dob))
@@ -169,13 +169,23 @@ public class AuthServiceImp implements AuthService {
                     .status(accountAuthencated.getStatus())
                     .roleName(accountAuthencated.getRole().getName())
                     .token(token).build();
-            if  (accountAuthencated.getRole().getName().equalsIgnoreCase(RoleName.ROLE_CANDIDATE)) {
+            if (accountAuthencated.getRole().getName().equalsIgnoreCase(RoleName.ROLE_CANDIDATE)) {
                 loginResponseDTO.setCandidate(accountAuthencated.getCandidate());
-            }
-            else {
-                    loginResponseDTO.setEmployee(accountAuthencated.getEmployee());
+            } else {
+                loginResponseDTO.setEmployee(accountAuthencated.getEmployee());
             }
         }
         return loginResponseDTO;
+    }
+
+    @Override
+    public void changePassword(ChangePasswordDTO changePasswordDTO) {
+        Account account = accountRepository.findAccountByEmail(changePasswordDTO.getEmail())
+                .orElseThrow(() -> new NotFoundException(AccountErrorMessage.ACCOUNT_NOT_FOUND));
+        if(!passwordEncoder.matches(changePasswordDTO.getOldPassword(), account.getPassword())){
+            throw new NotValidException(AccountErrorMessage.PASSWORD_NOT_MATCH);
+        }
+       account.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+        accountRepository.save(account);
     }
 }

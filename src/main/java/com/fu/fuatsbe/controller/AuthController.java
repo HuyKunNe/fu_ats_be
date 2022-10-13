@@ -1,6 +1,7 @@
 package com.fu.fuatsbe.controller;
 
 import com.fu.fuatsbe.DTO.*;
+import com.fu.fuatsbe.constant.account.AccountSuccessMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeSuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
@@ -74,6 +75,15 @@ public class AuthController {
         ResponseDTO<Void> responseDTO = new ResponseDTO();
         emailService.resetPassword(resetPasswordDto.getEmail(), resetPasswordDto.getToken(), resetPasswordDto.getNewPassword());
         responseDTO.setMessage(EmployeeSuccessMessage.RESET_PASSWORD_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @PermitAll
+    @PatchMapping("change-password")
+    public ResponseEntity<ResponseDTO> changePassword(@Validated @RequestBody ChangePasswordDTO changePasswordDTO){
+        ResponseDTO<Void> responseDTO = new ResponseDTO();
+        authService.changePassword(changePasswordDTO);
+        responseDTO.setMessage(AccountSuccessMessage.CHANGE_PASSWORD_ACCOUNT_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
