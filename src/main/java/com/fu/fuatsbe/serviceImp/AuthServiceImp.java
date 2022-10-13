@@ -75,7 +75,10 @@ public class AuthServiceImp implements AuthService {
             throw new ExistException(ValidationMessage.PHONE_IS_EXIST);
         }
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate dob = LocalDate.parse(registerDTO.getDob().toString(), format);
+        LocalDate dob = LocalDate.parse("2000-01-01", format);
+        if(registerDTO.getDob() != null){
+          dob = LocalDate.parse(registerDTO.getDob().toString(), format);
+        }
         Candidate candidate = Candidate.builder().name(registerDTO.getName()).email(registerDTO.getEmail())
                 .phone(registerDTO.getPhone()).image(registerDTO.getImage()).Dob(Date.valueOf(dob))
                 .gender(registerDTO.getGender()).address(registerDTO.getAddress())
