@@ -11,5 +11,6 @@ public final class RecruitmentRequestSuccessMessage {
     public final static String CREATE_RECRUITMENT_REQUEST_SUCESS = "create recruitment request successfully";
     public final static String UPDATE_RECRUITMENT_REQUEST_SUCESS = "update recruitment request successfully";
     public final static String CLOSED_RECRUITMENT_REQUEST_SUCESS = "close recruitment request successfully";
+    public final static String SEARCH_RECRUITMENT_REQUEST_SUCESS = "search recruitment request successfully";
 
 }

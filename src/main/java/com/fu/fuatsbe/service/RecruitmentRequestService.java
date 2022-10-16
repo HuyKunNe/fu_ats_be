@@ -3,6 +3,7 @@ package com.fu.fuatsbe.service;
 import java.util.List;
 
 import com.fu.fuatsbe.DTO.RecruitmentRequestCreateDTO;
+import com.fu.fuatsbe.DTO.RecruitmentRequestSearchDTO;
 import com.fu.fuatsbe.DTO.RecruitmentRequestUpdateDTO;
 import com.fu.fuatsbe.response.RecruitmentRequestResponse;
 
@@ -24,5 +25,7 @@ public interface RecruitmentRequestService {
     public RecruitmentRequestResponse createRecruitmentRequest(RecruitmentRequestCreateDTO createDTO);
 
     public RecruitmentRequestResponse closeRecruitmentRequest(int id);
+
+    public List<RecruitmentRequestResponse> searchRecruitmentRequest(RecruitmentRequestSearchDTO searchDTO);
 
 }

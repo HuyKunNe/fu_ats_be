@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fu.fuatsbe.DTO.RecruitmentRequestCreateDTO;
+import com.fu.fuatsbe.DTO.RecruitmentRequestSearchDTO;
 import com.fu.fuatsbe.DTO.RecruitmentRequestUpdateDTO;
 import com.fu.fuatsbe.constant.recruitmentRequest.RecruitmentRequestSuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
@@ -144,6 +145,18 @@ public class RecruitmentRequestController {
         responseDTO.setMessage(RecruitmentRequestSuccessMessage.UPDATE_RECRUITMENT_REQUEST_SUCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PutMapping("/searchRecruitmentRequest")
+    @PermitAll
+    public ResponseEntity<ListResponseDTO> searchRecruitmentRequest(
+            @RequestBody RecruitmentRequestSearchDTO searchDTO) {
+        ListResponseDTO<RecruitmentRequestResponse> response = new ListResponseDTO();
+        List<RecruitmentRequestResponse> list = recruitmentRequestService.searchRecruitmentRequest(searchDTO);
+        response.setData(list);
+        response.setMessage(RecruitmentRequestSuccessMessage.GET_OPEN_RECRUITMENT_PLAN_SUCCESS);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(response);
     }
 
 }

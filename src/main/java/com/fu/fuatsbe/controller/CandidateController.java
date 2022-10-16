@@ -7,7 +7,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.fu.fuatsbe.DTO.CandidateUpdateDTO;
-import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.candidate.CandidateSuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;

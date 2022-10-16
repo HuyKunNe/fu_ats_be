@@ -9,12 +9,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.RecruitmentRequestCreateDTO;
+import com.fu.fuatsbe.DTO.RecruitmentRequestSearchDTO;
 import com.fu.fuatsbe.DTO.RecruitmentRequestUpdateDTO;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.planDetail.PlanDetailErrorMessage;
@@ -42,7 +44,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
 
+    @Autowired
     private final RecruitmentRequestRepository recruitmentRequestRepository;
+
     private final ModelMapper modelMapper;
     private final EmployeeRepository employeeRepository;
     private final PlanDetailRepository planDetailRepository;
@@ -207,6 +211,23 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
 
         if (pageResult.hasContent()) {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
+                RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
+                        RecruitmentRequestResponse.class);
+                result.add(response);
+            }
+        } else
+            throw new ListEmptyException(RecruitmentRequestErrorMessage.LIST_RECRUITMENT_REQUEST_EMPTY_EXCEPTION);
+        return result;
+    }
+
+    @Override
+    public List<RecruitmentRequestResponse> searchRecruitmentRequest(RecruitmentRequestSearchDTO searchDTO) {
+        List<RecruitmentRequestResponse> result = new ArrayList<RecruitmentRequestResponse>();
+        List<RecruitmentRequest> list = recruitmentRequestRepository.filterRecruitmentRequest(searchDTO.getJobTitle(),
+                searchDTO.getIndustry(), searchDTO.getJobLevel(), searchDTO.getTypeOfWork(), searchDTO.getSalary(),
+                searchDTO.getExperince());
+        if (!list.isEmpty()) {
+            for (RecruitmentRequest recruitmentRequest : list) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
                 result.add(response);
