@@ -41,6 +41,8 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import javax.management.relation.RoleNotFoundException;
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -74,11 +76,10 @@ public class AuthServiceImp implements AuthService {
         if (optionalCandidate.isPresent()) {
             throw new ExistException(ValidationMessage.PHONE_IS_EXIST);
         }
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate dob = LocalDate.parse("2000-01-01", format);
-        if (registerDTO.getDob() != null) {
-            dob = LocalDate.parse(registerDTO.getDob().toString(), format);
-        }
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String dob = simpleDateFormat.format(registerDTO.getDob());
+
         Candidate candidate = Candidate.builder().name(registerDTO.getName()).email(registerDTO.getEmail())
                 .phone(registerDTO.getPhone()).image(registerDTO.getImage()).dob(Date.valueOf(dob))
                 .gender(registerDTO.getGender()).address(registerDTO.getAddress())
@@ -122,8 +123,9 @@ public class AuthServiceImp implements AuthService {
             throw new ExistException(ValidationMessage.PHONE_IS_EXIST);
         }
 
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate dob = LocalDate.parse(registerDto.getDob().toString(), format);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String dob = simpleDateFormat.format(registerDto.getDob());
+
         Employee employee = Employee.builder().name(registerDto.getName()).employeeCode(registerDto.getEmployeeCode())
                 .image(registerDto.getImage())
                 .gender(registerDto.getGender())

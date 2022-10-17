@@ -1,5 +1,7 @@
 package com.fu.fuatsbe.serviceImp;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,7 +98,11 @@ public class EmployeeServiceImp implements EmployeeService {
 
         employee.setImage(updateDTO.getImage());
         employee.setGender(updateDTO.getGender());
-        employee.setDob(updateDTO.getDob());
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String dob = simpleDateFormat.format(updateDTO.getDob());
+
+        employee.setDob(Date.valueOf(dob));
         employee.setPhone(updateDTO.getPhone());
         employee.setAddress(updateDTO.getAddress());
 

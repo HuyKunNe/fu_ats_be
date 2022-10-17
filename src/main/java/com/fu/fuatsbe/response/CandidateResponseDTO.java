@@ -1,5 +1,7 @@
 package com.fu.fuatsbe.response;
 
+import java.sql.Date;
+
 import com.fu.fuatsbe.entity.CV;
 
 import lombok.AllArgsConstructor;
@@ -16,6 +18,7 @@ public class CandidateResponseDTO {
     private String phone;
     private String email;
     private String image;
+    private Date dob;
     private String address;
     private String status;
     private CV cv;

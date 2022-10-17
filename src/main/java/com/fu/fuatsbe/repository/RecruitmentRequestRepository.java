@@ -26,25 +26,7 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
         Page<RecruitmentRequest> findByPosition(Position position, Pageable pageable);
 
         Page<RecruitmentRequest> findByCreator(Employee employee, Pageable pageable);
-
-        // @Modifying
-        // @Query(value = "SELECT r from RecruitmentRequest r join Position p on
-        // r.positionId = p.id \n"
-        // + "where concat(r.job_level, ', p.name) like N'%?1%' \n"
-        // + "or r.industry '%?2%' \n"
-        // + "or r.jobLevel like N'%?3%' \n"
-        // + "or r.typeOfWork like N'%?4%' \n"
-        // + "or salary >= N'%?5%' \n"
-        // + "or r.experience >= N'%?6%' \n"
-        // + "and r.status like 'OPENING' \n"
-        // + "order by (case \n"
-        // + "when concat(r.jobLevel, ' ', p.name) like N'%?1%' then 1 \n"
-        // + "when r.industry like N'%?2%' then 2 \n"
-        // + "when r.jobLevel like N'%?3%' then 3 \n"
-        // + "when r.typeOfWork like N'%?4%' then 4 \n"
-        // + "when r.salary >= N'%?5%' then 5 \n"
-        // + "when r.experience >= N'%?6%' then 6 \n"
-        // + " end);", nativeQuery = true)
+        
         @Modifying
         @Query(value = "SELECT r.* from recruitment_request r join position p on r.position_id = p.id \n"
                         + "where concat(r.job_level,' ', p.name) like N'%?1%' \n"
