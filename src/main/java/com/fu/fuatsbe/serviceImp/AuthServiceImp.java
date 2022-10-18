@@ -4,7 +4,6 @@ import com.fu.fuatsbe.DTO.*;
 import com.fu.fuatsbe.constant.account.AccountErrorMessage;
 import com.fu.fuatsbe.constant.account.AccountStatus;
 import com.fu.fuatsbe.constant.candidate.CandidateStatus;
-import com.fu.fuatsbe.constant.common.CommonMessage;
 import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeStatus;
@@ -41,10 +40,7 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import javax.management.relation.RoleNotFoundException;
 import java.sql.Date;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Service

@@ -224,8 +224,9 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     @Override
     public List<RecruitmentRequestResponse> searchRecruitmentRequest(RecruitmentRequestSearchDTO searchDTO) {
         List<RecruitmentRequestResponse> result = new ArrayList<RecruitmentRequestResponse>();
-        List<RecruitmentRequest> list = recruitmentRequestRepository.filterRecruitmentRequest(searchDTO.getJobTitle(),
-                searchDTO.getIndustry(), searchDTO.getJobLevel(), searchDTO.getTypeOfWork(), searchDTO.getSalary(),
+        List<RecruitmentRequest> list = recruitmentRequestRepository.searchRecruitmentRequest(searchDTO.getJobTitle(),
+                searchDTO.getIndustry(), searchDTO.getJobLevel(), searchDTO.getTypeOfWork(),
+                searchDTO.getSalary().replaceAll("[^0-9]", ""),
                 searchDTO.getExperience());
         if (!list.isEmpty()) {
             for (RecruitmentRequest recruitmentRequest : list) {

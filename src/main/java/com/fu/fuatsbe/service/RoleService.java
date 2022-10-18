@@ -8,12 +8,12 @@ import com.fu.fuatsbe.response.RoleResponse;
 
 public interface RoleService {
 
-    List<RoleResponse> getAllRoles();
+    public List<RoleResponse> getAllRoles();
 
-    RoleResponse getRoleById(int id);
+    public RoleResponse getRoleById(int id);
 
-    RoleResponse createRole(RoleCreateDTO createDTO);
+    public RoleResponse createRole(RoleCreateDTO createDTO);
 
-    RoleResponse updateRole(int id, RoleUpdateDTO updateDTO);
+    public RoleResponse updateRole(int id, RoleUpdateDTO updateDTO);
 
 }
