@@ -34,7 +34,7 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
                         + "     and r.job_level like %?3% \n"
                         + "     and r.type_of_work like %?4% \n"
                         + "     and cast(r.salary as unsigned) >= cast(?5 as unsigned) \n"
-                        + "     and r.experience >= %?6% \n"
+                        + "     and r.experience like %?6% \n"
                         + "     and r.status like 'OPENING' \n"
                         + "order by (case \n "
                         + "     when concat(r.job_level,' ', p.name) like %?1% then 1 "
