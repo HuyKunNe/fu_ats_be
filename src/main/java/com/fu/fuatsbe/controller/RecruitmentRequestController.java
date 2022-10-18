@@ -2,7 +2,7 @@ package com.fu.fuatsbe.controller;
 
 import java.util.List;
 
-import com.fu.fuatsbe.DTO.RecruitmentSearchCategoryDTO;
+import com.fu.fuatsbe.DTO.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fu.fuatsbe.DTO.RecruitmentRequestCreateDTO;
-import com.fu.fuatsbe.DTO.RecruitmentRequestSearchDTO;
-import com.fu.fuatsbe.DTO.RecruitmentRequestUpdateDTO;
 import com.fu.fuatsbe.constant.recruitmentRequest.RecruitmentRequestSuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
@@ -39,12 +36,12 @@ public class RecruitmentRequestController {
 
     @GetMapping("/getAll")
     @PermitAll
-    public ResponseEntity<ListResponseDTO> getAllRecruitmentRequests(@RequestParam(defaultValue = "0") int pageNo,
+    public ResponseEntity<ResponseDTO> getAllRecruitmentRequests(@RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
 
-        ListResponseDTO<RecruitmentRequestResponse> response = new ListResponseDTO();
-        List<RecruitmentRequestResponse> list = recruitmentRequestService.getAllRecruitmentRequests(pageNo, pageSize);
-        response.setData(list);
+        ResponseDTO response = new ResponseDTO();
+        RecruitmentRequestResponseWithTotalPages responseWithTotalPages = recruitmentRequestService.getAllRecruitmentRequests(pageNo, pageSize);
+        response.setData(responseWithTotalPages);
         response.setMessage(RecruitmentRequestSuccessMessage.GET_ALL_RECRUITMENT_REQUEST_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
@@ -63,12 +60,12 @@ public class RecruitmentRequestController {
 
     @GetMapping("/getOpenRecruitmentRequest")
     @PermitAll
-    public ResponseEntity<ListResponseDTO> getAllOpenRecruitmentRequest(@RequestParam(defaultValue = "0") int pageNo,
+    public ResponseEntity<ResponseDTO> getAllOpenRecruitmentRequest(@RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<RecruitmentRequestResponse> response = new ListResponseDTO();
-        List<RecruitmentRequestResponse> list = recruitmentRequestService.getAllOpenRecruitmentRequest(pageNo,
+        ResponseDTO response = new ResponseDTO();
+        RecruitmentRequestResponseWithTotalPages responseWithTotalPages = recruitmentRequestService.getAllOpenRecruitmentRequest(pageNo,
                 pageSize);
-        response.setData(list);
+        response.setData(responseWithTotalPages);
         response.setMessage(RecruitmentRequestSuccessMessage.GET_OPEN_RECRUITMENT_PLAN_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
@@ -76,12 +73,12 @@ public class RecruitmentRequestController {
 
     @GetMapping("/getFilledRecruitmentRequest")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllFilledRecruitmentRequest(@RequestParam(defaultValue = "0") int pageNo,
+    public ResponseEntity<ResponseDTO> getAllFilledRecruitmentRequest(@RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<RecruitmentRequestResponse> response = new ListResponseDTO();
-        List<RecruitmentRequestResponse> list = recruitmentRequestService.getAllFilledRecruitmentRequest(pageNo,
+       ResponseDTO response = new ResponseDTO();
+        RecruitmentRequestResponseWithTotalPages responseWithTotalPages = recruitmentRequestService.getAllFilledRecruitmentRequest(pageNo,
                 pageSize);
-        response.setData(list);
+        response.setData(responseWithTotalPages);
         response.setMessage(RecruitmentRequestSuccessMessage.GET_FILLED_RECRUITMENT_REQUEST_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
@@ -89,12 +86,12 @@ public class RecruitmentRequestController {
 
     @GetMapping("/getClosedRecruitmentRequest")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllClosedRecruitmentRequest(@RequestParam(defaultValue = "0") int pageNo,
+    public ResponseEntity<ResponseDTO> getAllClosedRecruitmentRequest(@RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<RecruitmentRequestResponse> response = new ListResponseDTO();
-        List<RecruitmentRequestResponse> list = recruitmentRequestService.getAllClosedRecruitmentRequest(pageNo,
+        ResponseDTO response = new ResponseDTO();
+        RecruitmentRequestResponseWithTotalPages responseWithTotalPages = recruitmentRequestService.getAllClosedRecruitmentRequest(pageNo,
                 pageSize);
-        response.setData(list);
+        response.setData(responseWithTotalPages);
         response.setMessage(RecruitmentRequestSuccessMessage.GET_CLOSED_RECRUITMENT_REQUEST_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
@@ -102,13 +99,13 @@ public class RecruitmentRequestController {
 
     @GetMapping("/getByCreator")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllRecruitmentRequestByCreator(@RequestParam("id") int id,
+    public ResponseEntity<ResponseDTO> getAllRecruitmentRequestByCreator(@RequestParam("id") int id,
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<RecruitmentRequestResponse> response = new ListResponseDTO();
-        List<RecruitmentRequestResponse> list = recruitmentRequestService.getAllRecruitmentRequestByCreator(id, pageNo,
+        ResponseDTO response = new ResponseDTO();
+        RecruitmentRequestResponseWithTotalPages responseWithTotalPages = recruitmentRequestService.getAllRecruitmentRequestByCreator(id, pageNo,
                 pageSize);
-        response.setData(list);
+        response.setData(responseWithTotalPages);
         response.setMessage(RecruitmentRequestSuccessMessage.GET_ALL_RECRUITMENT_REQUEST_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
