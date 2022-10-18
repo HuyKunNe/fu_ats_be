@@ -2,6 +2,7 @@ package com.fu.fuatsbe.controller;
 
 import java.util.List;
 
+import com.fu.fuatsbe.DTO.RecruitmentSearchCategoryDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -108,7 +109,7 @@ public class RecruitmentRequestController {
         List<RecruitmentRequestResponse> list = recruitmentRequestService.getAllRecruitmentRequestByCreator(id, pageNo,
                 pageSize);
         response.setData(list);
-        response.setMessage(RecruitmentRequestSuccessMessage.GET_CLOSED_RECRUITMENT_REQUEST_SUCCESS);
+        response.setMessage(RecruitmentRequestSuccessMessage.GET_ALL_RECRUITMENT_REQUEST_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
@@ -119,7 +120,7 @@ public class RecruitmentRequestController {
         ResponseDTO<RecruitmentRequestResponse> responseDTO = new ResponseDTO();
         RecruitmentRequestResponse recruitmentRequest = recruitmentRequestService.createRecruitmentRequest(createDTO);
         responseDTO.setData(recruitmentRequest);
-        responseDTO.setMessage(RecruitmentRequestSuccessMessage.CREATE_RECRUITMENT_REQUEST_SUCESS);
+        responseDTO.setMessage(RecruitmentRequestSuccessMessage.CREATE_RECRUITMENT_REQUEST_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
@@ -131,7 +132,7 @@ public class RecruitmentRequestController {
         ResponseDTO<RecruitmentRequestResponse> responseDTO = new ResponseDTO();
         RecruitmentRequestResponse planDetailDTO = recruitmentRequestService.updateRecruitmentRequest(id, updateDTO);
         responseDTO.setData(planDetailDTO);
-        responseDTO.setMessage(RecruitmentRequestSuccessMessage.UPDATE_RECRUITMENT_REQUEST_SUCESS);
+        responseDTO.setMessage(RecruitmentRequestSuccessMessage.UPDATE_RECRUITMENT_REQUEST_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
@@ -142,7 +143,7 @@ public class RecruitmentRequestController {
         ResponseDTO<RecruitmentRequestResponse> responseDTO = new ResponseDTO();
         RecruitmentRequestResponse planDetailDTO = recruitmentRequestService.closeRecruitmentRequest(id);
         responseDTO.setData(planDetailDTO);
-        responseDTO.setMessage(RecruitmentRequestSuccessMessage.UPDATE_RECRUITMENT_REQUEST_SUCESS);
+        responseDTO.setMessage(RecruitmentRequestSuccessMessage.CLOSED_RECRUITMENT_REQUEST_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
@@ -158,5 +159,14 @@ public class RecruitmentRequestController {
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
-
+    @PermitAll
+    @GetMapping("/getSearchCategory")
+    public ResponseEntity<ResponseDTO> getSearchCategory(){
+        ResponseDTO responseDTO = new ResponseDTO();
+        RecruitmentSearchCategoryDTO recruitmentSearchCategoryDTO = recruitmentRequestService.searchCategory();
+        responseDTO.setMessage(RecruitmentRequestSuccessMessage.GET_SEARCH_CATEGORY_SUCCESS);
+        responseDTO.setData(recruitmentSearchCategoryDTO);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }

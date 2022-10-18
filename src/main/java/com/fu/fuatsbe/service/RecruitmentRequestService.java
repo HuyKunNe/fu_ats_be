@@ -5,6 +5,7 @@ import java.util.List;
 import com.fu.fuatsbe.DTO.RecruitmentRequestCreateDTO;
 import com.fu.fuatsbe.DTO.RecruitmentRequestSearchDTO;
 import com.fu.fuatsbe.DTO.RecruitmentRequestUpdateDTO;
+import com.fu.fuatsbe.DTO.RecruitmentSearchCategoryDTO;
 import com.fu.fuatsbe.response.RecruitmentRequestResponse;
 
 public interface RecruitmentRequestService {
@@ -27,5 +28,7 @@ public interface RecruitmentRequestService {
     public RecruitmentRequestResponse closeRecruitmentRequest(int id);
 
     public List<RecruitmentRequestResponse> searchRecruitmentRequest(RecruitmentRequestSearchDTO searchDTO);
+
+    public RecruitmentSearchCategoryDTO searchCategory();
 
 }

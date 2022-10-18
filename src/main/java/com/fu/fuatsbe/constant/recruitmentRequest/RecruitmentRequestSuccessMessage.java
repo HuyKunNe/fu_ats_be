@@ -8,9 +8,10 @@ public final class RecruitmentRequestSuccessMessage {
     public final static String GET_CLOSED_RECRUITMENT_REQUEST_SUCCESS = "Get pending recruitment request successfully";
     public final static String GET_FILLED_RECRUITMENT_REQUEST_SUCCESS = "Get reject recruitment request successfully";
     public final static String GET_RECRUITMENT_REQUEST_BY_CREATOR_ID_SUCCESS = "Get recruitment request by creator successfully";
-    public final static String CREATE_RECRUITMENT_REQUEST_SUCESS = "create recruitment request successfully";
-    public final static String UPDATE_RECRUITMENT_REQUEST_SUCESS = "update recruitment request successfully";
-    public final static String CLOSED_RECRUITMENT_REQUEST_SUCESS = "close recruitment request successfully";
-    public final static String SEARCH_RECRUITMENT_REQUEST_SUCESS = "search recruitment request successfully";
+    public final static String CREATE_RECRUITMENT_REQUEST_SUCCESS = "create recruitment request successfully";
+    public final static String UPDATE_RECRUITMENT_REQUEST_SUCCESS = "update recruitment request successfully";
+    public final static String CLOSED_RECRUITMENT_REQUEST_SUCCESS = "close recruitment request successfully";
+    public final static String SEARCH_RECRUITMENT_REQUEST_SUCCESS = "search recruitment request successfully";
+    public final static String GET_SEARCH_CATEGORY_SUCCESS = "Get search category successfully";
 
 }

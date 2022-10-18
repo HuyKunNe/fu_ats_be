@@ -16,5 +16,5 @@ public class RecruitmentRequestSearchDTO {
     private String jobLevel;
     private String typeOfWork;
     private String salary;
-    private String experince;
+    private String experience;
 }

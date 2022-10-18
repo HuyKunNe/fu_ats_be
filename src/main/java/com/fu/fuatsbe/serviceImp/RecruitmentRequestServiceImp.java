@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.fu.fuatsbe.DTO.RecruitmentSearchCategoryDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -225,7 +226,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         List<RecruitmentRequestResponse> result = new ArrayList<RecruitmentRequestResponse>();
         List<RecruitmentRequest> list = recruitmentRequestRepository.filterRecruitmentRequest(searchDTO.getJobTitle(),
                 searchDTO.getIndustry(), searchDTO.getJobLevel(), searchDTO.getTypeOfWork(), searchDTO.getSalary(),
-                searchDTO.getExperince());
+                searchDTO.getExperience());
         if (!list.isEmpty()) {
             for (RecruitmentRequest recruitmentRequest : list) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
@@ -237,4 +238,11 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         return result;
     }
 
+    @Override
+    public RecruitmentSearchCategoryDTO searchCategory() {
+        RecruitmentSearchCategoryDTO recruitmentSearchCategoryDTO = RecruitmentSearchCategoryDTO.builder()
+                .jobTitle(recruitmentRequestRepository.getDistinctByPosition())
+                .industry(recruitmentRequestRepository.getDistinctByIndustry()).build();
+        return recruitmentSearchCategoryDTO;
+    }
 }
