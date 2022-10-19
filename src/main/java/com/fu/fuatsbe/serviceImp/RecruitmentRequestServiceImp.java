@@ -262,8 +262,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                         RecruitmentRequestResponse.class);
                 result.add(response);
             }
-        } else
-            throw new ListEmptyException(RecruitmentRequestErrorMessage.LIST_RECRUITMENT_REQUEST_EMPTY_EXCEPTION);
+        } 
         return result;
     }
 
