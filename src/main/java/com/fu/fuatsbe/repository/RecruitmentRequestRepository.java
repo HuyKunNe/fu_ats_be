@@ -34,7 +34,10 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
                         + "     and r.job_level like %?3% \n"
                         + "     and r.type_of_work like %?4% \n"
                         + "     and cast(r.salary as unsigned) >= cast(?5 as unsigned) \n"
-                        + "     and r.experience like %?6% \n"
+                        + "     and (case \n"
+                        + "             when ?6 like '%Trên%' then r.experience >= cast(replace(?6, 'trên', ' ') as unsigned) \n"
+                        + "             else cast(r.experience as unsigned) between cast(?6 as unsigned) -1 and cast(?6 as unsigned) +1 \n"
+                        + "         end) \n"
                         + "     and r.status like 'OPENING' \n"
                         + "order by (case \n "
                         + "     when concat(r.job_level,' ', p.name) like %?1% then 1 "
@@ -42,7 +45,10 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
                         + "     when r.job_level like %?3% then 3"
                         + "     when r.type_of_work like %?4% then 4 \n"
                         + "     when cast(r.salary as unsigned) >= cast(?5 as unsigned) then 5 \n"
-                        + "     when r.experience like %?6% then 6 \n"
+                        + "     when (case \n"
+                        + "             when ?6 like '%Trên%' then r.experience >= cast(replace(?6, 'trên', ' ') as unsigned) \n"
+                        + "             else cast(r.experience as unsigned) between cast(?6 as unsigned) -1 and cast(?6 as unsigned) +1 \n"
+                        + "         end) then 6 \n"
                         + "end);", nativeQuery = true)
         List<RecruitmentRequest> searchRecruitmentRequest(String jobName, String industry, String jobLevel,
                         String typeOfWork, String salary, String experience);
