@@ -35,7 +35,7 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
                         + "     and r.type_of_work like %?4% \n"
                         + "     and cast(r.salary as unsigned) >= cast(?5 as unsigned) \n"
                         + "     and (case \n"
-                        + "             when ?6 like '%Trên%' then r.experience >= cast(replace(?6, 'trên', ' ') as unsigned) \n"
+                        + "             when upper(?6) like '%TRÊN%' then replace(upper(r.experience), upper('Trên'), ' ') >= cast(replace(upper(?6), 'TRÊN', ' ') as unsigned) \n"
                         + "             else cast(r.experience as unsigned) between cast(?6 as unsigned) -1 and cast(?6 as unsigned) +1 \n"
                         + "         end) \n"
                         + "     and r.status like 'OPENING' \n"
@@ -46,7 +46,7 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
                         + "     when r.type_of_work like %?4% then 4 \n"
                         + "     when cast(r.salary as unsigned) >= cast(?5 as unsigned) then 5 \n"
                         + "     when (case \n"
-                        + "             when ?6 like '%Trên%' then r.experience >= cast(replace(?6, 'trên', ' ') as unsigned) \n"
+                        + "             when upper(?6) like '%TRÊN%' then replace(upper(r.experience), upper('Trên'), ' ') >= cast(replace(upper(?6), 'TRÊN', ' ') as unsigned) \n"
                         + "             else cast(r.experience as unsigned) between cast(?6 as unsigned) -1 and cast(?6 as unsigned) +1 \n"
                         + "         end) then 6 \n"
                         + "end);", nativeQuery = true)
