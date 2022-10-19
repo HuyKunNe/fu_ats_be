@@ -26,6 +26,7 @@ public class RecruitmentRequestResponse {
     private String experience;
     private String salary;
     private String typeOfWork;
+    private String location;
     private String description;
     private String status;
     private Employee creator;

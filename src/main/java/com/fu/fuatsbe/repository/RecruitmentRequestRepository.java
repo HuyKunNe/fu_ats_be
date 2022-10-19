@@ -30,28 +30,30 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
         @Modifying
         @Query(value = "select r.* from recruitment_request r join position p on r.position_id = p.id \n"
                         + "where concat(r.job_level,' ', p.name) like %?1% \n"
+                        + "     and r.location like %?7% \n"
                         + "     and r.industry like %?2% \n"
                         + "     and r.job_level like %?3% \n"
                         + "     and r.type_of_work like %?4% \n"
                         + "     and cast(r.salary as unsigned) >= cast(?5 as unsigned) \n"
                         + "     and (case \n"
                         + "             when upper(?6) like '%TRÊN%' then replace(upper(r.experience), upper('Trên'), ' ') >= cast(replace(upper(?6), 'TRÊN', ' ') as unsigned) \n"
-                        + "             else cast(r.experience as unsigned) between cast(?6 as unsigned) -1 and cast(?6 as unsigned) +1 \n"
+                        + "             else cast(r.experience as unsigned) between cast(?6 as signed) -1 and cast(?6 as unsigned) +1 \n"
                         + "         end) \n"
                         + "     and r.status like 'OPENING' \n"
                         + "order by (case \n "
-                        + "     when concat(r.job_level,' ', p.name) like %?1% then 1 "
-                        + "     when r.industry like %?2% then 2 \n"
-                        + "     when r.job_level like %?3% then 3"
-                        + "     when r.type_of_work like %?4% then 4 \n"
-                        + "     when cast(r.salary as unsigned) >= cast(?5 as unsigned) then 5 \n"
+                        + "     when concat(r.job_level,' ', p.name) like %?1% then 2 "
+                        + "     when r.location like %?7% then 1"
+                        + "     when r.industry like %?2% then 3 \n"
+                        + "     when r.job_level like %?3% then 4"
+                        + "     when r.type_of_work like %?4% then 5 \n"
+                        + "     when cast(r.salary as unsigned) >= cast(?5 as unsigned) then 6 \n"
                         + "     when (case \n"
                         + "             when upper(?6) like '%TRÊN%' then replace(upper(r.experience), upper('Trên'), ' ') >= cast(replace(upper(?6), 'TRÊN', ' ') as unsigned) \n"
-                        + "             else cast(r.experience as unsigned) between cast(?6 as unsigned) -1 and cast(?6 as unsigned) +1 \n"
-                        + "         end) then 6 \n"
+                        + "             else cast(r.experience as unsigned) between cast(?6 as signed) -1 and cast(?6 as unsigned) +1 \n"
+                        + "         end) then 7 \n"
                         + "end);", nativeQuery = true)
         List<RecruitmentRequest> searchRecruitmentRequest(String jobName, String industry, String jobLevel,
-                        String typeOfWork, String salary, String experience);
+                        String typeOfWork, String salary, String experience, String location);
 
         @Modifying
         @Query(value = "SELECT DISTINCT p.name \n" +
