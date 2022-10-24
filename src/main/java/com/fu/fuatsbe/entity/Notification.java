@@ -14,20 +14,18 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Nationalized;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-
 @Entity
 @Table(name = "notification")
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -47,10 +45,12 @@ public class Notification {
 
     @ManyToMany
     @JoinTable(name = "notified_candidate", joinColumns = @JoinColumn(name = "candidate_id"), inverseJoinColumns = @JoinColumn(name = "notifice_id"))
+    @JsonIgnore
     private Collection<Candidate> candidates;
 
     @ManyToMany
     @JoinTable(name = "notified_employee", joinColumns = @JoinColumn(name = "employee_id"), inverseJoinColumns = @JoinColumn(name = "notifice_id"))
+    @JsonIgnore
     private Collection<Employee> employees;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -58,5 +58,6 @@ public class Notification {
     @JoinColumn(name = "interviewId")
     @EqualsAndHashCode.Include
     @ToString.Include
+    @JsonIgnore
     private Interview interview;
 }

@@ -23,4 +23,14 @@ public final class ValidationMessage {
     public static final String TOKEN_VALID_MESSAGE = "Token must be filled";
     public static final String GENDER_VALID_MESSAGE = "Gender must be filled";
     public static final String DOB_VALID_MESSAGE = "Day of birth must be filled";
+    public static final String TITLE_VALID_MESSAGE = "Title must be filled";
+    public static final String MAIL_CONTENT_VALID_MESSAGE = "Content must be filled";
+    public static final String CANDIDATE_ID_VALID_MESSAGE = "Candidate must be assigned";
+    public static final String INTERVIEWEE_ID_VALID_MESSAGE = "Interviewee must be assigned";
+
+    public static final String SUBJECT_VALID_MESSAGE = "Subject must be filled";
+    public static final String PURPOSE_VALID_MESSAGE ="Purpose must be filled";
+    public static final String DATE_VALID_MESSAGE ="Date must be filled";
+    public static final String DESCRIPTION_VALID_MESSAGE ="Description must be filled";
+    public static final String JOB_APPLY_VALID_MESSAGE ="Job Apply must be choosen";
 }

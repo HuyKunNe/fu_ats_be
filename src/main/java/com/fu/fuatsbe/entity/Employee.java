@@ -27,7 +27,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
 @Table(name = "employee")
 @NoArgsConstructor
 @AllArgsConstructor
