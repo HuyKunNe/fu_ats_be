@@ -18,6 +18,7 @@ public class CandidateResponseDTO {
     private String phone;
     private String email;
     private String image;
+    private String gender;
     private Date dob;
     private String address;
     private String status;

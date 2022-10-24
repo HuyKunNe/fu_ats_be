@@ -50,6 +50,7 @@ public class RecruitmentRequest {
     private String experience;
     private String salary;
     private String typeOfWork;
+    private String location;
 
     @Column(columnDefinition = "text")
     private String description;

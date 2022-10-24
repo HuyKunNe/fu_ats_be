@@ -17,4 +17,6 @@ public class RecruitmentRequestSearchDTO {
     private String typeOfWork;
     private String salary;
     private String experience;
+    private String location;
+
 }

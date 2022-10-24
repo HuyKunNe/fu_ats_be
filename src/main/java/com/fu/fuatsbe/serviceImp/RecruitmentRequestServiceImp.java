@@ -167,6 +167,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         recruitmentRequest.setExperience(updateDTO.getExperience());
         recruitmentRequest.setSalary(updateDTO.getSalary());
         recruitmentRequest.setTypeOfWork(updateDTO.getTypeOfWork());
+        recruitmentRequest.setLocation(updateDTO.getLocation());
         recruitmentRequest.setDescription(updateDTO.getDescription());
         recruitmentRequest.setPosition(position);
 
@@ -198,6 +199,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                     .status(RecruitmentRequestStatus.OPENING).experience(createDTO.getExperience())
                     .salary(createDTO.getSalary()).typeOfWork(createDTO.getTypeOfWork())
                     .description(createDTO.getDescription()).creator(optionalCreator.get()).planDetail(planDetail)
+                    .location(createDTO.getLocation())
                     .position(position).build();
             recruitmentRequestRepository.save(request);
             RecruitmentRequestResponse response = modelMapper.map(request, RecruitmentRequestResponse.class);
@@ -220,7 +222,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     }
 
     @Override
-    public RecruitmentRequestResponseWithTotalPages getAllRecruitmentRequestByCreator(int id, int pageNo, int pageSize) {
+    public RecruitmentRequestResponseWithTotalPages getAllRecruitmentRequestByCreator(int id, int pageNo,
+            int pageSize) {
 
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
@@ -252,15 +255,14 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         List<RecruitmentRequest> list = recruitmentRequestRepository.searchRecruitmentRequest(searchDTO.getJobTitle(),
                 searchDTO.getIndustry(), searchDTO.getJobLevel(), searchDTO.getTypeOfWork(),
                 searchDTO.getSalary().replaceAll("[^0-9]", ""),
-                searchDTO.getExperience());
+                searchDTO.getExperience(), searchDTO.getLocation());
         if (!list.isEmpty()) {
             for (RecruitmentRequest recruitmentRequest : list) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
                 result.add(response);
             }
-        } else
-            throw new ListEmptyException(RecruitmentRequestErrorMessage.LIST_RECRUITMENT_REQUEST_EMPTY_EXCEPTION);
+        } 
         return result;
     }
 
