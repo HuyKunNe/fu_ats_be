@@ -14,7 +14,7 @@ import com.fu.fuatsbe.repository.CandidateRepository;
 import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.InterviewRepository;
 import com.fu.fuatsbe.repository.JobApplyRepository;
-import com.fu.fuatsbe.response.InterviewCreateResponse;
+import com.fu.fuatsbe.response.InterviewResponse;
 import com.fu.fuatsbe.service.InterviewService;
 import com.fu.fuatsbe.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public class InterviewServiceImp implements InterviewService {
 
 
     @Override
-    public InterviewCreateResponse createInterview(InterviewCreateDTO interviewCreateDTO) throws MessagingException {
+    public InterviewResponse createInterview(InterviewCreateDTO interviewCreateDTO) throws MessagingException {
         Candidate candidate = candidateRepository.findById(interviewCreateDTO.getCandidateId()).orElseThrow(()
                 -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
 
@@ -93,7 +93,18 @@ public class InterviewServiceImp implements InterviewService {
                 .build();
         notificationService.sendNotificationForInterview(sendNotificationDTO);
 
-        InterviewCreateResponse response = modelMapper.map(interview, InterviewCreateResponse.class);
+        InterviewResponse response = modelMapper.map(interview, InterviewResponse.class);
+        return response;
+    }
+
+    @Override
+    public InterviewResponse getInterviewByCandidateID(int candidateId) {
+        Candidate candidate = candidateRepository.findById(candidateId).orElseThrow(() ->
+                new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+        Interview interview = interviewRepository.findInterviewByCandidateId(candidate.getId()).orElseThrow(() ->
+                new NotFoundException(InterviewErrorMessage.INTERVIEW_WITH_CANDIDATE_ID_NOT_FOUND));
+
+        InterviewResponse response = modelMapper.map(interview, InterviewResponse.class);
         return response;
     }
 

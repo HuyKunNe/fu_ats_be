@@ -13,7 +13,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InterviewCreateResponse {
+public class InterviewResponse {
+    private int id;
     private String subject;
     private String purpose;
     private Date date;
