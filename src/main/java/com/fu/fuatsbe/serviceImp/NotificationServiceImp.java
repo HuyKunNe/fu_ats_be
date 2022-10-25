@@ -1,13 +1,11 @@
 package com.fu.fuatsbe.serviceImp;
 
 import com.fu.fuatsbe.DTO.SendNotificationDTO;
-import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.Notification;
 import com.fu.fuatsbe.exceptions.NotFoundException;
-import com.fu.fuatsbe.repository.CandidateRepository;
 import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.NotificationRepository;
 import com.fu.fuatsbe.service.NotificationService;
@@ -32,7 +30,6 @@ public class NotificationServiceImp implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final JavaMailSender javaMailSender;
 
-
     @Override
     public void sendNotificationForInterview(SendNotificationDTO sendNotificationDTO) throws MessagingException {
         List<Candidate> listCandidate = new ArrayList<>();
@@ -41,8 +38,8 @@ public class NotificationServiceImp implements NotificationService {
         List<Employee> listEmployee = new ArrayList<>();
 
         for (Integer intervieweeID : sendNotificationDTO.getIntervieweeID()) {
-            Employee employee = employeeRepository.findById(intervieweeID).orElseThrow(() ->
-                    new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+            Employee employee = employeeRepository.findById(intervieweeID)
+                    .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
             listEmployee.add(employee);
         }
         String interviewAddress = "";
@@ -53,12 +50,12 @@ public class NotificationServiceImp implements NotificationService {
         }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String dateFormated = simpleDateFormat.format(sendNotificationDTO.getDate());
-        String presentDate = simpleDateFormat.format(Date.valueOf(LocalDate.now())) ;
+        String presentDate = simpleDateFormat.format(Date.valueOf(LocalDate.now()));
 
         String subject = "Thông báo lịch phỏng vấn";
         String content = "Bạn có 1 buổi phỏng vấn vào lúc " + dateFormated + " \n"
                 + "Bạn hãy đến địa chỉ này trước thời gian để tiến hành phỏng vấn \n"
-                +"Địa chỉ: " + interviewAddress + ".\n"
+                + "Địa chỉ: " + interviewAddress + ".\n"
                 + "Trân trọng.";
 
         Notification notification = Notification.builder()
@@ -74,10 +71,9 @@ public class NotificationServiceImp implements NotificationService {
 
         notificationRepository.save(notification);
 
-
         sendEmail(sendNotificationDTO.getCandidate().getEmail(), subject, content);
 
-        for (Employee employee: listEmployee ) {
+        for (Employee employee : listEmployee) {
             sendEmail(employee.getAccount().getEmail(), subject, content);
         }
     }
