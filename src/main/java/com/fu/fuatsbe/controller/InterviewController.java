@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.PermitAll;
 import javax.mail.MessagingException;
 
 @RestController
@@ -41,7 +42,7 @@ public class InterviewController {
         return ResponseEntity.ok().body(response);
     }
     @GetMapping("/getInterviewByCandidateID")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PermitAll
     public ResponseEntity<ResponseDTO> getInterviewByCandidateID(@RequestParam int candidateId){
         ResponseDTO responseDTO = new ResponseDTO();
         InterviewResponse interviewResponse = interviewService.getInterviewByCandidateID(candidateId);

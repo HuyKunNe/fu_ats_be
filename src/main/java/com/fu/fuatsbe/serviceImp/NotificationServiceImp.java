@@ -3,6 +3,7 @@ package com.fu.fuatsbe.serviceImp;
 import com.fu.fuatsbe.DTO.SendNotificationDTO;
 import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
+import com.fu.fuatsbe.constant.notification.NotificationStatus;
 import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.Notification;
@@ -69,7 +70,7 @@ public class NotificationServiceImp implements NotificationService {
                 .employees(listEmployee)
                 .interview(sendNotificationDTO.getInterview())
                 .isConfirmed(false)
-                .status("SUCCESSFULL")
+                .status(NotificationStatus.SUCCESSFULL)
                 .build();
 
         notificationRepository.save(notification);
