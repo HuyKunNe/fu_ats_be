@@ -47,6 +47,11 @@ public class CV {
     private String suitablePosition;
     @Column(columnDefinition = "text")
     private String note;
+    @Nationalized
+    private String experience;
+    @Nationalized
+    private String location;
+    private String status;
 
     @OneToMany(mappedBy = "cv", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Include
@@ -64,4 +69,10 @@ public class CV {
     @ManyToMany
     @JoinTable(name = "cv_position", joinColumns = @JoinColumn(name = "position_id"), inverseJoinColumns = @JoinColumn(name = "cv_id"))
     private Collection<Position> positions;
+
+    @ManyToMany
+    @JoinTable(name = "cv_skill", joinColumns = @JoinColumn(name = "cv_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
+    @JsonIgnore
+    private Collection<Skill> skills;
+
 }

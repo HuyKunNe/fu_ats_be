@@ -28,6 +28,8 @@ public class RecruitmentRequestResponse {
     private String typeOfWork;
     private String location;
     private String description;
+    private String benefit;
+    private String requirement;
     private String status;
     private Employee creator;
     private PlanDetail planDetail;

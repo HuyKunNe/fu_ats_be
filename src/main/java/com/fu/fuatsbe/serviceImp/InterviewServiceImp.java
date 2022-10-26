@@ -15,10 +15,7 @@ import com.fu.fuatsbe.response.InterviewResponse;
 import com.fu.fuatsbe.service.InterviewService;
 import com.fu.fuatsbe.service.NotificationService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.Condition;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import org.modelmapper.spi.MappingContext;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -43,19 +40,17 @@ public class InterviewServiceImp implements InterviewService {
     private final InterviewEmployeeRepository interviewEmployeeRepository;
     private final ModelMapper modelMapper;
 
-
     @Override
     public InterviewResponse createInterview(InterviewCreateDTO interviewCreateDTO) throws MessagingException {
-        Candidate candidate = candidateRepository.findById(interviewCreateDTO.getCandidateId()).orElseThrow(()
-                -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+        Candidate candidate = candidateRepository.findById(interviewCreateDTO.getCandidateId())
+                .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
 
         List<Employee> employeeList = new ArrayList<>();
         List<Integer> intervieweeIdList = new ArrayList<>();
 
-
         for (Integer employeeId : interviewCreateDTO.getEmployeeId()) {
-            Employee employee = employeeRepository.findById(employeeId).orElseThrow(() ->
-                    new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+            Employee employee = employeeRepository.findById(employeeId)
+                    .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
             employeeList.add(employee);
             intervieweeIdList.add(employeeId);
         }
@@ -65,8 +60,8 @@ public class InterviewServiceImp implements InterviewService {
         if (dateInput.isBefore(presentDate)) {
             throw new PermissionException(InterviewErrorMessage.DATE_NOT_VALID);
         }
-        JobApply jobApply = jobApplyRepository.findById(interviewCreateDTO.getJobApplyId()).orElseThrow(() ->
-                new NotFoundException(JobApplyErrorMessage.JOB_APPLY_NOT_FOUND));
+        JobApply jobApply = jobApplyRepository.findById(interviewCreateDTO.getJobApplyId())
+                .orElseThrow(() -> new NotFoundException(JobApplyErrorMessage.JOB_APPLY_NOT_FOUND));
         Interview interview = Interview.builder()
                 .subject(interviewCreateDTO.getSubject())
                 .purpose(interviewCreateDTO.getPurpose())
@@ -89,7 +84,6 @@ public class InterviewServiceImp implements InterviewService {
                     .build();
             interviewEmployeeRepository.save(interviewEmployee);
         }
-
 
         SendNotificationDTO sendNotificationDTO = SendNotificationDTO.builder()
                 .link(savedInterview.getLinkMeeting())
@@ -120,8 +114,8 @@ public class InterviewServiceImp implements InterviewService {
 
     @Override
     public List<InterviewResponse> getInterviewByCandidateID(int candidateId) {
-        Candidate candidate = candidateRepository.findById(candidateId).orElseThrow(() ->
-                new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+        Candidate candidate = candidateRepository.findById(candidateId)
+                .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
         List<Interview> interviews = interviewRepository.findInterviewByCandidateId(candidate.getId());
         if (interviews.isEmpty()) {
             throw new NotFoundException(InterviewErrorMessage.INTERVIEW_WITH_CANDIDATE_ID_NOT_FOUND);

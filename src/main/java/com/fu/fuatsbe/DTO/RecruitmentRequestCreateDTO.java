@@ -22,6 +22,8 @@ public class RecruitmentRequestCreateDTO {
     private String typeOfWork;
     private String description;
     private String location;
+    private String benefit;
+    private String requirement;
     private int employeeId;
     private int planDetailId;
     private int positionId;

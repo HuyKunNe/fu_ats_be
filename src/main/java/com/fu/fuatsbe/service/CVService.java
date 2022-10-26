@@ -11,13 +11,13 @@ public interface CVService {
 
     public List<CvResponse> getAllCvs(int pageNo, int pageSize);
 
-    public List<CvResponse> getAllCvByCandidates(int candidateId, int pageNo, int pageSize);
+    public List<CvResponse> getAllCvByCandidate(int candidateId, int pageNo, int pageSize);
 
     public List<CvResponse> getAllSuitableCvs(int pageNo, int pageSize);
 
     public CvResponse createCV(CvCreateDTO createDTO);
 
-    public CvResponse updateCV(CvUpdateDTO updateDTO);
+    public CvResponse updateCV(int id, CvUpdateDTO updateDTO);
 
     public CV deleteCV(int id);
 

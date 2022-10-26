@@ -198,6 +198,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                     .amount(createDTO.getAmount()).jobLevel(createDTO.getJobLevel())
                     .status(RecruitmentRequestStatus.OPENING).experience(createDTO.getExperience())
                     .salary(createDTO.getSalary()).typeOfWork(createDTO.getTypeOfWork())
+                    .benefit(createDTO.getBenefit())
+                    .requirement(createDTO.getRequirement())
                     .description(createDTO.getDescription()).creator(optionalCreator.get()).planDetail(planDetail)
                     .location(createDTO.getLocation())
                     .position(position).build();
@@ -262,7 +264,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                         RecruitmentRequestResponse.class);
                 result.add(response);
             }
-        } 
+        }
         return result;
     }
 

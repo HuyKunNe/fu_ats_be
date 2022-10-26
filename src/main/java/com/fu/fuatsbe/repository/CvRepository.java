@@ -1,5 +1,7 @@
 package com.fu.fuatsbe.repository;
 
+import java.util.Optional;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
@@ -15,5 +17,7 @@ import com.fu.fuatsbe.entity.Candidate;
 public interface CvRepository extends JpaRepository<CV, Integer> {
 
     Page<CV> findByCandidate(Candidate candidate, Pageable pageable);
+
+    Optional<CV> findById(int id);
 
 }

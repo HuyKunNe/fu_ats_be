@@ -23,10 +23,12 @@ import com.fu.fuatsbe.constant.planDetail.PlanDetailStatus;
 import com.fu.fuatsbe.constant.postion.PositionErrorMessage;
 import com.fu.fuatsbe.constant.recruitmentPlan.RecruitmentPlanErrorMessage;
 import com.fu.fuatsbe.constant.recruitmentPlan.RecruitmentPlanStatus;
+import com.fu.fuatsbe.constant.skill.SkillErrorMessage;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.PlanDetail;
 import com.fu.fuatsbe.entity.Position;
 import com.fu.fuatsbe.entity.RecruitmentPlan;
+import com.fu.fuatsbe.entity.Skill;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.exceptions.NotValidException;
@@ -34,6 +36,7 @@ import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.PlanDetailRepository;
 import com.fu.fuatsbe.repository.PositionRepository;
 import com.fu.fuatsbe.repository.RecruitmentPlanRepository;
+import com.fu.fuatsbe.repository.SkillRepository;
 import com.fu.fuatsbe.response.PlanDetailResponseDTO;
 import com.fu.fuatsbe.service.PlanDetailService;
 
@@ -48,6 +51,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
     private final RecruitmentPlanRepository recruitmentPlanRepository;
     private final PositionRepository positionRepository;
     private final EmployeeRepository employeeRepository;
+    private final SkillRepository skillRepository;
 
     @Override
     public List<PlanDetailResponseDTO> getAllPlanDetails(int pageNo, int pageSize) {
@@ -113,8 +117,16 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         LocalDate dateFormat = LocalDate.parse(date.toString(), format);
+        List<Skill> skills = new ArrayList<Skill>();
+        if (createDTO.getSkills().size() != 0) {
+            for (String skillName : createDTO.getSkills()) {
+                Skill skill = skillRepository.findByName(skillName)
+                        .orElseThrow(() -> new NotFoundException(SkillErrorMessage.NOT_FOUND));
+                skills.add(skill);
+            }
+        }
 
-        PlanDetail planDetail = PlanDetail.builder().amount(createDTO.getAmount()).skills(createDTO.getSkills())
+        PlanDetail planDetail = PlanDetail.builder().amount(createDTO.getAmount()).skills(skills)
                 .date(Date.valueOf(dateFormat))
                 .position(optionalPosition.get()).recruitmentPlan(optionalRecruitmentPlan.get())
                 .status(PlanDetailStatus.PENDING).build();

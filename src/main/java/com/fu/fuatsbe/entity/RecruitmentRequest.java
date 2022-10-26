@@ -54,6 +54,10 @@ public class RecruitmentRequest {
 
     @Column(columnDefinition = "text")
     private String description;
+    @Column(columnDefinition = "text")
+    private String requirement;
+    @Column(columnDefinition = "text")
+    private String benefit;
     private String status;
 
     @ManyToOne(fetch = FetchType.LAZY)

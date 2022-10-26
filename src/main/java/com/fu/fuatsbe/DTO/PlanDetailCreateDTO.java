@@ -1,5 +1,7 @@
 package com.fu.fuatsbe.DTO;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class PlanDetailCreateDTO {
 
     private int amount;
-    private String skills;
+    private List<String> skills;
     private int positionId;
     private int recruitmentPlanId;
 

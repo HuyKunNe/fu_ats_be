@@ -17,6 +17,8 @@ import com.fu.fuatsbe.entity.Position;
 public interface PositionRepository extends JpaRepository<Position, Integer> {
     Optional<Position> findPositionByName(String name);
 
+    Optional<Position> findById(int id);
+
     Page<Position> findByDepartment(Department department, Pageable pageable);
 
     Page<Position> findByNameContaining(String name, Pageable pageable);

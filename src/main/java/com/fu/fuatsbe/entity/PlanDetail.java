@@ -4,13 +4,14 @@ import java.sql.Date;
 import java.util.Collection;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -41,8 +42,6 @@ public class PlanDetail {
 
     private int amount;
     private Date date;
-    @Column(columnDefinition = "text")
-    private String skills;
     private String status;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -71,4 +70,8 @@ public class PlanDetail {
     @EqualsAndHashCode.Include
     @ToString.Include
     private Position position;
+
+    @ManyToMany
+    @JoinTable(name = "planDetail_skill", joinColumns = @JoinColumn(name = "planDetailId"), inverseJoinColumns = @JoinColumn(name = "skillId"))
+    private Collection<Skill> skills;
 }

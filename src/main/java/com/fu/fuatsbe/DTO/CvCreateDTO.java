@@ -1,5 +1,7 @@
 package com.fu.fuatsbe.DTO;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,11 +14,11 @@ import lombok.NoArgsConstructor;
 public class CvCreateDTO {
 
     private String linkCV;
-    private String result;
-    private String suitablePosition;
-    private String note;
+    private String experience;
+    private String location;
+    private List<String> skillName;
 
     private int candidateId;
 
-    private int positionId;
+    private List<String> positionName;
 }
