@@ -40,7 +40,8 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import javax.management.relation.RoleNotFoundException;
 import java.sql.Date;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Service
@@ -73,8 +74,8 @@ public class AuthServiceImp implements AuthService {
             throw new ExistException(ValidationMessage.PHONE_IS_EXIST);
         }
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String dob = simpleDateFormat.format(registerDTO.getDob());
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dob = LocalDate.parse(registerDTO.getDob().toString(), format);
 
         Candidate candidate = Candidate.builder().name(registerDTO.getName()).email(registerDTO.getEmail())
                 .phone(registerDTO.getPhone()).image(registerDTO.getImage()).dob(Date.valueOf(dob))
@@ -119,8 +120,8 @@ public class AuthServiceImp implements AuthService {
             throw new ExistException(ValidationMessage.PHONE_IS_EXIST);
         }
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String dob = simpleDateFormat.format(registerDto.getDob());
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dob = LocalDate.parse(registerDto.getDob().toString(), format);
 
         Employee employee = Employee.builder().name(registerDto.getName()).employeeCode(registerDto.getEmployeeCode())
                 .image(registerDto.getImage())
