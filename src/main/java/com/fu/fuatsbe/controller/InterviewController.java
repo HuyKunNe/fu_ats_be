@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
 import javax.mail.MessagingException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/interview")
@@ -42,12 +43,12 @@ public class InterviewController {
         return ResponseEntity.ok().body(response);
     }
     @GetMapping("/getInterviewByCandidateID")
-    @PermitAll
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity<ResponseDTO> getInterviewByCandidateID(@RequestParam int candidateId){
         ResponseDTO responseDTO = new ResponseDTO();
-        InterviewResponse interviewResponse = interviewService.getInterviewByCandidateID(candidateId);
+        List<InterviewResponse> interviewResponses = interviewService.getInterviewByCandidateID(candidateId);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
-        responseDTO.setData(interviewResponse);
+        responseDTO.setData(interviewResponses);
         responseDTO.setMessage(InterviewSuccessMessage.GET_INTERVIEW_BY_CANDIDATE_ID);
         return ResponseEntity.ok().body(responseDTO);
     }

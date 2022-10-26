@@ -10,15 +10,15 @@ import com.fu.fuatsbe.constant.job_apply.JobApplyErrorMessage;
 import com.fu.fuatsbe.entity.*;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.exceptions.PermissionException;
-import com.fu.fuatsbe.repository.CandidateRepository;
-import com.fu.fuatsbe.repository.EmployeeRepository;
-import com.fu.fuatsbe.repository.InterviewRepository;
-import com.fu.fuatsbe.repository.JobApplyRepository;
+import com.fu.fuatsbe.repository.*;
 import com.fu.fuatsbe.response.InterviewResponse;
 import com.fu.fuatsbe.service.InterviewService;
 import com.fu.fuatsbe.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.Condition;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
+import org.modelmapper.spi.MappingContext;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -39,8 +39,9 @@ public class InterviewServiceImp implements InterviewService {
     private final JobApplyRepository jobApplyRepository;
 
     private final NotificationService notificationService;
-    private final ModelMapper modelMapper;
 
+    private final InterviewEmployeeRepository interviewEmployeeRepository;
+    private final ModelMapper modelMapper;
 
 
     @Override
@@ -61,8 +62,8 @@ public class InterviewServiceImp implements InterviewService {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate dateInput = LocalDate.parse(interviewCreateDTO.getDate().toString(), format);
         LocalDate presentDate = LocalDate.parse(LocalDate.now().toString(), format);
-        if(dateInput.isBefore(presentDate)){
-        throw new PermissionException(InterviewErrorMessage.DATE_NOT_VALID);
+        if (dateInput.isBefore(presentDate)) {
+            throw new PermissionException(InterviewErrorMessage.DATE_NOT_VALID);
         }
         JobApply jobApply = jobApplyRepository.findById(interviewCreateDTO.getJobApplyId()).orElseThrow(() ->
                 new NotFoundException(JobApplyErrorMessage.JOB_APPLY_NOT_FOUND));
@@ -77,10 +78,18 @@ public class InterviewServiceImp implements InterviewService {
                 .description(interviewCreateDTO.getDescription())
                 .status(InterviewRequestStatus.NEW)
                 .candidate(candidate)
-                .employees(employeeList)
                 .jobApply(jobApply)
                 .build();
         Interview savedInterview = interviewRepository.save(interview);
+
+        for (Employee emp : employeeList) {
+            InterviewEmployee interviewEmployee = InterviewEmployee.builder()
+                    .employee(emp)
+                    .interview(savedInterview)
+                    .build();
+            interviewEmployeeRepository.save(interviewEmployee);
+        }
+
 
         SendNotificationDTO sendNotificationDTO = SendNotificationDTO.builder()
                 .link(savedInterview.getLinkMeeting())
@@ -93,23 +102,62 @@ public class InterviewServiceImp implements InterviewService {
                 .build();
         notificationService.sendNotificationForInterview(sendNotificationDTO);
 
-        InterviewResponse response = modelMapper.map(interview, InterviewResponse.class);
+        InterviewResponse response = InterviewResponse.builder()
+                .id(savedInterview.getId())
+                .subject(savedInterview.getSubject())
+                .purpose(savedInterview.getPurpose())
+                .date(savedInterview.getDate())
+                .room(savedInterview.getRoom())
+                .linkMeeting(savedInterview.getLinkMeeting())
+                .round(savedInterview.getRound())
+                .description(savedInterview.getDescription())
+                .jobApply(savedInterview.getJobApply())
+                .candidate(savedInterview.getCandidate())
+                .build();
+        response.setEmployees(employeeRepository.getEmployeeByInterviewId(savedInterview.getId()));
         return response;
     }
 
     @Override
-    public InterviewResponse getInterviewByCandidateID(int candidateId) {
+    public List<InterviewResponse> getInterviewByCandidateID(int candidateId) {
         Candidate candidate = candidateRepository.findById(candidateId).orElseThrow(() ->
                 new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
-        Interview interview = interviewRepository.findInterviewByCandidateId(candidate.getId()).orElseThrow(() ->
-                new NotFoundException(InterviewErrorMessage.INTERVIEW_WITH_CANDIDATE_ID_NOT_FOUND));
+        List<Interview> interviews = interviewRepository.findInterviewByCandidateId(candidate.getId());
+        if (interviews.isEmpty()) {
+            throw new NotFoundException(InterviewErrorMessage.INTERVIEW_WITH_CANDIDATE_ID_NOT_FOUND);
+        }
+        List<InterviewResponse> responseList = new ArrayList<>();
+        for (Interview interview : interviews) {
+            InterviewResponse response = InterviewResponse.builder()
+                    .id(interview.getId())
+                    .subject(interview.getSubject())
+                    .purpose(interview.getPurpose())
+                    .date(interview.getDate())
+                    .room(interview.getRoom())
+                    .linkMeeting(interview.getLinkMeeting())
+                    .round(interview.getRound())
+                    .description(interview.getDescription())
+                    .jobApply(interview.getJobApply())
+                    .candidate(interview.getCandidate())
+                    .build();
+            responseList.add(response);
+        }
 
-        InterviewResponse response = modelMapper.map(interview, InterviewResponse.class);
-        return response;
+        return responseList;
     }
 
     @Override
     public List<Interview> getAllInterview() {
         return null;
+    }
+
+    @Override
+    public InterviewResponse updateInterview() {
+        return null;
+    }
+
+    @Override
+    public void closeInterview(int id) {
+
     }
 }

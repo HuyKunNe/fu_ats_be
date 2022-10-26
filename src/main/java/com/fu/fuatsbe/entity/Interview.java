@@ -72,12 +72,17 @@ public class Interview {
     @ToString.Include
     private JobApply jobApply;
 
-    @ManyToMany(mappedBy = "interviews")
-    private Collection<Employee> employees;
+
 
     @OneToMany(mappedBy = "interview", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Include
     @ToString.Include
     @JsonIgnore
     private Collection<Notification> notifications;
+
+    @OneToMany(mappedBy = "interview", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Include
+    @ToString.Include
+    @JsonIgnore
+    private Collection<InterviewEmployee> interviewEmployees;
 }

@@ -44,12 +44,12 @@ public class Notification {
     private boolean isConfirmed;
 
     @ManyToMany
-    @JoinTable(name = "notified_candidate", joinColumns = @JoinColumn(name = "candidate_id"), inverseJoinColumns = @JoinColumn(name = "notifice_id"))
+    @JoinTable(name = "notified_candidate", joinColumns = @JoinColumn(name = "notifice_id"), inverseJoinColumns = @JoinColumn(name = "candidate_id"))
     @JsonIgnore
     private Collection<Candidate> candidates;
 
     @ManyToMany
-    @JoinTable(name = "notified_employee", joinColumns = @JoinColumn(name = "employee_id"), inverseJoinColumns = @JoinColumn(name = "notifice_id"))
+    @JoinTable(name = "notified_employee", joinColumns = @JoinColumn(name = "notifice_id"), inverseJoinColumns = @JoinColumn(name = "employee_id"))
     @JsonIgnore
     private Collection<Employee> employees;
 

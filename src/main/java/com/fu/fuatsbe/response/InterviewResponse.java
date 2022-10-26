@@ -4,15 +4,17 @@ import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.JobApply;
 import com.fu.fuatsbe.entity.Notification;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Date;
 import java.util.List;
-@Data
+
+@Setter
+@Getter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class InterviewResponse {
     private int id;
     private String subject;
@@ -26,5 +28,4 @@ public class InterviewResponse {
     private JobApply jobApply;
     private Candidate candidate;
     private List<Employee> employees;
-    private List<Notification> notifications;
 }

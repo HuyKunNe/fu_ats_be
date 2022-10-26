@@ -101,10 +101,11 @@ public class Employee {
     @JsonIgnore
     private Collection<Notification> notifications;
 
-    @ManyToMany
-    @JoinTable(name = "employee_interview", joinColumns = @JoinColumn(name = "interview_id"), inverseJoinColumns = @JoinColumn(name = "employee_id"))
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Include
+    @ToString.Include
     @JsonIgnore
-    private Collection<Interview> interviews;
+    private Collection<InterviewEmployee> interviewEmployees;
 
     @JsonBackReference
     @OneToOne(fetch = FetchType.LAZY)

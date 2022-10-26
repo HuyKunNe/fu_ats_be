@@ -8,9 +8,13 @@ import javax.mail.MessagingException;
 import java.util.List;
 
 public interface InterviewService {
-public InterviewResponse createInterview(InterviewCreateDTO interviewCreateDTO) throws MessagingException;
-public List<Interview> getAllInterview();
+ InterviewResponse createInterview(InterviewCreateDTO interviewCreateDTO) throws MessagingException;
+ List<Interview> getAllInterview();
 
-public InterviewResponse getInterviewByCandidateID(int candidateId);
+ List<InterviewResponse> getInterviewByCandidateID(int candidateId);
+
+ InterviewResponse updateInterview();
+
+ void closeInterview(int id);
 
 }
