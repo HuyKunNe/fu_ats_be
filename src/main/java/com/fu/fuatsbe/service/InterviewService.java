@@ -12,6 +12,7 @@ public interface InterviewService {
  List<Interview> getAllInterview();
 
  List<InterviewResponse> getInterviewByCandidateID(int candidateId);
+ List<InterviewResponse> getInterviewByEmployeeID(int employeeId);
 
  InterviewResponse updateInterview();
 

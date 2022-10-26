@@ -52,4 +52,15 @@ public class InterviewController {
         responseDTO.setMessage(InterviewSuccessMessage.GET_INTERVIEW_BY_CANDIDATE_ID);
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @GetMapping("/getInterviewByEmployeeID")
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
+    public ResponseEntity<ResponseDTO> getInterviewByEmployeeID(@RequestParam int employeeId){
+        ResponseDTO responseDTO = new ResponseDTO();
+        List<InterviewResponse> interviewResponses = interviewService.getInterviewByEmployeeID(employeeId);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        responseDTO.setData(interviewResponses);
+        responseDTO.setMessage(InterviewSuccessMessage.GET_INTERVIEW_BY_CANDIDATE_ID);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }

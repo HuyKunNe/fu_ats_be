@@ -26,6 +26,6 @@ public class InterviewResponse {
     private String round;
     private String description;
     private JobApply jobApply;
-    private Candidate candidate;
-    private List<Employee> employees;
+    private String candidateName;
+    private List<String> employeeNames;
 }

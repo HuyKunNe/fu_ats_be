@@ -101,7 +101,6 @@ public class InterviewServiceImp implements InterviewService {
                 .interview(savedInterview)
                 .build();
         notificationService.sendNotificationForInterview(sendNotificationDTO);
-
         InterviewResponse response = InterviewResponse.builder()
                 .id(savedInterview.getId())
                 .subject(savedInterview.getSubject())
@@ -112,9 +111,13 @@ public class InterviewServiceImp implements InterviewService {
                 .round(savedInterview.getRound())
                 .description(savedInterview.getDescription())
                 .jobApply(savedInterview.getJobApply())
-                .candidate(savedInterview.getCandidate())
+                .candidateName(savedInterview.getCandidate().getName())
                 .build();
-        response.setEmployees(employeeRepository.getEmployeeByInterviewId(savedInterview.getId()));
+        List<String> empName = new ArrayList<>();
+        for (InterviewEmployee interviewEmp : interview.getInterviewEmployees()) {
+            empName.add(interviewEmp.getEmployee().getName());
+        }
+        response.setEmployeeNames(empName);
         return response;
     }
 
@@ -138,12 +141,51 @@ public class InterviewServiceImp implements InterviewService {
                     .round(interview.getRound())
                     .description(interview.getDescription())
                     .jobApply(interview.getJobApply())
-                    .candidate(interview.getCandidate())
+                    .candidateName(interview.getCandidate().getName())
                     .build();
             responseList.add(response);
         }
 
         return responseList;
+    }
+
+    @Override
+    public List<InterviewResponse> getInterviewByEmployeeID(int employeeId) {
+        Employee employee = employeeRepository.findById(employeeId).orElseThrow(() ->
+                new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+        List<Interview> interviewList = interviewRepository.findInterviewByEmployeeId(employee.getId());
+        if (interviewList.isEmpty()) {
+            throw new NotFoundException(InterviewErrorMessage.INTERVIEW_WITH_CANDIDATE_ID_NOT_FOUND);
+        }
+        List<String> empName = new ArrayList<>();
+
+        List<InterviewResponse> responseList = new ArrayList<>();
+        for (Interview interview : interviewList) {
+            if (empName.size() != 0) {
+                empName.clear();
+            }
+            for (InterviewEmployee interviewEmp : interview.getInterviewEmployees()) {
+                empName.add(interviewEmp.getEmployee().getName());
+            }
+            InterviewResponse response = InterviewResponse.builder()
+                    .id(interview.getId())
+                    .subject(interview.getSubject())
+                    .purpose(interview.getPurpose())
+                    .date(interview.getDate())
+                    .room(interview.getRoom())
+                    .linkMeeting(interview.getLinkMeeting())
+                    .round(interview.getRound())
+                    .description(interview.getDescription())
+                    .jobApply(interview.getJobApply())
+                    .candidateName(interview.getCandidate().getName())
+                    .employeeNames(empName)
+                    .build();
+            responseList.add(response);
+
+        }
+
+        return responseList;
+
     }
 
     @Override
