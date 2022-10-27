@@ -23,6 +23,7 @@ import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.RecruitmentPlan;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
+import com.fu.fuatsbe.exceptions.NotValidException;
 import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.RecruitmentPlanRepository;
 import com.fu.fuatsbe.response.RecruitmentPlanResponse;
@@ -138,8 +139,27 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
 
     @Override
     public RecruitmentPlanResponse updateRecruitmentPlan(int id, RecruimentPlanUpdateDTO updateDTO) {
-        // TODO Auto-generated method stub
-        return null;
+        RecruitmentPlan recruitmentPlan = recruitmentPlanRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION));
+
+        if (recruitmentPlan.getStatus().equalsIgnoreCase(RecruitmentPlanStatus.APPROVED)) {
+            throw new NotValidException(RecruitmentPlanErrorMessage.RECRUITMENT_PLAN_IS_APPROVED);
+        }
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate periodFrom = LocalDate.parse(updateDTO.getPeriodFrom().toString(), format);
+        LocalDate periodTo = LocalDate.parse(updateDTO.getPeriodTo().toString(), format);
+
+        RecruitmentPlan recruitmentPlanUpdate = RecruitmentPlan.builder().periodFrom(Date.valueOf(periodFrom))
+                .periodTo(Date.valueOf(periodTo))
+                .amount(updateDTO.getAmount()).status(RecruitmentPlanStatus.PENDING)
+                .creator(recruitmentPlan.getCreator())
+                .build();
+
+        RecruitmentPlan recruitmentPlanSaved = recruitmentPlanRepository.save(recruitmentPlanUpdate);
+
+        RecruitmentPlanResponse response = modelMapper.map(recruitmentPlanSaved, RecruitmentPlanResponse.class);
+
+        return response;
     }
 
     @Override

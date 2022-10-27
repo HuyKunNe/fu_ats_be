@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fu.fuatsbe.DTO.RecruimentPlanUpdateDTO;
 import com.fu.fuatsbe.DTO.RecruitmentPlanActionDTO;
 import com.fu.fuatsbe.DTO.RecruitmentPlanCreateDTO;
-import com.fu.fuatsbe.constant.recruitmentPlan.RecruitmentPlanErrorMessage;
 import com.fu.fuatsbe.constant.recruitmentPlan.RecruitmentPlanSuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
@@ -148,7 +147,7 @@ public class RecruitmentPlanController {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
         RecruitmentPlanResponse recruitmentPlanResponse = recruitmentPlanService.createRecruitmentPlan(createDTO);
         responseDTO.setData(recruitmentPlanResponse);
-        responseDTO.setMessage("create recruitment plan success");
+        responseDTO.setMessage(RecruitmentPlanSuccessMessage.CREATE_RECRUITMENT_PLAN_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
@@ -159,7 +158,7 @@ public class RecruitmentPlanController {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
         RecruitmentPlanResponse recruitmentPlanResponse = recruitmentPlanService.approvedRecruitmentPlan(actionDTO);
         responseDTO.setData(recruitmentPlanResponse);
-        responseDTO.setMessage("approved recruitment plan success");
+        responseDTO.setMessage(RecruitmentPlanSuccessMessage.APPROVED_RECRUITMENT_PLAN_SUCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
@@ -170,7 +169,7 @@ public class RecruitmentPlanController {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
         RecruitmentPlanResponse recruitmentPlanResponse = recruitmentPlanService.rejectedRecruitmentPlan(actionDTO);
         responseDTO.setData(recruitmentPlanResponse);
-        responseDTO.setMessage("rejected recruitment plan success");
+        responseDTO.setMessage(RecruitmentPlanSuccessMessage.REJECTED_RECRUITMENT_PLAN_SUCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
@@ -181,9 +180,20 @@ public class RecruitmentPlanController {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
         RecruitmentPlanResponse recruitmentPlanResponse = recruitmentPlanService.canceledRecruitmentPlan(actionDTO);
         responseDTO.setData(recruitmentPlanResponse);
-        responseDTO.setMessage("canceled recruitment plan success");
+        responseDTO.setMessage(RecruitmentPlanSuccessMessage.CANCELED_RECRUITMENT_PLAN_SUCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @PutMapping("update/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> updateRecruitmentPlan(@RequestParam("id") int id,
+            @RequestBody RecruimentPlanUpdateDTO updateDTO) {
+        ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
+        RecruitmentPlanResponse recruitmentPlanResponse = recruitmentPlanService.updateRecruitmentPlan(id, updateDTO);
+        responseDTO.setData(recruitmentPlanResponse);
+        responseDTO.setMessage(RecruitmentPlanSuccessMessage.UPDATE_RECRUITMENT_PLAN_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }

@@ -23,7 +23,6 @@ import com.fu.fuatsbe.constant.planDetail.PlanDetailStatus;
 import com.fu.fuatsbe.constant.postion.PositionErrorMessage;
 import com.fu.fuatsbe.constant.recruitmentPlan.RecruitmentPlanErrorMessage;
 import com.fu.fuatsbe.constant.recruitmentPlan.RecruitmentPlanStatus;
-import com.fu.fuatsbe.constant.skill.SkillErrorMessage;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.PlanDetail;
 import com.fu.fuatsbe.entity.Position;
@@ -127,7 +126,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
             }
         }
 
-        PlanDetail planDetail = PlanDetail.builder()       .amount(createDTO.getAmount()).skills(skills)
+        PlanDetail planDetail = PlanDetail.builder().amount(createDTO.getAmount()).skills(skills)
                 .date(Date.valueOf(dateFormat))
                 .position(optionalPosition.get()).recruitmentPlan(optionalRecruitmentPlan.get())
                 .status(PlanDetailStatus.PENDING).build();

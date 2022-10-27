@@ -11,5 +11,8 @@ public class RecruitmentPlanSuccessMessage {
     public final static String REJECTED_RECRUITMENT_PLAN_SUCESS = "rejected recruitment plan successfully";
     public final static String CANCELED_RECRUITMENT_PLAN_SUCESS = "canceled recruitment plan successfully";
     public final static String APPROVED_RECRUITMENT_PLAN_SUCESS = "approved recruitment plan successfully";
-    public final static String GET_ALL_RECRUITMENT_PLAN_SUCCESS = "Get all recruitment plan successfully";
+    public final static String GET_ALL_RECRUITMENT_PLAN_SUCCESS = "Get all recruitment plans successfully";
+    public final static String CREATE_RECRUITMENT_PLAN_SUCCESS = "Create recruitment plan successfully";
+    public final static String UPDATE_RECRUITMENT_PLAN_SUCCESS = "Update recruitment plan successfully";
+
 }
