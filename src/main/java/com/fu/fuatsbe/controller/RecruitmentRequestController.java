@@ -163,8 +163,8 @@ public class RecruitmentRequestController {
     }
 
     @PermitAll
-    @GetMapping("/getSearchCategory")
-    public ResponseEntity<ResponseDTO> getSearchCategory() {
+    @GetMapping("/getCategory")
+    public ResponseEntity<ResponseDTO> getCategory() {
         ResponseDTO responseDTO = new ResponseDTO();
         RecruitmentSearchCategoryDTO recruitmentSearchCategoryDTO = recruitmentRequestService.searchCategory();
         responseDTO.setMessage(RecruitmentRequestSuccessMessage.GET_SEARCH_CATEGORY_SUCCESS);
