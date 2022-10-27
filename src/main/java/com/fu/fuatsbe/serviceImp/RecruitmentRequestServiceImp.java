@@ -33,6 +33,7 @@ import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.PlanDetailRepository;
 import com.fu.fuatsbe.repository.PositionRepository;
 import com.fu.fuatsbe.repository.RecruitmentRequestRepository;
+import com.fu.fuatsbe.repository.SkillRepository;
 import com.fu.fuatsbe.response.RecruitmentRequestResponse;
 import com.fu.fuatsbe.service.RecruitmentRequestService;
 
@@ -49,6 +50,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     private final EmployeeRepository employeeRepository;
     private final PlanDetailRepository planDetailRepository;
     private final PositionRepository positionRepository;
+    private final SkillRepository skillRepository;
 
     @Override
     public RecruitmentRequestResponseWithTotalPages getAllRecruitmentRequests(int pageNo, int pageSize) {
@@ -272,7 +274,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     public RecruitmentSearchCategoryDTO searchCategory() {
         RecruitmentSearchCategoryDTO recruitmentSearchCategoryDTO = RecruitmentSearchCategoryDTO.builder()
                 .jobTitle(recruitmentRequestRepository.getDistinctByPosition())
-                .industry(recruitmentRequestRepository.getDistinctByIndustry()).build();
+                .industry(recruitmentRequestRepository.getDistinctByIndustry())
+                .skill(skillRepository.getDistinctByName()).build();
         return recruitmentSearchCategoryDTO;
     }
 }

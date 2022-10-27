@@ -11,4 +11,5 @@ import java.util.List;
 public class RecruitmentSearchCategoryDTO {
     private List<String> jobTitle = new ArrayList<>();
     private List<String> industry = new ArrayList<>();
+    private List<String> skill = new ArrayList<>();
 }
