@@ -1,9 +1,6 @@
 package com.fu.fuatsbe.response;
 
-import com.fu.fuatsbe.entity.Candidate;
-import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.JobApply;
-import com.fu.fuatsbe.entity.Notification;
 import lombok.*;
 
 import java.sql.Date;

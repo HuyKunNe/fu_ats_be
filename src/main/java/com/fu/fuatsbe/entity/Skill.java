@@ -40,4 +40,9 @@ public class Skill {
     @ManyToMany(mappedBy = "skills")
     @JsonIgnore
     private Collection<PlanDetail> planDetails;
+
+    public Skill(String name) {
+        this.name = name;
+    }
+
 }

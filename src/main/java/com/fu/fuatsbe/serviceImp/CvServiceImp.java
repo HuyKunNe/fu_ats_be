@@ -105,7 +105,8 @@ public class CvServiceImp implements CVService {
         if (!createDTO.getSkillName().isEmpty()) {
             for (String skillName : createDTO.getSkillName()) {
                 Skill skill = skillRepository.findByName(skillName)
-                        .orElseThrow(() -> new NotFoundException(SkillErrorMessage.NOT_FOUND));
+                        .orElse(skillRepository.save(new Skill().builder().name(skillName).build()));
+                // .orElseThrow(() -> new NotFoundException(SkillErrorMessage.NOT_FOUND));
                 listSkills.add(skill);
             }
         }

@@ -121,12 +121,13 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         if (createDTO.getSkills().size() != 0) {
             for (String skillName : createDTO.getSkills()) {
                 Skill skill = skillRepository.findByName(skillName)
-                        .orElseThrow(() -> new NotFoundException(SkillErrorMessage.NOT_FOUND));
+                        .orElse(skillRepository.save(new Skill().builder().name(skillName).build()));
+                // .orElseThrow(() -> new NotFoundException(SkillErrorMessage.NOT_FOUND));
                 skills.add(skill);
             }
         }
 
-        PlanDetail planDetail = PlanDetail.builder().amount(createDTO.getAmount()).skills(skills)
+        PlanDetail planDetail = PlanDetail.builder()       .amount(createDTO.getAmount()).skills(skills)
                 .date(Date.valueOf(dateFormat))
                 .position(optionalPosition.get()).recruitmentPlan(optionalRecruitmentPlan.get())
                 .status(PlanDetailStatus.PENDING).build();
