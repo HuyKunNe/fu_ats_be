@@ -72,20 +72,19 @@ public class NotificationServiceImp implements NotificationService {
 
         notificationRepository.save(notification);
 
-        sendEmail(sendNotificationDTO.getCandidate().getEmail(), subject, content);
-
+        sendEmail(sendNotificationDTO.getCandidate().getEmail(), subject, content, sendNotificationDTO.getCandidate().getName());
         for (Employee employee : listEmployee) {
-            sendEmail(employee.getAccount().getEmail(), subject, content);
+            sendEmail(employee.getAccount().getEmail(), subject, content, employee.getName());
         }
     }
 
-    private void sendEmail(String email, String title, String content) throws MessagingException {
+    private void sendEmail(String email, String title, String content, String name) throws MessagingException {
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
         mimeMessageHelper.setTo(email);
-        mimeMessageHelper.setSubject(title);
-        mimeMessageHelper.setText(content);
+        mimeMessageHelper.setSubject( title);
+        mimeMessageHelper.setText("Thân gửi " + name + ", \n" +content);
         javaMailSender.send(mimeMessage);
     }
 }

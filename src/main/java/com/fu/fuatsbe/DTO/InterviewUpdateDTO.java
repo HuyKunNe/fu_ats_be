@@ -1,19 +1,19 @@
-package com.fu.fuatsbe.response;
+package com.fu.fuatsbe.DTO;
 
 import com.fu.fuatsbe.entity.JobApply;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.sql.Date;
 import java.util.List;
 
-@Setter
 @Getter
+@Setter
 @ToString
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-public class InterviewResponse {
-    private int id;
+public class InterviewUpdateDTO {
     private String subject;
     private String purpose;
     private Date date;
@@ -22,8 +22,7 @@ public class InterviewResponse {
     private String linkMeeting;
     private String round;
     private String description;
-    private String status;
-    private JobApply jobApply;
-    private String candidateName;
-    private List<String> employeeNames;
+    private int jobApplyId;
+    private int candidateId;
+    private List<Integer> employeeIds;
 }

@@ -1,6 +1,7 @@
 package com.fu.fuatsbe.controller;
 
 import com.fu.fuatsbe.DTO.InterviewCreateDTO;
+import com.fu.fuatsbe.DTO.InterviewUpdateDTO;
 import com.fu.fuatsbe.constant.interview.InterviewSuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
@@ -12,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.PermitAll;
 import javax.mail.MessagingException;
 import java.util.List;
 
@@ -24,13 +24,16 @@ public class InterviewController {
 
     private final InterviewService interviewService;
 
-//    @GetMapping("/getInterviewNoNotification")
-//    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-//    public ResponseEntity<ResponseDTO> getInterviewNoNotification() {
-//        ResponseDTO response = new ResponseDTO();
-//
-//        return ResponseEntity.ok().body(response);
-//    }
+    @GetMapping("/getAllInterview")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getAllInterview(@RequestParam(defaultValue = "0") int pageNo,
+                                                       @RequestParam(defaultValue = "10") int pageSize) {
+        ResponseDTO response = new ResponseDTO();
+        response.setData(interviewService.getAllInterview(pageNo, pageSize));
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        response.setMessage(InterviewSuccessMessage.GET_ALL_INTERVIEWS);
+        return ResponseEntity.ok().body(response);
+    }
 
     @PostMapping("/createInterview")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
@@ -42,9 +45,10 @@ public class InterviewController {
         response.setMessage(InterviewSuccessMessage.CREATE_INTERVIEW_SUCCESS);
         return ResponseEntity.ok().body(response);
     }
+
     @GetMapping("/getInterviewByCandidateID")
     @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
-    public ResponseEntity<ResponseDTO> getInterviewByCandidateID(@RequestParam int candidateId){
+    public ResponseEntity<ResponseDTO> getInterviewByCandidateID(@RequestParam int candidateId) {
         ResponseDTO responseDTO = new ResponseDTO();
         List<InterviewResponse> interviewResponses = interviewService.getInterviewByCandidateID(candidateId);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -55,12 +59,42 @@ public class InterviewController {
 
     @GetMapping("/getInterviewByEmployeeID")
     @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
-    public ResponseEntity<ResponseDTO> getInterviewByEmployeeID(@RequestParam int employeeId){
+    public ResponseEntity<ResponseDTO> getInterviewByEmployeeID(@RequestParam int employeeId) {
         ResponseDTO responseDTO = new ResponseDTO();
         List<InterviewResponse> interviewResponses = interviewService.getInterviewByEmployeeID(employeeId);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         responseDTO.setData(interviewResponses);
-        responseDTO.setMessage(InterviewSuccessMessage.GET_INTERVIEW_BY_CANDIDATE_ID);
+        responseDTO.setMessage(InterviewSuccessMessage.GET_INTERVIEW_BY_EMPLOYEE_ID);
         return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PutMapping("/updateInterview")
+    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> updateInterview(@RequestParam int interviewId,
+                                                       @RequestBody InterviewUpdateDTO interviewUpdateDTO) throws MessagingException {
+        ResponseDTO response = new ResponseDTO();
+        response.setData(interviewService.updateInterview(interviewId, interviewUpdateDTO));
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        response.setMessage(InterviewSuccessMessage.UPDATE_INTERVIEW);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PatchMapping("/closeInterview")
+    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> closeInterview(@RequestParam int id) {
+        ResponseDTO response = new ResponseDTO();
+        interviewService.closeInterview(id);
+        response.setMessage(InterviewSuccessMessage.CLOSE_INTERVIEW);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
+    @GetMapping("/getInterviewById")
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
+    public ResponseEntity<ResponseDTO> getInterviewById(@RequestParam int id){
+        ResponseDTO response = new ResponseDTO();
+        response.setData(interviewService.getInterviewByID(id));
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        response.setMessage(InterviewSuccessMessage.GET_INTERVIEW_BY_ID);
+        return ResponseEntity.ok().body(response);
     }
 }
