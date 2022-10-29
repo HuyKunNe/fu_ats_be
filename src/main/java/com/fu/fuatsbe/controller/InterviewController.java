@@ -88,6 +88,15 @@ public class InterviewController {
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
+    @PatchMapping("/cancelInterview")
+    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> cancelInterview(@RequestParam int id) {
+        ResponseDTO response = new ResponseDTO();
+        interviewService.cancelInterview(id);
+        response.setMessage(InterviewSuccessMessage.CANCEL_INTERVIEW);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
     @GetMapping("/getInterviewById")
     @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity<ResponseDTO> getInterviewById(@RequestParam int id){

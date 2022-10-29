@@ -82,7 +82,7 @@ public class InterviewServiceImp implements InterviewService {
                 .linkMeeting(interviewCreateDTO.getLinkMeeting())
                 .round(interviewCreateDTO.getRound())
                 .description(interviewCreateDTO.getDescription())
-                .status(InterviewRequestStatus.NEW)
+                .status(InterviewRequestStatus.PENDING)
                 .candidate(candidate)
                 .jobApply(jobApply)
                 .build();
@@ -348,6 +348,14 @@ public class InterviewServiceImp implements InterviewService {
         Interview interview = interviewRepository.findById(id).orElseThrow(() ->
                 new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
         interview.setStatus(InterviewRequestStatus.DONE);
+        interviewRepository.save(interview);
+    }
+
+    @Override
+    public void cancelInterview(int id) {
+        Interview interview = interviewRepository.findById(id).orElseThrow(() ->
+                new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
+        interview.setStatus(InterviewRequestStatus.CANCELED);
         interviewRepository.save(interview);
     }
 }
