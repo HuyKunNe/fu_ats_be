@@ -16,7 +16,6 @@ public class CvCreateDTO {
     private String linkCV;
     private String experience;
     private String location;
-    private List<String> skillName;
 
     private int candidateId;
 

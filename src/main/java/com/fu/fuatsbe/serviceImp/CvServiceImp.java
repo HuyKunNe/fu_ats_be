@@ -16,17 +16,14 @@ import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.cv.CVErrorMessage;
 import com.fu.fuatsbe.constant.cv.CVStatus;
 import com.fu.fuatsbe.constant.postion.PositionErrorMessage;
-import com.fu.fuatsbe.constant.skill.SkillErrorMessage;
 import com.fu.fuatsbe.entity.CV;
 import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.Position;
-import com.fu.fuatsbe.entity.Skill;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.repository.CandidateRepository;
 import com.fu.fuatsbe.repository.CvRepository;
 import com.fu.fuatsbe.repository.PositionRepository;
-import com.fu.fuatsbe.repository.SkillRepository;
 import com.fu.fuatsbe.response.CvResponse;
 import com.fu.fuatsbe.service.CVService;
 
@@ -39,7 +36,6 @@ public class CvServiceImp implements CVService {
     private final ModelMapper modelMapper;
     private final CvRepository cvRepository;
     private final CandidateRepository candidateRepository;
-    private final SkillRepository skillRepository;
     private final PositionRepository positionRepository;
 
     @Override
@@ -101,17 +97,8 @@ public class CvServiceImp implements CVService {
             }
         }
 
-        List<Skill> listSkills = new ArrayList<Skill>();
-        if (!createDTO.getSkillName().isEmpty()) {
-            for (String skillName : createDTO.getSkillName()) {
-                Skill skill = skillRepository.findByName(skillName)
-                        .orElse(skillRepository.save(new Skill().builder().name(skillName).build()));
-                // .orElseThrow(() -> new NotFoundException(SkillErrorMessage.NOT_FOUND));
-                listSkills.add(skill);
-            }
-        }
         CV cv = CV.builder().linkCV(createDTO.getLinkCV()).experience(createDTO.getExperience())
-                .location(createDTO.getLocation()).skills(listSkills).candidate(candidate).positions(listPositions)
+                .location(createDTO.getLocation()).candidate(candidate).positions(listPositions)
                 .status(CVStatus.ACTIVE)
                 .build();
 
@@ -134,19 +121,9 @@ public class CvServiceImp implements CVService {
             }
         }
 
-        List<Skill> listSkills = new ArrayList<Skill>();
-        if (!updateDTO.getSkillName().isEmpty()) {
-            for (String skillName : updateDTO.getSkillName()) {
-                Skill skill = skillRepository.findByName(skillName)
-                        .orElseThrow(() -> new NotFoundException(SkillErrorMessage.NOT_FOUND));
-                listSkills.add(skill);
-            }
-        }
-
         cv.setLinkCV(updateDTO.getLinkCV());
         cv.setExperience(updateDTO.getExperience());
         cv.setLocation(updateDTO.getLocation());
-        cv.setSkills(listSkills);
         cv.setPositions(listPositions);
 
         CV cvSaved = cvRepository.save(cv);

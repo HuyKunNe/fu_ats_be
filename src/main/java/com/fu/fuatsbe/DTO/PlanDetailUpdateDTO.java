@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class PlanDetailUpdateDTO {
 
     private int amount;
-    private String skills;
+    private String skill;
 
 }

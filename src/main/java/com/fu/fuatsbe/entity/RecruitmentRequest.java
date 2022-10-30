@@ -48,9 +48,17 @@ public class RecruitmentRequest {
     private String jobLevel;
     @Nationalized
     private String experience;
-    private String salary;
     private String typeOfWork;
-    private String location;
+    private String salaryFrom;
+    private String salaryTo;
+    @Nationalized
+    private String province;
+    @Nationalized
+    private String educationLevel;
+    @Nationalized
+    private String foreignLanguage;
+    @Nationalized
+    private String address;
 
     @Column(columnDefinition = "text")
     private String description;

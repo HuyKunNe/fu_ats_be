@@ -16,7 +16,6 @@ public class CvUpdateDTO {
     private String linkCV;
     private String experience;
     private String location;
-    private List<String> skillName;
     private List<String> positionName;
 
 }

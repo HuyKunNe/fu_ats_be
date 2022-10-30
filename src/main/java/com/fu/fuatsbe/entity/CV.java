@@ -70,9 +70,4 @@ public class CV {
     @JoinTable(name = "cv_position", joinColumns = @JoinColumn(name = "position_id"), inverseJoinColumns = @JoinColumn(name = "cv_id"))
     private Collection<Position> positions;
 
-    @ManyToMany
-    @JoinTable(name = "cv_skill", joinColumns = @JoinColumn(name = "cv_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
-    @JsonIgnore
-    private Collection<Skill> skills;
-
 }

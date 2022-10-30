@@ -12,14 +12,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class RecruitmentRequestUpdateDTO {
+
     private Date expiryDate;
     private String industry;
     private int amount;
     private String jobLevel;
     private String experience;
-    private String salary;
     private String typeOfWork;
-    private String location;
+    private String salaryFrom;
+    private String salaryTo;
+    private String province;
+    private String foreignLanguage;
+    private String educationLevel;
+    private String address;
     private String description;
+    private String benefit;
+    private String requirement;
     private int positionId;
 }

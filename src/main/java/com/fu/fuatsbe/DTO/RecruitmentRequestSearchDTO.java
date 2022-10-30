@@ -10,13 +10,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class RecruitmentRequestSearchDTO {
-
-    private String jobTitle;
+    private String jobName;
+    private String province;
     private String industry;
     private String jobLevel;
     private String typeOfWork;
-    private String salary;
+    private String salaryFrom;
+    private String salaryTo;
     private String experience;
-    private String location;
 
 }

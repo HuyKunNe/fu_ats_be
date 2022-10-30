@@ -33,7 +33,6 @@ import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.PlanDetailRepository;
 import com.fu.fuatsbe.repository.PositionRepository;
 import com.fu.fuatsbe.repository.RecruitmentRequestRepository;
-import com.fu.fuatsbe.repository.SkillRepository;
 import com.fu.fuatsbe.response.RecruitmentRequestResponse;
 import com.fu.fuatsbe.service.RecruitmentRequestService;
 
@@ -50,7 +49,6 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     private final EmployeeRepository employeeRepository;
     private final PlanDetailRepository planDetailRepository;
     private final PositionRepository positionRepository;
-    private final SkillRepository skillRepository;
 
     @Override
     public RecruitmentRequestResponseWithTotalPages getAllRecruitmentRequests(int pageNo, int pageSize) {
@@ -64,6 +62,13 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
+                if (recruitmentRequest.getSalaryTo() != null) {
+                    response.setSalaryDetail(
+                            (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                                    .trim());
+                } else {
+                    response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
+                }
                 result.add(response);
                 responseWithTotalPages = RecruitmentRequestResponseWithTotalPages
                         .builder()
@@ -82,6 +87,13 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 .orElseThrow(() -> new NotFoundException(
                         RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
         RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest, RecruitmentRequestResponse.class);
+        if (recruitmentRequest.getSalaryTo() != null) {
+            response.setSalaryDetail(
+                    (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                            .trim());
+        } else {
+            response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
+        }
         return response;
     }
 
@@ -96,6 +108,13 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
+                if (recruitmentRequest.getSalaryTo() != null) {
+                    response.setSalaryDetail(
+                            (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                                    .trim());
+                } else {
+                    response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
+                }
                 result.add(response);
                 responseWithTotalPages = RecruitmentRequestResponseWithTotalPages.builder()
                         .totalPages(pageResult.getTotalPages())
@@ -120,6 +139,13 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
+                if (recruitmentRequest.getSalaryTo() != null) {
+                    response.setSalaryDetail(
+                            (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                                    .trim());
+                } else {
+                    response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
+                }
                 result.add(response);
                 responseWithTotalPages = RecruitmentRequestResponseWithTotalPages
                         .builder()
@@ -144,6 +170,13 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
+                if (recruitmentRequest.getSalaryTo() != null) {
+                    response.setSalaryDetail(
+                            (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                                    .trim());
+                } else {
+                    response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
+                }
                 result.add(response);
             }
             responseWithTotalPages = RecruitmentRequestResponseWithTotalPages
@@ -167,15 +200,26 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         recruitmentRequest.setIndustry(updateDTO.getIndustry());
         recruitmentRequest.setJobLevel(updateDTO.getJobLevel());
         recruitmentRequest.setExperience(updateDTO.getExperience());
-        recruitmentRequest.setSalary(updateDTO.getSalary());
+        recruitmentRequest.setSalaryFrom(updateDTO.getSalaryFrom());
+        recruitmentRequest.setSalaryTo(updateDTO.getSalaryTo());
+        recruitmentRequest.setEducationLevel(updateDTO.getEducationLevel());
+        recruitmentRequest.setAddress(updateDTO.getAddress());
+        recruitmentRequest.setForeignLanguage(updateDTO.getForeignLanguage());
+        recruitmentRequest.setProvince(updateDTO.getProvince());
         recruitmentRequest.setTypeOfWork(updateDTO.getTypeOfWork());
-        recruitmentRequest.setLocation(updateDTO.getLocation());
         recruitmentRequest.setDescription(updateDTO.getDescription());
         recruitmentRequest.setPosition(position);
 
         RecruitmentRequest recruitmentRequestSaved = recruitmentRequestRepository.save(recruitmentRequest);
         RecruitmentRequestResponse response = modelMapper.map(recruitmentRequestSaved,
                 RecruitmentRequestResponse.class);
+        if (recruitmentRequestSaved.getSalaryTo() != null) {
+            response.setSalaryDetail(
+                    (recruitmentRequestSaved.getSalaryFrom() + " - " + recruitmentRequestSaved.getSalaryTo())
+                            .trim());
+        } else {
+            response.setSalaryDetail(recruitmentRequestSaved.getSalaryFrom());
+        }
         return response;
 
     }
@@ -199,14 +243,23 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                     .expiryDate(Date.valueOf(expiryDate)).industry(createDTO.getIndustry())
                     .amount(createDTO.getAmount()).jobLevel(createDTO.getJobLevel())
                     .status(RecruitmentRequestStatus.OPENING).experience(createDTO.getExperience())
-                    .salary(createDTO.getSalary()).typeOfWork(createDTO.getTypeOfWork())
+                    .province(createDTO.getProvince())
+                    .typeOfWork(createDTO.getTypeOfWork())
                     .benefit(createDTO.getBenefit())
+                    .foreignLanguage(createDTO.getForeignLanguage())
+                    .educationLevel(createDTO.getEducationLevel())
                     .requirement(createDTO.getRequirement())
+                    .salaryFrom(createDTO.getSalaryFrom()).salaryTo(createDTO.getSalaryTo())
                     .description(createDTO.getDescription()).creator(optionalCreator.get()).planDetail(planDetail)
-                    .location(createDTO.getLocation())
+                    .address(createDTO.getAddress())
                     .position(position).build();
             recruitmentRequestRepository.save(request);
             RecruitmentRequestResponse response = modelMapper.map(request, RecruitmentRequestResponse.class);
+            if (request.getSalaryTo() != null) {
+                response.setSalaryDetail((request.getSalaryFrom() + " - " + request.getSalaryTo()).trim());
+            } else {
+                response.setSalaryDetail(request.getSalaryFrom());
+            }
             return response;
         } else {
             throw new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION);
@@ -222,6 +275,12 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         RecruitmentRequest recruitmentRequestSaved = recruitmentRequestRepository.save(recruitmentRequest);
         RecruitmentRequestResponse response = modelMapper.map(recruitmentRequestSaved,
                 RecruitmentRequestResponse.class);
+        if (recruitmentRequestSaved.getSalaryTo() != null) {
+            response.setSalaryDetail(
+                    (recruitmentRequestSaved.getSalaryFrom() + " - " + recruitmentRequestSaved.getSalaryTo()).trim());
+        } else {
+            response.setSalaryDetail(recruitmentRequestSaved.getSalaryFrom());
+        }
         return response;
     }
 
@@ -241,6 +300,13 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
+                if (recruitmentRequest.getSalaryTo() != null) {
+                    response.setSalaryDetail(
+                            (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                                    .trim());
+                } else {
+                    response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
+                }
                 result.add(response);
                 responseWithTotalPages = RecruitmentRequestResponseWithTotalPages
                         .builder()
@@ -256,14 +322,21 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     @Override
     public List<RecruitmentRequestResponse> searchRecruitmentRequest(RecruitmentRequestSearchDTO searchDTO) {
         List<RecruitmentRequestResponse> result = new ArrayList<>();
-        List<RecruitmentRequest> list = recruitmentRequestRepository.searchRecruitmentRequest(searchDTO.getJobTitle(),
-                searchDTO.getIndustry(), searchDTO.getJobLevel(), searchDTO.getTypeOfWork(),
-                searchDTO.getSalary().replaceAll("[^0-9]", ""),
-                searchDTO.getExperience(), searchDTO.getLocation());
+        List<RecruitmentRequest> list = recruitmentRequestRepository.searchRecruitmentRequest(searchDTO.getJobName(),
+                searchDTO.getProvince(), searchDTO.getIndustry(), searchDTO.getJobLevel(), searchDTO.getTypeOfWork(),
+                searchDTO.getSalaryFrom(),
+                searchDTO.getSalaryTo(), searchDTO.getExperience());
         if (!list.isEmpty()) {
             for (RecruitmentRequest recruitmentRequest : list) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
+                if (recruitmentRequest.getSalaryTo() != null) {
+                    response.setSalaryDetail(
+                            (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                                    .trim());
+                } else {
+                    response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
+                }
                 result.add(response);
             }
         }
@@ -274,8 +347,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     public RecruitmentSearchCategoryDTO searchCategory() {
         RecruitmentSearchCategoryDTO recruitmentSearchCategoryDTO = RecruitmentSearchCategoryDTO.builder()
                 .jobTitle(recruitmentRequestRepository.getDistinctByPosition())
-                .industry(recruitmentRequestRepository.getDistinctByIndustry())
-                .skill(skillRepository.getDistinctByName()).build();
+                .industry(recruitmentRequestRepository.getDistinctByIndustry()).build();
         return recruitmentSearchCategoryDTO;
     }
 }
