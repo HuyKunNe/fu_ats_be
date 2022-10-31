@@ -22,8 +22,8 @@ public class PlanDetailResponseDTO {
     private Date date;
     private String reason;
     private String salary;
-    private Date timeRecruitingFrom;
-    private Date timeRecruitingTo;
+    private Date periodFrom;
+    private Date periodTo;
     private String description;
     private String requirement;
     private String status;

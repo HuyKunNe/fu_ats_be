@@ -118,13 +118,13 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         LocalDate dateFormat = LocalDate.parse(date.toString(), format);
-        LocalDate timeRecrutingFrom = LocalDate.parse(createDTO.getTimeRecruitingFrom().toString(), format);
-        LocalDate timeRecrutingTo = LocalDate.parse(createDTO.getTimeRecruitingTo().toString(), format);
+        LocalDate periodFrom = LocalDate.parse(createDTO.getPeriodFrom().toString(), format);
+        LocalDate periodTo = LocalDate.parse(createDTO.getPeriodTo().toString(), format);
         PlanDetail planDetail = PlanDetail.builder().amount(createDTO.getAmount())
                 .reason(createDTO.getReason())
                 .salary(createDTO.getSalary())
-                .timeRecrutingFrom(Date.valueOf(timeRecrutingFrom))
-                .timeRecrutingFrom(Date.valueOf(timeRecrutingTo))
+                .periodFrom(Date.valueOf(periodFrom))
+                .periodTo(Date.valueOf(periodTo))
                 .note(createDTO.getNote())
                 .date(Date.valueOf(dateFormat))
                 .requirement(createDTO.getRequirement())
