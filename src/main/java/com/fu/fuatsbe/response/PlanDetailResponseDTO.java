@@ -20,9 +20,13 @@ public class PlanDetailResponseDTO {
     private int id;
     private int amount;
     private Date date;
-    private String skill;
+    private String reason;
+    private String salary;
+    private Date timeRecruitingFrom;
+    private Date timeRecruitingTo;
     private String status;
     private RecruitmentPlan recruitmentPlan;
+    private Employee creator;
     private Employee approver;
     private Position position;
 

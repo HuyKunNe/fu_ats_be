@@ -1,12 +1,10 @@
 package com.fu.fuatsbe.DTO;
 
-import com.fu.fuatsbe.constant.validation_message.ValidationMessage;
 import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.Interview;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
 import java.sql.Date;
 import java.util.List;
 

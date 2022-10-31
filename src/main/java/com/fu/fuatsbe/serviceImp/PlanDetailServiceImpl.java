@@ -51,10 +51,11 @@ public class PlanDetailServiceImpl implements PlanDetailService {
 
     @Override
     public List<PlanDetailResponseDTO> getAllPlanDetails(int pageNo, int pageSize) {
-        List<PlanDetail> list = planDetailRepository.findAll();
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<PlanDetail> pageResult = planDetailRepository.findAll(pageable);
         List<PlanDetailResponseDTO> result = new ArrayList<PlanDetailResponseDTO>();
-        if (list.size() > 0) {
-            for (PlanDetail planDetail : list) {
+        if (pageResult.hasContent()) {
+            for (PlanDetail planDetail : pageResult.getContent()) {
                 PlanDetailResponseDTO planDetailResponse = modelMapper.map(planDetail, PlanDetailResponseDTO.class);
                 result.add(planDetailResponse);
             }
@@ -106,6 +107,10 @@ public class PlanDetailServiceImpl implements PlanDetailService {
 
         Optional<RecruitmentPlan> optionalRecruitmentPlan = recruitmentPlanRepository
                 .findById(createDTO.getRecruitmentPlanId());
+
+        Employee creator = employeeRepository.findById(createDTO.getCreatorId())
+                .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+
         if (!optionalRecruitmentPlan.isPresent())
             throw new NotFoundException(RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION);
         if (!optionalRecruitmentPlan.get().getStatus().equalsIgnoreCase(RecruitmentPlanStatus.APPROVED))
@@ -113,9 +118,16 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         LocalDate dateFormat = LocalDate.parse(date.toString(), format);
-
-        PlanDetail planDetail = PlanDetail.builder().amount(createDTO.getAmount()).skill(createDTO.getSkill())
+        LocalDate timeRecrutingFrom = LocalDate.parse(createDTO.getTimeRecruitingFrom().toString(), format);
+        LocalDate timeRecrutingTo = LocalDate.parse(createDTO.getTimeRecruitingTo().toString(), format);
+        PlanDetail planDetail = PlanDetail.builder().amount(createDTO.getAmount())
+                .reason(createDTO.getReason())
+                .salary(createDTO.getSalary())
+                .timeRecrutingFrom(Date.valueOf(timeRecrutingFrom))
+                .timeRecrutingFrom(Date.valueOf(timeRecrutingTo))
+                .note(createDTO.getNote())
                 .date(Date.valueOf(dateFormat))
+                .creator(creator)
                 .position(optionalPosition.get()).recruitmentPlan(optionalRecruitmentPlan.get())
                 .status(PlanDetailStatus.PENDING).build();
         PlanDetail planDetailSaved = planDetailRepository.save(planDetail);

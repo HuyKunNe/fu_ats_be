@@ -43,7 +43,12 @@ public class PlanDetail {
     private Date date;
     private String status;
     @Column(columnDefinition = "text")
-    private String skill;
+    private String reason;
+    private String salary;
+    private Date timeRecrutingFrom;
+    private Date timeRecrutingTo;
+    @Column(columnDefinition = "text")
+    private String note;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)
@@ -51,6 +56,13 @@ public class PlanDetail {
     @EqualsAndHashCode.Include
     @ToString.Include
     private RecruitmentPlan recruitmentPlan;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
+    @JoinColumn(name = "creatorId")
+    @EqualsAndHashCode.Include
+    @ToString.Include
+    private Employee creator;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)

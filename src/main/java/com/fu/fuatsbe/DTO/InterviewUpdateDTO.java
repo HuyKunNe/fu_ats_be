@@ -1,6 +1,5 @@
 package com.fu.fuatsbe.DTO;
 
-import com.fu.fuatsbe.entity.JobApply;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

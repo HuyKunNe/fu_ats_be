@@ -1,7 +1,6 @@
 package com.fu.fuatsbe.serviceImp;
 
 import com.fu.fuatsbe.DTO.InterviewDetailDTO;
-import com.fu.fuatsbe.DTO.InterviewUpdateDTO;
 import com.fu.fuatsbe.constant.interview.InterviewErrorMessage;
 import com.fu.fuatsbe.constant.interview_detail.InterviewDetailErrorMessage;
 import com.fu.fuatsbe.constant.planDetail.PlanDetailErrorMessage;
@@ -39,24 +38,25 @@ public class InterviewDetailServiceImp implements InterviewDetailService {
         Page<InterviewDetail> interviewDetails = interviewDetailRepository.findAll(pageable);
         List<Object> result = new ArrayList<>();
         ResponseWithTotalPage response = null;
-        if(interviewDetails.hasContent()){
-            for (InterviewDetail interviewDetail: interviewDetails.getContent()) {
-                InterviewDetailResponse interviewDetailResponse = modelMapper.map(interviewDetail, InterviewDetailResponse.class);
+        if (interviewDetails.hasContent()) {
+            for (InterviewDetail interviewDetail : interviewDetails.getContent()) {
+                InterviewDetailResponse interviewDetailResponse = modelMapper.map(interviewDetail,
+                        InterviewDetailResponse.class);
                 result.add(interviewDetailResponse);
                 response = ResponseWithTotalPage.builder()
                         .totalPage(interviewDetails.getTotalPages())
                         .responseList(result)
                         .build();
             }
-        }else
+        } else
             throw new ListEmptyException(PlanDetailErrorMessage.LIST_EMPTY_EXCEPTION);
         return response;
     }
 
     @Override
     public InterviewDetailResponse createInterviewDetail(InterviewDetailDTO interviewDetailDTO) {
-        Interview interview = interviewRepository.findById(interviewDetailDTO.getInterviewID()).orElseThrow(() ->
-                new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
+        Interview interview = interviewRepository.findById(interviewDetailDTO.getInterviewID())
+                .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
         InterviewDetail interviewDetail = InterviewDetail.builder()
                 .startAt(interview.getDate())
                 .endAt(interviewDetailDTO.getEnd())
@@ -66,25 +66,27 @@ public class InterviewDetailServiceImp implements InterviewDetailService {
                 .interview(interview)
                 .build();
         InterviewDetail savedInterviewDetail = interviewDetailRepository.save(interviewDetail);
-        InterviewDetailResponse interviewDetailResponse = modelMapper.map(savedInterviewDetail, InterviewDetailResponse.class);
+        InterviewDetailResponse interviewDetailResponse = modelMapper.map(savedInterviewDetail,
+                InterviewDetailResponse.class);
         return interviewDetailResponse;
     }
 
     @Override
     public InterviewDetailResponse getInterviewDetailById(int id) {
-        InterviewDetail interviewDetail = interviewDetailRepository.findById(id).orElseThrow(() ->
-                new NotFoundException(InterviewDetailErrorMessage.INTERVIEW_DETAIL_NOT_FOUND));
-        System.out.println("Check data "+interviewDetail.getDescription());
-        InterviewDetailResponse interviewDetailResponse = modelMapper.map(interviewDetail, InterviewDetailResponse.class);
+        InterviewDetail interviewDetail = interviewDetailRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(InterviewDetailErrorMessage.INTERVIEW_DETAIL_NOT_FOUND));
+        System.out.println("Check data " + interviewDetail.getDescription());
+        InterviewDetailResponse interviewDetailResponse = modelMapper.map(interviewDetail,
+                InterviewDetailResponse.class);
         return interviewDetailResponse;
     }
 
     @Override
     public InterviewDetailResponse updateInterviewDetail(int id, InterviewDetailDTO interviewDetailDTO) {
-        InterviewDetail interviewDetail = interviewDetailRepository.findById(id).orElseThrow(() ->
-                new NotFoundException(InterviewDetailErrorMessage.INTERVIEW_DETAIL_NOT_FOUND));
-        Interview interview = interviewRepository.findById(interviewDetailDTO.getInterviewID()).orElseThrow(() ->
-                new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
+        InterviewDetail interviewDetail = interviewDetailRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(InterviewDetailErrorMessage.INTERVIEW_DETAIL_NOT_FOUND));
+        Interview interview = interviewRepository.findById(interviewDetailDTO.getInterviewID())
+                .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
 
         interviewDetail.setStartAt(interview.getDate());
         interviewDetail.setEndAt(interviewDetailDTO.getEnd());
@@ -95,17 +97,21 @@ public class InterviewDetailServiceImp implements InterviewDetailService {
 
         InterviewDetail savedInterviewDetail = interviewDetailRepository.save(interviewDetail);
 
-        InterviewDetailResponse interviewDetailResponse = modelMapper.map(savedInterviewDetail, InterviewDetailResponse.class);
+        InterviewDetailResponse interviewDetailResponse = modelMapper.map(savedInterviewDetail,
+                InterviewDetailResponse.class);
         return interviewDetailResponse;
     }
 
     @Override
     public InterviewDetailResponse getInterviewDetailByInterviewId(int interviewId) {
-        interviewRepository.findById(interviewId).orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
-        InterviewDetail interviewDetail = interviewDetailRepository.getInterviewDetailByInterviewId(interviewId).orElseThrow(()
-        -> new NotFoundException(InterviewDetailErrorMessage.INTERVIEW_DETAIL_OF_INTERVIEW_NOT_FOUND));
+        interviewRepository.findById(interviewId)
+                .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
+        InterviewDetail interviewDetail = interviewDetailRepository.getInterviewDetailByInterviewId(interviewId)
+                .orElseThrow(() -> new NotFoundException(
+                        InterviewDetailErrorMessage.INTERVIEW_DETAIL_OF_INTERVIEW_NOT_FOUND));
 
-        InterviewDetailResponse interviewDetailResponse = modelMapper.map(interviewDetail, InterviewDetailResponse.class);
+        InterviewDetailResponse interviewDetailResponse = modelMapper.map(interviewDetail,
+                InterviewDetailResponse.class);
         return interviewDetailResponse;
     }
 }

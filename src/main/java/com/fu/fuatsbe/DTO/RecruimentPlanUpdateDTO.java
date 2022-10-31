@@ -14,5 +14,6 @@ import lombok.NoArgsConstructor;
 public class RecruimentPlanUpdateDTO {
     private Date periodFrom;
     private Date periodTo;
+    private String totalSalary;
     private int amount;
 }

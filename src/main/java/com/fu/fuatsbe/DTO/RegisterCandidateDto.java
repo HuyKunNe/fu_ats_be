@@ -1,6 +1,5 @@
 package com.fu.fuatsbe.DTO;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fu.fuatsbe.constant.validation_message.ValidationMessage;
 import com.fu.fuatsbe.constant.validation_size.ValidationSize;
 import lombok.AllArgsConstructor;

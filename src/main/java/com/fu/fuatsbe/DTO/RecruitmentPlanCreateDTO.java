@@ -15,6 +15,7 @@ public class RecruitmentPlanCreateDTO {
 
     private Date periodFrom;
     private Date periodTo;
+    private String totalSalary;
     private int amount;
     private int creatorId;
 
