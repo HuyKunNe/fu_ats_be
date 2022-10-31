@@ -2,17 +2,22 @@ package com.fu.fuatsbe.DTO;
 
 import com.fu.fuatsbe.constant.validation_message.ValidationMessage;
 import com.fu.fuatsbe.constant.validation_size.ValidationSize;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
-@AllArgsConstructor
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
-@Data
+@AllArgsConstructor
 @Builder
 public class LoginDto {
 

@@ -2,18 +2,25 @@ package com.fu.fuatsbe.DTO;
 
 import com.fu.fuatsbe.constant.validation_message.ValidationMessage;
 import com.fu.fuatsbe.constant.validation_size.ValidationSize;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.sql.Date;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Builder
 public class RegisterCandidateDto {
     @NotBlank(message = ValidationMessage.PASSWORD_VALID_MESSAGE)
     @Size(min = ValidationSize.PASSWORD_MIN, max = ValidationSize.PASSWORD_MAX, message = ValidationMessage.PASSWORD_SIZE_VALID_MESSAGE)

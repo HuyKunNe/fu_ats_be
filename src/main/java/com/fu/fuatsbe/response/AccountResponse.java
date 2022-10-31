@@ -5,10 +5,14 @@ import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.Role;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountResponse {

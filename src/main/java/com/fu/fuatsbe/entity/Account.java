@@ -19,7 +19,9 @@ import org.hibernate.annotations.FetchMode;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
 @Table(name = "account")
 @NoArgsConstructor
 @AllArgsConstructor
