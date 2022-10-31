@@ -127,6 +127,8 @@ public class PlanDetailServiceImpl implements PlanDetailService {
                 .timeRecrutingFrom(Date.valueOf(timeRecrutingTo))
                 .note(createDTO.getNote())
                 .date(Date.valueOf(dateFormat))
+                .requirement(createDTO.getRequirement())
+                .description(createDTO.getDescription())
                 .creator(creator)
                 .position(optionalPosition.get()).recruitmentPlan(optionalRecruitmentPlan.get())
                 .status(PlanDetailStatus.PENDING).build();

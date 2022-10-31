@@ -24,6 +24,8 @@ public class PlanDetailResponseDTO {
     private String salary;
     private Date timeRecruitingFrom;
     private Date timeRecruitingTo;
+    private String description;
+    private String requirement;
     private String status;
     private RecruitmentPlan recruitmentPlan;
     private Employee creator;

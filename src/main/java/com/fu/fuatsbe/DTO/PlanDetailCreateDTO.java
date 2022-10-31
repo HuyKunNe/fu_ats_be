@@ -19,6 +19,8 @@ public class PlanDetailCreateDTO {
     private Date timeRecruitingFrom;
     private Date timeRecruitingTo;
     private String note;
+    private String description;
+    private String requirement;
     private int positionId;
     private int recruitmentPlanId;
     private int creatorId;

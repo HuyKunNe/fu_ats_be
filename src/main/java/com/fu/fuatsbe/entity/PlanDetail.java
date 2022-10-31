@@ -48,6 +48,10 @@ public class PlanDetail {
     private Date timeRecrutingFrom;
     private Date timeRecrutingTo;
     @Column(columnDefinition = "text")
+    private String description;
+    @Column(columnDefinition = "text")
+    private String requirement;
+    @Column(columnDefinition = "text")
     private String note;
 
     @ManyToOne(fetch = FetchType.LAZY)
