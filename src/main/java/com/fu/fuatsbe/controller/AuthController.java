@@ -13,6 +13,7 @@ import com.fu.fuatsbe.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +33,16 @@ public class AuthController {
     public ResponseEntity<ResponseDTO> login(@Validated @RequestBody LoginDto employee) {
         ResponseDTO<LoginResponseDto> responseDTO = new ResponseDTO();
         LoginResponseDto loginResponseDTO = authService.login(employee);
+        responseDTO.setData(loginResponseDTO);
+        responseDTO.setMessage("Login success");
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PostMapping("/loginGoogle")
+    public ResponseEntity<ResponseDTO> loginGoole(OAuth2AuthenticationToken oAuth2AuthenticationToken) {
+        ResponseDTO<LoginResponseDto> responseDTO = new ResponseDTO();
+        LoginResponseDto loginResponseDTO = authService.loginGoogle(oAuth2AuthenticationToken);
         responseDTO.setData(loginResponseDTO);
         responseDTO.setMessage("Login success");
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -60,6 +71,7 @@ public class AuthController {
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+
     @PermitAll
     @GetMapping("forgot-password")
     public ResponseEntity<ResponseDTO> sendEmailToGetPassword(@RequestParam String email) throws MessagingException {
@@ -69,18 +81,21 @@ public class AuthController {
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+
     @PermitAll
     @PatchMapping("/reset-password")
-    public ResponseEntity<ResponseDTO> resetPassword(@Validated @RequestBody ResetPasswordDto resetPasswordDto){
+    public ResponseEntity<ResponseDTO> resetPassword(@Validated @RequestBody ResetPasswordDto resetPasswordDto) {
         ResponseDTO<Void> responseDTO = new ResponseDTO();
-        emailService.resetPassword(resetPasswordDto.getEmail(), resetPasswordDto.getToken(), resetPasswordDto.getNewPassword());
+        emailService.resetPassword(resetPasswordDto.getEmail(), resetPasswordDto.getToken(),
+                resetPasswordDto.getNewPassword());
         responseDTO.setMessage(EmployeeSuccessMessage.RESET_PASSWORD_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+
     @PermitAll
     @PatchMapping("change-password")
-    public ResponseEntity<ResponseDTO> changePassword(@Validated @RequestBody ChangePasswordDTO changePasswordDTO){
+    public ResponseEntity<ResponseDTO> changePassword(@Validated @RequestBody ChangePasswordDTO changePasswordDTO) {
         ResponseDTO<Void> responseDTO = new ResponseDTO();
         authService.changePassword(changePasswordDTO);
         responseDTO.setMessage(AccountSuccessMessage.CHANGE_PASSWORD_ACCOUNT_SUCCESS);

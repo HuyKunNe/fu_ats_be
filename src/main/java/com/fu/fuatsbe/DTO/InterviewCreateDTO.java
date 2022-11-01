@@ -3,7 +3,7 @@ package com.fu.fuatsbe.DTO;
 import com.fu.fuatsbe.constant.validation_message.ValidationMessage;
 
 import javax.validation.constraints.NotBlank;
-import java.sql.Date;
+
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -26,7 +26,9 @@ public class InterviewCreateDTO {
     @NotBlank(message = ValidationMessage.PURPOSE_VALID_MESSAGE)
     private String purpose;
     @NotBlank(message = ValidationMessage.DATE_VALID_MESSAGE)
-    private Date date;
+    private String date;
+
+    private String time;
 
     private String address;
 

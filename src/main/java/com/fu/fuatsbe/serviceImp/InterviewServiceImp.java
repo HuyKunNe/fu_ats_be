@@ -17,12 +17,7 @@ import com.fu.fuatsbe.response.InterviewResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.InterviewService;
 import com.fu.fuatsbe.service.NotificationService;
-import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.Condition;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import org.modelmapper.spi.MappingContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +25,10 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,34 +47,40 @@ public class InterviewServiceImp implements InterviewService {
 
     private final InterviewEmployeeRepository interviewEmployeeRepository;
 
-
     @Override
     public InterviewResponse createInterview(InterviewCreateDTO interviewCreateDTO) throws MessagingException {
-        Candidate candidate = candidateRepository.findById(interviewCreateDTO.getCandidateId()).orElseThrow(()
-                -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+        Candidate candidate = candidateRepository.findById(interviewCreateDTO.getCandidateId())
+                .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
 
         List<Employee> employeeList = new ArrayList<>();
         List<Integer> intervieweeIdList = new ArrayList<>();
 
-
         for (Integer employeeId : interviewCreateDTO.getEmployeeId()) {
-            Employee employee = employeeRepository.findById(employeeId).orElseThrow(() ->
-                    new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+            Employee employee = employeeRepository.findById(employeeId)
+                    .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
             employeeList.add(employee);
             intervieweeIdList.add(employeeId);
         }
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate dateInput = LocalDate.parse(interviewCreateDTO.getDate().toString(), format);
-        LocalDate presentDate = LocalDate.parse(LocalDate.now().toString(), format);
-        if (dateInput.isBefore(presentDate)) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm:ss");
+        LocalDate localDate = LocalDate.parse(interviewCreateDTO.getDate(), df);
+        LocalTime localTime = LocalTime.parse(interviewCreateDTO.getTime(), tf);
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
+        String dateInput = localDateTime.format(dtf);
+        Timestamp dateInterview = Timestamp.valueOf(dateInput);
+
+        LocalDate presentDate = LocalDate.parse(LocalDate.now().toString(), df);
+
+        if (localDate.isBefore(presentDate)) {
             throw new PermissionException(InterviewErrorMessage.DATE_NOT_VALID);
         }
-        JobApply jobApply = jobApplyRepository.findById(interviewCreateDTO.getJobApplyId()).orElseThrow(() ->
-                new NotFoundException(JobApplyErrorMessage.JOB_APPLY_NOT_FOUND));
+        JobApply jobApply = jobApplyRepository.findById(interviewCreateDTO.getJobApplyId())
+                .orElseThrow(() -> new NotFoundException(JobApplyErrorMessage.JOB_APPLY_NOT_FOUND));
         Interview interview = Interview.builder()
                 .subject(interviewCreateDTO.getSubject())
                 .purpose(interviewCreateDTO.getPurpose())
-                .date(Date.valueOf(dateInput))
+                .date(dateInterview)
                 .address(interviewCreateDTO.getAddress())
                 .room(interviewCreateDTO.getRoom())
                 .linkMeeting(interviewCreateDTO.getLinkMeeting())
@@ -89,14 +93,16 @@ public class InterviewServiceImp implements InterviewService {
                 .build();
         Interview savedInterview = interviewRepository.save(interview);
 
+        List<InterviewEmployee> listInterviewEmployees = new ArrayList<>();
+
         for (Employee emp : employeeList) {
             InterviewEmployee interviewEmployee = InterviewEmployee.builder()
                     .employee(emp)
                     .interview(savedInterview)
                     .build();
-            interviewEmployeeRepository.save(interviewEmployee);
+            InterviewEmployee interviewEmployeeSaved = interviewEmployeeRepository.save(interviewEmployee);
+            listInterviewEmployees.add(interviewEmployeeSaved);
         }
-
 
         SendNotificationDTO sendNotificationDTO = SendNotificationDTO.builder()
                 .link(savedInterview.getLinkMeeting())
@@ -108,11 +114,13 @@ public class InterviewServiceImp implements InterviewService {
                 .interview(savedInterview)
                 .build();
         notificationService.sendNotificationForInterview(sendNotificationDTO);
+
         InterviewResponse response = InterviewResponse.builder()
                 .id(savedInterview.getId())
                 .subject(savedInterview.getSubject())
                 .purpose(savedInterview.getPurpose())
-                .date(savedInterview.getDate())
+                .date(Date.valueOf(localDate))
+                .time(savedInterview.getDate().toLocalDateTime().toLocalTime())
                 .room(savedInterview.getRoom())
                 .address(savedInterview.getAddress())
                 .linkMeeting(savedInterview.getLinkMeeting())
@@ -123,8 +131,9 @@ public class InterviewServiceImp implements InterviewService {
                 .jobApply(savedInterview.getJobApply())
                 .candidateName(savedInterview.getCandidate().getName())
                 .build();
+
         List<String> empName = new ArrayList<>();
-        for (InterviewEmployee interviewEmp : interview.getInterviewEmployees()) {
+        for (InterviewEmployee interviewEmp : listInterviewEmployees) {
             empName.add(interviewEmp.getEmployee().getName());
         }
         response.setEmployeeNames(empName);
@@ -133,19 +142,18 @@ public class InterviewServiceImp implements InterviewService {
 
     @Override
     public List<InterviewResponse> getInterviewByCandidateID(int candidateId) {
-        Candidate candidate = candidateRepository.findById(candidateId).orElseThrow(() ->
-                new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+        Candidate candidate = candidateRepository.findById(candidateId)
+                .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
         List<Interview> interviews = interviewRepository.findInterviewByCandidateId(candidate.getId());
-        if (interviews.isEmpty()) {
-            throw new NotFoundException(InterviewErrorMessage.INTERVIEW_WITH_CANDIDATE_ID_NOT_FOUND);
-        }
+
         List<InterviewResponse> responseList = new ArrayList<>();
         for (Interview interview : interviews) {
             InterviewResponse response = InterviewResponse.builder()
                     .id(interview.getId())
                     .subject(interview.getSubject())
                     .purpose(interview.getPurpose())
-                    .date(interview.getDate())
+                    .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()))
+                    .time(interview.getDate().toLocalDateTime().toLocalTime())
                     .room(interview.getRoom())
                     .address(interview.getAddress())
                     .linkMeeting(interview.getLinkMeeting())
@@ -164,12 +172,10 @@ public class InterviewServiceImp implements InterviewService {
 
     @Override
     public List<InterviewResponse> getInterviewByEmployeeID(int employeeId) {
-        Employee employee = employeeRepository.findById(employeeId).orElseThrow(() ->
-                new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
         List<Interview> interviewList = interviewRepository.findInterviewByEmployeeId(employee.getId());
-        if (interviewList.isEmpty()) {
-            throw new NotFoundException(InterviewErrorMessage.INTERVIEW_WITH_EMPLOYEE_ID_NOT_FOUND);
-        }
+
         List<String> empName = new ArrayList<>();
 
         List<InterviewResponse> responseList = new ArrayList<>();
@@ -184,7 +190,8 @@ public class InterviewServiceImp implements InterviewService {
                     .id(interview.getId())
                     .subject(interview.getSubject())
                     .purpose(interview.getPurpose())
-                    .date(interview.getDate())
+                    .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()))
+                    .time(interview.getDate().toLocalDateTime().toLocalTime())
                     .room(interview.getRoom())
                     .address(interview.getAddress())
                     .linkMeeting(interview.getLinkMeeting())
@@ -223,7 +230,8 @@ public class InterviewServiceImp implements InterviewService {
                         .id(interview.getId())
                         .subject(interview.getSubject())
                         .purpose(interview.getPurpose())
-                        .date(interview.getDate())
+                        .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()))
+                        .time(interview.getDate().toLocalDateTime().toLocalTime())
                         .room(interview.getRoom())
                         .address(interview.getAddress())
                         .linkMeeting(interview.getLinkMeeting())
@@ -250,8 +258,8 @@ public class InterviewServiceImp implements InterviewService {
 
     @Override
     public InterviewResponse getInterviewByID(int id) {
-        Interview interview = interviewRepository.findById(id).orElseThrow(() ->
-                new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
+        Interview interview = interviewRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
         List<String> empName = new ArrayList<>();
         for (InterviewEmployee interviewEmp : interview.getInterviewEmployees()) {
             empName.add(interviewEmp.getEmployee().getName());
@@ -260,7 +268,8 @@ public class InterviewServiceImp implements InterviewService {
                 .id(interview.getId())
                 .subject(interview.getSubject())
                 .purpose(interview.getPurpose())
-                .date(interview.getDate())
+                .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()))
+                .time(interview.getDate().toLocalDateTime().toLocalTime())
                 .room(interview.getRoom())
                 .address(interview.getAddress())
                 .linkMeeting(interview.getLinkMeeting())
@@ -277,21 +286,31 @@ public class InterviewServiceImp implements InterviewService {
 
     @Override
     public InterviewResponse updateInterview(int id, InterviewUpdateDTO interviewUpdateDTO) throws MessagingException {
-        Interview interview = interviewRepository.findById(id).orElseThrow(() ->
-                new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
-        Candidate candidate = candidateRepository.findById(interviewUpdateDTO.getCandidateId()).orElseThrow(() ->
-                new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+        Interview interview = interviewRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
+        Candidate candidate = candidateRepository.findById(interviewUpdateDTO.getCandidateId())
+                .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
         List<Employee> employeeList = new ArrayList<>();
         for (Integer employeeId : interviewUpdateDTO.getEmployeeIds()) {
-            Employee employee = employeeRepository.findById(employeeId).orElseThrow(() ->
-                    new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+            Employee employee = employeeRepository.findById(employeeId)
+                    .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
             employeeList.add(employee);
         }
-        JobApply jobApply = jobApplyRepository.findById(interviewUpdateDTO.getJobApplyId()).orElseThrow(()
-                -> new NotFoundException(JobApplyErrorMessage.JOB_APPLY_NOT_FOUND));
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm:ss");
+        LocalDate localDate = LocalDate.parse(interviewUpdateDTO.getDate(), df);
+        LocalTime localTime = LocalTime.parse(interviewUpdateDTO.getTime(), tf);
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
+        String dateInput = localDateTime.format(dtf);
+        Timestamp dateInterview = Timestamp.valueOf(dateInput);
+
+        JobApply jobApply = jobApplyRepository.findById(interviewUpdateDTO.getJobApplyId())
+                .orElseThrow(() -> new NotFoundException(JobApplyErrorMessage.JOB_APPLY_NOT_FOUND));
         interview.setSubject(interviewUpdateDTO.getSubject());
         interview.setPurpose(interviewUpdateDTO.getPurpose());
-        interview.setDate(interviewUpdateDTO.getDate());
+        interview.setDate(dateInterview);
         interview.setAddress(interviewUpdateDTO.getAddress());
         interview.setRoom(interviewUpdateDTO.getRoom());
         interview.setLinkMeeting(interviewUpdateDTO.getLinkMeeting());
@@ -336,7 +355,8 @@ public class InterviewServiceImp implements InterviewService {
                 .id(savedInterview.getId())
                 .subject(savedInterview.getSubject())
                 .purpose(savedInterview.getPurpose())
-                .date(savedInterview.getDate())
+                .date(Date.valueOf(savedInterview.getDate().toLocalDateTime().toLocalDate()))
+                .time(savedInterview.getDate().toLocalDateTime().toLocalTime())
                 .address(savedInterview.getAddress())
                 .room(savedInterview.getRoom())
                 .linkMeeting(savedInterview.getLinkMeeting())
@@ -353,16 +373,16 @@ public class InterviewServiceImp implements InterviewService {
 
     @Override
     public void closeInterview(int id) {
-        Interview interview = interviewRepository.findById(id).orElseThrow(() ->
-                new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
+        Interview interview = interviewRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
         interview.setStatus(InterviewRequestStatus.DONE);
         interviewRepository.save(interview);
     }
 
     @Override
     public void cancelInterview(int id) {
-        Interview interview = interviewRepository.findById(id).orElseThrow(() ->
-                new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
+        Interview interview = interviewRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
         interview.setStatus(InterviewRequestStatus.CANCELED);
         interviewRepository.save(interview);
     }

@@ -29,6 +29,7 @@ public class InterviewEmployee {
     @ToString.Include
     @JsonIgnore
     private Interview interview;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)
     @EqualsAndHashCode.Include

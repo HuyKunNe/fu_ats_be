@@ -1,6 +1,6 @@
 package com.fu.fuatsbe.entity;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Collection;
 
 import javax.persistence.CascadeType;
@@ -40,7 +40,7 @@ public class Interview {
     private String subject;
     @Nationalized
     private String purpose;
-    private Date date;
+    private Timestamp date;
     @Nationalized
     private String address;
     private String linkMeeting;

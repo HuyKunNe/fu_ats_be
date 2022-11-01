@@ -4,6 +4,7 @@ import com.fu.fuatsbe.entity.JobApply;
 import lombok.*;
 
 import java.sql.Date;
+import java.time.LocalTime;
 import java.util.List;
 
 @Setter
@@ -17,6 +18,7 @@ public class InterviewResponse {
     private String subject;
     private String purpose;
     private Date date;
+    private LocalTime time;
     private String address;
     private String room;
     private String linkMeeting;

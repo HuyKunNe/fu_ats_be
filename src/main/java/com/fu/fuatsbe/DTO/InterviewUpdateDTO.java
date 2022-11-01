@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.sql.Date;
 import java.util.List;
 
 @Getter
@@ -15,7 +14,8 @@ import java.util.List;
 public class InterviewUpdateDTO {
     private String subject;
     private String purpose;
-    private Date date;
+    private String date;
+    private String time;
     private String address;
     private String room;
     private String linkMeeting;

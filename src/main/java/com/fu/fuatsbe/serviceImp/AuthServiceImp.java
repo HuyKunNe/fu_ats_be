@@ -191,6 +191,7 @@ public class AuthServiceImp implements AuthService {
 
     @Override
     public LoginResponseDto loginGoogle(OAuth2AuthenticationToken oAuth2AuthenticationToken) {
+        System.out.println(oAuth2AuthenticationToken.getPrincipal().getAttribute("email").toString());
         return null;
     }
 }
