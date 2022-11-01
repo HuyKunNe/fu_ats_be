@@ -18,8 +18,6 @@ import lombok.ToString;
 public class CvCreateDTO {
 
     private String linkCV;
-    private String experience;
-    private String location;
 
     private int candidateId;
 

@@ -97,8 +97,8 @@ public class CvServiceImp implements CVService {
             }
         }
 
-        CV cv = CV.builder().linkCV(createDTO.getLinkCV()).experience(createDTO.getExperience())
-                .location(createDTO.getLocation()).candidate(candidate).positions(listPositions)
+        CV cv = CV.builder().linkCV(createDTO.getLinkCV())
+                .candidate(candidate).positions(listPositions)
                 .status(CVStatus.ACTIVE)
                 .build();
 
@@ -122,8 +122,6 @@ public class CvServiceImp implements CVService {
         }
 
         cv.setLinkCV(updateDTO.getLinkCV());
-        cv.setExperience(updateDTO.getExperience());
-        cv.setLocation(updateDTO.getLocation());
         cv.setPositions(listPositions);
 
         CV cvSaved = cvRepository.save(cv);

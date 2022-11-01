@@ -18,8 +18,6 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.Nationalized;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
@@ -46,14 +44,8 @@ public class CV {
 
     private String linkCV;
     private String result;
-    @Nationalized
-    private String suitablePosition;
     @Column(columnDefinition = "text")
     private String note;
-    @Nationalized
-    private String experience;
-    @Nationalized
-    private String location;
     private String status;
 
     @OneToMany(mappedBy = "cv", cascade = CascadeType.ALL)
@@ -70,7 +62,11 @@ public class CV {
     private Candidate candidate;
 
     @ManyToMany
-    @JoinTable(name = "cv_position", joinColumns = @JoinColumn(name = "position_id"), inverseJoinColumns = @JoinColumn(name = "cv_id"))
+    @JoinTable(name = "cv_position", joinColumns = @JoinColumn(name = "cv_id"), inverseJoinColumns = @JoinColumn(name = "position_id"))
     private Collection<Position> positions;
+
+    @ManyToMany
+    @JoinTable(name = "cv_position", joinColumns = @JoinColumn(name = "cv_id"), inverseJoinColumns = @JoinColumn(name = "position_id"))
+    private Collection<Position> suitablePositions;
 
 }

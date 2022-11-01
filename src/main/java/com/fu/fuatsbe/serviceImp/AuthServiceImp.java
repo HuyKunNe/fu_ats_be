@@ -35,6 +35,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -186,5 +187,10 @@ public class AuthServiceImp implements AuthService {
         }
         account.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
         accountRepository.save(account);
+    }
+
+    @Override
+    public LoginResponseDto loginGoogle(OAuth2AuthenticationToken oAuth2AuthenticationToken) {
+        return null;
     }
 }
