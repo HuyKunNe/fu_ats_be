@@ -20,6 +20,7 @@ public class InterviewUpdateDTO {
     private String room;
     private String linkMeeting;
     private String round;
+    private String type;
     private String description;
     private int jobApplyId;
     private int candidateId;

@@ -50,6 +50,7 @@ public class Interview {
     @Column(columnDefinition = "text")
     private String description;
     private String status;
+    private String type;
 
     @OneToOne(mappedBy = "interview")
     @EqualsAndHashCode.Include

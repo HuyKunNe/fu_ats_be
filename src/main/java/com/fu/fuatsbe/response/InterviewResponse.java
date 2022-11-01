@@ -23,6 +23,7 @@ public class InterviewResponse {
     private String round;
     private String description;
     private String status;
+    private String type;
     private JobApply jobApply;
     private String candidateName;
     private List<String> employeeNames;
