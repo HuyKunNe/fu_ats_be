@@ -15,6 +15,9 @@ import lombok.ToString;
 @Builder
 public class JobApplyCreateDTO {
 
+    private String province;
+    private String educationLevel;
+    private String foreignLanguage;
     private int recruitmentRequestId;
     private int cvId;
     private int candidateId;

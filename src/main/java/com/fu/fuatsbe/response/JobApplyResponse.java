@@ -24,7 +24,9 @@ public class JobApplyResponse {
     private int id;
 
     private Date date;
-    private String expectSalary;
+    private String foreignLanguage;
+    private String province;
+    private String educationLevel;
     private String status;
 
     private RecruitmentRequest recruitmentRequest;

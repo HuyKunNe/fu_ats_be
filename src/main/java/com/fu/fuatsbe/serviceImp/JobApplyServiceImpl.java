@@ -119,7 +119,10 @@ public class JobApplyServiceImpl implements JobApplyService {
         LocalDate date = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         LocalDate dateFormat = LocalDate.parse(date.toString(), format);
 
-        JobApply jobApply = JobApply.builder().date(Date.valueOf(dateFormat)).status(JobApplyStatus.PEDNING)
+        JobApply jobApply = JobApply.builder().date(Date.valueOf(dateFormat)).province(createDTO.getProvince())
+                .educationLevel(createDTO.getEducationLevel())
+                .foreignLanguage(createDTO.getForeignLanguage())
+                .status(JobApplyStatus.PEDNING)
                 .candidate(candidate).recruitmentRequest(recruitmentRequest).cv(cv).build();
 
         JobApply jobApplySaved = jobApplyRepository.save(jobApply);
