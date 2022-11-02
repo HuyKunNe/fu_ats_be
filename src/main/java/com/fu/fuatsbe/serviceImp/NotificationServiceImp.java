@@ -50,13 +50,12 @@ public class NotificationServiceImp implements NotificationService {
             interviewAddress = "Phòng " + sendNotificationDTO.getRoom() + ", " + sendNotificationDTO.getAddress();
         }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String dateFormated = simpleDateFormat.format(sendNotificationDTO.getDate());
         String presentDate = simpleDateFormat.format(Date.valueOf(LocalDate.now()));
 
         String subject = "Thông báo lịch phỏng vấn";
-        String content = "Bạn có 1 buổi phỏng vấn vào lúc " + dateFormated + " \n"
-                + "Bạn hãy đến địa chỉ này trước thời gian để tiến hành phỏng vấn \n"
-                + "Địa chỉ: " + interviewAddress + ".\n"
+        String content = "Bạn có 1 buổi phỏng vấn vào lúc " + sendNotificationDTO.getDate() + "\n"
+                + "Bạn hãy đến địa chỉ này trước thời gian để tiến hành phỏng vấn\n"
+                + "Địa chỉ: " + interviewAddress + "\n"
                 + "Trân trọng.";
 
         Notification notification = Notification.builder()
@@ -84,7 +83,7 @@ public class NotificationServiceImp implements NotificationService {
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
         mimeMessageHelper.setTo(email);
         mimeMessageHelper.setSubject( title);
-        mimeMessageHelper.setText("Thân gửi " + name + ", \n" +content);
+        mimeMessageHelper.setText("Thân gửi " + name + ",\n" +content);
         javaMailSender.send(mimeMessage);
     }
 }
