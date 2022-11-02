@@ -63,7 +63,7 @@ public class InterviewServiceImp implements InterviewService {
         }
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm:ss");
+        DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm");
         LocalDate localDate = LocalDate.parse(interviewCreateDTO.getDate(), df);
         LocalTime localTime = LocalTime.parse(interviewCreateDTO.getTime(), tf);
         LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
