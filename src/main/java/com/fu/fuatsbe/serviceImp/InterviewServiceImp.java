@@ -63,14 +63,12 @@ public class InterviewServiceImp implements InterviewService {
         }
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         DateTimeFormatter dateFormater = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        DateTimeFormatter timeDislayFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         LocalDate localDate = LocalDate.parse(interviewCreateDTO.getDate(), dateFormater);
         LocalTime localTime = LocalTime.parse(interviewCreateDTO.getTime(), timeFormatter);
         LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
         String dateInput = localDateTime.format(dateTimeFormatter);
         Timestamp dateInterview = Timestamp.valueOf(dateInput);
-        String timeDislay = localTime.format(timeDislayFormatter);
         LocalDate presentDate = LocalDate.parse(LocalDate.now().toString(), dateFormater);
 
         if (localDate.isBefore(presentDate)) {
@@ -121,7 +119,7 @@ public class InterviewServiceImp implements InterviewService {
                 .subject(savedInterview.getSubject())
                 .purpose(savedInterview.getPurpose())
                 .date(localDate.toString())
-                .time(timeDislay)
+                .time(localTime.toString())
                 .room(savedInterview.getRoom())
                 .address(savedInterview.getAddress())
                 .linkMeeting(savedInterview.getLinkMeeting())
@@ -308,7 +306,7 @@ public class InterviewServiceImp implements InterviewService {
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         DateTimeFormatter dateFormater = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
         LocalDate localDate = LocalDate.parse(interviewUpdateDTO.getDate(), dateFormater);
         LocalTime localTime = LocalTime.parse(interviewUpdateDTO.getTime(), timeFormatter);
@@ -316,9 +314,6 @@ public class InterviewServiceImp implements InterviewService {
 
         String dateInput = localDateTime.format(dateTimeFormatter);
         Timestamp dateInterview = Timestamp.valueOf(dateInput);
-
-        DateTimeFormatter timeDislayFormatter = DateTimeFormatter.ofPattern("HH:mm");
-        String timeDislay = localTime.format(timeDislayFormatter);
 
         JobApply jobApply = jobApplyRepository.findById(interviewUpdateDTO.getJobApplyId())
                 .orElseThrow(() -> new NotFoundException(JobApplyErrorMessage.JOB_APPLY_NOT_FOUND));
@@ -370,7 +365,7 @@ public class InterviewServiceImp implements InterviewService {
                 .subject(savedInterview.getSubject())
                 .purpose(savedInterview.getPurpose())
                 .date(Date.valueOf(savedInterview.getDate().toLocalDateTime().toLocalDate()).toString())
-                .time(timeDislay)
+                .time(localTime.toString())
                 .address(savedInterview.getAddress())
                 .room(savedInterview.getRoom())
                 .linkMeeting(savedInterview.getLinkMeeting())
