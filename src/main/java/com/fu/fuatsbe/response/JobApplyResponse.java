@@ -1,9 +1,11 @@
 package com.fu.fuatsbe.response;
 
 import java.sql.Date;
+import java.util.List;
 
 import com.fu.fuatsbe.entity.CV;
 import com.fu.fuatsbe.entity.Candidate;
+import com.fu.fuatsbe.entity.City;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.RecruitmentRequest;
 
@@ -33,4 +35,5 @@ public class JobApplyResponse {
     private Candidate candidate;
     private CV cv;
     private Employee applier;
+    private List<City> cities;
 }

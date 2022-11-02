@@ -11,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -97,5 +99,10 @@ public class RecruitmentRequest {
     @EqualsAndHashCode.Include
     @ToString.Include
     private Position position;
+
+    @ManyToMany
+    @JoinTable(name = "recruitmentRquest_city", joinColumns = @JoinColumn(name = "request_id"), inverseJoinColumns = @JoinColumn(name = "city_id"))
+    // @JsonIgnore
+    private Collection<City> cities;
 
 }

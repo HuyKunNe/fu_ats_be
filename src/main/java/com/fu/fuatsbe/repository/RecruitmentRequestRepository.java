@@ -28,9 +28,11 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
         Page<RecruitmentRequest> findByCreator(Employee employee, Pageable pageable);
 
         @Modifying
-        @Query(value = "select r.* from recruitment_request r join position p on r.position_id = p.id \n"
+        @Query(value = "select distinct r.* from recruitment_request r join position p on r.position_id = p.id \n"
+                        + "     join recruitment_rquest_city rc on r.id = rc.request_id \n"
+                        + "     join city c on rc.city_id = c.id \n"
                         + "where concat(r.job_level,' ', p.name) like %?1% \n"
-                        + "     and r.province like %?2% \n"
+                        + "     and c.name like %?2% \n"
                         + "     and r.industry like %?3% \n"
                         + "     and r.job_level like %?4% \n"
                         + "     and r.type_of_work like %?5% \n"
@@ -48,7 +50,7 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
                         + "     and r.status like 'OPENING' \n"
                         + "order by (case \n "
                         + "     when concat(r.job_level,' ', p.name) like %?1% then 2 \n"
-                        + "     when r.province like %?2% then 1 \n"
+                        + "     when c.name like %?2% then 1 \n"
                         + "     when r.industry like %?3% then 3 \n"
                         + "     when r.job_level like %?4% then 4 \n"
                         + "     when r.type_of_work like %?5% then 5 \n"
@@ -64,7 +66,7 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
                         + "                     else cast(r.experience as unsigned) between cast(?8 as signed) -1 and cast(?8 as unsigned) +1 \n"
                         + "         end) then 7\n"
                         + "end);", nativeQuery = true)
-        List<RecruitmentRequest> searchRecruitmentRequest(String jobName, String province, String industry,
+        List<RecruitmentRequest> searchRecruitmentRequest(String jobName, String city, String industry,
                         String jobLevel,
                         String typeOfWork, String salaryFrom, String salaryTo, String experience);
 

@@ -15,7 +15,7 @@ import lombok.ToString;
 @Builder
 public class RecruitmentRequestSearchDTO {
     private String jobName;
-    private String province;
+    private String city;
     private String industry;
     private String jobLevel;
     private String typeOfWork;

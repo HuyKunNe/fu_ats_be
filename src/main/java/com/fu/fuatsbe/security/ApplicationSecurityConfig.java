@@ -36,6 +36,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers("/auth/register",
                         "/auth/login",
                         "/auth/**",
+                        "/city/**",
                         "/recruitmentRequest/getAll",
                         "/recruitmentRequest/getById",
                         "/recruitmentRequest/getOpenRecruitmentRequest",

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.JobApplyCreateDTO;
 import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
+import com.fu.fuatsbe.constant.city.CityErrorMessage;
 import com.fu.fuatsbe.constant.cv.CVErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.job_apply.JobApplyErrorMessage;
@@ -22,12 +23,14 @@ import com.fu.fuatsbe.constant.job_apply.JobApplyStatus;
 import com.fu.fuatsbe.constant.recruitmentRequest.RecruitmentRequestErrorMessage;
 import com.fu.fuatsbe.entity.CV;
 import com.fu.fuatsbe.entity.Candidate;
+import com.fu.fuatsbe.entity.City;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.JobApply;
 import com.fu.fuatsbe.entity.RecruitmentRequest;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.repository.CandidateRepository;
+import com.fu.fuatsbe.repository.CityRepository;
 import com.fu.fuatsbe.repository.CvRepository;
 import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.JobApplyRepository;
@@ -47,6 +50,7 @@ public class JobApplyServiceImpl implements JobApplyService {
     private final EmployeeRepository employeeRepository;
     private final CvRepository cvRepository;
     private final ModelMapper modelMapper;
+    private final CityRepository cityRepository;
 
     @Override
     public List<JobApplyResponse> getAllJobApplies(int pageNo, int pageSize) {
@@ -119,7 +123,14 @@ public class JobApplyServiceImpl implements JobApplyService {
         LocalDate date = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         LocalDate dateFormat = LocalDate.parse(date.toString(), format);
 
-        JobApply jobApply = JobApply.builder().date(Date.valueOf(dateFormat)).province(createDTO.getProvince())
+        List<City> cities = new ArrayList<>();
+        for (String cityName : createDTO.getCityName()) {
+            City city = cityRepository.findByName(cityName)
+                    .orElseThrow(() -> new NotFoundException(CityErrorMessage.NOT_FOUND));
+            cities.add(city);
+        }
+
+        JobApply jobApply = JobApply.builder().date(Date.valueOf(dateFormat)).cities(cities)
                 .educationLevel(createDTO.getEducationLevel())
                 .foreignLanguage(createDTO.getForeignLanguage())
                 .status(JobApplyStatus.PEDNING)
