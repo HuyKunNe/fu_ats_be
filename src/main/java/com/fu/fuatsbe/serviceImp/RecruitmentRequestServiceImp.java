@@ -16,12 +16,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.fu.fuatsbe.constant.city.CityErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.planDetail.PlanDetailErrorMessage;
 import com.fu.fuatsbe.constant.planDetail.PlanDetailStatus;
 import com.fu.fuatsbe.constant.postion.PositionErrorMessage;
 import com.fu.fuatsbe.constant.recruitmentRequest.RecruitmentRequestErrorMessage;
 import com.fu.fuatsbe.constant.recruitmentRequest.RecruitmentRequestStatus;
+import com.fu.fuatsbe.entity.City;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.PlanDetail;
 import com.fu.fuatsbe.entity.Position;
@@ -29,6 +31,7 @@ import com.fu.fuatsbe.entity.RecruitmentRequest;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.exceptions.NotValidException;
+import com.fu.fuatsbe.repository.CityRepository;
 import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.PlanDetailRepository;
 import com.fu.fuatsbe.repository.PositionRepository;
@@ -49,6 +52,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     private final EmployeeRepository employeeRepository;
     private final PlanDetailRepository planDetailRepository;
     private final PositionRepository positionRepository;
+    private final CityRepository cityRepository;
 
     @Override
     public RecruitmentRequestResponseWithTotalPages getAllRecruitmentRequests(int pageNo, int pageSize) {
@@ -195,6 +199,15 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 () -> new NotFoundException(RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
         Position position = positionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
+
+        List<City> cities = new ArrayList<>();
+        for (String cityName : updateDTO.getCityName()) {
+            City city = cityRepository.findByName(cityName)
+                    .orElseThrow(() -> new NotFoundException(CityErrorMessage.NOT_FOUND));
+
+            cities.add(city);
+        }
+
         recruitmentRequest.setAmount(updateDTO.getAmount());
         recruitmentRequest.setExpiryDate(updateDTO.getExpiryDate());
         recruitmentRequest.setIndustry(updateDTO.getIndustry());
@@ -205,7 +218,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         recruitmentRequest.setEducationLevel(updateDTO.getEducationLevel());
         recruitmentRequest.setAddress(updateDTO.getAddress());
         recruitmentRequest.setForeignLanguage(updateDTO.getForeignLanguage());
-        recruitmentRequest.setProvince(updateDTO.getProvince());
+        recruitmentRequest.setCities(cities);
         recruitmentRequest.setTypeOfWork(updateDTO.getTypeOfWork());
         recruitmentRequest.setDescription(updateDTO.getDescription());
         recruitmentRequest.setPosition(position);
@@ -239,11 +252,19 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             LocalDate dateFormat = LocalDate.parse(date.toString(), format);
             LocalDate expiryDate = LocalDate.parse(createDTO.getExpiryDate().toString(), format);
 
+            List<City> cities = new ArrayList<>();
+            for (String cityName : createDTO.getCityName()) {
+                City city = cityRepository.findByName(cityName)
+                        .orElseThrow(() -> new NotFoundException(CityErrorMessage.NOT_FOUND));
+
+                cities.add(city);
+            }
+
             RecruitmentRequest request = RecruitmentRequest.builder().date(Date.valueOf(dateFormat))
                     .expiryDate(Date.valueOf(expiryDate)).industry(createDTO.getIndustry())
                     .amount(createDTO.getAmount()).jobLevel(createDTO.getJobLevel())
                     .status(RecruitmentRequestStatus.OPENING).experience(createDTO.getExperience())
-                    .province(createDTO.getProvince())
+                    .cities(cities)
                     .typeOfWork(createDTO.getTypeOfWork())
                     .benefit(createDTO.getBenefit())
                     .foreignLanguage(createDTO.getForeignLanguage())
@@ -323,7 +344,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     public List<RecruitmentRequestResponse> searchRecruitmentRequest(RecruitmentRequestSearchDTO searchDTO) {
         List<RecruitmentRequestResponse> result = new ArrayList<>();
         List<RecruitmentRequest> list = recruitmentRequestRepository.searchRecruitmentRequest(searchDTO.getJobName(),
-                searchDTO.getProvince(), searchDTO.getIndustry(), searchDTO.getJobLevel(), searchDTO.getTypeOfWork(),
+                searchDTO.getCity(), searchDTO.getIndustry(), searchDTO.getJobLevel(), searchDTO.getTypeOfWork(),
                 searchDTO.getSalaryFrom(),
                 searchDTO.getSalaryTo(), searchDTO.getExperience());
         if (!list.isEmpty()) {

@@ -10,12 +10,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Nationalized;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -42,8 +45,11 @@ public class JobApply {
     private int id;
 
     private Date date;
-    private String expectSalary;
     private String status;
+    @Nationalized
+    private String educationLevel;
+    @Nationalized
+    private String foreignLanguage;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)
@@ -78,4 +84,9 @@ public class JobApply {
     @ToString.Include
     @JsonIgnore
     private Collection<Interview> interviews;
+
+    @ManyToMany
+    @JoinTable(name = "JobApply_city", joinColumns = @JoinColumn(name = "jobApply_id"), inverseJoinColumns = @JoinColumn(name = "city_id"))
+    // @JsonIgnore
+    private Collection<City> cities;
 }

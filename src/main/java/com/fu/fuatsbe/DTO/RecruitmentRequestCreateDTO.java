@@ -1,6 +1,7 @@
 package com.fu.fuatsbe.DTO;
 
 import java.sql.Date;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,13 +26,13 @@ public class RecruitmentRequestCreateDTO {
     private String typeOfWork;
     private String salaryFrom;
     private String salaryTo;
-    private String province;
     private String foreignLanguage;
     private String educationLevel;
     private String address;
     private String description;
     private String benefit;
     private String requirement;
+    private List<String> cityName;
     private int employeeId;
     private int planDetailId;
     private int positionId;

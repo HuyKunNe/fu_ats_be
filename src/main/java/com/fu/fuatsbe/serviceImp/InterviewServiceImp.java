@@ -61,16 +61,15 @@ public class InterviewServiceImp implements InterviewService {
             employeeList.add(employee);
             intervieweeIdList.add(employeeId);
         }
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm");
-        LocalDate localDate = LocalDate.parse(interviewCreateDTO.getDate(), df);
-        LocalTime localTime = LocalTime.parse(interviewCreateDTO.getTime(), tf);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter dateFormater = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        LocalDate localDate = LocalDate.parse(interviewCreateDTO.getDate(), dateFormater);
+        LocalTime localTime = LocalTime.parse(interviewCreateDTO.getTime(), timeFormatter);
         LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-        String dateInput = localDateTime.format(dtf);
+        String dateInput = localDateTime.format(dateTimeFormatter);
         Timestamp dateInterview = Timestamp.valueOf(dateInput);
-
-        LocalDate presentDate = LocalDate.parse(LocalDate.now().toString(), df);
+        LocalDate presentDate = LocalDate.parse(LocalDate.now().toString(), dateFormater);
 
         if (localDate.isBefore(presentDate)) {
             throw new PermissionException(InterviewErrorMessage.DATE_NOT_VALID);
@@ -119,8 +118,8 @@ public class InterviewServiceImp implements InterviewService {
                 .id(savedInterview.getId())
                 .subject(savedInterview.getSubject())
                 .purpose(savedInterview.getPurpose())
-                .date(Date.valueOf(localDate))
-                .time(savedInterview.getDate().toLocalDateTime().toLocalTime())
+                .date(localDate.toString())
+                .time(localTime.toString())
                 .room(savedInterview.getRoom())
                 .address(savedInterview.getAddress())
                 .linkMeeting(savedInterview.getLinkMeeting())
@@ -148,12 +147,14 @@ public class InterviewServiceImp implements InterviewService {
 
         List<InterviewResponse> responseList = new ArrayList<>();
         for (Interview interview : interviews) {
+            DateTimeFormatter timeDislayFormatter = DateTimeFormatter.ofPattern("HH:mm");
+            String timeDislay = interview.getDate().toLocalDateTime().toLocalTime().format(timeDislayFormatter);
             InterviewResponse response = InterviewResponse.builder()
                     .id(interview.getId())
                     .subject(interview.getSubject())
                     .purpose(interview.getPurpose())
-                    .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()))
-                    .time(interview.getDate().toLocalDateTime().toLocalTime())
+                    .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()).toString())
+                    .time(timeDislay)
                     .room(interview.getRoom())
                     .address(interview.getAddress())
                     .linkMeeting(interview.getLinkMeeting())
@@ -186,12 +187,14 @@ public class InterviewServiceImp implements InterviewService {
             for (InterviewEmployee interviewEmp : interview.getInterviewEmployees()) {
                 empName.add(interviewEmp.getEmployee().getName());
             }
+            DateTimeFormatter timeDislayFormatter = DateTimeFormatter.ofPattern("HH:mm");
+            String timeDislay = interview.getDate().toLocalDateTime().toLocalTime().format(timeDislayFormatter);
             InterviewResponse response = InterviewResponse.builder()
                     .id(interview.getId())
                     .subject(interview.getSubject())
                     .purpose(interview.getPurpose())
-                    .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()))
-                    .time(interview.getDate().toLocalDateTime().toLocalTime())
+                    .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()).toString())
+                    .time(timeDislay)
                     .room(interview.getRoom())
                     .address(interview.getAddress())
                     .linkMeeting(interview.getLinkMeeting())
@@ -226,12 +229,14 @@ public class InterviewServiceImp implements InterviewService {
                 for (InterviewEmployee interviewEmp : interview.getInterviewEmployees()) {
                     empName.add(interviewEmp.getEmployee().getName());
                 }
+                DateTimeFormatter timeDislayFormatter = DateTimeFormatter.ofPattern("HH:mm");
+                String timeDislay = interview.getDate().toLocalDateTime().toLocalTime().format(timeDislayFormatter);
                 InterviewResponse interviewResponse = InterviewResponse.builder()
                         .id(interview.getId())
                         .subject(interview.getSubject())
                         .purpose(interview.getPurpose())
-                        .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()))
-                        .time(interview.getDate().toLocalDateTime().toLocalTime())
+                        .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()).toString())
+                        .time(timeDislay)
                         .room(interview.getRoom())
                         .address(interview.getAddress())
                         .linkMeeting(interview.getLinkMeeting())
@@ -264,12 +269,14 @@ public class InterviewServiceImp implements InterviewService {
         for (InterviewEmployee interviewEmp : interview.getInterviewEmployees()) {
             empName.add(interviewEmp.getEmployee().getName());
         }
+        DateTimeFormatter timeDislayFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        String timeDislay = interview.getDate().toLocalDateTime().toLocalTime().format(timeDislayFormatter);
         InterviewResponse interviewResponse = InterviewResponse.builder()
                 .id(interview.getId())
                 .subject(interview.getSubject())
                 .purpose(interview.getPurpose())
-                .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()))
-                .time(interview.getDate().toLocalDateTime().toLocalTime())
+                .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()).toString())
+                .time(timeDislay)
                 .room(interview.getRoom())
                 .address(interview.getAddress())
                 .linkMeeting(interview.getLinkMeeting())
@@ -297,13 +304,15 @@ public class InterviewServiceImp implements InterviewService {
             employeeList.add(employee);
         }
 
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm:ss");
-        LocalDate localDate = LocalDate.parse(interviewUpdateDTO.getDate(), df);
-        LocalTime localTime = LocalTime.parse(interviewUpdateDTO.getTime(), tf);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter dateFormater = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+        LocalDate localDate = LocalDate.parse(interviewUpdateDTO.getDate(), dateFormater);
+        LocalTime localTime = LocalTime.parse(interviewUpdateDTO.getTime(), timeFormatter);
         LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-        String dateInput = localDateTime.format(dtf);
+
+        String dateInput = localDateTime.format(dateTimeFormatter);
         Timestamp dateInterview = Timestamp.valueOf(dateInput);
 
         JobApply jobApply = jobApplyRepository.findById(interviewUpdateDTO.getJobApplyId())
@@ -355,8 +364,8 @@ public class InterviewServiceImp implements InterviewService {
                 .id(savedInterview.getId())
                 .subject(savedInterview.getSubject())
                 .purpose(savedInterview.getPurpose())
-                .date(Date.valueOf(savedInterview.getDate().toLocalDateTime().toLocalDate()))
-                .time(savedInterview.getDate().toLocalDateTime().toLocalTime())
+                .date(Date.valueOf(savedInterview.getDate().toLocalDateTime().toLocalDate()).toString())
+                .time(localTime.toString())
                 .address(savedInterview.getAddress())
                 .room(savedInterview.getRoom())
                 .linkMeeting(savedInterview.getLinkMeeting())
