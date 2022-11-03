@@ -19,4 +19,5 @@ import lombok.ToString;
 public class RecruitmentSearchCategoryDTO {
     private List<String> jobTitle = new ArrayList<>();
     private List<String> industry = new ArrayList<>();
+    private List<String> province;
 }

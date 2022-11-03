@@ -347,7 +347,9 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     public RecruitmentSearchCategoryDTO searchCategory() {
         RecruitmentSearchCategoryDTO recruitmentSearchCategoryDTO = RecruitmentSearchCategoryDTO.builder()
                 .jobTitle(recruitmentRequestRepository.getDistinctByPosition())
-                .industry(recruitmentRequestRepository.getDistinctByIndustry()).build();
+                .industry(recruitmentRequestRepository.getDistinctByIndustry())
+                .province(recruitmentRequestRepository.getDistinctByProvince())
+                .build();
         return recruitmentSearchCategoryDTO;
     }
 }

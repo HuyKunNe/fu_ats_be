@@ -19,63 +19,67 @@ import com.fu.fuatsbe.entity.RecruitmentRequest;
 @Transactional
 public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentRequest, Integer> {
 
-        Optional<RecruitmentRequest> findById(int id);
+    Optional<RecruitmentRequest> findById(int id);
 
-        Page<RecruitmentRequest> findByStatus(String status, Pageable pageable);
+    Page<RecruitmentRequest> findByStatus(String status, Pageable pageable);
 
-        Page<RecruitmentRequest> findByPosition(Position position, Pageable pageable);
+    Page<RecruitmentRequest> findByPosition(Position position, Pageable pageable);
 
-        Page<RecruitmentRequest> findByCreator(Employee employee, Pageable pageable);
+    Page<RecruitmentRequest> findByCreator(Employee employee, Pageable pageable);
 
-        @Modifying
-        @Query(value = "select r.* from recruitment_request r join position p on r.position_id = p.id \n"
-                        + "where concat(r.job_level,' ', p.name) like %?1% \n"
-                        + "     and r.province like %?2% \n"
-                        + "     and r.industry like %?3% \n"
-                        + "     and r.job_level like %?4% \n"
-                        + "     and r.type_of_work like %?5% \n"
-                        + "     and ((case when  upper(?6) like '%TRÊN%' \n"
-                        + "             then (cast(replace(upper(r.salary_from), upper('Trên'), ' ') as unsigned) >= cast(replace(upper(?6), 'TRÊN', ' ') as unsigned)) \n"
-                        + "                     else cast(replace(upper(r.salary_from), 'TRÊN', ' ') as unsigned)  >= cast(?6 as unsigned) end) \n"
-                        + "             and (case when ?7 like '' then true \n"
-                        + "                     else cast(r.salary_to as unsigned)<= cast('' as unsigned)  \n"
-                        + "         end)) \n"
-                        + "      and (case \n"
-                        + "             when ?8 like '' then cast(r.experience as signed)  >= 0 \n"
-                        + "             when upper(?8) like '%TRÊN%' then replace(upper(r.experience), upper('Trên'), ' ') >= cast(replace(upper(?8), 'TRÊN', ' ') as unsigned) \n"
-                        + "                     else cast(r.experience as unsigned) between cast(?8 as signed) -1 and cast(?8 as unsigned) +1 \n"
-                        + "         end) \n"
-                        + "     and r.status like 'OPENING' \n"
-                        + "order by (case \n "
-                        + "     when concat(r.job_level,' ', p.name) like %?1% then 2 \n"
-                        + "     when r.province like %?2% then 1 \n"
-                        + "     when r.industry like %?3% then 3 \n"
-                        + "     when r.job_level like %?4% then 4 \n"
-                        + "     when r.type_of_work like %?5% then 5 \n"
-                        + "     when ((case when  upper(?6) like '%TRÊN%' \n"
-                        + "             then (cast(replace(upper(r.salary_from), upper('Trên'), ' ') as unsigned) >= cast(replace(upper(?6), 'TRÊN', ' ') as unsigned)) \n"
-                        + "                     else cast(replace(upper(r.salary_from), 'TRÊN', ' ') as unsigned)  >= cast(?6 as unsigned) end) \n"
-                        + "             and (case when ?7 like '' then true \n"
-                        + "                     else cast(r.salary_to as unsigned)<= cast('' as unsigned)  \n"
-                        + "         end)) then 6 \n"
-                        + "     when (case \n"
-                        + "             when ?8 like '' then cast(r.experience as signed)  >= 0 \n"
-                        + "             when upper(?8) like '%TRÊN%' then replace(upper(r.experience), upper('Trên'), ' ') >= cast(replace(upper(?8), 'TRÊN', ' ') as unsigned) \n"
-                        + "                     else cast(r.experience as unsigned) between cast(?8 as signed) -1 and cast(?8 as unsigned) +1 \n"
-                        + "         end) then 7\n"
-                        + "end);", nativeQuery = true)
-        List<RecruitmentRequest> searchRecruitmentRequest(String jobName, String province, String industry,
-                        String jobLevel,
-                        String typeOfWork, String salaryFrom, String salaryTo, String experience);
+    @Modifying
+    @Query(value = "select r.* from recruitment_request r join position p on r.position_id = p.id \n"
+            + "where concat(r.job_level,' ', p.name) like %?1% \n"
+            + "     and r.province like %?2% \n"
+            + "     and r.industry like %?3% \n"
+            + "     and r.job_level like %?4% \n"
+            + "     and r.type_of_work like %?5% \n"
+            + "     and ((case when  upper(?6) like '%TRÊN%' \n"
+            + "             then (cast(replace(upper(r.salary_from), upper('Trên'), ' ') as unsigned) >= cast(replace(upper(?6), 'TRÊN', ' ') as unsigned)) \n"
+            + "                     else cast(replace(upper(r.salary_from), 'TRÊN', ' ') as unsigned)  >= cast(?6 as unsigned) end) \n"
+            + "             and (case when ?7 like '' then true \n"
+            + "                     else cast(r.salary_to as unsigned)<= cast('' as unsigned)  \n"
+            + "         end)) \n"
+            + "      and (case \n"
+            + "             when ?8 like '' then cast(r.experience as signed)  >= 0 \n"
+            + "             when upper(?8) like '%TRÊN%' then replace(upper(r.experience), upper('Trên'), ' ') >= cast(replace(upper(?8), 'TRÊN', ' ') as unsigned) \n"
+            + "                     else cast(r.experience as unsigned) between cast(?8 as signed) -1 and cast(?8 as unsigned) +1 \n"
+            + "         end) \n"
+            + "     and r.status like 'OPENING' \n"
+            + "order by (case \n "
+            + "     when concat(r.job_level,' ', p.name) like %?1% then 2 \n"
+            + "     when r.province like %?2% then 1 \n"
+            + "     when r.industry like %?3% then 3 \n"
+            + "     when r.job_level like %?4% then 4 \n"
+            + "     when r.type_of_work like %?5% then 5 \n"
+            + "     when ((case when  upper(?6) like '%TRÊN%' \n"
+            + "             then (cast(replace(upper(r.salary_from), upper('Trên'), ' ') as unsigned) >= cast(replace(upper(?6), 'TRÊN', ' ') as unsigned)) \n"
+            + "                     else cast(replace(upper(r.salary_from), 'TRÊN', ' ') as unsigned)  >= cast(?6 as unsigned) end) \n"
+            + "             and (case when ?7 like '' then true \n"
+            + "                     else cast(r.salary_to as unsigned)<= cast('' as unsigned)  \n"
+            + "         end)) then 6 \n"
+            + "     when (case \n"
+            + "             when ?8 like '' then cast(r.experience as signed)  >= 0 \n"
+            + "             when upper(?8) like '%TRÊN%' then replace(upper(r.experience), upper('Trên'), ' ') >= cast(replace(upper(?8), 'TRÊN', ' ') as unsigned) \n"
+            + "                     else cast(r.experience as unsigned) between cast(?8 as signed) -1 and cast(?8 as unsigned) +1 \n"
+            + "         end) then 7\n"
+            + "end);", nativeQuery = true)
+    List<RecruitmentRequest> searchRecruitmentRequest(String jobName, String province, String industry,
+                                                      String jobLevel,
+                                                      String typeOfWork, String salaryFrom, String salaryTo, String experience);
 
-        @Modifying
-        @Query(value = "SELECT DISTINCT p.name \n" +
-                        "FROM recruitment_request r, position p \n" +
-                        "where r.position_id = p.id", nativeQuery = true)
-        List<String> getDistinctByPosition();
+    @Modifying
+    @Query(value = "SELECT DISTINCT p.name \n" +
+            "FROM recruitment_request r, position p \n" +
+            "where r.position_id = p.id", nativeQuery = true)
+    List<String> getDistinctByPosition();
 
-        @Modifying
-        @Query(value = "select distinct industry from recruitment_request", nativeQuery = true)
-        List<String> getDistinctByIndustry();
+    @Modifying
+    @Query(value = "select distinct industry from recruitment_request", nativeQuery = true)
+    List<String> getDistinctByIndustry();
+
+    @Modifying
+    @Query(value = "select distinct province from recruitment_request", nativeQuery = true)
+    List<String> getDistinctByProvince();
 
 }
