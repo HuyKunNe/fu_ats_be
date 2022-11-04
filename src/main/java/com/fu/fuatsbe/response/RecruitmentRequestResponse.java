@@ -36,7 +36,6 @@ public class RecruitmentRequestResponse {
     private String salaryDetail;
     private String age;
     private String foreignLanguage;
-    private String province;
     private String description;
     private String benefit;
     private String requirement;

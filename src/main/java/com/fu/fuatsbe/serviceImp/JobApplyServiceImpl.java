@@ -16,16 +16,18 @@ import org.springframework.stereotype.Service;
 import com.fu.fuatsbe.DTO.JobApplyCreateDTO;
 import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.city.CityErrorMessage;
-import com.fu.fuatsbe.constant.cv.CVErrorMessage;
+import com.fu.fuatsbe.constant.cv.CVStatus;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.job_apply.JobApplyErrorMessage;
 import com.fu.fuatsbe.constant.job_apply.JobApplyStatus;
+import com.fu.fuatsbe.constant.postion.PositionErrorMessage;
 import com.fu.fuatsbe.constant.recruitmentRequest.RecruitmentRequestErrorMessage;
 import com.fu.fuatsbe.entity.CV;
 import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.City;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.JobApply;
+import com.fu.fuatsbe.entity.Position;
 import com.fu.fuatsbe.entity.RecruitmentRequest;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
@@ -34,6 +36,7 @@ import com.fu.fuatsbe.repository.CityRepository;
 import com.fu.fuatsbe.repository.CvRepository;
 import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.JobApplyRepository;
+import com.fu.fuatsbe.repository.PositionRepository;
 import com.fu.fuatsbe.repository.RecruitmentRequestRepository;
 import com.fu.fuatsbe.response.JobApplyResponse;
 import com.fu.fuatsbe.service.JobApplyService;
@@ -50,6 +53,7 @@ public class JobApplyServiceImpl implements JobApplyService {
     private final EmployeeRepository employeeRepository;
     private final CvRepository cvRepository;
     private final ModelMapper modelMapper;
+    private final PositionRepository positionRepository;
     private final CityRepository cityRepository;
 
     @Override
@@ -113,11 +117,21 @@ public class JobApplyServiceImpl implements JobApplyService {
                 .orElseThrow(() -> new NotFoundException(
                         RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
 
+        List<Position> positions = new ArrayList<>();
+
+        for (String positionName : createDTO.getPositionName()) {
+            Position position = positionRepository.findPositionByName(positionName)
+                    .orElseThrow(() -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
+            positions.add(position);
+        }
+
         Candidate candidate = candidateRepository.findById(createDTO.getCandidateId())
                 .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
 
-        CV cv = cvRepository.findById(createDTO.getCvId())
-                .orElseThrow(() -> new NotFoundException(CVErrorMessage.NOT_FOUND));
+        CV cv = CV.builder().candidate(candidate).linkCV(createDTO.getLinkCV()).positions(positions)
+                .status(CVStatus.ACTIVE).build();
+
+        CV cvSaved = cvRepository.save(cv);
 
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
@@ -134,7 +148,7 @@ public class JobApplyServiceImpl implements JobApplyService {
                 .educationLevel(createDTO.getEducationLevel())
                 .foreignLanguage(createDTO.getForeignLanguage())
                 .status(JobApplyStatus.PEDNING)
-                .candidate(candidate).recruitmentRequest(recruitmentRequest).cv(cv).build();
+                .candidate(candidate).recruitmentRequest(recruitmentRequest).cv(cvSaved).build();
 
         JobApply jobApplySaved = jobApplyRepository.save(jobApply);
 

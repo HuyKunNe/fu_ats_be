@@ -57,8 +57,6 @@ public class RecruitmentRequest {
     private String salaryFrom;
     private String salaryTo;
     @Nationalized
-    private String province;
-    @Nationalized
     private String educationLevel;
     @Nationalized
     private String foreignLanguage;

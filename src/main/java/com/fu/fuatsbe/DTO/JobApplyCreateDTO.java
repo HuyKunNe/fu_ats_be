@@ -20,7 +20,8 @@ public class JobApplyCreateDTO {
     private String educationLevel;
     private String foreignLanguage;
     private List<String> cityName;
+    private String linkCV;
+    private List<String> positionName;
     private int recruitmentRequestId;
-    private int cvId;
     private int candidateId;
 }
