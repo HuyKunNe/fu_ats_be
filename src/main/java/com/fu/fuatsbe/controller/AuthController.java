@@ -13,7 +13,6 @@ import com.fu.fuatsbe.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,8 +29,8 @@ public class AuthController {
     private final EmailService emailService;
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseDTO> login(@Validated @RequestBody LoginDto employee) {
-        ResponseDTO<LoginResponseDto> responseDTO = new ResponseDTO();
+    public ResponseEntity<ResponseDTO<LoginResponseDto>> login(@Validated @RequestBody LoginDto employee) {
+        ResponseDTO<LoginResponseDto> responseDTO = new ResponseDTO<>();
         LoginResponseDto loginResponseDTO = authService.login(employee);
         responseDTO.setData(loginResponseDTO);
         responseDTO.setMessage("Login success");
