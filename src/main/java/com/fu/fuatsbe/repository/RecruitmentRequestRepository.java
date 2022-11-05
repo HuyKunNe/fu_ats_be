@@ -78,8 +78,4 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
     @Query(value = "select distinct industry from recruitment_request", nativeQuery = true)
     List<String> getDistinctByIndustry();
 
-    @Modifying
-    @Query(value = "select distinct province from recruitment_request", nativeQuery = true)
-    List<String> getDistinctByProvince();
-
 }

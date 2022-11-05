@@ -369,7 +369,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         RecruitmentSearchCategoryDTO recruitmentSearchCategoryDTO = RecruitmentSearchCategoryDTO.builder()
                 .jobTitle(recruitmentRequestRepository.getDistinctByPosition())
                 .industry(recruitmentRequestRepository.getDistinctByIndustry())
-                .province(recruitmentRequestRepository.getDistinctByProvince())
+                .province(cityRepository.getAllCityName())
                 .build();
         return recruitmentSearchCategoryDTO;
     }
