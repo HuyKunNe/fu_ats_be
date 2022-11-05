@@ -51,10 +51,7 @@ public class Employee {
     private String address;
     private String status;
 
-    @JsonBackReference
-    @OneToOne(fetch = FetchType.LAZY)
-    @Fetch(FetchMode.JOIN)
-    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "employee")
     @EqualsAndHashCode.Include
     @ToString.Include
     private Account account;

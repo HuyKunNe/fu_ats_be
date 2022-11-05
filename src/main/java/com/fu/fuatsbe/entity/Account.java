@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -32,7 +33,7 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
-
+    @JsonIgnore
     private String password;
     private String email;
     private String status;
@@ -44,10 +45,10 @@ public class Account {
     @ToString.Include
     private Role role;
 
-    @JsonBackReference
-    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @EqualsAndHashCode.Include
     @ToString.Include
+    @JsonIgnore
     private Employee employee;
 
     @JsonBackReference
