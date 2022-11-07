@@ -1,19 +1,18 @@
 package com.fu.fuatsbe.service;
 
-import java.util.List;
-
 import com.fu.fuatsbe.DTO.CvCreateDTO;
 import com.fu.fuatsbe.DTO.CvUpdateDTO;
 import com.fu.fuatsbe.entity.CV;
 import com.fu.fuatsbe.response.CvResponse;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 
 public interface CVService {
 
-    public List<CvResponse> getAllCvs(int pageNo, int pageSize);
+    public ResponseWithTotalPage<CvResponse> getAllCvs(int pageNo, int pageSize);
 
-    public List<CvResponse> getAllCvByCandidate(int candidateId, int pageNo, int pageSize);
+    public ResponseWithTotalPage<CvResponse> getAllCvByCandidate(int candidateId, int pageNo, int pageSize);
 
-    public List<CvResponse> getAllSuitableCvs(int pageNo, int pageSize);
+    public ResponseWithTotalPage<CvResponse> getAllSuitableCvs(int pageNo, int pageSize);
 
     public CvResponse createCV(CvCreateDTO createDTO);
 

@@ -27,6 +27,7 @@ import com.fu.fuatsbe.exceptions.NotValidException;
 import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.RecruitmentPlanRepository;
 import com.fu.fuatsbe.response.RecruitmentPlanResponse;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.RecruitmentPlanService;
 
 import lombok.RequiredArgsConstructor;
@@ -40,16 +41,18 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     private final EmployeeRepository employeeRepository;
 
     @Override
-    public List<RecruitmentPlanResponse> getAllRecruitmentPlans(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlans(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findAll(pageable);
-        List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
-
+        List<RecruitmentPlanResponse> list = new ArrayList<RecruitmentPlanResponse>();
+        ResponseWithTotalPage<RecruitmentPlanResponse> result = new ResponseWithTotalPage<>();
         if (pageResult.hasContent()) {
             for (RecruitmentPlan recruitmentPlan : pageResult.getContent()) {
                 RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
-                result.add(response);
+                list.add(response);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
@@ -67,17 +70,22 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     }
 
     @Override
-    public List<RecruitmentPlanResponse> getAllApprovedRecruitmentPlan(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<RecruitmentPlanResponse> getAllApprovedRecruitmentPlan(int pageNo, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.APPROVED,
                 pageable);
-        List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
+        List<RecruitmentPlanResponse> list = new ArrayList<RecruitmentPlanResponse>();
+        ResponseWithTotalPage<RecruitmentPlanResponse> result = new ResponseWithTotalPage<>();
+
         if (pageResult.hasContent()) {
             for (RecruitmentPlan recruitmentPlan : pageResult.getContent()) {
                 RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
-                result.add(response);
+                list.add(response);
             }
+
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
@@ -85,17 +93,20 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     }
 
     @Override
-    public List<RecruitmentPlanResponse> getAllCanceledRecruitmentPlans(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<RecruitmentPlanResponse> getAllCanceledRecruitmentPlans(int pageNo, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.CANCELED,
                 pageable);
-        List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
+        List<RecruitmentPlanResponse> list = new ArrayList<RecruitmentPlanResponse>();
+        ResponseWithTotalPage<RecruitmentPlanResponse> result = new ResponseWithTotalPage<>();
         if (pageResult.hasContent()) {
             for (RecruitmentPlan recruitmentPlan : pageResult.getContent()) {
                 RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
-                result.add(response);
+                list.add(response);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
@@ -103,17 +114,20 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     }
 
     @Override
-    public List<RecruitmentPlanResponse> getAllRejectedRecruitmentPlans(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRejectedRecruitmentPlans(int pageNo, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.REJECTED,
                 pageable);
-        List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
+        List<RecruitmentPlanResponse> list = new ArrayList<RecruitmentPlanResponse>();
+        ResponseWithTotalPage<RecruitmentPlanResponse> result = new ResponseWithTotalPage<>();
         if (pageResult.hasContent()) {
             for (RecruitmentPlan recruitmentPlan : pageResult.getContent()) {
                 RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
-                result.add(response);
+                list.add(response);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
@@ -121,17 +135,20 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     }
 
     @Override
-    public List<RecruitmentPlanResponse> getAllPedingRecruitmentPlans(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<RecruitmentPlanResponse> getAllPedingRecruitmentPlans(int pageNo, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.PENDING,
                 pageable);
-        List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
+        List<RecruitmentPlanResponse> list = new ArrayList<RecruitmentPlanResponse>();
+        ResponseWithTotalPage<RecruitmentPlanResponse> result = new ResponseWithTotalPage<>();
         if (pageResult.hasContent()) {
             for (RecruitmentPlan recruitmentPlan : pageResult.getContent()) {
                 RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
-                result.add(response);
+                list.add(response);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
@@ -200,7 +217,8 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     }
 
     @Override
-    public List<RecruitmentPlanResponse> getAllRecruitmentPlansByApprover(int approverId, int pageNo, int pageSize) {
+    public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlansByApprover(int approverId, int pageNo,
+            int pageSize) {
 
         Employee approver = employeeRepository.findById(approverId)
                 .orElseThrow(() -> new NotFoundException(
@@ -209,20 +227,24 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByApprover(approver,
                 pageable);
-        List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
+        List<RecruitmentPlanResponse> list = new ArrayList<RecruitmentPlanResponse>();
+        ResponseWithTotalPage<RecruitmentPlanResponse> result = new ResponseWithTotalPage<>();
 
         if (pageResult.hasContent()) {
             for (RecruitmentPlan recruitmentPlan : pageResult.getContent()) {
                 RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
-                result.add(response);
+                list.add(response);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
     }
 
     @Override
-    public List<RecruitmentPlanResponse> getAllRecruitmentPlansByCreator(int creatorId, int pageNo, int pageSize) {
+    public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlansByCreator(int creatorId, int pageNo,
+            int pageSize) {
 
         Employee approver = employeeRepository.findById(creatorId)
                 .orElseThrow(() -> new NotFoundException(
@@ -231,13 +253,16 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByApprover(approver,
                 pageable);
-        List<RecruitmentPlanResponse> result = new ArrayList<RecruitmentPlanResponse>();
+        List<RecruitmentPlanResponse> list = new ArrayList<RecruitmentPlanResponse>();
+        ResponseWithTotalPage<RecruitmentPlanResponse> result = new ResponseWithTotalPage<>();
 
         if (pageResult.hasContent()) {
             for (RecruitmentPlan recruitmentPlan : pageResult.getContent()) {
                 RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
-                result.add(response);
+                list.add(response);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;

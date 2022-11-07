@@ -1,7 +1,5 @@
 package com.fu.fuatsbe.controller;
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,8 +16,8 @@ import com.fu.fuatsbe.constant.job_apply.JobApplySuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.response.JobApplyResponse;
-import com.fu.fuatsbe.response.ListResponseDTO;
 import com.fu.fuatsbe.response.ResponseDTO;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.JobApplyService;
 
 import lombok.RequiredArgsConstructor;
@@ -45,10 +43,11 @@ public class JobApplyController {
 
     @GetMapping("/getAll")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllJobApplies(@RequestParam(defaultValue = "0") int pageNo,
+    public ResponseEntity<ResponseDTO> getAllJobApplies(
+            @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<JobApplyResponse> responseDTO = new ListResponseDTO();
-        List<JobApplyResponse> list = jobApplyService.getAllJobApplies(pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
+        ResponseWithTotalPage<JobApplyResponse> list = jobApplyService.getAllJobApplies(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(JobApplySuccessMessage.GET_ALL);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -57,11 +56,13 @@ public class JobApplyController {
 
     @GetMapping("/getByRecruitmentRequest")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllJobAppliesByRecruitmentRequest(@RequestParam int requestId,
+    public ResponseEntity<ResponseDTO> getAllJobAppliesByRecruitmentRequest(
+            @RequestParam int requestId,
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<JobApplyResponse> responseDTO = new ListResponseDTO();
-        List<JobApplyResponse> list = jobApplyService.getAllJobAppliesByRecruitmentRequest(requestId, pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
+        ResponseWithTotalPage<JobApplyResponse> list = jobApplyService.getAllJobAppliesByRecruitmentRequest(requestId,
+                pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(JobApplySuccessMessage.GET_ALL_BY_RECRUITMENT_REQUEST);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -70,11 +71,13 @@ public class JobApplyController {
 
     @GetMapping("/getJobApplyByCandidate")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE_CANDIDATE)
-    public ResponseEntity<ListResponseDTO> getJobApplyByCandidate(@RequestParam int candidateId,
+    public ResponseEntity<ResponseDTO> getJobApplyByCandidate(
+            @RequestParam int candidateId,
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<JobApplyResponse> responseDTO = new ListResponseDTO();
-        List<JobApplyResponse> list = jobApplyService.getJobApplyByCandidate(candidateId, pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
+        ResponseWithTotalPage<JobApplyResponse> list = jobApplyService.getJobApplyByCandidate(candidateId, pageNo,
+                pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(JobApplySuccessMessage.GET_ALL_BY_CANDIDATE);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -83,10 +86,11 @@ public class JobApplyController {
 
     @GetMapping("/getAllPendingJobApplies")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getJobApplyByCandidate(@RequestParam(defaultValue = "0") int pageNo,
+    public ResponseEntity<ResponseDTO> getJobApplyByCandidate(
+            @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<JobApplyResponse> responseDTO = new ListResponseDTO();
-        List<JobApplyResponse> list = jobApplyService.getAllPendingJobApplies(pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
+        ResponseWithTotalPage<JobApplyResponse> list = jobApplyService.getAllPendingJobApplies(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(JobApplySuccessMessage.GET_ALL_PENDING);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -95,10 +99,11 @@ public class JobApplyController {
 
     @GetMapping("/getAllApprovedJobApplies")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllApprovedJobApplies(@RequestParam(defaultValue = "0") int pageNo,
+    public ResponseEntity<ResponseDTO> getAllApprovedJobApplies(
+            @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<JobApplyResponse> responseDTO = new ListResponseDTO();
-        List<JobApplyResponse> list = jobApplyService.getAllApprovedJobApplies(pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
+        ResponseWithTotalPage<JobApplyResponse> list = jobApplyService.getAllApprovedJobApplies(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(JobApplySuccessMessage.GET_ALL_APPROVED);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -107,10 +112,11 @@ public class JobApplyController {
 
     @GetMapping("/getAllCancelJobApplies")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllCancelJobApplies(@RequestParam(defaultValue = "0") int pageNo,
+    public ResponseEntity<ResponseDTO> getAllCancelJobApplies(
+            @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<JobApplyResponse> responseDTO = new ListResponseDTO();
-        List<JobApplyResponse> list = jobApplyService.getAllCancelJobApplies(pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
+        ResponseWithTotalPage<JobApplyResponse> list = jobApplyService.getAllCancelJobApplies(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(JobApplySuccessMessage.GET_ALL_CANCELED);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -119,7 +125,8 @@ public class JobApplyController {
 
     @PutMapping("/cancelJobApply/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> cancelJobApply(@RequestParam("id") int id, @RequestParam int employeeId) {
+    public ResponseEntity<ResponseDTO> cancelJobApply(@RequestParam("id") int id,
+            @RequestParam int employeeId) {
         ResponseDTO<JobApplyResponse> responseDTO = new ResponseDTO();
         JobApplyResponse jobApplyResponse = jobApplyService.cancelJobApply(id, employeeId);
         responseDTO.setData(jobApplyResponse);
@@ -130,7 +137,8 @@ public class JobApplyController {
 
     @PutMapping("/approvedJobApply/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> approvedJobApply(@RequestParam("id") int id, @RequestParam int employeeId) {
+    public ResponseEntity<ResponseDTO> approvedJobApply(@RequestParam("id") int id,
+            @RequestParam int employeeId) {
         ResponseDTO<JobApplyResponse> responseDTO = new ResponseDTO();
         JobApplyResponse jobApplyResponse = jobApplyService.approvedJobApply(id, employeeId);
         responseDTO.setData(jobApplyResponse);

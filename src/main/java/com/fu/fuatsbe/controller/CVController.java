@@ -1,7 +1,5 @@
 package com.fu.fuatsbe.controller;
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,8 +19,8 @@ import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.entity.CV;
 import com.fu.fuatsbe.response.CvResponse;
-import com.fu.fuatsbe.response.ListResponseDTO;
 import com.fu.fuatsbe.response.ResponseDTO;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.CVService;
 
 import lombok.RequiredArgsConstructor;
@@ -37,10 +35,11 @@ public class CVController {
 
     @GetMapping("/getAllCvs")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllCvs(@RequestParam(defaultValue = "0") int pageNo,
+    public ResponseEntity<ResponseDTO> getAllCvs(
+            @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<CvResponse> responseDTO = new ListResponseDTO();
-        List<CvResponse> list = cvService.getAllCvs(pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
+        ResponseWithTotalPage<CvResponse> list = cvService.getAllCvs(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(CVSuccessMessage.GET_ALL_CVS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -49,11 +48,12 @@ public class CVController {
 
     @GetMapping("/getAllCvByCandidate")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllCvByCandidate(@RequestParam("id") int id,
+    public ResponseEntity<ResponseDTO> getAllCvByCandidate(
+            @RequestParam("id") int id,
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<CvResponse> responseDTO = new ListResponseDTO();
-        List<CvResponse> list = cvService.getAllCvByCandidate(id, pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
+        ResponseWithTotalPage<CvResponse> list = cvService.getAllCvByCandidate(id, pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(CVSuccessMessage.GET_ALL_CVS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);

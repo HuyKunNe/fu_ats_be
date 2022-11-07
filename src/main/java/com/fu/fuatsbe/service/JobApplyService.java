@@ -1,22 +1,22 @@
 package com.fu.fuatsbe.service;
 
-import java.util.List;
-
 import com.fu.fuatsbe.DTO.JobApplyCreateDTO;
 import com.fu.fuatsbe.response.JobApplyResponse;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 
 public interface JobApplyService {
-    public List<JobApplyResponse> getAllJobApplies(int pageNo, int pageSize);
+    public ResponseWithTotalPage<JobApplyResponse> getAllJobApplies(int pageNo, int pageSize);
 
-    public List<JobApplyResponse> getJobApplyByCandidate(int candidateId, int pageNo, int pageSize);
+    public ResponseWithTotalPage<JobApplyResponse> getJobApplyByCandidate(int candidateId, int pageNo, int pageSize);
 
-    public List<JobApplyResponse> getAllJobAppliesByRecruitmentRequest(int requestId, int pageNo, int pageSize);
+    public ResponseWithTotalPage<JobApplyResponse> getAllJobAppliesByRecruitmentRequest(int requestId, int pageNo,
+            int pageSize);
 
-    public List<JobApplyResponse> getAllPendingJobApplies(int pageNo, int pageSize);
+    public ResponseWithTotalPage<JobApplyResponse> getAllPendingJobApplies(int pageNo, int pageSize);
 
-    public List<JobApplyResponse> getAllApprovedJobApplies(int pageNo, int pageSize);
+    public ResponseWithTotalPage<JobApplyResponse> getAllApprovedJobApplies(int pageNo, int pageSize);
 
-    public List<JobApplyResponse> getAllCancelJobApplies(int pageNo, int pageSize);
+    public ResponseWithTotalPage<JobApplyResponse> getAllCancelJobApplies(int pageNo, int pageSize);
 
     public JobApplyResponse createJobApply(JobApplyCreateDTO createDTO);
 

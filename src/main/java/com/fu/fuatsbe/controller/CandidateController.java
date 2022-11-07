@@ -14,6 +14,7 @@ import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.response.CandidateResponseDTO;
 import com.fu.fuatsbe.response.ListResponseDTO;
 import com.fu.fuatsbe.response.ResponseDTO;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.CandidateService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,10 +29,11 @@ public class CandidateController {
 
     @GetMapping("/getAllCandidates")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllCandidates(@RequestParam(defaultValue = "0") int pageNo,
+    public ResponseEntity<ResponseDTO> getAllCandidates(
+            @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<CandidateResponseDTO> responseDTO = new ListResponseDTO();
-        List<CandidateResponseDTO> list = candidateService.getAllCandidates(pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
+        ResponseWithTotalPage<CandidateResponseDTO> list = candidateService.getAllCandidates(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(CandidateSuccessMessage.GET_ALL_CANDIDATE_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -40,10 +42,11 @@ public class CandidateController {
 
     @GetMapping("/getAllActivateCandidates")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllActivateCandidates(@RequestParam(defaultValue = "0") int pageNo,
+    public ResponseEntity<ResponseDTO> getAllActivateCandidates(
+            @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<CandidateResponseDTO> responseDTO = new ListResponseDTO();
-        List<CandidateResponseDTO> list = candidateService.getActivateCandidates(pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
+        ResponseWithTotalPage<CandidateResponseDTO> list = candidateService.getActivateCandidates(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(CandidateSuccessMessage.GET_ALL_CANDIDATE_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -52,10 +55,11 @@ public class CandidateController {
 
     @GetMapping("/getAllDisableCandidates")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllDisableCandidates(@RequestParam(defaultValue = "0") int pageNo,
+    public ResponseEntity<ResponseDTO> getAllDisableCandidates(
+            @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<CandidateResponseDTO> responseDTO = new ListResponseDTO();
-        List<CandidateResponseDTO> list = candidateService.getDisableCandidates(pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
+        ResponseWithTotalPage<CandidateResponseDTO> list = candidateService.getDisableCandidates(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(CandidateSuccessMessage.GET_ALL_CANDIDATE_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);

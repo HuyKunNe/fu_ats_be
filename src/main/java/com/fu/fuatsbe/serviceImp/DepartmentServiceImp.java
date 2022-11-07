@@ -22,6 +22,7 @@ import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.repository.DepartmentRepository;
 import com.fu.fuatsbe.response.DepartmentResponse;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.DepartmentService;
 
 import lombok.RequiredArgsConstructor;
@@ -35,16 +36,19 @@ public class DepartmentServiceImp implements DepartmentService {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<DepartmentResponse> getAllDepartments(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<DepartmentResponse> getAllDepartments(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Department> pageResult = departmentRepository.findAll(pageable);
 
-        List<DepartmentResponse> result = new ArrayList<DepartmentResponse>();
+        ResponseWithTotalPage<DepartmentResponse> result = new ResponseWithTotalPage<>();
+        List<DepartmentResponse> list = new ArrayList<>();
         if (pageResult.hasContent()) {
             for (Department department : pageResult.getContent()) {
                 DepartmentResponse response = modelMapper.map(department, DepartmentResponse.class);
-                result.add(response);
+                list.add(response);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(DepartmentErrorMessage.LIST_DEPARTMENT_EMPTY_EXCEPTION);
         return result;
@@ -60,16 +64,19 @@ public class DepartmentServiceImp implements DepartmentService {
     }
 
     @Override
-    public List<DepartmentResponse> getDepartmentByName(String name, int pageNo, int pageSize) {
+    public ResponseWithTotalPage<DepartmentResponse> getDepartmentByName(String name, int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Department> pageResult = departmentRepository.findByNameContaining(name, pageable);
 
-        List<DepartmentResponse> result = new ArrayList<DepartmentResponse>();
+        ResponseWithTotalPage<DepartmentResponse> result = new ResponseWithTotalPage<>();
+        List<DepartmentResponse> list = new ArrayList<>();
         if (pageResult.hasContent()) {
             for (Department department : pageResult.getContent()) {
                 DepartmentResponse response = modelMapper.map(department, DepartmentResponse.class);
-                result.add(response);
+                list.add(response);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(DepartmentErrorMessage.LIST_DEPARTMENT_EMPTY_EXCEPTION);
         return result;

@@ -1,7 +1,5 @@
 package com.fu.fuatsbe.controller;
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,9 +18,9 @@ import com.fu.fuatsbe.constant.postion.PositionSuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.entity.Position;
-import com.fu.fuatsbe.response.ListResponseDTO;
 import com.fu.fuatsbe.response.PositionResponse;
 import com.fu.fuatsbe.response.ResponseDTO;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.PositionService;
 
 import lombok.RequiredArgsConstructor;
@@ -37,11 +35,12 @@ public class PositionController {
 
     @GetMapping("/getAll")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllPositions(@RequestParam(defaultValue = "0") int pageNo,
+    public ResponseEntity<ResponseDTO> getAllPositions(
+            @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
 
-        ListResponseDTO<PositionResponse> response = new ListResponseDTO();
-        List<PositionResponse> list = positionService.getAllPositions(pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage> response = new ResponseDTO();
+        ResponseWithTotalPage<PositionResponse> list = positionService.getAllPositions(pageNo, pageSize);
         response.setData(list);
         response.setMessage(PositionSuccessMessage.GET_ALL_POSITION_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);

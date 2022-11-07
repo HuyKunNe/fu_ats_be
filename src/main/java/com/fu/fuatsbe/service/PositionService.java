@@ -1,14 +1,13 @@
 package com.fu.fuatsbe.service;
 
-import java.util.List;
-
 import com.fu.fuatsbe.DTO.PositionCreateDTO;
 import com.fu.fuatsbe.DTO.PositionUpdateDTO;
 import com.fu.fuatsbe.entity.Position;
 import com.fu.fuatsbe.response.PositionResponse;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 
 public interface PositionService {
-    public List<PositionResponse> getAllPositions(int pageNo, int pageSize);
+    public ResponseWithTotalPage<PositionResponse> getAllPositions(int pageNo, int pageSize);
 
     public PositionResponse getPosionById(int id);
 
@@ -18,6 +17,6 @@ public interface PositionService {
 
     public Position deletePosition(int id);
 
-    public List<PositionResponse> getPositionByDepartment(int id, int pageNo, int pageSize);
+    public ResponseWithTotalPage<PositionResponse> getPositionByDepartment(int id, int pageNo, int pageSize);
 
 }

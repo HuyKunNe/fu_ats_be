@@ -29,8 +29,8 @@ public class AuthController {
     private final EmailService emailService;
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseDTO<LoginResponseDto>> login(@Validated @RequestBody LoginDto employee) {
-        ResponseDTO<LoginResponseDto> responseDTO = new ResponseDTO<>();
+    public ResponseEntity<ResponseDTO> login(@Validated @RequestBody LoginDto employee) {
+        ResponseDTO<LoginResponseDto> responseDTO = new ResponseDTO();
         LoginResponseDto loginResponseDTO = authService.login(employee);
         responseDTO.setData(loginResponseDTO);
         responseDTO.setMessage("Login success");
