@@ -43,6 +43,8 @@ import javax.management.relation.RoleNotFoundException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -114,10 +116,12 @@ public class AuthServiceImp implements AuthService {
         if (!optionalDepartment.isPresent()) {
             throw new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION);
         }
-
+        List<Position> positionList = new ArrayList<>();
         Optional<Position> optionalPosition = PositionRepository.findPositionByName(registerDto.getPositionName());
         if (!optionalPosition.isPresent()) {
             throw new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST);
+        }else{
+            positionList.add(optionalPosition.get());
         }
 
         Optional<Employee> optionalEmployee = employeeRepository.findByPhone(registerDto.getPhone());
@@ -134,7 +138,7 @@ public class AuthServiceImp implements AuthService {
                 .Dob(Date.valueOf(dob))
                 .status(EmployeeStatus.ACTIVATE)
                 .phone(registerDto.getPhone()).department(optionalDepartment.get()).address(registerDto.getAddress())
-                .position(optionalPosition.get())
+                .positions(positionList)
                 .build();
         Role role = roleRepository.findByName(registerDto.getRole())
                 .orElseThrow(() -> new NotFoundException(RoleErrorMessage.ROLE_NOT_EXIST));

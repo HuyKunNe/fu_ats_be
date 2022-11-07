@@ -18,9 +18,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.Nationalized;
+import org.hibernate.annotations.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -51,9 +49,11 @@ public class Employee {
     private String address;
     private String status;
 
-    @OneToOne(mappedBy = "employee")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
     @EqualsAndHashCode.Include
     @ToString.Include
+    @JsonIgnore
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -109,12 +109,10 @@ public class Employee {
     @JsonIgnore
     private Collection<InterviewEmployee> interviewEmployees;
 
-    @JsonBackReference
-    @OneToOne(fetch = FetchType.LAZY)
-    @Fetch(FetchMode.JOIN)
-    @JoinColumn(name = "position_id", referencedColumnName = "id")
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Include
     @ToString.Include
-    private Position position;
+    @JsonIgnore
+    private Collection<Position> positions;
 
 }

@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @Setter
 @ToString
@@ -24,5 +26,5 @@ public class EmployeeResponse {
     private String address;
     private String status;
     private Department department;
-    private Position position;
+    private List<Position> positions;
 }

@@ -42,7 +42,6 @@ public class EmployeeServiceImp implements EmployeeService {
     public List<EmployeeResponse> getAllEmployees(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Employee> pageResult = employeeRepository.findAll(pageable);
-
         List<EmployeeResponse> result = new ArrayList<EmployeeResponse>();
         if (pageResult.hasContent()) {
             for (Employee employee : pageResult.getContent()) {

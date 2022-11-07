@@ -74,8 +74,11 @@ public class Position {
     @ToString.Include
     private Department department;
 
-    @JsonBackReference
-    @OneToOne(mappedBy = "position")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
+    @EqualsAndHashCode.Include
+    @ToString.Include
+    @JsonIgnore
     private Employee employee;
 
     @OneToMany(mappedBy = "position", cascade = CascadeType.ALL)
