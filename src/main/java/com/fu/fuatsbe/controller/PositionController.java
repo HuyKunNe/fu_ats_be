@@ -35,11 +35,11 @@ public class PositionController {
 
     @GetMapping("/getAll")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<PositionResponse>>> getAllPositions(
+    public ResponseEntity<ResponseDTO> getAllPositions(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
 
-        ResponseDTO<ResponseWithTotalPage<PositionResponse>> response = new ResponseDTO<>();
+        ResponseDTO<ResponseWithTotalPage> response = new ResponseDTO();
         ResponseWithTotalPage<PositionResponse> list = positionService.getAllPositions(pageNo, pageSize);
         response.setData(list);
         response.setMessage(PositionSuccessMessage.GET_ALL_POSITION_SUCCESS);
@@ -49,8 +49,8 @@ public class PositionController {
 
     @GetMapping("/getById/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<PositionResponse>> getPositionById(@RequestParam("id") int id) {
-        ResponseDTO<PositionResponse> responseDTO = new ResponseDTO<>();
+    public ResponseEntity<ResponseDTO> getPositionById(@RequestParam("id") int id) {
+        ResponseDTO<PositionResponse> responseDTO = new ResponseDTO();
         PositionResponse positionResponse = positionService.getPosionById(id);
         responseDTO.setData(positionResponse);
         responseDTO.setMessage(PositionSuccessMessage.GET_POSITION_BY_ID);
@@ -60,8 +60,8 @@ public class PositionController {
 
     @PostMapping("/create")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<PositionResponse>> createPosition(@RequestBody PositionCreateDTO createDTO) {
-        ResponseDTO<PositionResponse> responseDTO = new ResponseDTO<>();
+    public ResponseEntity<ResponseDTO> createPosition(@RequestBody PositionCreateDTO createDTO) {
+        ResponseDTO<PositionResponse> responseDTO = new ResponseDTO();
         PositionResponse positionResponse = positionService.createPosition(createDTO);
         responseDTO.setData(positionResponse);
         responseDTO.setMessage(PositionSuccessMessage.CREATE_POSITION);
@@ -71,9 +71,9 @@ public class PositionController {
 
     @PutMapping("/edit/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<PositionResponse>> editPosition(@RequestParam("id") int id,
+    public ResponseEntity<ResponseDTO> editPosition(@RequestParam("id") int id,
             @RequestBody PositionUpdateDTO updateDTO) {
-        ResponseDTO<PositionResponse> responseDTO = new ResponseDTO<>();
+        ResponseDTO<PositionResponse> responseDTO = new ResponseDTO();
         PositionResponse positionResponse = positionService.updatePosition(id, updateDTO);
         responseDTO.setData(positionResponse);
         responseDTO.setMessage(PositionSuccessMessage.UPDATE_POSITION);
@@ -83,8 +83,8 @@ public class PositionController {
 
     @DeleteMapping("/delete/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDTO<Boolean>> deletePosition(@RequestParam("id") int id) {
-        ResponseDTO<Boolean> responseDTO = new ResponseDTO<>();
+    public ResponseEntity<ResponseDTO> deletePosition(@RequestParam("id") int id) {
+        ResponseDTO<Boolean> responseDTO = new ResponseDTO();
         Position position = positionService.deletePosition(id);
         responseDTO.setData(true);
         responseDTO.setMessage(PositionSuccessMessage.DELETE_POSITION);

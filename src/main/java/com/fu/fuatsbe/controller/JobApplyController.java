@@ -32,8 +32,8 @@ public class JobApplyController {
 
     @PostMapping("/create")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE_CANDIDATE)
-    public ResponseEntity<ResponseDTO<JobApplyResponse>> createInterview(@RequestBody JobApplyCreateDTO createDTO) {
-        ResponseDTO<JobApplyResponse> responseDTO = new ResponseDTO<>();
+    public ResponseEntity<ResponseDTO> createInterview(@RequestBody JobApplyCreateDTO createDTO) {
+        ResponseDTO<JobApplyResponse> responseDTO = new ResponseDTO();
         JobApplyResponse jobApplyResponse = jobApplyService.createJobApply(createDTO);
         responseDTO.setData(jobApplyResponse);
         responseDTO.setMessage(JobApplySuccessMessage.CREATE_SUCCESS);
@@ -43,10 +43,10 @@ public class JobApplyController {
 
     @GetMapping("/getAll")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<JobApplyResponse>>> getAllJobApplies(
+    public ResponseEntity<ResponseDTO> getAllJobApplies(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ResponseDTO<ResponseWithTotalPage<JobApplyResponse>> responseDTO = new ResponseDTO<>();
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
         ResponseWithTotalPage<JobApplyResponse> list = jobApplyService.getAllJobApplies(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(JobApplySuccessMessage.GET_ALL);
@@ -56,11 +56,11 @@ public class JobApplyController {
 
     @GetMapping("/getByRecruitmentRequest")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<JobApplyResponse>>> getAllJobAppliesByRecruitmentRequest(
+    public ResponseEntity<ResponseDTO> getAllJobAppliesByRecruitmentRequest(
             @RequestParam int requestId,
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ResponseDTO<ResponseWithTotalPage<JobApplyResponse>> responseDTO = new ResponseDTO<>();
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
         ResponseWithTotalPage<JobApplyResponse> list = jobApplyService.getAllJobAppliesByRecruitmentRequest(requestId,
                 pageNo, pageSize);
         responseDTO.setData(list);
@@ -71,11 +71,11 @@ public class JobApplyController {
 
     @GetMapping("/getJobApplyByCandidate")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE_CANDIDATE)
-    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<JobApplyResponse>>> getJobApplyByCandidate(
+    public ResponseEntity<ResponseDTO> getJobApplyByCandidate(
             @RequestParam int candidateId,
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ResponseDTO<ResponseWithTotalPage<JobApplyResponse>> responseDTO = new ResponseDTO<>();
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
         ResponseWithTotalPage<JobApplyResponse> list = jobApplyService.getJobApplyByCandidate(candidateId, pageNo,
                 pageSize);
         responseDTO.setData(list);
@@ -86,10 +86,10 @@ public class JobApplyController {
 
     @GetMapping("/getAllPendingJobApplies")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<JobApplyResponse>>> getJobApplyByCandidate(
+    public ResponseEntity<ResponseDTO> getJobApplyByCandidate(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ResponseDTO<ResponseWithTotalPage<JobApplyResponse>> responseDTO = new ResponseDTO<>();
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
         ResponseWithTotalPage<JobApplyResponse> list = jobApplyService.getAllPendingJobApplies(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(JobApplySuccessMessage.GET_ALL_PENDING);
@@ -99,10 +99,10 @@ public class JobApplyController {
 
     @GetMapping("/getAllApprovedJobApplies")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<JobApplyResponse>>> getAllApprovedJobApplies(
+    public ResponseEntity<ResponseDTO> getAllApprovedJobApplies(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ResponseDTO<ResponseWithTotalPage<JobApplyResponse>> responseDTO = new ResponseDTO<>();
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
         ResponseWithTotalPage<JobApplyResponse> list = jobApplyService.getAllApprovedJobApplies(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(JobApplySuccessMessage.GET_ALL_APPROVED);
@@ -112,10 +112,10 @@ public class JobApplyController {
 
     @GetMapping("/getAllCancelJobApplies")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<JobApplyResponse>>> getAllCancelJobApplies(
+    public ResponseEntity<ResponseDTO> getAllCancelJobApplies(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ResponseDTO<ResponseWithTotalPage<JobApplyResponse>> responseDTO = new ResponseDTO<>();
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
         ResponseWithTotalPage<JobApplyResponse> list = jobApplyService.getAllCancelJobApplies(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(JobApplySuccessMessage.GET_ALL_CANCELED);
@@ -125,9 +125,9 @@ public class JobApplyController {
 
     @PutMapping("/cancelJobApply/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<JobApplyResponse>> cancelJobApply(@RequestParam("id") int id,
+    public ResponseEntity<ResponseDTO> cancelJobApply(@RequestParam("id") int id,
             @RequestParam int employeeId) {
-        ResponseDTO<JobApplyResponse> responseDTO = new ResponseDTO<>();
+        ResponseDTO<JobApplyResponse> responseDTO = new ResponseDTO();
         JobApplyResponse jobApplyResponse = jobApplyService.cancelJobApply(id, employeeId);
         responseDTO.setData(jobApplyResponse);
         responseDTO.setMessage(JobApplySuccessMessage.CANCEL);
@@ -137,9 +137,9 @@ public class JobApplyController {
 
     @PutMapping("/approvedJobApply/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<JobApplyResponse>> approvedJobApply(@RequestParam("id") int id,
+    public ResponseEntity<ResponseDTO> approvedJobApply(@RequestParam("id") int id,
             @RequestParam int employeeId) {
-        ResponseDTO<JobApplyResponse> responseDTO = new ResponseDTO<>();
+        ResponseDTO<JobApplyResponse> responseDTO = new ResponseDTO();
         JobApplyResponse jobApplyResponse = jobApplyService.approvedJobApply(id, employeeId);
         responseDTO.setData(jobApplyResponse);
         responseDTO.setMessage(JobApplySuccessMessage.APPROVE);
@@ -149,8 +149,8 @@ public class JobApplyController {
 
     @GetMapping("getById/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE_CANDIDATE)
-    public ResponseEntity<ResponseDTO<JobApplyResponse>> getJobApplyById(@RequestParam("id") int id) {
-        ResponseDTO<JobApplyResponse> responseDTO = new ResponseDTO<>();
+    public ResponseEntity<ResponseDTO> getJobApplyById(@RequestParam("id") int id) {
+        ResponseDTO<JobApplyResponse> responseDTO = new ResponseDTO();
         JobApplyResponse jobApplyResponse = jobApplyService.getJobApplyById(id);
         responseDTO.setData(jobApplyResponse);
         responseDTO.setMessage(JobApplySuccessMessage.GET_BY_ID);

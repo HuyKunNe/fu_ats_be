@@ -35,10 +35,10 @@ public class DepartmentController {
 
     @GetMapping("getAll")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<DepartmentResponse>>> getAllDepartments(
+    public ResponseEntity<ResponseDTO> getAllDepartments(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ResponseDTO<ResponseWithTotalPage<DepartmentResponse>> response = new ResponseDTO<>();
+        ResponseDTO<ResponseWithTotalPage> response = new ResponseDTO();
         ResponseWithTotalPage<DepartmentResponse> list = departmentService.getAllDepartments(pageNo, pageSize);
         response.setData(list);
         response.setMessage(DepartmentSuccessMessage.GET_ALL_DEPARTMENT);
@@ -48,8 +48,8 @@ public class DepartmentController {
 
     @GetMapping("getById/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<DepartmentResponse>> getDepartmentById(@RequestParam("id") int id) {
-        ResponseDTO<DepartmentResponse> responseDTO = new ResponseDTO<>();
+    public ResponseEntity<ResponseDTO> getDepartmentById(@RequestParam("id") int id) {
+        ResponseDTO<DepartmentResponse> responseDTO = new ResponseDTO();
         DepartmentResponse departmentResponse = departmentService.getDepartmentById(id);
         responseDTO.setData(departmentResponse);
         responseDTO.setMessage(DepartmentSuccessMessage.GET_DEPARTMENT_BY_ID);
@@ -59,11 +59,11 @@ public class DepartmentController {
 
     @GetMapping("getByName")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<DepartmentResponse>>> getDepartmentByName(
+    public ResponseEntity<ResponseDTO> getDepartmentByName(
             @RequestParam("name") String name,
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ResponseDTO<ResponseWithTotalPage<DepartmentResponse>> response = new ResponseDTO<>();
+        ResponseDTO<ResponseWithTotalPage> response = new ResponseDTO();
         ResponseWithTotalPage<DepartmentResponse> list = departmentService.getDepartmentByName(name, pageNo, pageSize);
         response.setData(list);
         response.setMessage(DepartmentSuccessMessage.GET_DEPARTMENT_BY_NAME);
@@ -73,9 +73,9 @@ public class DepartmentController {
 
     @PutMapping("edit/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDTO<DepartmentResponse>> updateDepartment(@RequestParam("id") int id,
+    public ResponseEntity<ResponseDTO> updateDepartment(@RequestParam("id") int id,
             @RequestBody DepartmentUpdateDTO updateDTO) {
-        ResponseDTO<DepartmentResponse> responseDTO = new ResponseDTO<>();
+        ResponseDTO<DepartmentResponse> responseDTO = new ResponseDTO();
         DepartmentResponse department = departmentService.updateDepartment(id, updateDTO);
         responseDTO.setData(department);
         responseDTO.setMessage("Update department successfully");
@@ -85,9 +85,9 @@ public class DepartmentController {
 
     @PostMapping("create")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDTO<Department>> createDepartment(
+    public ResponseEntity<ResponseDTO> createDepartment(
             @RequestBody DepartmentCreateDTO createDTO) {
-        ResponseDTO<Department> responseDTO = new ResponseDTO<>();
+        ResponseDTO<Department> responseDTO = new ResponseDTO();
         Department department = departmentService.createDepartment(createDTO);
         responseDTO.setData(department);
         responseDTO.setMessage("Create department successfully");
@@ -98,7 +98,7 @@ public class DepartmentController {
     @DeleteMapping("delete/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity deleteDepartmnetById(@RequestParam("id") int id) {
-        ResponseDTO<Department> responseDTO = new ResponseDTO<>();
+        ResponseDTO<Department> responseDTO = new ResponseDTO();
         departmentService.deleteDepartmentById(id);
         responseDTO.setMessage("delete department successfully");
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);

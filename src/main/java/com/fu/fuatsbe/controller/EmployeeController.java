@@ -31,8 +31,8 @@ public class EmployeeController {
 
     @GetMapping("/getById/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<EmployeeResponse>> getEmployeeById(@RequestParam(name = "id") int employeeId) {
-        ResponseDTO<EmployeeResponse> responseDTO = new ResponseDTO<>();
+    public ResponseEntity<ResponseDTO> getEmployeeById(@RequestParam(name = "id") int employeeId) {
+        ResponseDTO<EmployeeResponse> responseDTO = new ResponseDTO();
         EmployeeResponse employee = employeeService.getEmployeeById(employeeId);
         responseDTO.setData(employee);
         responseDTO.setMessage(EmployeeSuccessMessage.GET_EMPLOYEE_BY_ID_SUCCESS);
@@ -42,10 +42,10 @@ public class EmployeeController {
 
     @GetMapping("/getAllEmployees")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<EmployeeResponse>>> getAllEmployees(
+    public ResponseEntity<ResponseDTO> getAllEmployees(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ResponseDTO<ResponseWithTotalPage<EmployeeResponse>> responseDTO = new ResponseDTO<>();
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
         ResponseWithTotalPage<EmployeeResponse> list = employeeService.getAllEmployees(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(EmployeeSuccessMessage.GET_ALL_EMPLOYEE_SUCCESS);
@@ -55,11 +55,11 @@ public class EmployeeController {
 
     @GetMapping("/getEmployeesByDepartment")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<EmployeeResponse>>> getEmployeesByDepartment(
+    public ResponseEntity<ResponseDTO> getEmployeesByDepartment(
             @RequestParam("departmentId") int departmentId,
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ResponseDTO<ResponseWithTotalPage<EmployeeResponse>> responseDTO = new ResponseDTO<>();
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
         ResponseWithTotalPage<EmployeeResponse> list = employeeService.getAllEmployeeByDepartment(departmentId, pageNo,
                 pageSize);
         responseDTO.setData(list);
@@ -102,9 +102,9 @@ public class EmployeeController {
 
     @PutMapping("update/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<EmployeeResponse>> updateEmployee(@RequestParam("id") int id,
+    public ResponseEntity<ResponseDTO> updateEmployee(@RequestParam("id") int id,
             @RequestBody EmployeeUpdateDTO updateDTO) {
-        ResponseDTO<EmployeeResponse> responseDTO = new ResponseDTO<>();
+        ResponseDTO<EmployeeResponse> responseDTO = new ResponseDTO();
         EmployeeResponse employee = employeeService.updateEmployee(id, updateDTO);
         responseDTO.setData(employee);
         responseDTO.setMessage(EmployeeSuccessMessage.UPDATE_EMPLOYEE_SUCCESS);

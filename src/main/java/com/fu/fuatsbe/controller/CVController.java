@@ -35,10 +35,10 @@ public class CVController {
 
     @GetMapping("/getAllCvs")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<CvResponse>>> getAllCvs(
+    public ResponseEntity<ResponseDTO> getAllCvs(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ResponseDTO<ResponseWithTotalPage<CvResponse>> responseDTO = new ResponseDTO<>();
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
         ResponseWithTotalPage<CvResponse> list = cvService.getAllCvs(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(CVSuccessMessage.GET_ALL_CVS);
@@ -48,11 +48,11 @@ public class CVController {
 
     @GetMapping("/getAllCvByCandidate")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<CvResponse>>> getAllCvByCandidate(
+    public ResponseEntity<ResponseDTO> getAllCvByCandidate(
             @RequestParam("id") int id,
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ResponseDTO<ResponseWithTotalPage<CvResponse>> responseDTO = new ResponseDTO<>();
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
         ResponseWithTotalPage<CvResponse> list = cvService.getAllCvByCandidate(id, pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(CVSuccessMessage.GET_ALL_CVS);
@@ -62,8 +62,8 @@ public class CVController {
 
     @PostMapping("/create")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE_CANDIDATE)
-    public ResponseEntity<ResponseDTO<CvResponse>> createCV(@RequestBody CvCreateDTO createDTO) {
-        ResponseDTO<CvResponse> responseDTO = new ResponseDTO<>();
+    public ResponseEntity<ResponseDTO> createCV(@RequestBody CvCreateDTO createDTO) {
+        ResponseDTO<CvResponse> responseDTO = new ResponseDTO();
         CvResponse cvResponse = cvService.createCV(createDTO);
         responseDTO.setData(cvResponse);
         responseDTO.setMessage(CVSuccessMessage.CREATE_CV);
@@ -73,9 +73,9 @@ public class CVController {
 
     @PutMapping("edit/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
-    public ResponseEntity<ResponseDTO<CvResponse>> updateDepartment(@RequestParam("id") int id,
+    public ResponseEntity<ResponseDTO> updateDepartment(@RequestParam("id") int id,
             @RequestBody CvUpdateDTO updateDTO) {
-        ResponseDTO<CvResponse> responseDTO = new ResponseDTO<>();
+        ResponseDTO<CvResponse> responseDTO = new ResponseDTO();
         CvResponse cv = cvService.updateCV(id, updateDTO);
         responseDTO.setData(cv);
         responseDTO.setMessage(CVSuccessMessage.UPDATE_CV);
@@ -86,7 +86,7 @@ public class CVController {
     @DeleteMapping("delete/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity deleteCV(@RequestParam("id") int id) {
-        ResponseDTO<CV> responseDTO = new ResponseDTO<>();
+        ResponseDTO<CV> responseDTO = new ResponseDTO();
         cvService.deleteCV(id);
         responseDTO.setMessage(CVSuccessMessage.DELETE_CV);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);

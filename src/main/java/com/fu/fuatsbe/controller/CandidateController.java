@@ -29,10 +29,10 @@ public class CandidateController {
 
     @GetMapping("/getAllCandidates")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<CandidateResponseDTO>>> getAllCandidates(
+    public ResponseEntity<ResponseDTO> getAllCandidates(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ResponseDTO<ResponseWithTotalPage<CandidateResponseDTO>> responseDTO = new ResponseDTO<>();
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
         ResponseWithTotalPage<CandidateResponseDTO> list = candidateService.getAllCandidates(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(CandidateSuccessMessage.GET_ALL_CANDIDATE_SUCCESS);
@@ -42,10 +42,10 @@ public class CandidateController {
 
     @GetMapping("/getAllActivateCandidates")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<CandidateResponseDTO>>> getAllActivateCandidates(
+    public ResponseEntity<ResponseDTO> getAllActivateCandidates(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ResponseDTO<ResponseWithTotalPage<CandidateResponseDTO>> responseDTO = new ResponseDTO<>();
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
         ResponseWithTotalPage<CandidateResponseDTO> list = candidateService.getActivateCandidates(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(CandidateSuccessMessage.GET_ALL_CANDIDATE_SUCCESS);
@@ -55,10 +55,10 @@ public class CandidateController {
 
     @GetMapping("/getAllDisableCandidates")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<CandidateResponseDTO>>> getAllDisableCandidates(
+    public ResponseEntity<ResponseDTO> getAllDisableCandidates(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ResponseDTO<ResponseWithTotalPage<CandidateResponseDTO>> responseDTO = new ResponseDTO<>();
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
         ResponseWithTotalPage<CandidateResponseDTO> list = candidateService.getDisableCandidates(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(CandidateSuccessMessage.GET_ALL_CANDIDATE_SUCCESS);
@@ -68,8 +68,8 @@ public class CandidateController {
 
     @GetMapping("/getCandidateById/{id}")
     @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
-    public ResponseEntity<ResponseDTO<CandidateResponseDTO>> getCandidateById(@RequestParam("id") int id) {
-        ResponseDTO<CandidateResponseDTO> responseDTO = new ResponseDTO<>();
+    public ResponseEntity<ResponseDTO> getCandidateById(@RequestParam("id") int id) {
+        ResponseDTO<CandidateResponseDTO> responseDTO = new ResponseDTO();
         CandidateResponseDTO candidate = candidateService.getCandidateById(id);
         responseDTO.setData(candidate);
         responseDTO.setMessage(CandidateSuccessMessage.GET_CANDIDATE_BY_ID_SUCCESS);
@@ -79,8 +79,8 @@ public class CandidateController {
 
     @GetMapping("/getCandidateByPhone/{phone}")
     @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
-    public ResponseEntity<ResponseDTO<CandidateResponseDTO>> getCandidateByPhone(@RequestParam("phone") String phone) {
-        ResponseDTO<CandidateResponseDTO> responseDTO = new ResponseDTO<>();
+    public ResponseEntity<ResponseDTO> getCandidateByPhone(@RequestParam("phone") String phone) {
+        ResponseDTO<CandidateResponseDTO> responseDTO = new ResponseDTO();
         CandidateResponseDTO candidate = candidateService.getCandidateByPhone(phone);
         responseDTO.setData(candidate);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -90,8 +90,8 @@ public class CandidateController {
 
     @GetMapping("/getCandidateByEmail/{email}")
     @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
-    public ResponseEntity<ResponseDTO<CandidateResponseDTO>> getCandidateByEmail(@RequestParam("email") String email) {
-        ResponseDTO<CandidateResponseDTO> responseDTO = new ResponseDTO<>();
+    public ResponseEntity<ResponseDTO> getCandidateByEmail(@RequestParam("email") String email) {
+        ResponseDTO<CandidateResponseDTO> responseDTO = new ResponseDTO();
         CandidateResponseDTO candidate = candidateService.getCandidateByEmail(email);
         responseDTO.setData(candidate);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -102,7 +102,7 @@ public class CandidateController {
     @DeleteMapping("/delete/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> deleteCandidateById(@RequestParam(name = "id") int id) {
-        ResponseDTO<Boolean> responseDTO = new ResponseDTO<>();
+        ResponseDTO<Boolean> responseDTO = new ResponseDTO();
         Candidate candidate = candidateService.deleteCandidateById(id);
         responseDTO.setData(true);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -112,9 +112,9 @@ public class CandidateController {
 
     @PutMapping("/update/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
-    public ResponseEntity<ResponseDTO<CandidateResponseDTO>> updateCandidateById(@RequestParam("id") int id,
+    public ResponseEntity<ResponseDTO> updateCandidateById(@RequestParam("id") int id,
             @RequestBody CandidateUpdateDTO updateDTO) {
-        ResponseDTO<CandidateResponseDTO> responseDTO = new ResponseDTO<>();
+        ResponseDTO<CandidateResponseDTO> responseDTO = new ResponseDTO();
         CandidateResponseDTO candidate = candidateService.updateCandidateById(id, updateDTO);
         responseDTO.setData(candidate);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
