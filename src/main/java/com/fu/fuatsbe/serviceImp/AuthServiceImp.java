@@ -78,12 +78,16 @@ public class AuthServiceImp implements AuthService {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate dob = LocalDate.parse(registerDTO.getDob().toString(), format);
 
-        Candidate candidate = Candidate.builder().name(registerDTO.getName()).email(registerDTO.getEmail())
-                .phone(registerDTO.getPhone()).image(registerDTO.getImage()).dob(Date.valueOf(dob))
-                .gender(registerDTO.getGender()).address(registerDTO.getAddress())
+        Candidate candidate = Candidate.builder()
+                .name(registerDTO.getName())
+                .email(registerDTO.getEmail())
+                .phone(registerDTO.getPhone())
+                .image(registerDTO.getImage())
+                .dob(Date.valueOf(dob))
+                .gender(registerDTO.getGender())
+                .address(registerDTO.getAddress())
                 .status(CandidateStatus.ACTIVATED)
                 .build();
-        ;
 
         Account account = Account.builder()
                 .email(candidate.getEmail())
@@ -168,7 +172,8 @@ public class AuthServiceImp implements AuthService {
                     .email(accountAuthencated.getEmail())
                     .status(accountAuthencated.getStatus())
                     .roleName(accountAuthencated.getRole().getName())
-                    .token(token).build();
+                    .token(token)
+                    .build();
             if (accountAuthencated.getRole().getName().equalsIgnoreCase(RoleName.ROLE_CANDIDATE)) {
                 loginResponseDTO.setCandidate(accountAuthencated.getCandidate());
             } else {

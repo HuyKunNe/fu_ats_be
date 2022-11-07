@@ -50,9 +50,9 @@ public class Employee {
     private String status;
 
     @JsonBackReference
-    @OneToOne(fetch = FetchType.LAZY, optional = true, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)
-    @JoinColumn(name = "account_id")
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
     @EqualsAndHashCode.Include
     @ToString.Include
     @JsonIgnore
