@@ -20,7 +20,6 @@ import javax.persistence.Table;
 import lombok.*;
 import org.hibernate.annotations.*;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity

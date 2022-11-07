@@ -120,7 +120,7 @@ public class AuthServiceImp implements AuthService {
         Optional<Position> optionalPosition = PositionRepository.findPositionByName(registerDto.getPositionName());
         if (!optionalPosition.isPresent()) {
             throw new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST);
-        }else{
+        } else {
             positionList.add(optionalPosition.get());
         }
 
@@ -138,7 +138,7 @@ public class AuthServiceImp implements AuthService {
                 .Dob(Date.valueOf(dob))
                 .status(EmployeeStatus.ACTIVATE)
                 .phone(registerDto.getPhone()).department(optionalDepartment.get()).address(registerDto.getAddress())
-                .positions(positionList)
+                .position(optionalPosition.get())
                 .build();
         Role role = roleRepository.findByName(registerDto.getRole())
                 .orElseThrow(() -> new NotFoundException(RoleErrorMessage.ROLE_NOT_EXIST));
