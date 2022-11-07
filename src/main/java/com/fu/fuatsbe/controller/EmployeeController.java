@@ -6,13 +6,11 @@ import com.fu.fuatsbe.constant.employee.EmployeeSuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.response.EmployeeResponse;
-import com.fu.fuatsbe.response.ListResponseDTO;
 import com.fu.fuatsbe.response.ResponseDTO;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.EmailService;
 import com.fu.fuatsbe.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,8 +31,8 @@ public class EmployeeController {
 
     @GetMapping("/getById/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> getEmployeeById(@RequestParam(name = "id") int employeeId) {
-        ResponseDTO<EmployeeResponse> responseDTO = new ResponseDTO();
+    public ResponseEntity<ResponseDTO<EmployeeResponse>> getEmployeeById(@RequestParam(name = "id") int employeeId) {
+        ResponseDTO<EmployeeResponse> responseDTO = new ResponseDTO<>();
         EmployeeResponse employee = employeeService.getEmployeeById(employeeId);
         responseDTO.setData(employee);
         responseDTO.setMessage(EmployeeSuccessMessage.GET_EMPLOYEE_BY_ID_SUCCESS);
@@ -44,10 +42,11 @@ public class EmployeeController {
 
     @GetMapping("/getAllEmployees")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllEmployees(@RequestParam(defaultValue = "0") int pageNo,
+    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<EmployeeResponse>>> getAllEmployees(
+            @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<EmployeeResponse> responseDTO = new ListResponseDTO();
-        List<EmployeeResponse> list = employeeService.getAllEmployees(pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage<EmployeeResponse>> responseDTO = new ResponseDTO<>();
+        ResponseWithTotalPage<EmployeeResponse> list = employeeService.getAllEmployees(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(EmployeeSuccessMessage.GET_ALL_EMPLOYEE_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -56,11 +55,13 @@ public class EmployeeController {
 
     @GetMapping("/getEmployeesByDepartment")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getEmployeesByDepartment(@RequestParam("departmentId") int departmentId,
+    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<EmployeeResponse>>> getEmployeesByDepartment(
+            @RequestParam("departmentId") int departmentId,
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<EmployeeResponse> responseDTO = new ListResponseDTO();
-        List<EmployeeResponse> list = employeeService.getAllEmployeeByDepartment(departmentId, pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage<EmployeeResponse>> responseDTO = new ResponseDTO<>();
+        ResponseWithTotalPage<EmployeeResponse> list = employeeService.getAllEmployeeByDepartment(departmentId, pageNo,
+                pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(EmployeeSuccessMessage.GET_ALL_EMPLOYEE_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -101,9 +102,9 @@ public class EmployeeController {
 
     @PutMapping("update/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> updateEmployee(@RequestParam("id") int id,
+    public ResponseEntity<ResponseDTO<EmployeeResponse>> updateEmployee(@RequestParam("id") int id,
             @RequestBody EmployeeUpdateDTO updateDTO) {
-        ResponseDTO<EmployeeResponse> responseDTO = new ResponseDTO();
+        ResponseDTO<EmployeeResponse> responseDTO = new ResponseDTO<>();
         EmployeeResponse employee = employeeService.updateEmployee(id, updateDTO);
         responseDTO.setData(employee);
         responseDTO.setMessage(EmployeeSuccessMessage.UPDATE_EMPLOYEE_SUCCESS);

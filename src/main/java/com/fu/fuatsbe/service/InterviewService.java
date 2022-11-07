@@ -11,7 +11,7 @@ import java.util.List;
 public interface InterviewService {
     InterviewResponse createInterview(InterviewCreateDTO interviewCreateDTO) throws MessagingException;
 
-    ResponseWithTotalPage getAllInterview(int pageNo, int pageSize);
+    ResponseWithTotalPage<InterviewResponse> getAllInterview(int pageNo, int pageSize);
 
     List<InterviewResponse> getInterviewByCandidateID(int candidateId);
 

@@ -5,7 +5,7 @@ import com.fu.fuatsbe.response.InterviewDetailResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 
 public interface InterviewDetailService {
-    ResponseWithTotalPage getAllInterviewDetail(int pageNo, int pageSize);
+    ResponseWithTotalPage<InterviewDetailResponse> getAllInterviewDetail(int pageNo, int pageSize);
 
     InterviewDetailResponse createInterviewDetail(InterviewDetailDTO interviewDetailDTO);
 

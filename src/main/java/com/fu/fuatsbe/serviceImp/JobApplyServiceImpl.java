@@ -39,6 +39,7 @@ import com.fu.fuatsbe.repository.JobApplyRepository;
 import com.fu.fuatsbe.repository.PositionRepository;
 import com.fu.fuatsbe.repository.RecruitmentRequestRepository;
 import com.fu.fuatsbe.response.JobApplyResponse;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.JobApplyService;
 
 import lombok.RequiredArgsConstructor;
@@ -57,53 +58,60 @@ public class JobApplyServiceImpl implements JobApplyService {
     private final CityRepository cityRepository;
 
     @Override
-    public List<JobApplyResponse> getAllJobApplies(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<JobApplyResponse> getAllJobApplies(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<JobApply> pageResult = jobApplyRepository.findAll(pageable);
-
-        List<JobApplyResponse> result = new ArrayList<JobApplyResponse>();
+        List<JobApplyResponse> list = new ArrayList<JobApplyResponse>();
+        ResponseWithTotalPage<JobApplyResponse> result = new ResponseWithTotalPage<>();
         if (pageResult.hasContent()) {
             for (JobApply jobApply : pageResult.getContent()) {
                 JobApplyResponse jobApplyResponse = modelMapper.map(jobApply, JobApplyResponse.class);
-                result.add(jobApplyResponse);
+                list.add(jobApplyResponse);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(JobApplyErrorMessage.LIST_IS_EMPTY);
         return result;
     }
 
     @Override
-    public List<JobApplyResponse> getJobApplyByCandidate(int candidateId, int pageNo, int pageSize) {
+    public ResponseWithTotalPage<JobApplyResponse> getJobApplyByCandidate(int candidateId, int pageNo, int pageSize) {
         Candidate candidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<JobApply> pageResult = jobApplyRepository.findByCandidate(candidate, pageable);
-
-        List<JobApplyResponse> result = new ArrayList<JobApplyResponse>();
+        List<JobApplyResponse> list = new ArrayList<JobApplyResponse>();
+        ResponseWithTotalPage<JobApplyResponse> result = new ResponseWithTotalPage<>();
         if (pageResult.hasContent()) {
             for (JobApply jobApply : pageResult.getContent()) {
                 JobApplyResponse jobApplyResponse = modelMapper.map(jobApply, JobApplyResponse.class);
-                result.add(jobApplyResponse);
+                list.add(jobApplyResponse);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(JobApplyErrorMessage.LIST_IS_EMPTY);
         return result;
     }
 
     @Override
-    public List<JobApplyResponse> getAllJobAppliesByRecruitmentRequest(int requestId, int pageNo, int pageSize) {
+    public ResponseWithTotalPage<JobApplyResponse> getAllJobAppliesByRecruitmentRequest(int requestId, int pageNo,
+            int pageSize) {
         RecruitmentRequest recruitmentRequest = recruitmentRequestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException(
                         RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<JobApply> pageResult = jobApplyRepository.findByRecruitmentRequest(recruitmentRequest, pageable);
-
-        List<JobApplyResponse> result = new ArrayList<JobApplyResponse>();
+        List<JobApplyResponse> list = new ArrayList<JobApplyResponse>();
+        ResponseWithTotalPage<JobApplyResponse> result = new ResponseWithTotalPage<>();
         if (pageResult.hasContent()) {
             for (JobApply jobApply : pageResult.getContent()) {
                 JobApplyResponse jobApplyResponse = modelMapper.map(jobApply, JobApplyResponse.class);
-                result.add(jobApplyResponse);
+                list.add(jobApplyResponse);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(JobApplyErrorMessage.LIST_IS_EMPTY);
         return result;
@@ -168,48 +176,54 @@ public class JobApplyServiceImpl implements JobApplyService {
     }
 
     @Override
-    public List<JobApplyResponse> getAllPendingJobApplies(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<JobApplyResponse> getAllPendingJobApplies(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<JobApply> pageResult = jobApplyRepository.findByStatus(JobApplyStatus.PEDNING, pageable);
-
-        List<JobApplyResponse> result = new ArrayList<JobApplyResponse>();
+        List<JobApplyResponse> list = new ArrayList<JobApplyResponse>();
+        ResponseWithTotalPage<JobApplyResponse> result = new ResponseWithTotalPage<>();
         if (pageResult.hasContent()) {
             for (JobApply jobApply : pageResult.getContent()) {
                 JobApplyResponse jobApplyResponse = modelMapper.map(jobApply, JobApplyResponse.class);
-                result.add(jobApplyResponse);
+                list.add(jobApplyResponse);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(JobApplyErrorMessage.LIST_IS_EMPTY);
         return result;
     }
 
     @Override
-    public List<JobApplyResponse> getAllApprovedJobApplies(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<JobApplyResponse> getAllApprovedJobApplies(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<JobApply> pageResult = jobApplyRepository.findByStatus(JobApplyStatus.APPROVED, pageable);
-
-        List<JobApplyResponse> result = new ArrayList<JobApplyResponse>();
+        List<JobApplyResponse> list = new ArrayList<JobApplyResponse>();
+        ResponseWithTotalPage<JobApplyResponse> result = new ResponseWithTotalPage<>();
         if (pageResult.hasContent()) {
             for (JobApply jobApply : pageResult.getContent()) {
                 JobApplyResponse jobApplyResponse = modelMapper.map(jobApply, JobApplyResponse.class);
-                result.add(jobApplyResponse);
+                list.add(jobApplyResponse);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(JobApplyErrorMessage.LIST_IS_EMPTY);
         return result;
     }
 
     @Override
-    public List<JobApplyResponse> getAllCancelJobApplies(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<JobApplyResponse> getAllCancelJobApplies(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<JobApply> pageResult = jobApplyRepository.findByStatus(JobApplyStatus.CANCLED, pageable);
-
-        List<JobApplyResponse> result = new ArrayList<JobApplyResponse>();
+        List<JobApplyResponse> list = new ArrayList<JobApplyResponse>();
+        ResponseWithTotalPage<JobApplyResponse> result = new ResponseWithTotalPage<>();
         if (pageResult.hasContent()) {
             for (JobApply jobApply : pageResult.getContent()) {
                 JobApplyResponse jobApplyResponse = modelMapper.map(jobApply, JobApplyResponse.class);
-                result.add(jobApplyResponse);
+                list.add(jobApplyResponse);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(JobApplyErrorMessage.LIST_IS_EMPTY);
         return result;

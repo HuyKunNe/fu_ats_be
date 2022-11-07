@@ -215,7 +215,7 @@ public class InterviewServiceImp implements InterviewService {
     }
 
     @Override
-    public ResponseWithTotalPage getAllInterview(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<InterviewResponse> getAllInterview(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Interview> interviews = interviewRepository.findAll(pageable);
         List<Object> result = new ArrayList<>();

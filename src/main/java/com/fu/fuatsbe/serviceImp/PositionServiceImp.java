@@ -27,6 +27,7 @@ import com.fu.fuatsbe.repository.DepartmentRepository;
 import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.PositionRepository;
 import com.fu.fuatsbe.response.PositionResponse;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.PositionService;
 
 import lombok.RequiredArgsConstructor;
@@ -41,17 +42,19 @@ public class PositionServiceImp implements PositionService {
     private final EmployeeRepository employeeRepository;
 
     @Override
-    public List<PositionResponse> getAllPositions(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<PositionResponse> getAllPositions(int pageNo, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Position> pageResult = positionRepository.findAll(pageable);
-        List<PositionResponse> result = new ArrayList<PositionResponse>();
-
+        List<PositionResponse> list = new ArrayList<PositionResponse>();
+        ResponseWithTotalPage<PositionResponse> result = new ResponseWithTotalPage<>();
         if (pageResult.hasContent()) {
             for (Position position : pageResult.getContent()) {
                 PositionResponse response = modelMapper.map(position, PositionResponse.class);
-                result.add(response);
+                list.add(response);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(PositionErrorMessage.LIST_POSITION_EMPTY);
         return result;
@@ -113,18 +116,21 @@ public class PositionServiceImp implements PositionService {
     }
 
     @Override
-    public List<PositionResponse> getPositionByDepartment(int id, int pageNo, int pageSize) {
+    public ResponseWithTotalPage<PositionResponse> getPositionByDepartment(int id, int pageNo, int pageSize) {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Position> pageResult = positionRepository.findByDepartment(department, pageable);
-        List<PositionResponse> result = new ArrayList<PositionResponse>();
+        List<PositionResponse> list = new ArrayList<PositionResponse>();
+        ResponseWithTotalPage<PositionResponse> result = new ResponseWithTotalPage<>();
         if (pageResult.hasContent()) {
             for (Position position : pageResult.getContent()) {
                 PositionResponse response = modelMapper.map(position, PositionResponse.class);
-                result.add(response);
+                list.add(response);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(PositionErrorMessage.LIST_POSITION_EMPTY);
         return result;

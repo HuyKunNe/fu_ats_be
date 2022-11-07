@@ -15,7 +15,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ResponseWithTotalPage {
+public class ResponseWithTotalPage<T> {
     private int totalPage;
-    private List<Object> responseList;
+    private List<T> responseList;
 }

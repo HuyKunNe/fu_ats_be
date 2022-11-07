@@ -19,6 +19,7 @@ import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.repository.CandidateRepository;
 import com.fu.fuatsbe.response.CandidateResponseDTO;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.CandidateService;
 
 import lombok.RequiredArgsConstructor;
@@ -31,16 +32,20 @@ public class CandidateServiceImp implements CandidateService {
     private final CandidateRepository candidateRepository;
 
     @Override
-    public List<CandidateResponseDTO> getAllCandidates(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<CandidateResponseDTO> getAllCandidates(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Candidate> pageResult = candidateRepository.findAll(pageable);
 
-        List<CandidateResponseDTO> result = new ArrayList<CandidateResponseDTO>();
+        List<CandidateResponseDTO> list = new ArrayList<CandidateResponseDTO>();
+        ResponseWithTotalPage<CandidateResponseDTO> result = new ResponseWithTotalPage<>();
+
         if (pageResult.hasContent()) {
             for (Candidate candidate : pageResult.getContent()) {
                 CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
-                result.add(candidateResponseDTO);
+                list.add(candidateResponseDTO);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(CandidateErrorMessage.LIST_CANDIDATE_IS_EMPTY);
         return result;
@@ -106,33 +111,39 @@ public class CandidateServiceImp implements CandidateService {
     }
 
     @Override
-    public List<CandidateResponseDTO> getActivateCandidates(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<CandidateResponseDTO> getActivateCandidates(int pageNo, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Candidate> pageResult = candidateRepository.findByStatus(CandidateStatus.ACTIVATED, pageable);
 
-        List<CandidateResponseDTO> result = new ArrayList<CandidateResponseDTO>();
+        List<CandidateResponseDTO> list = new ArrayList<CandidateResponseDTO>();
+        ResponseWithTotalPage<CandidateResponseDTO> result = new ResponseWithTotalPage<>();
+
         if (pageResult.hasContent()) {
             for (Candidate candidate : pageResult.getContent()) {
                 CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
-                result.add(candidateResponseDTO);
+                list.add(candidateResponseDTO);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(CandidateErrorMessage.LIST_CANDIDATE_IS_EMPTY);
         return result;
     }
 
     @Override
-    public List<CandidateResponseDTO> getDisableCandidates(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<CandidateResponseDTO> getDisableCandidates(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Candidate> pageResult = candidateRepository.findByStatus(CandidateStatus.DISABLED, pageable);
-
-        List<CandidateResponseDTO> result = new ArrayList<CandidateResponseDTO>();
+        List<CandidateResponseDTO> list = new ArrayList<CandidateResponseDTO>();
+        ResponseWithTotalPage<CandidateResponseDTO> result = new ResponseWithTotalPage<>();
         if (pageResult.hasContent()) {
             for (Candidate candidate : pageResult.getContent()) {
                 CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
-                result.add(candidateResponseDTO);
+                list.add(candidateResponseDTO);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(CandidateErrorMessage.LIST_CANDIDATE_IS_EMPTY);
         return result;

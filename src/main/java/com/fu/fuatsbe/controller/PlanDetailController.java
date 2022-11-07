@@ -1,7 +1,5 @@
 package com.fu.fuatsbe.controller;
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,9 +16,9 @@ import com.fu.fuatsbe.DTO.PlanDetailCreateDTO;
 import com.fu.fuatsbe.constant.planDetail.PlanDetailSuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
-import com.fu.fuatsbe.response.ListResponseDTO;
 import com.fu.fuatsbe.response.PlanDetailResponseDTO;
 import com.fu.fuatsbe.response.ResponseDTO;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.PlanDetailService;
 
 import lombok.RequiredArgsConstructor;
@@ -35,10 +33,11 @@ public class PlanDetailController {
 
     @GetMapping("/getAll")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllPlanDetails(@RequestParam(defaultValue = "0") int pageNo,
+    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<PlanDetailResponseDTO>>> getAllPlanDetails(
+            @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<PlanDetailResponseDTO> responseDTO = new ListResponseDTO();
-        List<PlanDetailResponseDTO> list = planDetailService.getAllPlanDetails(pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage<PlanDetailResponseDTO>> responseDTO = new ResponseDTO<>();
+        ResponseWithTotalPage<PlanDetailResponseDTO> list = planDetailService.getAllPlanDetails(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(PlanDetailSuccessMessage.GET_ALL_PLAN_DETAIL_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -47,11 +46,13 @@ public class PlanDetailController {
 
     @GetMapping("/getByRecruitmentPlan")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getByRecuitmentPlan(@RequestParam("id") int recruitmentId,
+    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<PlanDetailResponseDTO>>> getByRecuitmentPlan(
+            @RequestParam("id") int recruitmentId,
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<PlanDetailResponseDTO> responseDTO = new ListResponseDTO();
-        List<PlanDetailResponseDTO> list = planDetailService.getAllByRecruitmentPlans(recruitmentId, pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage<PlanDetailResponseDTO>> responseDTO = new ResponseDTO<>();
+        ResponseWithTotalPage<PlanDetailResponseDTO> list = planDetailService.getAllByRecruitmentPlans(recruitmentId,
+                pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(PlanDetailSuccessMessage.GET_PLAN_DETAIL_BY_RECRUITMENT_PLAN_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -60,8 +61,8 @@ public class PlanDetailController {
 
     @GetMapping("/getById/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> getPlanDetailById(@RequestParam(name = "id") int id) {
-        ResponseDTO<PlanDetailResponseDTO> responseDTO = new ResponseDTO();
+    public ResponseEntity<ResponseDTO<PlanDetailResponseDTO>> getPlanDetailById(@RequestParam(name = "id") int id) {
+        ResponseDTO<PlanDetailResponseDTO> responseDTO = new ResponseDTO<>();
         PlanDetailResponseDTO planDetail = planDetailService.getPlanDetailById(id);
         responseDTO.setData(planDetail);
         responseDTO.setMessage(PlanDetailSuccessMessage.GET_PLAN_DETAIL_BY_ID_SUCCESS);
@@ -71,8 +72,9 @@ public class PlanDetailController {
 
     @PostMapping("/create")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> createPlanDetail(@RequestBody PlanDetailCreateDTO createDTO) {
-        ResponseDTO<PlanDetailResponseDTO> responseDTO = new ResponseDTO();
+    public ResponseEntity<ResponseDTO<PlanDetailResponseDTO>> createPlanDetail(
+            @RequestBody PlanDetailCreateDTO createDTO) {
+        ResponseDTO<PlanDetailResponseDTO> responseDTO = new ResponseDTO<>();
         PlanDetailResponseDTO planDetailDTO = planDetailService.createPlanDetail(createDTO);
         responseDTO.setData(planDetailDTO);
         responseDTO.setMessage("create plan detail success");
@@ -82,10 +84,11 @@ public class PlanDetailController {
 
     @GetMapping("/getPendingPlanDetails")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getPendingPlanDetails(@RequestParam(defaultValue = "0") int pageNo,
+    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<PlanDetailResponseDTO>>> getPendingPlanDetails(
+            @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<PlanDetailResponseDTO> responseDTO = new ListResponseDTO();
-        List<PlanDetailResponseDTO> list = planDetailService.getPendingPlanDetails(pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage<PlanDetailResponseDTO>> responseDTO = new ResponseDTO<>();
+        ResponseWithTotalPage<PlanDetailResponseDTO> list = planDetailService.getPendingPlanDetails(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(PlanDetailSuccessMessage.GET_ALL_PLAN_DETAIL_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -94,10 +97,11 @@ public class PlanDetailController {
 
     @GetMapping("/getApprovedPlanDetails")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getApprovedPlanDetails(@RequestParam(defaultValue = "0") int pageNo,
+    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<PlanDetailResponseDTO>>> getApprovedPlanDetails(
+            @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<PlanDetailResponseDTO> responseDTO = new ListResponseDTO();
-        List<PlanDetailResponseDTO> list = planDetailService.getApprovedPlanDetails(pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage<PlanDetailResponseDTO>> responseDTO = new ResponseDTO<>();
+        ResponseWithTotalPage<PlanDetailResponseDTO> list = planDetailService.getApprovedPlanDetails(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(PlanDetailSuccessMessage.GET_ALL_PLAN_DETAIL_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -106,10 +110,11 @@ public class PlanDetailController {
 
     @GetMapping("/getCanceledPlanDetails")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getCanceledPlanDetails(@RequestParam(defaultValue = "0") int pageNo,
+    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<PlanDetailResponseDTO>>> getCanceledPlanDetails(
+            @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<PlanDetailResponseDTO> responseDTO = new ListResponseDTO();
-        List<PlanDetailResponseDTO> list = planDetailService.getCanceledPlanDetails(pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage<PlanDetailResponseDTO>> responseDTO = new ResponseDTO<>();
+        ResponseWithTotalPage<PlanDetailResponseDTO> list = planDetailService.getCanceledPlanDetails(pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(PlanDetailSuccessMessage.GET_ALL_PLAN_DETAIL_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -118,8 +123,9 @@ public class PlanDetailController {
 
     @PutMapping("/approved")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> approvedPlanDetails(@RequestBody PlanDetailActionDTO actionDTO) {
-        ResponseDTO<PlanDetailResponseDTO> responseDTO = new ResponseDTO();
+    public ResponseEntity<ResponseDTO<PlanDetailResponseDTO>> approvedPlanDetails(
+            @RequestBody PlanDetailActionDTO actionDTO) {
+        ResponseDTO<PlanDetailResponseDTO> responseDTO = new ResponseDTO<>();
         PlanDetailResponseDTO planDetailDTO = planDetailService.approvedPlanDetails(actionDTO);
         responseDTO.setData(planDetailDTO);
         responseDTO.setMessage("approved plan detail success");
@@ -129,8 +135,9 @@ public class PlanDetailController {
 
     @PutMapping("/canceled")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> canceledPlanDetails(@RequestBody PlanDetailActionDTO actionDTO) {
-        ResponseDTO<PlanDetailResponseDTO> responseDTO = new ResponseDTO();
+    public ResponseEntity<ResponseDTO<PlanDetailResponseDTO>> canceledPlanDetails(
+            @RequestBody PlanDetailActionDTO actionDTO) {
+        ResponseDTO<PlanDetailResponseDTO> responseDTO = new ResponseDTO<>();
         PlanDetailResponseDTO planDetailDTO = planDetailService.canceledPlanDetails(actionDTO);
         responseDTO.setData(planDetailDTO);
         responseDTO.setMessage("canceled plan detail success");
@@ -140,11 +147,13 @@ public class PlanDetailController {
 
     @GetMapping("/getPlanDetailByApprover")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getPlanDetailByApprover(@RequestParam("id") int approverId,
+    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<PlanDetailResponseDTO>>> getPlanDetailByApprover(
+            @RequestParam("id") int approverId,
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<PlanDetailResponseDTO> responseDTO = new ListResponseDTO();
-        List<PlanDetailResponseDTO> list = planDetailService.getPlanDetailByApprover(approverId, pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage<PlanDetailResponseDTO>> responseDTO = new ResponseDTO<>();
+        ResponseWithTotalPage<PlanDetailResponseDTO> list = planDetailService.getPlanDetailByApprover(approverId,
+                pageNo, pageSize);
         responseDTO.setData(list);
         responseDTO.setMessage(PlanDetailSuccessMessage.GET_ALL_PLAN_DETAIL_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);

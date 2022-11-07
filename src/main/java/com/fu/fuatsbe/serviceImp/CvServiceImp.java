@@ -25,6 +25,7 @@ import com.fu.fuatsbe.repository.CandidateRepository;
 import com.fu.fuatsbe.repository.CvRepository;
 import com.fu.fuatsbe.repository.PositionRepository;
 import com.fu.fuatsbe.response.CvResponse;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.CVService;
 
 import lombok.RequiredArgsConstructor;
@@ -39,23 +40,27 @@ public class CvServiceImp implements CVService {
     private final PositionRepository positionRepository;
 
     @Override
-    public List<CvResponse> getAllCvs(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<CvResponse> getAllCvs(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<CV> pageResult = cvRepository.findAll(pageable);
 
-        List<CvResponse> result = new ArrayList<CvResponse>();
+        ResponseWithTotalPage<CvResponse> result = new ResponseWithTotalPage<>();
+        List<CvResponse> list = new ArrayList<>();
+
         if (pageResult.hasContent()) {
             for (CV cv : pageResult.getContent()) {
                 CvResponse cvResponse = modelMapper.map(cv, CvResponse.class);
-                result.add(cvResponse);
+                list.add(cvResponse);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(CVErrorMessage.LIST_EMPTY);
         return result;
     }
 
     @Override
-    public List<CvResponse> getAllCvByCandidate(int candidateId, int pageNo, int pageSize) {
+    public ResponseWithTotalPage<CvResponse> getAllCvByCandidate(int candidateId, int pageNo, int pageSize) {
 
         Optional<Candidate> candidate = candidateRepository.findById(candidateId);
 
@@ -65,19 +70,23 @@ public class CvServiceImp implements CVService {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<CV> pageResult = cvRepository.findByCandidate(candidate.get(), pageable);
-        List<CvResponse> result = new ArrayList<CvResponse>();
+        ResponseWithTotalPage<CvResponse> result = new ResponseWithTotalPage<>();
+        List<CvResponse> list = new ArrayList<>();
+
         if (pageResult.hasContent()) {
             for (CV cv : pageResult.getContent()) {
                 CvResponse cvResponse = modelMapper.map(cv, CvResponse.class);
-                result.add(cvResponse);
+                list.add(cvResponse);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(CVErrorMessage.LIST_EMPTY);
         return result;
     }
 
     @Override
-    public List<CvResponse> getAllSuitableCvs(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<CvResponse> getAllSuitableCvs(int pageNo, int pageSize) {
         // TODO Auto-generated method stub
         return null;
     }

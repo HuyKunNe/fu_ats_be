@@ -1,7 +1,5 @@
 package com.fu.fuatsbe.controller;
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,8 +19,8 @@ import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.entity.Department;
 import com.fu.fuatsbe.response.DepartmentResponse;
-import com.fu.fuatsbe.response.ListResponseDTO;
 import com.fu.fuatsbe.response.ResponseDTO;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.DepartmentService;
 
 import lombok.RequiredArgsConstructor;
@@ -37,10 +35,11 @@ public class DepartmentController {
 
     @GetMapping("getAll")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ListResponseDTO> getAllDepartments(@RequestParam(defaultValue = "0") int pageNo,
+    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<DepartmentResponse>>> getAllDepartments(
+            @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<DepartmentResponse> response = new ListResponseDTO();
-        List<DepartmentResponse> list = departmentService.getAllDepartments(pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage<DepartmentResponse>> response = new ResponseDTO<>();
+        ResponseWithTotalPage<DepartmentResponse> list = departmentService.getAllDepartments(pageNo, pageSize);
         response.setData(list);
         response.setMessage(DepartmentSuccessMessage.GET_ALL_DEPARTMENT);
         response.setStatus(ResponseStatusDTO.SUCCESS);
@@ -49,8 +48,8 @@ public class DepartmentController {
 
     @GetMapping("getById/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> getDepartmentById(@RequestParam("id") int id) {
-        ResponseDTO<DepartmentResponse> responseDTO = new ResponseDTO();
+    public ResponseEntity<ResponseDTO<DepartmentResponse>> getDepartmentById(@RequestParam("id") int id) {
+        ResponseDTO<DepartmentResponse> responseDTO = new ResponseDTO<>();
         DepartmentResponse departmentResponse = departmentService.getDepartmentById(id);
         responseDTO.setData(departmentResponse);
         responseDTO.setMessage(DepartmentSuccessMessage.GET_DEPARTMENT_BY_ID);
@@ -60,11 +59,12 @@ public class DepartmentController {
 
     @GetMapping("getByName")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getDepartmentByName(@RequestParam("name") String name,
+    public ResponseEntity<ResponseDTO<ResponseWithTotalPage<DepartmentResponse>>> getDepartmentByName(
+            @RequestParam("name") String name,
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<DepartmentResponse> response = new ListResponseDTO();
-        List<DepartmentResponse> list = departmentService.getDepartmentByName(name, pageNo, pageSize);
+        ResponseDTO<ResponseWithTotalPage<DepartmentResponse>> response = new ResponseDTO<>();
+        ResponseWithTotalPage<DepartmentResponse> list = departmentService.getDepartmentByName(name, pageNo, pageSize);
         response.setData(list);
         response.setMessage(DepartmentSuccessMessage.GET_DEPARTMENT_BY_NAME);
         response.setStatus(ResponseStatusDTO.SUCCESS);
@@ -73,9 +73,9 @@ public class DepartmentController {
 
     @PutMapping("edit/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDTO> updateDepartment(@RequestParam("id") int id,
+    public ResponseEntity<ResponseDTO<DepartmentResponse>> updateDepartment(@RequestParam("id") int id,
             @RequestBody DepartmentUpdateDTO updateDTO) {
-        ResponseDTO<DepartmentResponse> responseDTO = new ResponseDTO();
+        ResponseDTO<DepartmentResponse> responseDTO = new ResponseDTO<>();
         DepartmentResponse department = departmentService.updateDepartment(id, updateDTO);
         responseDTO.setData(department);
         responseDTO.setMessage("Update department successfully");
@@ -85,8 +85,9 @@ public class DepartmentController {
 
     @PostMapping("create")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDTO> createDepartment(@RequestBody DepartmentCreateDTO createDTO) {
-        ResponseDTO<Department> responseDTO = new ResponseDTO();
+    public ResponseEntity<ResponseDTO<Department>> createDepartment(
+            @RequestBody DepartmentCreateDTO createDTO) {
+        ResponseDTO<Department> responseDTO = new ResponseDTO<>();
         Department department = departmentService.createDepartment(createDTO);
         responseDTO.setData(department);
         responseDTO.setMessage("Create department successfully");
@@ -97,7 +98,7 @@ public class DepartmentController {
     @DeleteMapping("delete/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity deleteDepartmnetById(@RequestParam("id") int id) {
-        ResponseDTO<Department> responseDTO = new ResponseDTO();
+        ResponseDTO<Department> responseDTO = new ResponseDTO<>();
         departmentService.deleteDepartmentById(id);
         responseDTO.setMessage("delete department successfully");
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
