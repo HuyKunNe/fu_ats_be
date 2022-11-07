@@ -4,9 +4,10 @@ import java.util.List;
 
 import com.fu.fuatsbe.DTO.*;
 import com.fu.fuatsbe.response.RecruitmentRequestResponse;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 
 public interface RecruitmentRequestService {
-    public RecruitmentRequestResponseWithTotalPages getAllRecruitmentRequests(int pageNo, int pageSize);
+    public ResponseWithTotalPage<RecruitmentRequestResponse> getAllRecruitmentRequests(int pageNo, int pageSize);
 
     public RecruitmentRequestResponse getRecruitmentRequestById(int id);
 

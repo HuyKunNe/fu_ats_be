@@ -83,6 +83,7 @@ public class RecruitmentRequest {
     @JoinColumn(name = "planDetailId")
     @EqualsAndHashCode.Include
     @ToString.Include
+    @JsonIgnore
     private PlanDetail planDetail;
 
     @OneToMany(mappedBy = "recruitmentRequest", cascade = CascadeType.ALL)
@@ -100,7 +101,7 @@ public class RecruitmentRequest {
 
     @ManyToMany
     @JoinTable(name = "recruitmentRquest_city", joinColumns = @JoinColumn(name = "request_id"), inverseJoinColumns = @JoinColumn(name = "city_id"))
-    // @JsonIgnore
+    @JsonIgnore
     private Collection<City> cities;
 
 }

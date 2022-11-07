@@ -37,6 +37,7 @@ import com.fu.fuatsbe.repository.PlanDetailRepository;
 import com.fu.fuatsbe.repository.PositionRepository;
 import com.fu.fuatsbe.repository.RecruitmentRequestRepository;
 import com.fu.fuatsbe.response.RecruitmentRequestResponse;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.RecruitmentRequestService;
 
 import lombok.RequiredArgsConstructor;
@@ -55,12 +56,13 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     private final CityRepository cityRepository;
 
     @Override
-    public RecruitmentRequestResponseWithTotalPages getAllRecruitmentRequests(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<RecruitmentRequestResponse> getAllRecruitmentRequests(int pageNo, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<RecruitmentRequest> pageResult = recruitmentRequestRepository.findAll(pageable);
-        List<RecruitmentRequestResponse> result = new ArrayList<RecruitmentRequestResponse>();
-        RecruitmentRequestResponseWithTotalPages responseWithTotalPages = null;
+
+        List<RecruitmentRequestResponse> list = new ArrayList<RecruitmentRequestResponse>();
+        ResponseWithTotalPage<RecruitmentRequestResponse> result = new ResponseWithTotalPage<>();
 
         if (pageResult.hasContent()) {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
@@ -73,16 +75,13 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 } else {
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
                 }
-                result.add(response);
-                responseWithTotalPages = RecruitmentRequestResponseWithTotalPages
-                        .builder()
-                        .totalPages(pageResult.getTotalPages())
-                        .responseList(result)
-                        .build();
+                list.add(response);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(RecruitmentRequestErrorMessage.LIST_RECRUITMENT_REQUEST_EMPTY_EXCEPTION);
-        return responseWithTotalPages;
+        return result;
     }
 
     @Override

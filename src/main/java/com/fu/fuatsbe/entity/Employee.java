@@ -111,10 +111,9 @@ public class Employee {
     @JsonIgnore
     private Collection<InterviewEmployee> interviewEmployees;
 
-    @JsonBackReference
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)
-    @JoinColumn(name = "position_id", referencedColumnName = "id")
+    @JoinColumn(name = "positionId")
     @EqualsAndHashCode.Include
     @ToString.Include
     private Position position;

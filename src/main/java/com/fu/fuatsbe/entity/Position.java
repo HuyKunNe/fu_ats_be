@@ -12,7 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
@@ -74,9 +73,11 @@ public class Position {
     @ToString.Include
     private Department department;
 
-    @JsonBackReference
-    @OneToOne(mappedBy = "position")
-    private Employee employee;
+    @OneToMany(mappedBy = "position", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Include
+    @ToString.Include
+    @JsonIgnore
+    private Collection<Employee> employees;
 
     @OneToMany(mappedBy = "position", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Include

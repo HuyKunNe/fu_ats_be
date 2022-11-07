@@ -20,6 +20,7 @@ import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.response.ListResponseDTO;
 import com.fu.fuatsbe.response.RecruitmentRequestResponse;
 import com.fu.fuatsbe.response.ResponseDTO;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.RecruitmentRequestService;
 
 import lombok.RequiredArgsConstructor;
@@ -39,13 +40,13 @@ public class RecruitmentRequestController {
     public ResponseEntity<ResponseDTO> getAllRecruitmentRequests(@RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
 
-        ResponseDTO response = new ResponseDTO();
-        RecruitmentRequestResponseWithTotalPages responseWithTotalPages = recruitmentRequestService
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
+        ResponseWithTotalPage<RecruitmentRequestResponse> list = recruitmentRequestService
                 .getAllRecruitmentRequests(pageNo, pageSize);
-        response.setData(responseWithTotalPages);
-        response.setMessage(RecruitmentRequestSuccessMessage.GET_ALL_RECRUITMENT_REQUEST_SUCCESS);
-        response.setStatus(ResponseStatusDTO.SUCCESS);
-        return ResponseEntity.ok().body(response);
+        responseDTO.setData(list);
+        responseDTO.setMessage(RecruitmentRequestSuccessMessage.GET_ALL_RECRUITMENT_REQUEST_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @GetMapping("/getById/{id}")
