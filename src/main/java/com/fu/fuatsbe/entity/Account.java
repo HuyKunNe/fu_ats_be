@@ -44,7 +44,8 @@ public class Account {
     @ToString.Include
     private Role role;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @JsonBackReference
+    @OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
     @EqualsAndHashCode.Include
     @ToString.Include
     private Employee employee;

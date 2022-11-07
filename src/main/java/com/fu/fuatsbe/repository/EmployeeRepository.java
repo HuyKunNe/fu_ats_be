@@ -26,9 +26,12 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     public Optional<Employee> findByPhone(String phone);
 
-    public Page<Employee> findByPositionAndStatus(Position position, String status, Pageable pageable);
+//    public Page<Employee> findByPositionAndStatus(Position position, String status, Pageable pageable);
 
     public Page<Employee> findByDepartment(Department department, Pageable pageable);
+    @Query(nativeQuery = true, value = "select * from employee")
+    Page<Employee> getAll(Pageable pageable);
+
 
     @Modifying
     @Query(nativeQuery = true, value = "select * from employee e where e.id in (select ie.employee_id from interview_employee ie where ie.interview_id = ?1);")

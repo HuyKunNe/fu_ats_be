@@ -102,17 +102,18 @@ public class PositionServiceImp implements PositionService {
 
     @Override
     public Position deletePosition(int id) {
-        Position position = positionRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
-
-        Pageable pageable = PageRequest.of(0, 1);
-        Page<Employee> list = employeeRepository.findByPositionAndStatus(position, EmployeeStatus.ACTIVATE, pageable);
-        if (list == null) {
-            position.setStatus(PositionStatus.DISABLE);
-            Position positionSaved = positionRepository.save(position);
-            return positionSaved;
-        } else
-            throw new NotValidException("There is still employees in this position");
+//        Position position = positionRepository.findById(id)
+//                .orElseThrow(() -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
+//
+//        Pageable pageable = PageRequest.of(0, 1);
+//        Page<Employee> list = employeeRepository.findByPositionAndStatus(position, EmployeeStatus.ACTIVATE, pageable);
+//        if (list == null) {
+//            position.setStatus(PositionStatus.DISABLE);
+//            Position positionSaved = positionRepository.save(position);
+//            return positionSaved;
+//        } else
+//            throw new NotValidException("There is still employees in this position");
+        return null;
     }
 
     @Override

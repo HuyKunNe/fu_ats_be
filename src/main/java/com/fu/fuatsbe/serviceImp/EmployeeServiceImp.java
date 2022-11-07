@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.EmployeeUpdateDTO;
 import com.fu.fuatsbe.response.EmployeeResponse;
-import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.EmployeeService;
 
 @Service
@@ -40,18 +39,15 @@ public class EmployeeServiceImp implements EmployeeService {
     private final ModelMapper modelMapper;
 
     @Override
-    public ResponseWithTotalPage<EmployeeResponse> getAllEmployees(int pageNo, int pageSize) {
+    public List<EmployeeResponse> getAllEmployees(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Employee> pageResult = employeeRepository.findAll(pageable);
-        List<EmployeeResponse> list = new ArrayList<>();
-        ResponseWithTotalPage<EmployeeResponse> result = new ResponseWithTotalPage<>();
+        List<EmployeeResponse> result = new ArrayList<EmployeeResponse>();
         if (pageResult.hasContent()) {
             for (Employee employee : pageResult.getContent()) {
                 EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
-                list.add(employeeResponse);
+                result.add(employeeResponse);
             }
-            result.setResponseList(list);
-            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(EmployeeErrorMessage.LIST_EMPTY_EXCEPTION);
         return result;
@@ -74,23 +70,20 @@ public class EmployeeServiceImp implements EmployeeService {
     }
 
     @Override
-    public ResponseWithTotalPage<EmployeeResponse> getAllEmployeeByDepartment(int departmentId, int pageNo,
-            int pageSize) {
+    public List<EmployeeResponse> getAllEmployeeByDepartment(int departmentId, int pageNo, int pageSize) {
 
         Department department = departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Employee> pageResult = employeeRepository.findByDepartment(department, pageable);
-        List<EmployeeResponse> list = new ArrayList<>();
-        ResponseWithTotalPage<EmployeeResponse> result = new ResponseWithTotalPage<>();
+
+        List<EmployeeResponse> result = new ArrayList<EmployeeResponse>();
         if (pageResult.hasContent()) {
             for (Employee employee : pageResult.getContent()) {
                 EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
-                list.add(employeeResponse);
+                result.add(employeeResponse);
             }
-            result.setResponseList(list);
-            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(EmployeeErrorMessage.LIST_EMPTY_EXCEPTION);
 
