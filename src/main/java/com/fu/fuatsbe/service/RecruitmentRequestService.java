@@ -7,17 +7,17 @@ import com.fu.fuatsbe.response.RecruitmentRequestResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 
 public interface RecruitmentRequestService {
-    public ResponseWithTotalPage<RecruitmentRequestResponse> getAllRecruitmentRequests(int pageNo, int pageSize);
+    public ResponseWithTotalPage getAllRecruitmentRequests(int pageNo, int pageSize);
 
     public RecruitmentRequestResponse getRecruitmentRequestById(int id);
 
-    public RecruitmentRequestResponseWithTotalPages getAllOpenRecruitmentRequest(int pageNo, int pageSize);
+    public ResponseWithTotalPage getAllOpenRecruitmentRequest(int pageNo, int pageSize);
 
-    public RecruitmentRequestResponseWithTotalPages getAllFilledRecruitmentRequest(int pageNo, int pageSize);
+    public ResponseWithTotalPage getAllFilledRecruitmentRequest(int pageNo, int pageSize);
 
-    public RecruitmentRequestResponseWithTotalPages getAllClosedRecruitmentRequest(int pageNo, int pageSize);
+    public ResponseWithTotalPage getAllClosedRecruitmentRequest(int pageNo, int pageSize);
 
-    public RecruitmentRequestResponseWithTotalPages getAllRecruitmentRequestByCreator(int id, int pageNo, int pageSize);
+    public ResponseWithTotalPage getAllRecruitmentRequestByCreator(int id, int pageNo, int pageSize);
 
     public RecruitmentRequestResponse updateRecruitmentRequest(int id, RecruitmentRequestUpdateDTO updateDTO);
 

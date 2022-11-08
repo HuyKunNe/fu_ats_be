@@ -116,12 +116,9 @@ public class AuthServiceImp implements AuthService {
         if (!optionalDepartment.isPresent()) {
             throw new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION);
         }
-        List<Position> positionList = new ArrayList<>();
         Optional<Position> optionalPosition = PositionRepository.findPositionByName(registerDto.getPositionName());
         if (!optionalPosition.isPresent()) {
             throw new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST);
-        } else {
-            positionList.add(optionalPosition.get());
         }
 
         Optional<Employee> optionalEmployee = employeeRepository.findByPhone(registerDto.getPhone());

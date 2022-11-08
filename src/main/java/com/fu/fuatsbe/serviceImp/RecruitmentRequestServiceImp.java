@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.fu.fuatsbe.DTO.*;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,7 +38,6 @@ import com.fu.fuatsbe.repository.PlanDetailRepository;
 import com.fu.fuatsbe.repository.PositionRepository;
 import com.fu.fuatsbe.repository.RecruitmentRequestRepository;
 import com.fu.fuatsbe.response.RecruitmentRequestResponse;
-import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.RecruitmentRequestService;
 
 import lombok.RequiredArgsConstructor;
@@ -56,13 +56,12 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     private final CityRepository cityRepository;
 
     @Override
-    public ResponseWithTotalPage<RecruitmentRequestResponse> getAllRecruitmentRequests(int pageNo, int pageSize) {
+    public ResponseWithTotalPage getAllRecruitmentRequests(int pageNo, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<RecruitmentRequest> pageResult = recruitmentRequestRepository.findAll(pageable);
-
-        List<RecruitmentRequestResponse> list = new ArrayList<RecruitmentRequestResponse>();
-        ResponseWithTotalPage<RecruitmentRequestResponse> result = new ResponseWithTotalPage<>();
+        List<Object> result = new ArrayList<>();
+        ResponseWithTotalPage responseWithTotalPages = null;
 
         if (pageResult.hasContent()) {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
@@ -75,13 +74,16 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 } else {
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
                 }
-                list.add(response);
+                result.add(response);
+                responseWithTotalPages = ResponseWithTotalPage
+                        .builder()
+                        .totalPage(pageResult.getTotalPages())
+                        .responseList(result)
+                        .build();
             }
-            result.setResponseList(list);
-            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(RecruitmentRequestErrorMessage.LIST_RECRUITMENT_REQUEST_EMPTY_EXCEPTION);
-        return result;
+        return responseWithTotalPages;
     }
 
     @Override
@@ -101,12 +103,12 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     }
 
     @Override
-    public RecruitmentRequestResponseWithTotalPages getAllOpenRecruitmentRequest(int pageNo, int pageSize) {
+    public ResponseWithTotalPage getAllOpenRecruitmentRequest(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<RecruitmentRequest> pageResult = recruitmentRequestRepository
                 .findByStatus(RecruitmentRequestStatus.OPENING, pageable);
-        List<RecruitmentRequestResponse> result = new ArrayList<RecruitmentRequestResponse>();
-        RecruitmentRequestResponseWithTotalPages responseWithTotalPages = null;
+        List<Object> result = new ArrayList<>();
+        ResponseWithTotalPage responseWithTotalPages = null;
         if (pageResult.hasContent()) {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
@@ -119,8 +121,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
                 }
                 result.add(response);
-                responseWithTotalPages = RecruitmentRequestResponseWithTotalPages.builder()
-                        .totalPages(pageResult.getTotalPages())
+                responseWithTotalPages = ResponseWithTotalPage.builder()
+                        .totalPage(pageResult.getTotalPages())
                         .responseList(result)
                         .build();
             }
@@ -130,13 +132,13 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     }
 
     @Override
-    public RecruitmentRequestResponseWithTotalPages getAllFilledRecruitmentRequest(int pageNo, int pageSize) {
+    public ResponseWithTotalPage getAllFilledRecruitmentRequest(int pageNo, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<RecruitmentRequest> pageResult = recruitmentRequestRepository
                 .findByStatus(RecruitmentRequestStatus.FILLED, pageable);
-        List<RecruitmentRequestResponse> result = new ArrayList<RecruitmentRequestResponse>();
-        RecruitmentRequestResponseWithTotalPages responseWithTotalPages = null;
+        List<Object> result = new ArrayList<>();
+        ResponseWithTotalPage responseWithTotalPages = null;
 
         if (pageResult.hasContent()) {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
@@ -150,9 +152,9 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
                 }
                 result.add(response);
-                responseWithTotalPages = RecruitmentRequestResponseWithTotalPages
+                responseWithTotalPages = ResponseWithTotalPage
                         .builder()
-                        .totalPages(pageResult.getTotalPages())
+                        .totalPage(pageResult.getTotalPages())
                         .responseList(result)
                         .build();
             }
@@ -162,12 +164,12 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     }
 
     @Override
-    public RecruitmentRequestResponseWithTotalPages getAllClosedRecruitmentRequest(int pageNo, int pageSize) {
+    public ResponseWithTotalPage getAllClosedRecruitmentRequest(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<RecruitmentRequest> pageResult = recruitmentRequestRepository
                 .findByStatus(RecruitmentRequestStatus.CLOSED, pageable);
-        List<RecruitmentRequestResponse> result = new ArrayList<RecruitmentRequestResponse>();
-        RecruitmentRequestResponseWithTotalPages responseWithTotalPages = null;
+        List<Object> result = new ArrayList<>();
+        ResponseWithTotalPage responseWithTotalPages = null;
 
         if (pageResult.hasContent()) {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
@@ -182,10 +184,10 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 }
                 result.add(response);
             }
-            responseWithTotalPages = RecruitmentRequestResponseWithTotalPages
+            responseWithTotalPages = ResponseWithTotalPage
                     .builder()
                     .responseList(result)
-                    .totalPages(pageResult.getTotalPages())
+                    .totalPage(pageResult.getTotalPages())
                     .build();
         } else
             throw new ListEmptyException(RecruitmentRequestErrorMessage.LIST_RECRUITMENT_REQUEST_EMPTY_EXCEPTION);
@@ -305,16 +307,16 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     }
 
     @Override
-    public RecruitmentRequestResponseWithTotalPages getAllRecruitmentRequestByCreator(int id, int pageNo,
-            int pageSize) {
+    public ResponseWithTotalPage getAllRecruitmentRequestByCreator(int id, int pageNo,
+                                                                   int pageSize) {
 
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<RecruitmentRequest> pageResult = recruitmentRequestRepository.findByCreator(employee, pageable);
-        List<RecruitmentRequestResponse> result = new ArrayList<RecruitmentRequestResponse>();
-        RecruitmentRequestResponseWithTotalPages responseWithTotalPages = null;
+        List<Object> result = new ArrayList<>();
+        ResponseWithTotalPage responseWithTotalPages = null;
 
         if (pageResult.hasContent()) {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
@@ -328,9 +330,9 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
                 }
                 result.add(response);
-                responseWithTotalPages = RecruitmentRequestResponseWithTotalPages
+                responseWithTotalPages = ResponseWithTotalPage
                         .builder()
-                        .totalPages(pageResult.getTotalPages())
+                        .totalPage(pageResult.getTotalPages())
                         .responseList(result)
                         .build();
             }
