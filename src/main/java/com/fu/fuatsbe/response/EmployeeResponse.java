@@ -26,5 +26,5 @@ public class EmployeeResponse {
     private String address;
     private String status;
     private Department department;
-    private List<Position> positions;
+    private Position position;
 }
