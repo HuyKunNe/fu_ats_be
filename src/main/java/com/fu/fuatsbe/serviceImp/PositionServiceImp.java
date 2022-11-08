@@ -14,17 +14,14 @@ import com.fu.fuatsbe.DTO.PositionCreateDTO;
 import com.fu.fuatsbe.DTO.PositionUpdateDTO;
 import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.constant.department.DepartmentStatus;
-import com.fu.fuatsbe.constant.employee.EmployeeStatus;
 import com.fu.fuatsbe.constant.postion.PositionErrorMessage;
 import com.fu.fuatsbe.constant.postion.PositionStatus;
 import com.fu.fuatsbe.entity.Department;
-import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.Position;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.exceptions.NotValidException;
 import com.fu.fuatsbe.repository.DepartmentRepository;
-import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.PositionRepository;
 import com.fu.fuatsbe.response.PositionResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
@@ -39,7 +36,6 @@ public class PositionServiceImp implements PositionService {
     private final ModelMapper modelMapper;
     private final PositionRepository positionRepository;
     private final DepartmentRepository departmentRepository;
-    private final EmployeeRepository employeeRepository;
 
     @Override
     public ResponseWithTotalPage<PositionResponse> getAllPositions(int pageNo, int pageSize) {
@@ -102,17 +98,19 @@ public class PositionServiceImp implements PositionService {
 
     @Override
     public Position deletePosition(int id) {
-//        Position position = positionRepository.findById(id)
-//                .orElseThrow(() -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
-//
-//        Pageable pageable = PageRequest.of(0, 1);
-//        Page<Employee> list = employeeRepository.findByPositionAndStatus(position, EmployeeStatus.ACTIVATE, pageable);
-//        if (list == null) {
-//            position.setStatus(PositionStatus.DISABLE);
-//            Position positionSaved = positionRepository.save(position);
-//            return positionSaved;
-//        } else
-//            throw new NotValidException("There is still employees in this position");
+        // Position position = positionRepository.findById(id)
+        // .orElseThrow(() -> new
+        // NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
+        //
+        // Pageable pageable = PageRequest.of(0, 1);
+        // Page<Employee> list = employeeRepository.findByPositionAndStatus(position,
+        // EmployeeStatus.ACTIVATE, pageable);
+        // if (list == null) {
+        // position.setStatus(PositionStatus.DISABLE);
+        // Position positionSaved = positionRepository.save(position);
+        // return positionSaved;
+        // } else
+        // throw new NotValidException("There is still employees in this position");
         return null;
     }
 

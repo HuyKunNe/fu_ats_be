@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.CvCreateDTO;
@@ -41,7 +42,7 @@ public class CvServiceImp implements CVService {
 
     @Override
     public ResponseWithTotalPage<CvResponse> getAllCvs(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<CV> pageResult = cvRepository.findAll(pageable);
 
         ResponseWithTotalPage<CvResponse> result = new ResponseWithTotalPage<>();
@@ -68,7 +69,7 @@ public class CvServiceImp implements CVService {
             throw new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION);
         }
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<CV> pageResult = cvRepository.findByCandidate(candidate.get(), pageable);
         ResponseWithTotalPage<CvResponse> result = new ResponseWithTotalPage<>();
         List<CvResponse> list = new ArrayList<>();

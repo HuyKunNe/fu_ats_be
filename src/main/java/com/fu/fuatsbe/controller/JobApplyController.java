@@ -85,7 +85,7 @@ public class JobApplyController {
     }
 
     @GetMapping("/getAllPendingJobApplies")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE_CANDIDATE)
     public ResponseEntity<ResponseDTO> getJobApplyByCandidate(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {

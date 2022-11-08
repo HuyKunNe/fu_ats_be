@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.constant.city.CityErrorMessage;
@@ -56,12 +57,12 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     private final CityRepository cityRepository;
 
     @Override
-    public ResponseWithTotalPage getAllRecruitmentRequests(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<RecruitmentRequestResponse> getAllRecruitmentRequests(int pageNo, int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<RecruitmentRequest> pageResult = recruitmentRequestRepository.findAll(pageable);
-        List<Object> result = new ArrayList<>();
-        ResponseWithTotalPage responseWithTotalPages = null;
+        List<RecruitmentRequestResponse> list = new ArrayList<RecruitmentRequestResponse>();
+        ResponseWithTotalPage<RecruitmentRequestResponse> result = new ResponseWithTotalPage<>();
 
         if (pageResult.hasContent()) {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
@@ -74,16 +75,13 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 } else {
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
                 }
-                result.add(response);
-                responseWithTotalPages = ResponseWithTotalPage
-                        .builder()
-                        .totalPage(pageResult.getTotalPages())
-                        .responseList(result)
-                        .build();
+                list.add(response);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(RecruitmentRequestErrorMessage.LIST_RECRUITMENT_REQUEST_EMPTY_EXCEPTION);
-        return responseWithTotalPages;
+        return result;
     }
 
     @Override
@@ -103,12 +101,14 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     }
 
     @Override
-    public ResponseWithTotalPage getAllOpenRecruitmentRequest(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+    public ResponseWithTotalPage<RecruitmentRequestResponse> getAllOpenRecruitmentRequest(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<RecruitmentRequest> pageResult = recruitmentRequestRepository
                 .findByStatus(RecruitmentRequestStatus.OPENING, pageable);
-        List<Object> result = new ArrayList<>();
-        ResponseWithTotalPage responseWithTotalPages = null;
+
+        List<RecruitmentRequestResponse> list = new ArrayList<RecruitmentRequestResponse>();
+        ResponseWithTotalPage<RecruitmentRequestResponse> result = new ResponseWithTotalPage<>();
+
         if (pageResult.hasContent()) {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
@@ -120,25 +120,23 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 } else {
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
                 }
-                result.add(response);
-                responseWithTotalPages = ResponseWithTotalPage.builder()
-                        .totalPage(pageResult.getTotalPages())
-                        .responseList(result)
-                        .build();
+                list.add(response);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(RecruitmentRequestErrorMessage.LIST_RECRUITMENT_REQUEST_EMPTY_EXCEPTION);
-        return responseWithTotalPages;
+        return result;
     }
 
     @Override
-    public ResponseWithTotalPage getAllFilledRecruitmentRequest(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<RecruitmentRequestResponse> getAllFilledRecruitmentRequest(int pageNo, int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<RecruitmentRequest> pageResult = recruitmentRequestRepository
                 .findByStatus(RecruitmentRequestStatus.FILLED, pageable);
-        List<Object> result = new ArrayList<>();
-        ResponseWithTotalPage responseWithTotalPages = null;
+        List<RecruitmentRequestResponse> list = new ArrayList<RecruitmentRequestResponse>();
+        ResponseWithTotalPage<RecruitmentRequestResponse> result = new ResponseWithTotalPage<>();
 
         if (pageResult.hasContent()) {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
@@ -151,25 +149,22 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 } else {
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
                 }
-                result.add(response);
-                responseWithTotalPages = ResponseWithTotalPage
-                        .builder()
-                        .totalPage(pageResult.getTotalPages())
-                        .responseList(result)
-                        .build();
+                list.add(response);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(RecruitmentRequestErrorMessage.LIST_RECRUITMENT_REQUEST_EMPTY_EXCEPTION);
-        return responseWithTotalPages;
+        return result;
     }
 
     @Override
-    public ResponseWithTotalPage getAllClosedRecruitmentRequest(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+    public ResponseWithTotalPage<RecruitmentRequestResponse> getAllClosedRecruitmentRequest(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<RecruitmentRequest> pageResult = recruitmentRequestRepository
                 .findByStatus(RecruitmentRequestStatus.CLOSED, pageable);
-        List<Object> result = new ArrayList<>();
-        ResponseWithTotalPage responseWithTotalPages = null;
+        List<RecruitmentRequestResponse> list = new ArrayList<RecruitmentRequestResponse>();
+        ResponseWithTotalPage<RecruitmentRequestResponse> result = new ResponseWithTotalPage<>();
 
         if (pageResult.hasContent()) {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
@@ -182,16 +177,13 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 } else {
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
                 }
-                result.add(response);
+                list.add(response);
             }
-            responseWithTotalPages = ResponseWithTotalPage
-                    .builder()
-                    .responseList(result)
-                    .totalPage(pageResult.getTotalPages())
-                    .build();
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(RecruitmentRequestErrorMessage.LIST_RECRUITMENT_REQUEST_EMPTY_EXCEPTION);
-        return responseWithTotalPages;
+        return result;
     }
 
     @Override
@@ -307,16 +299,16 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     }
 
     @Override
-    public ResponseWithTotalPage getAllRecruitmentRequestByCreator(int id, int pageNo,
+    public ResponseWithTotalPage<RecruitmentRequestResponse> getAllRecruitmentRequestByCreator(int id, int pageNo,
             int pageSize) {
 
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<RecruitmentRequest> pageResult = recruitmentRequestRepository.findByCreator(employee, pageable);
-        List<Object> result = new ArrayList<>();
-        ResponseWithTotalPage responseWithTotalPages = null;
+        List<RecruitmentRequestResponse> list = new ArrayList<RecruitmentRequestResponse>();
+        ResponseWithTotalPage<RecruitmentRequestResponse> result = new ResponseWithTotalPage<>();
 
         if (pageResult.hasContent()) {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
@@ -329,16 +321,13 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 } else {
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
                 }
-                result.add(response);
-                responseWithTotalPages = ResponseWithTotalPage
-                        .builder()
-                        .totalPage(pageResult.getTotalPages())
-                        .responseList(result)
-                        .build();
+                list.add(response);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(RecruitmentRequestErrorMessage.LIST_RECRUITMENT_REQUEST_EMPTY_EXCEPTION);
-        return responseWithTotalPages;
+        return result;
     }
 
     @Override

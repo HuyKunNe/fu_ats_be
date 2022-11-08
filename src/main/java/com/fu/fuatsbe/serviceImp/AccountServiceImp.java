@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.constant.account.AccountErrorMessage;
@@ -40,7 +41,7 @@ public class AccountServiceImp implements AccountService {
     @Override
     public List<AccountResponse> getAllAccounts(int pageNo, int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<Account> pageResult = accountRepository.findAll(pageable);
         List<AccountResponse> result = new ArrayList<AccountResponse>();
         if (pageResult.hasContent()) {
@@ -58,7 +59,7 @@ public class AccountServiceImp implements AccountService {
         Role role = roleRepository.findById(roleId)
                 .orElseThrow(() -> new NotFoundException(RoleErrorMessage.ROLE_NOT_EXIST));
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<Account> pageResult = accountRepository.findByRole(role, pageable);
 
         List<AccountResponse> result = new ArrayList<AccountResponse>();
@@ -108,7 +109,7 @@ public class AccountServiceImp implements AccountService {
     @Override
     public List<AccountResponse> getActivateAccounts(int pageNo, int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<Account> pageResult = accountRepository.findByStatus(AccountStatus.ACTIVATED, pageable);
 
         List<AccountResponse> result = new ArrayList<AccountResponse>();
@@ -125,7 +126,7 @@ public class AccountServiceImp implements AccountService {
     @Override
     public List<AccountResponse> getDisableAccounts(int pageNo, int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<Account> pageResult = accountRepository.findByStatus(AccountStatus.DISABLED, pageable);
 
         List<AccountResponse> result = new ArrayList<AccountResponse>();
