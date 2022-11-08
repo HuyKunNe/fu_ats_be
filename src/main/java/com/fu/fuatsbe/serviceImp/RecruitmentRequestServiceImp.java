@@ -308,7 +308,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
 
     @Override
     public ResponseWithTotalPage getAllRecruitmentRequestByCreator(int id, int pageNo,
-                                                                   int pageSize) {
+            int pageSize) {
 
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
@@ -373,5 +373,27 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 .province(cityRepository.getAllCityName())
                 .build();
         return recruitmentSearchCategoryDTO;
+    }
+
+    @Override
+    public List<RecruitmentRequestResponse> getNewestRecruitmentRequest() {
+        Pageable pageable = PageRequest.of(0, 4);
+        Page<RecruitmentRequest> pageResult = recruitmentRequestRepository.findByOrderByIdDesc(pageable);
+        List<RecruitmentRequestResponse> list = new ArrayList<RecruitmentRequestResponse>();
+        if (pageResult.hasContent()) {
+            for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
+                RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
+                        RecruitmentRequestResponse.class);
+                if (recruitmentRequest.getSalaryTo() != null) {
+                    response.setSalaryDetail(
+                            (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                                    .trim());
+                } else {
+                    response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
+                }
+                list.add(response);
+            }
+        }
+        return list;
     }
 }

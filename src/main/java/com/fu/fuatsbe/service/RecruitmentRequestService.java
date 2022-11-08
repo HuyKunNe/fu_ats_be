@@ -29,4 +29,6 @@ public interface RecruitmentRequestService {
 
     public RecruitmentSearchCategoryDTO searchCategory();
 
+    public List<RecruitmentRequestResponse> getNewestRecruitmentRequest();
+
 }
