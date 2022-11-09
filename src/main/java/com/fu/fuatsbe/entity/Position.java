@@ -57,11 +57,11 @@ public class Position {
     @JsonIgnore
     private Collection<Candidate> candidates;
 
-    @ManyToMany(mappedBy = "positions")
+    @ManyToMany(mappedBy = "positions", cascade = CascadeType.ALL)
     @JsonIgnore
     private Collection<CV> cvs;
 
-    @ManyToMany(mappedBy = "suitablePositions")
+    @ManyToMany(mappedBy = "suitablePositions", cascade = CascadeType.ALL)
     @JsonIgnore
     private Collection<CV> recommentCVs;
 

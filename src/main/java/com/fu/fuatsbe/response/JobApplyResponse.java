@@ -27,7 +27,6 @@ public class JobApplyResponse {
 
     private Date date;
     private String foreignLanguage;
-    private String province;
     private String educationLevel;
     private String status;
 
