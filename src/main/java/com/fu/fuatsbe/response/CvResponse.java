@@ -23,7 +23,7 @@ public class CvResponse {
     private String result;
     private String note;
     private String experience;
-    private String Location;
+    private String title;
     private String suitablePosition;
 
     private Position position;

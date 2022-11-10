@@ -109,6 +109,7 @@ public class CvServiceImp implements CVService {
 
         CV cv = CV.builder().linkCV(createDTO.getLinkCV())
                 .candidate(candidate).positions(listPositions)
+                .title(createDTO.getTitle())
                 .status(CVStatus.ACTIVE)
                 .build();
 
@@ -133,7 +134,7 @@ public class CvServiceImp implements CVService {
 
         cv.setLinkCV(updateDTO.getLinkCV());
         cv.setPositions(listPositions);
-
+        cv.setTitle(updateDTO.getTitle());
         CV cvSaved = cvRepository.save(cv);
 
         CvResponse response = modelMapper.map(cvSaved, CvResponse.class);

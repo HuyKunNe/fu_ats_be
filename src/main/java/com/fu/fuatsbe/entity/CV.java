@@ -47,6 +47,7 @@ public class CV {
     @Column(columnDefinition = "text")
     private String note;
     private String status;
+    private String title;
 
     @OneToMany(mappedBy = "cv", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Include
