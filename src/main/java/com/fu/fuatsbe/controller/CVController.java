@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.controller;
 
+import com.fu.fuatsbe.constant.cv.CVErrorMessage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -54,9 +55,14 @@ public class CVController {
             @RequestParam(defaultValue = "10") int pageSize) {
         ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
         ResponseWithTotalPage<CvResponse> list = cvService.getAllCvByCandidate(id, pageNo, pageSize);
-        responseDTO.setData(list);
-        responseDTO.setMessage(CVSuccessMessage.GET_ALL_CVS);
-        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        if (list.getResponseList() == null) {
+            responseDTO.setMessage(CVErrorMessage.CANDIDATE_CV_EMPTY);
+            responseDTO.setStatus(ResponseStatusDTO.FAILURE);
+        } else {
+            responseDTO.setData(list);
+            responseDTO.setMessage(CVSuccessMessage.GET_ALL_CVS);
+            responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        }
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -74,7 +80,7 @@ public class CVController {
     @PutMapping("edit/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
     public ResponseEntity<ResponseDTO> updateDepartment(@RequestParam("id") int id,
-            @RequestBody CvUpdateDTO updateDTO) {
+                                                        @RequestBody CvUpdateDTO updateDTO) {
         ResponseDTO<CvResponse> responseDTO = new ResponseDTO();
         CvResponse cv = cvService.updateCV(id, updateDTO);
         responseDTO.setData(cv);
