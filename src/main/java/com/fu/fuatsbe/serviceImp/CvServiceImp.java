@@ -8,8 +8,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.CvCreateDTO;
@@ -31,8 +29,6 @@ import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.CVService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor

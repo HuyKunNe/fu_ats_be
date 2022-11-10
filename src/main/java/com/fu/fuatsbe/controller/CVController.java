@@ -48,7 +48,7 @@ public class CVController {
     }
 
     @GetMapping("/getAllCvByCandidate")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity<ResponseDTO> getAllCvByCandidate(
             @RequestParam("id") int id,
             @RequestParam(defaultValue = "0") int pageNo,
@@ -79,7 +79,7 @@ public class CVController {
     @PutMapping("edit/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
     public ResponseEntity<ResponseDTO> updateDepartment(@RequestParam("id") int id,
-                                                        @RequestBody CvUpdateDTO updateDTO) {
+            @RequestBody CvUpdateDTO updateDTO) {
         ResponseDTO<CvResponse> responseDTO = new ResponseDTO();
         CvResponse cv = cvService.updateCV(id, updateDTO);
         responseDTO.setData(cv);
@@ -89,7 +89,7 @@ public class CVController {
     }
 
     @DeleteMapping("delete/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity deleteCV(@RequestParam("id") int id) {
         ResponseDTO<CV> responseDTO = new ResponseDTO();
         cvService.deleteCV(id);
