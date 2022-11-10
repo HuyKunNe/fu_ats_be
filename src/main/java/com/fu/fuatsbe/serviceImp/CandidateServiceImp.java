@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.CandidateUpdateDTO;
@@ -33,7 +34,7 @@ public class CandidateServiceImp implements CandidateService {
 
     @Override
     public ResponseWithTotalPage<CandidateResponseDTO> getAllCandidates(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<Candidate> pageResult = candidateRepository.findAll(pageable);
 
         List<CandidateResponseDTO> list = new ArrayList<CandidateResponseDTO>();
@@ -113,7 +114,7 @@ public class CandidateServiceImp implements CandidateService {
     @Override
     public ResponseWithTotalPage<CandidateResponseDTO> getActivateCandidates(int pageNo, int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<Candidate> pageResult = candidateRepository.findByStatus(CandidateStatus.ACTIVATED, pageable);
 
         List<CandidateResponseDTO> list = new ArrayList<CandidateResponseDTO>();
@@ -133,7 +134,7 @@ public class CandidateServiceImp implements CandidateService {
 
     @Override
     public ResponseWithTotalPage<CandidateResponseDTO> getDisableCandidates(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<Candidate> pageResult = candidateRepository.findByStatus(CandidateStatus.DISABLED, pageable);
         List<CandidateResponseDTO> list = new ArrayList<CandidateResponseDTO>();
         ResponseWithTotalPage<CandidateResponseDTO> result = new ResponseWithTotalPage<>();

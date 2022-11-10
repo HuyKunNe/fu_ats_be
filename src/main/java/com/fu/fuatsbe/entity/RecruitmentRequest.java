@@ -11,10 +11,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
@@ -92,16 +91,25 @@ public class RecruitmentRequest {
     @JsonIgnore
     private Collection<JobApply> jobApplies;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "positionId")
     @EqualsAndHashCode.Include
     @ToString.Include
     private Position position;
 
-    @ManyToMany
-    @JoinTable(name = "recruitmentRquest_city", joinColumns = @JoinColumn(name = "request_id"), inverseJoinColumns = @JoinColumn(name = "city_id"))
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Fetch(FetchMode.JOIN)
+    @JoinColumn(name = "cityIdMany")
+    @EqualsAndHashCode.Include
+    @ToString.Include
+    private City cities;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cityId", referencedColumnName = "id")
+    @EqualsAndHashCode.Include
+    @ToString.Include
     @JsonIgnore
-    private Collection<City> cities;
+    private City city;
 
 }

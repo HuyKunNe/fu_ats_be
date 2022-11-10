@@ -37,21 +37,19 @@ public class InterviewDetailServiceImp implements InterviewDetailService {
         public ResponseWithTotalPage<InterviewDetailResponse> getAllInterviewDetail(int pageNo, int pageSize) {
                 Pageable pageable = PageRequest.of(pageNo, pageSize);
                 Page<InterviewDetail> interviewDetails = interviewDetailRepository.findAll(pageable);
-                List<Object> result = new ArrayList<>();
-                ResponseWithTotalPage response = null;
+                List<InterviewDetailResponse> list = new ArrayList<InterviewDetailResponse>();
+                ResponseWithTotalPage<InterviewDetailResponse> result = new ResponseWithTotalPage<>();
                 if (interviewDetails.hasContent()) {
                         for (InterviewDetail interviewDetail : interviewDetails.getContent()) {
                                 InterviewDetailResponse interviewDetailResponse = modelMapper.map(interviewDetail,
                                                 InterviewDetailResponse.class);
-                                result.add(interviewDetailResponse);
+                                list.add(interviewDetailResponse);
                         }
-                        response = ResponseWithTotalPage.builder()
-                                        .totalPage(interviewDetails.getTotalPages())
-                                        .responseList(result)
-                                        .build();
+                        result.setResponseList(list);
+                        result.setTotalPage(interviewDetails.getTotalPages());
                 } else
                         throw new ListEmptyException(PlanDetailErrorMessage.LIST_EMPTY_EXCEPTION);
-                return response;
+                return result;
         }
 
         @Override

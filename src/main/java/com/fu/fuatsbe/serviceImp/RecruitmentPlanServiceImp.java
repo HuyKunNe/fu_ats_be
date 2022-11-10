@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.RecruimentPlanUpdateDTO;
@@ -42,7 +43,7 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
 
     @Override
     public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlans(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findAll(pageable);
         List<RecruitmentPlanResponse> list = new ArrayList<RecruitmentPlanResponse>();
         ResponseWithTotalPage<RecruitmentPlanResponse> result = new ResponseWithTotalPage<>();
@@ -72,7 +73,7 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     @Override
     public ResponseWithTotalPage<RecruitmentPlanResponse> getAllApprovedRecruitmentPlan(int pageNo, int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.APPROVED,
                 pageable);
         List<RecruitmentPlanResponse> list = new ArrayList<RecruitmentPlanResponse>();
@@ -95,7 +96,7 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     @Override
     public ResponseWithTotalPage<RecruitmentPlanResponse> getAllCanceledRecruitmentPlans(int pageNo, int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.CANCELED,
                 pageable);
         List<RecruitmentPlanResponse> list = new ArrayList<RecruitmentPlanResponse>();
@@ -116,7 +117,7 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     @Override
     public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRejectedRecruitmentPlans(int pageNo, int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.REJECTED,
                 pageable);
         List<RecruitmentPlanResponse> list = new ArrayList<RecruitmentPlanResponse>();
@@ -137,7 +138,7 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     @Override
     public ResponseWithTotalPage<RecruitmentPlanResponse> getAllPedingRecruitmentPlans(int pageNo, int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByStatus(RecruitmentPlanStatus.PENDING,
                 pageable);
         List<RecruitmentPlanResponse> list = new ArrayList<RecruitmentPlanResponse>();
@@ -224,7 +225,7 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
                 .orElseThrow(() -> new NotFoundException(
                         EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByApprover(approver,
                 pageable);
         List<RecruitmentPlanResponse> list = new ArrayList<RecruitmentPlanResponse>();
@@ -250,7 +251,7 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
                 .orElseThrow(() -> new NotFoundException(
                         EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByApprover(approver,
                 pageable);
         List<RecruitmentPlanResponse> list = new ArrayList<RecruitmentPlanResponse>();

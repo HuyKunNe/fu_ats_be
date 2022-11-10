@@ -218,8 +218,8 @@ public class InterviewServiceImp implements InterviewService {
     public ResponseWithTotalPage<InterviewResponse> getAllInterview(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Interview> interviews = interviewRepository.findAll(pageable);
-        List<Object> result = new ArrayList<>();
-        ResponseWithTotalPage response = null;
+        List<InterviewResponse> list = new ArrayList<InterviewResponse>();
+        ResponseWithTotalPage<InterviewResponse> result = new ResponseWithTotalPage<>();
         List<String> empName = new ArrayList<>();
         if (interviews.hasContent()) {
             for (Interview interview : interviews.getContent()) {
@@ -249,16 +249,14 @@ public class InterviewServiceImp implements InterviewService {
                         .employeeNames(empName)
                         .build();
 
-                result.add(interviewResponse);
-                response = ResponseWithTotalPage.builder()
-                        .totalPage(interviews.getTotalPages())
-                        .responseList(result)
-                        .build();
+                list.add(interviewResponse);
             }
+            result.setResponseList(list);
+            result.setTotalPage(interviews.getTotalPages());
         } else
             throw new ListEmptyException(InterviewErrorMessage.LIST_EMPTY_EXCEPTION);
 
-        return response;
+        return result;
     }
 
     @Override

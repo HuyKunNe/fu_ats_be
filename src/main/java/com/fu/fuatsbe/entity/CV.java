@@ -61,12 +61,12 @@ public class CV {
     @ToString.Include
     private Candidate candidate;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "cv_position", joinColumns = @JoinColumn(name = "cv_id"), inverseJoinColumns = @JoinColumn(name = "position_id"))
     private Collection<Position> positions;
 
-    @ManyToMany
-    @JoinTable(name = "cv_position", joinColumns = @JoinColumn(name = "cv_id"), inverseJoinColumns = @JoinColumn(name = "position_id"))
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "cv_suitable_position", joinColumns = @JoinColumn(name = "cv_id"), inverseJoinColumns = @JoinColumn(name = "position_id"))
     private Collection<Position> suitablePositions;
 
 }

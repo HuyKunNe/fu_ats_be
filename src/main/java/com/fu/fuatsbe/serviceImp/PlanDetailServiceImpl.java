@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.PlanDetailActionDTO;
@@ -52,7 +53,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
 
     @Override
     public ResponseWithTotalPage<PlanDetailResponseDTO> getAllPlanDetails(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<PlanDetail> pageResult = planDetailRepository.findAll(pageable);
         List<PlanDetailResponseDTO> list = new ArrayList<PlanDetailResponseDTO>();
         ResponseWithTotalPage<PlanDetailResponseDTO> result = new ResponseWithTotalPage<>();
@@ -75,7 +76,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         if (!optionalRecruitmentPlan.isPresent())
             throw new NotFoundException(RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION);
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<PlanDetail> pageResult = planDetailRepository.findByRecruitmentPlan(optionalRecruitmentPlan.get(),
                 pageable);
         List<PlanDetailResponseDTO> list = new ArrayList<PlanDetailResponseDTO>();
@@ -148,7 +149,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
     @Override
     public ResponseWithTotalPage<PlanDetailResponseDTO> getPendingPlanDetails(int pageNo, int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<PlanDetail> pageResult = planDetailRepository.findByStatus(PlanDetailStatus.PENDING, pageable);
         List<PlanDetailResponseDTO> list = new ArrayList<PlanDetailResponseDTO>();
         ResponseWithTotalPage<PlanDetailResponseDTO> result = new ResponseWithTotalPage<>();
@@ -167,7 +168,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
 
     @Override
     public ResponseWithTotalPage<PlanDetailResponseDTO> getApprovedPlanDetails(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<PlanDetail> pageResult = planDetailRepository.findByStatus(PlanDetailStatus.APPROVED, pageable);
         List<PlanDetailResponseDTO> list = new ArrayList<PlanDetailResponseDTO>();
         ResponseWithTotalPage<PlanDetailResponseDTO> result = new ResponseWithTotalPage<>();
@@ -186,7 +187,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
 
     @Override
     public ResponseWithTotalPage<PlanDetailResponseDTO> getCanceledPlanDetails(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<PlanDetail> pageResult = planDetailRepository.findByStatus(PlanDetailStatus.CANCELED, pageable);
         List<PlanDetailResponseDTO> list = new ArrayList<PlanDetailResponseDTO>();
         ResponseWithTotalPage<PlanDetailResponseDTO> result = new ResponseWithTotalPage<>();
@@ -239,7 +240,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
     public ResponseWithTotalPage<PlanDetailResponseDTO> getPlanDetailByApprover(int approverId, int pageNo,
             int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
 
         Employee employee = employeeRepository.findById(approverId)
                 .orElseThrow(() -> new NotFoundException(
