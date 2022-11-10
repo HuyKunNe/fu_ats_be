@@ -92,4 +92,17 @@ public class PositionController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @GetMapping("/getPositionByDepartment")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getPositionById(@RequestParam int id,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        ResponseDTO<ResponseWithTotalPage> response = new ResponseDTO();
+        ResponseWithTotalPage<PositionResponse> list = positionService.getPositionByDepartment(id, pageNo, pageSize);
+        response.setData(list);
+        response.setMessage(PositionSuccessMessage.GET_POSITION_BY_DEPARTMENT);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
+
 }
