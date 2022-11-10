@@ -30,6 +30,7 @@ public class PlanDetailResponseDTO {
     private Date periodTo;
     private String description;
     private String requirement;
+    private String note;
     private String status;
     private RecruitmentPlan recruitmentPlan;
     private Employee creator;
