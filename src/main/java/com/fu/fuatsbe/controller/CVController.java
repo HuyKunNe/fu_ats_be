@@ -57,12 +57,11 @@ public class CVController {
         ResponseWithTotalPage<CvResponse> list = cvService.getAllCvByCandidate(id, pageNo, pageSize);
         if (list.getResponseList() == null) {
             responseDTO.setMessage(CVErrorMessage.CANDIDATE_CV_EMPTY);
-            responseDTO.setStatus(ResponseStatusDTO.FAILURE);
         } else {
             responseDTO.setData(list);
             responseDTO.setMessage(CVSuccessMessage.GET_ALL_CVS);
-            responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         }
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
