@@ -38,18 +38,6 @@ public class AuthController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    // @PostMapping("/loginGoogle")
-    // public ResponseEntity<ResponseDTO> loginGoole(OAuth2AuthenticationToken
-    // oAuth2AuthenticationToken) {
-    // ResponseDTO<LoginResponseDto> responseDTO = new ResponseDTO();
-    // LoginResponseDto loginResponseDTO =
-    // authService.loginGoogle(oAuth2AuthenticationToken);
-    // responseDTO.setData(loginResponseDTO);
-    // responseDTO.setMessage("Login success");
-    // responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
-    // return ResponseEntity.ok().body(responseDTO);
-    // }
-
     @PostMapping("/register")
     public ResponseEntity<ResponseDTO> register(@Validated @RequestBody RegisterCandidateDto candidate)
             throws RoleNotFoundException {

@@ -16,6 +16,7 @@ import com.fu.fuatsbe.entity.City;
 public interface CityRepository extends JpaRepository<City, Integer> {
 
     Optional<City> findByName(String name);
+
     @Query(nativeQuery = true, value = "select name from city")
     List<String> getAllCityName();
 

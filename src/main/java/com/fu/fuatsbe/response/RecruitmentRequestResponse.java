@@ -1,7 +1,6 @@
 package com.fu.fuatsbe.response;
 
 import java.sql.Date;
-import java.util.List;
 
 import com.fu.fuatsbe.entity.City;
 import com.fu.fuatsbe.entity.Employee;
@@ -43,6 +42,6 @@ public class RecruitmentRequestResponse {
     private Employee creator;
     private PlanDetail planDetail;
     private Position position;
-    private List<City> cities;
+    private City cities;
 
 }

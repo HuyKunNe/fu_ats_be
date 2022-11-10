@@ -193,13 +193,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         Position position = positionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
 
-        List<City> cities = new ArrayList<>();
-        for (String cityName : updateDTO.getCityName()) {
-            City city = cityRepository.findByName(cityName)
-                    .orElseThrow(() -> new NotFoundException(CityErrorMessage.NOT_FOUND));
-
-            cities.add(city);
-        }
+        City city = cityRepository.findByName(updateDTO.getCityName())
+                .orElseThrow(() -> new NotFoundException(CityErrorMessage.NOT_FOUND));
 
         recruitmentRequest.setAmount(updateDTO.getAmount());
         recruitmentRequest.setExpiryDate(updateDTO.getExpiryDate());
@@ -211,7 +206,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         recruitmentRequest.setEducationLevel(updateDTO.getEducationLevel());
         recruitmentRequest.setAddress(updateDTO.getAddress());
         recruitmentRequest.setForeignLanguage(updateDTO.getForeignLanguage());
-        recruitmentRequest.setCities(cities);
+        recruitmentRequest.setCities(city);
         recruitmentRequest.setTypeOfWork(updateDTO.getTypeOfWork());
         recruitmentRequest.setDescription(updateDTO.getDescription());
         recruitmentRequest.setPosition(position);
@@ -245,19 +240,14 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             LocalDate dateFormat = LocalDate.parse(date.toString(), format);
             LocalDate expiryDate = LocalDate.parse(createDTO.getExpiryDate().toString(), format);
 
-            List<City> cities = new ArrayList<>();
-            for (String cityName : createDTO.getCityName()) {
-                City city = cityRepository.findByName(cityName)
-                        .orElseThrow(() -> new NotFoundException(CityErrorMessage.NOT_FOUND));
-
-                cities.add(city);
-            }
+            City city = cityRepository.findByName(createDTO.getCityName())
+                    .orElseThrow(() -> new NotFoundException(CityErrorMessage.NOT_FOUND));
 
             RecruitmentRequest request = RecruitmentRequest.builder().date(Date.valueOf(dateFormat))
                     .expiryDate(Date.valueOf(expiryDate)).industry(createDTO.getIndustry())
                     .amount(createDTO.getAmount()).jobLevel(createDTO.getJobLevel())
                     .status(RecruitmentRequestStatus.OPENING).experience(createDTO.getExperience())
-                    .cities(cities)
+                    .cities(city)
                     .typeOfWork(createDTO.getTypeOfWork())
                     .benefit(createDTO.getBenefit())
                     .foreignLanguage(createDTO.getForeignLanguage())

@@ -145,14 +145,10 @@ public class JobApplyServiceImpl implements JobApplyService {
         LocalDate date = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         LocalDate dateFormat = LocalDate.parse(date.toString(), format);
 
-        List<City> cities = new ArrayList<>();
-        for (String cityName : createDTO.getCityName()) {
-            City city = cityRepository.findByName(cityName)
-                    .orElseThrow(() -> new NotFoundException(CityErrorMessage.NOT_FOUND));
-            cities.add(city);
-        }
+        City city = cityRepository.findByName(createDTO.getCityName())
+                .orElseThrow(() -> new NotFoundException(CityErrorMessage.NOT_FOUND));
 
-        JobApply jobApply = JobApply.builder().date(Date.valueOf(dateFormat)).cities(cities)
+        JobApply jobApply = JobApply.builder().date(Date.valueOf(dateFormat)).cities(city)
                 .educationLevel(createDTO.getEducationLevel())
                 .foreignLanguage(createDTO.getForeignLanguage())
                 .status(JobApplyStatus.PEDNING)

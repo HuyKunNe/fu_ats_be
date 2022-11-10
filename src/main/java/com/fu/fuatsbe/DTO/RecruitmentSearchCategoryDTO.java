@@ -1,6 +1,5 @@
 package com.fu.fuatsbe.DTO;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -17,7 +16,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 public class RecruitmentSearchCategoryDTO {
-    private List<String> jobTitle = new ArrayList<>();
-    private List<String> industry = new ArrayList<>();
+    private List<String> jobTitle;
+    private List<String> industry;
     private List<String> province;
 }
