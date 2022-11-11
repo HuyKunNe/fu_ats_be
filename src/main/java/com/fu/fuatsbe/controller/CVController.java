@@ -64,6 +64,15 @@ public class CVController {
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+    @GetMapping("/getAllCvRejected")
+    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getAllCvRejected() {
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(cvService.getRejectedCv());
+        responseDTO.setMessage(CVSuccessMessage.GET_CV_REJECTED_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 
     @PostMapping("/create")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE_CANDIDATE)

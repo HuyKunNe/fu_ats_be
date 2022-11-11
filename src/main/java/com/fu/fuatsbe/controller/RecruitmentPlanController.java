@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.controller;
 
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +25,8 @@ import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.RecruitmentPlanService;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/recruitmentPlan")
@@ -165,6 +168,16 @@ public class RecruitmentPlanController {
                 pageSize);
         response.setData(list);
         response.setMessage(RecruitmentPlanSuccessMessage.GET_RECRUITMENT_PLAN_BY_DEPARTMENT_ID_SUCCESS);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
+    @GetMapping("/getPlanApprovedByDepartment")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getPlanApprovedByDepartmentId(@RequestParam("departmentId") int id) {
+        ResponseDTO response = new ResponseDTO();
+        List<IdAndNameResponse> list = recruitmentPlanService.getApprovedByDepartment(id);
+        response.setData(list);
+        response.setMessage(RecruitmentPlanSuccessMessage.GET_APPROVED_RECRUITMENT_PLAN_BY_DEPARTMENT_ID_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }

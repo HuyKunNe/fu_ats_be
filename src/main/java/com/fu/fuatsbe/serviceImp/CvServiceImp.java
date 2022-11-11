@@ -146,4 +146,14 @@ public class CvServiceImp implements CVService {
         return cvRepository.save(cv);
     }
 
+    @Override
+    public List<CvResponse> getRejectedCv() {
+        List<CV> cvs = cvRepository.getRejectedCV();
+        List<CvResponse> list = new ArrayList<>();
+        for (CV cv: cvs) {
+            CvResponse response = modelMapper.map(cv,CvResponse.class);
+            list.add(response);
+        }
+        return list;
+    }
 }

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.fu.fuatsbe.DTO.PlanDetailActionDTO;
 import com.fu.fuatsbe.DTO.PlanDetailCreateDTO;
 import com.fu.fuatsbe.DTO.PlanDetailUpdateDTO;
+import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.planDetail.PlanDetailErrorMessage;
 import com.fu.fuatsbe.constant.planDetail.PlanDetailStatus;
@@ -31,10 +32,12 @@ import com.fu.fuatsbe.entity.RecruitmentPlan;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.exceptions.NotValidException;
+import com.fu.fuatsbe.repository.DepartmentRepository;
 import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.PlanDetailRepository;
 import com.fu.fuatsbe.repository.PositionRepository;
 import com.fu.fuatsbe.repository.RecruitmentPlanRepository;
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import com.fu.fuatsbe.response.PlanDetailResponseDTO;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.PlanDetailService;
@@ -45,6 +48,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PlanDetailServiceImpl implements PlanDetailService {
 
+    private final DepartmentRepository departmentRepository;
     private final ModelMapper modelMapper;
     private final PlanDetailRepository planDetailRepository;
     private final RecruitmentPlanRepository recruitmentPlanRepository;
@@ -57,9 +61,6 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         Page<PlanDetail> pageResult = planDetailRepository.findAll(pageable);
         List<PlanDetailResponseDTO> list = new ArrayList<PlanDetailResponseDTO>();
         ResponseWithTotalPage<PlanDetailResponseDTO> result = new ResponseWithTotalPage<>();
-
-        int totalAmount = planDetailRepository.totalAmount(1);
-        System.out.println("total: " + totalAmount);
 
         if (pageResult.hasContent()) {
             for (PlanDetail planDetail : pageResult.getContent()) {
@@ -318,6 +319,24 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         } else
             throw new ListEmptyException(PlanDetailErrorMessage.LIST_EMPTY_EXCEPTION);
         return result;
+    }
+
+    @Override
+    public List<IdAndNameResponse> getPlanDetailApprovedByDepartment(int departmentId) {
+        departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
+        List<PlanDetail> planDetails = planDetailRepository.findApprovedByDepartment(departmentId);
+
+        List<IdAndNameResponse> list = new ArrayList<>();
+
+        for (PlanDetail planDetail : planDetails) {
+            IdAndNameResponse response = IdAndNameResponse.builder()
+                    .id(planDetail.getId())
+                    .name(planDetail.getName())
+                    .build();
+            list.add(response);
+        }
+        return list;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -29,4 +30,8 @@ public interface RecruitmentPlanRepository extends JpaRepository<RecruitmentPlan
             "(select id from employee where department_id = ?1)")
     Page<RecruitmentPlan> findByDepartmentId(int departmentId, Pageable pageable);
 
+    @Query(nativeQuery = true,value = "select * from recruitment_plan r where r.creator_id " +
+            "in(select id from employee where department_id = ?1) " +
+            "and status like 'APPROVED'")
+    List<RecruitmentPlan> findApprovedByDepartment(int id);
 }

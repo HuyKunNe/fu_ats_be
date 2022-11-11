@@ -29,6 +29,7 @@ import com.fu.fuatsbe.exceptions.NotValidException;
 import com.fu.fuatsbe.repository.DepartmentRepository;
 import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.RecruitmentPlanRepository;
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import com.fu.fuatsbe.response.RecruitmentPlanResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.RecruitmentPlanService;
@@ -301,6 +302,23 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
             throw new ListEmptyException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
 
+    }
+
+    @Override
+    public List<IdAndNameResponse> getApprovedByDepartment(int departmentId) {
+        departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
+        List<RecruitmentPlan> recruitmentPlans = recruitmentPlanRepository.findApprovedByDepartment(departmentId);
+        List<IdAndNameResponse> list = new ArrayList<>();
+
+        for (RecruitmentPlan recruitmentPlan : recruitmentPlans) {
+            IdAndNameResponse response = IdAndNameResponse.builder()
+                    .id(recruitmentPlan.getId())
+                    .name(recruitmentPlan.getName())
+                    .build();
+            list.add(response);
+        }
+        return list;
     }
 
     @Override
