@@ -10,6 +10,7 @@ import java.util.Optional;
 import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.entity.Department;
 import com.fu.fuatsbe.repository.DepartmentRepository;
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -302,6 +303,23 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
             throw new ListEmptyException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
         return result;
 
+    }
+
+    @Override
+    public List<IdAndNameResponse> getApprovedByDepartment(int departmentId) {
+        departmentRepository.findById(departmentId).orElseThrow(() ->
+                new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
+        List<RecruitmentPlan> recruitmentPlans = recruitmentPlanRepository.findApprovedByDepartment(departmentId);
+        List<IdAndNameResponse> list = new ArrayList<>();
+
+        for(RecruitmentPlan recruitmentPlan : recruitmentPlans){
+            IdAndNameResponse response = IdAndNameResponse.builder()
+                    .id(recruitmentPlan.getId())
+                    .name(recruitmentPlan.getName())
+                    .build();
+            list.add(response);
+        }
+        return list;
     }
 
     @Override
