@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.controller;
 
+import com.fu.fuatsbe.DTO.PlanDetailUpdateDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -77,7 +78,7 @@ public class PlanDetailController {
         ResponseDTO<PlanDetailResponseDTO> responseDTO = new ResponseDTO();
         PlanDetailResponseDTO planDetailDTO = planDetailService.createPlanDetail(createDTO);
         responseDTO.setData(planDetailDTO);
-        responseDTO.setMessage("create plan detail success");
+        responseDTO.setMessage(PlanDetailSuccessMessage.CREATE_PLAN_DETAIL_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
@@ -121,6 +122,16 @@ public class PlanDetailController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @PutMapping("/update")
+    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> updatePlanDetails(@RequestParam int id, @RequestBody PlanDetailUpdateDTO updateDTO) {
+        ResponseDTO<PlanDetailResponseDTO> responseDTO = new ResponseDTO();
+        responseDTO.setData(planDetailService.updatePlanDetailById(id, updateDTO));
+        responseDTO.setMessage(PlanDetailSuccessMessage.UPDATE_PLAN_DETAIL_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
     @PutMapping("/approved")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
     public ResponseEntity<ResponseDTO> approvedPlanDetails(
@@ -128,7 +139,7 @@ public class PlanDetailController {
         ResponseDTO<PlanDetailResponseDTO> responseDTO = new ResponseDTO();
         PlanDetailResponseDTO planDetailDTO = planDetailService.approvedPlanDetails(actionDTO);
         responseDTO.setData(planDetailDTO);
-        responseDTO.setMessage("approved plan detail success");
+        responseDTO.setMessage(PlanDetailSuccessMessage.APPROVE_PLAN_DETAIL_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
@@ -140,7 +151,7 @@ public class PlanDetailController {
         ResponseDTO<PlanDetailResponseDTO> responseDTO = new ResponseDTO();
         PlanDetailResponseDTO planDetailDTO = planDetailService.canceledPlanDetails(actionDTO);
         responseDTO.setData(planDetailDTO);
-        responseDTO.setMessage("canceled plan detail success");
+        responseDTO.setMessage(PlanDetailSuccessMessage.CANCEL_PLAN_DETAIL_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }

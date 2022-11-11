@@ -19,6 +19,7 @@ public class PlanDetailCreateDTO {
 
     private int amount;
     private String salary;
+    private String name;
     private String reason;
     private Date periodFrom;
     private Date periodTo;

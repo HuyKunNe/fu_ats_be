@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
+import com.fu.fuatsbe.entity.Department;
+import com.fu.fuatsbe.repository.DepartmentRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,6 +43,7 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     private final RecruitmentPlanRepository recruitmentPlanRepository;
     private final ModelMapper modelMapper;
     private final EmployeeRepository employeeRepository;
+    private final DepartmentRepository departmentRepository;
 
     @Override
     public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlans(int pageNo, int pageSize) {
@@ -167,11 +171,16 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
         LocalDate periodFrom = LocalDate.parse(updateDTO.getPeriodFrom().toString(), format);
         LocalDate periodTo = LocalDate.parse(updateDTO.getPeriodTo().toString(), format);
 
-        RecruitmentPlan recruitmentPlanUpdate = RecruitmentPlan.builder().periodFrom(Date.valueOf(periodFrom))
-                .periodTo(Date.valueOf(periodTo))
-                .amount(updateDTO.getAmount()).status(RecruitmentPlanStatus.PENDING)
-                .creator(recruitmentPlan.getCreator())
-                .build();
+        RecruitmentPlan recruitmentPlanUpdate = new RecruitmentPlan();
+
+
+        recruitmentPlanUpdate.setPeriodFrom(Date.valueOf(periodFrom));
+        recruitmentPlanUpdate.setPeriodTo(Date.valueOf(periodTo));
+        recruitmentPlanUpdate.setAmount(updateDTO.getAmount());
+        recruitmentPlanUpdate.setStatus(RecruitmentPlanStatus.PENDING);
+        recruitmentPlanUpdate.setCreator(recruitmentPlan.getCreator());
+        recruitmentPlanUpdate.setTotalSalary(updateDTO.getTotalSalary());
+        recruitmentPlanUpdate.setName(updateDTO.getName());
 
         RecruitmentPlan recruitmentPlanSaved = recruitmentPlanRepository.save(recruitmentPlanUpdate);
 
@@ -219,7 +228,7 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
 
     @Override
     public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlansByApprover(int approverId, int pageNo,
-            int pageSize) {
+                                                                                           int pageSize) {
 
         Employee approver = employeeRepository.findById(approverId)
                 .orElseThrow(() -> new NotFoundException(
@@ -245,15 +254,40 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
 
     @Override
     public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlansByCreator(int creatorId, int pageNo,
-            int pageSize) {
+                                                                                          int pageSize) {
 
-        Employee approver = employeeRepository.findById(creatorId)
+        Employee creator = employeeRepository.findById(creatorId)
                 .orElseThrow(() -> new NotFoundException(
                         EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
 
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
-        Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByApprover(approver,
+        Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByCreator(creator,
                 pageable);
+        List<RecruitmentPlanResponse> list = new ArrayList<RecruitmentPlanResponse>();
+        ResponseWithTotalPage<RecruitmentPlanResponse> result = new ResponseWithTotalPage<>();
+
+        if (pageResult.hasContent()) {
+            for (RecruitmentPlan recruitmentPlan : pageResult.getContent()) {
+                RecruitmentPlanResponse response = modelMapper.map(recruitmentPlan, RecruitmentPlanResponse.class);
+                list.add(response);
+            }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
+        } else
+            throw new ListEmptyException(RecruitmentPlanErrorMessage.LIST_RECRUITMENTPLAN_EMPTY_EXCEPTION);
+        return result;
+
+    }
+
+    @Override
+    public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlansByDepartment(int departmentId, int pageNo,
+                                                                                             int pageSize) {
+
+        departmentRepository.findById(departmentId).orElseThrow(() ->
+                new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByDepartmentId(departmentId, pageable);
         List<RecruitmentPlanResponse> list = new ArrayList<RecruitmentPlanResponse>();
         ResponseWithTotalPage<RecruitmentPlanResponse> result = new ResponseWithTotalPage<>();
 

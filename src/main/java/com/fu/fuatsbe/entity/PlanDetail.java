@@ -48,6 +48,7 @@ public class PlanDetail {
     @Column(columnDefinition = "text")
     private String reason;
     private String salary;
+    private String name;
     private Date periodFrom;
     private Date periodTo;
     @Column(columnDefinition = "text")

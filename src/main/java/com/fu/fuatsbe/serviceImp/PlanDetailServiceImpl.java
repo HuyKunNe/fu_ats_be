@@ -71,7 +71,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
 
     @Override
     public ResponseWithTotalPage<PlanDetailResponseDTO> getAllByRecruitmentPlans(int recruitmentPlanId, int pageNo,
-            int pageSize) {
+                                                                                 int pageSize) {
         Optional<RecruitmentPlan> optionalRecruitmentPlan = recruitmentPlanRepository.findById(recruitmentPlanId);
         if (!optionalRecruitmentPlan.isPresent())
             throw new NotFoundException(RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION);
@@ -104,8 +104,22 @@ public class PlanDetailServiceImpl implements PlanDetailService {
 
     @Override
     public PlanDetailResponseDTO updatePlanDetailById(int id, PlanDetailUpdateDTO updateDTO) {
-        // TODO Auto-generated method stub
-        return null;
+        PlanDetail planDetail = planDetailRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(PlanDetailErrorMessage.PLAN_DETAIL_NOT_FOUND_EXCEPTION));
+        Position position = positionRepository.findById(updateDTO.getPositionId()).orElseThrow(()
+                -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
+        planDetail.setAmount(updateDTO.getAmount());
+        planDetail.setSalary(updateDTO.getSalary());
+        planDetail.setName(updateDTO.getName());
+        planDetail.setReason(updateDTO.getReason());
+        planDetail.setPeriodFrom(updateDTO.getTimeRecruitingFrom());
+        planDetail.setPeriodTo(updateDTO.getTimeRecruitingTo());
+        planDetail.setDescription(updateDTO.getNote());
+        planDetail.setPosition(position);
+
+        PlanDetail savedPlan = planDetailRepository.save(planDetail);
+        PlanDetailResponseDTO planDetailResponse = modelMapper.map(savedPlan, PlanDetailResponseDTO.class);
+        return planDetailResponse;
     }
 
     @Override
@@ -238,7 +252,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
 
     @Override
     public ResponseWithTotalPage<PlanDetailResponseDTO> getPlanDetailByApprover(int approverId, int pageNo,
-            int pageSize) {
+                                                                                int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
 

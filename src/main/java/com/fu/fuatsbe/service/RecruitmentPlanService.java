@@ -25,6 +25,8 @@ public interface RecruitmentPlanService {
 
     public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlansByCreator(int creatorId, int pageNo,
             int pageSize);
+     ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlansByDepartment(int departmentId, int pageNo,
+                                                                                          int pageSize);
 
     public RecruitmentPlanResponse updateRecruitmentPlan(int id, RecruimentPlanUpdateDTO updateDTO);
 

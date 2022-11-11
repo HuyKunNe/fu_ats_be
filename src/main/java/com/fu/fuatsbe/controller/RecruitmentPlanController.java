@@ -152,6 +152,22 @@ public class RecruitmentPlanController {
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
+    @GetMapping("/getByDepartment")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getByDepartmentId(
+            @RequestParam("departmentId") int id,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
+
+        ResponseDTO<ResponseWithTotalPage> response = new ResponseDTO();
+        ResponseWithTotalPage<RecruitmentPlanResponse> list = recruitmentPlanService.getAllRecruitmentPlansByDepartment(id,
+                pageNo,
+                pageSize);
+        response.setData(list);
+        response.setMessage(RecruitmentPlanSuccessMessage.GET_RECRUITMENT_PLAN_BY_DEPARTMENT_ID_SUCCESS);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
 
     @PostMapping("/create")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
