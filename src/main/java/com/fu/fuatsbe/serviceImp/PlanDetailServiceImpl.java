@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
+import com.fu.fuatsbe.repository.*;
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,10 +34,6 @@ import com.fu.fuatsbe.entity.RecruitmentPlan;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.exceptions.NotValidException;
-import com.fu.fuatsbe.repository.EmployeeRepository;
-import com.fu.fuatsbe.repository.PlanDetailRepository;
-import com.fu.fuatsbe.repository.PositionRepository;
-import com.fu.fuatsbe.repository.RecruitmentPlanRepository;
 import com.fu.fuatsbe.response.PlanDetailResponseDTO;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.PlanDetailService;
@@ -50,6 +49,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
     private final RecruitmentPlanRepository recruitmentPlanRepository;
     private final PositionRepository positionRepository;
     private final EmployeeRepository employeeRepository;
+    private final DepartmentRepository departmentRepository;
 
     @Override
     public ResponseWithTotalPage<PlanDetailResponseDTO> getAllPlanDetails(int pageNo, int pageSize) {
@@ -276,4 +276,21 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         return result;
     }
 
+    @Override
+    public List<IdAndNameResponse> getPlanDetailApprovedByDepartment(int departmentId) {
+        departmentRepository.findById(departmentId).orElseThrow(() ->
+                new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
+        List<PlanDetail> planDetails = planDetailRepository.findApprovedByDepartment(departmentId);
+
+        List<IdAndNameResponse> list = new ArrayList<>();
+
+        for(PlanDetail planDetail : planDetails){
+            IdAndNameResponse response = IdAndNameResponse.builder()
+                    .id(planDetail.getId())
+                    .name(planDetail.getName())
+                    .build();
+            list.add(response);
+        }
+        return list;
+    }
 }
