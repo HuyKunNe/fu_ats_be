@@ -57,6 +57,10 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         Page<PlanDetail> pageResult = planDetailRepository.findAll(pageable);
         List<PlanDetailResponseDTO> list = new ArrayList<PlanDetailResponseDTO>();
         ResponseWithTotalPage<PlanDetailResponseDTO> result = new ResponseWithTotalPage<>();
+
+        int totalAmount = planDetailRepository.totalAmount(1);
+        System.out.println("total: " + totalAmount);
+
         if (pageResult.hasContent()) {
             for (PlanDetail planDetail : pageResult.getContent()) {
                 PlanDetailResponseDTO planDetailResponse = modelMapper.map(planDetail, PlanDetailResponseDTO.class);
@@ -108,12 +112,33 @@ public class PlanDetailServiceImpl implements PlanDetailService {
                 .orElseThrow(() -> new NotFoundException(PlanDetailErrorMessage.PLAN_DETAIL_NOT_FOUND_EXCEPTION));
         Position position = positionRepository.findById(updateDTO.getPositionId())
                 .orElseThrow(() -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
+
+        int totalAmount = planDetailRepository
+                .totalAmount(planDetail.getRecruitmentPlan().getId());
+
+        if (updateDTO.getAmount() > (planDetail.getRecruitmentPlan().getAmount() -
+                totalAmount)) {
+            throw new NotValidException(PlanDetailErrorMessage.NOT_VALID_AMOUNT_EXCEPTION);
+        }
+
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        LocalDate periodFrom = LocalDate.parse(updateDTO.getPeriodFrom().toString(), format);
+        LocalDate periodTo = LocalDate.parse(updateDTO.getPeriodTo().toString(), format);
+
+        LocalDate endDateOfRecruitmentPlan = LocalDate.parse(planDetail.getRecruitmentPlan().getPeriodTo().toString(),
+                format);
+
+        if (periodTo.isAfter(endDateOfRecruitmentPlan)) {
+            throw new NotValidException(PlanDetailErrorMessage.NOT_VALID_PERIOD_TO_EXCEPTION);
+        }
+
         planDetail.setAmount(updateDTO.getAmount());
         planDetail.setSalary(updateDTO.getSalary());
         planDetail.setName(updateDTO.getName());
         planDetail.setReason(updateDTO.getReason());
-        planDetail.setPeriodFrom(updateDTO.getTimeRecruitingFrom());
-        planDetail.setPeriodTo(updateDTO.getTimeRecruitingTo());
+        planDetail.setPeriodFrom(Date.valueOf(periodFrom));
+        planDetail.setPeriodTo(Date.valueOf(periodTo));
         planDetail.setDescription(updateDTO.getNote());
         planDetail.setPosition(position);
 
@@ -124,6 +149,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
 
     @Override
     public PlanDetailResponseDTO createPlanDetail(PlanDetailCreateDTO createDTO) {
+
         Optional<Position> optionalPosition = positionRepository.findPositionByName(createDTO.getPositionName());
         if (!optionalPosition.isPresent())
             throw new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST);
@@ -138,11 +164,29 @@ public class PlanDetailServiceImpl implements PlanDetailService {
             throw new NotFoundException(RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION);
         if (!optionalRecruitmentPlan.get().getStatus().equalsIgnoreCase(RecruitmentPlanStatus.APPROVED))
             throw new NotValidException(RecruitmentPlanErrorMessage.ECRUITMENTPLAN_NOT_APPROVED_EXCEPTION);
+
+        int totalAmount = planDetailRepository
+                .totalAmount(optionalRecruitmentPlan.get().getId());
+
+        if (createDTO.getAmount() > (optionalRecruitmentPlan.get().getAmount() -
+                totalAmount)) {
+            throw new NotValidException(PlanDetailErrorMessage.NOT_VALID_AMOUNT_EXCEPTION);
+        }
+
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+
         LocalDate dateFormat = LocalDate.parse(date.toString(), format);
         LocalDate periodFrom = LocalDate.parse(createDTO.getPeriodFrom().toString(), format);
         LocalDate periodTo = LocalDate.parse(createDTO.getPeriodTo().toString(), format);
+
+        LocalDate endDateOfRecruitmentPlan = LocalDate.parse(optionalRecruitmentPlan.get().getPeriodTo().toString(),
+                format);
+
+        if (periodTo.isAfter(endDateOfRecruitmentPlan)) {
+            throw new NotValidException(PlanDetailErrorMessage.NOT_VALID_PERIOD_TO_EXCEPTION);
+        }
+
         PlanDetail planDetail = PlanDetail.builder().amount(createDTO.getAmount())
                 .reason(createDTO.getReason())
                 .salary(createDTO.getSalary())

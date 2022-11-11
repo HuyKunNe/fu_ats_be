@@ -21,8 +21,8 @@ public class PlanDetailUpdateDTO {
     private String salary;
     private String name;
     private String reason;
-    private Date timeRecruitingFrom;
-    private Date timeRecruitingTo;
+    private Date periodFrom;
+    private Date periodTo;
     private String note;
     private int positionId;
 

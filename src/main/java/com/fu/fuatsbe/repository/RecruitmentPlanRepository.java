@@ -24,7 +24,8 @@ public interface RecruitmentPlanRepository extends JpaRepository<RecruitmentPlan
     Page<RecruitmentPlan> findByApprover(Employee employee, Pageable pageable);
 
     Page<RecruitmentPlan> findByCreator(Employee employee, Pageable pageable);
-    @Query(nativeQuery = true,value = "select * from recruitment_plan where creator_id in" +
+
+    @Query(nativeQuery = true, value = "select * from recruitment_plan where creator_id in" +
             "(select id from employee where department_id = ?1)")
     Page<RecruitmentPlan> findByDepartmentId(int departmentId, Pageable pageable);
 

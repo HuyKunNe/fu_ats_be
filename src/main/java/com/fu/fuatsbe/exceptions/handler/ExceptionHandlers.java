@@ -80,6 +80,7 @@ public class ExceptionHandlers extends RuntimeException {
         dto.setStatus(ResponseStatusDTO.FAILURE);
         return ResponseEntity.badRequest().body(dto);
     }
+
     @ExceptionHandler(value = PermissionException.class)
     public ResponseEntity<Object> permissionException(PermissionException exception) {
         ResponseDTO dto = new ResponseDTO();

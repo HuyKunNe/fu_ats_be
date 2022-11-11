@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
-import com.fu.fuatsbe.entity.Department;
-import com.fu.fuatsbe.repository.DepartmentRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.fu.fuatsbe.DTO.RecruimentPlanUpdateDTO;
 import com.fu.fuatsbe.DTO.RecruitmentPlanActionDTO;
 import com.fu.fuatsbe.DTO.RecruitmentPlanCreateDTO;
+import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.recruitmentPlan.RecruitmentPlanErrorMessage;
 import com.fu.fuatsbe.constant.recruitmentPlan.RecruitmentPlanStatus;
@@ -28,6 +26,7 @@ import com.fu.fuatsbe.entity.RecruitmentPlan;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.exceptions.NotValidException;
+import com.fu.fuatsbe.repository.DepartmentRepository;
 import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.RecruitmentPlanRepository;
 import com.fu.fuatsbe.response.RecruitmentPlanResponse;
@@ -173,7 +172,6 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
 
         RecruitmentPlan recruitmentPlanUpdate = new RecruitmentPlan();
 
-
         recruitmentPlanUpdate.setPeriodFrom(Date.valueOf(periodFrom));
         recruitmentPlanUpdate.setPeriodTo(Date.valueOf(periodTo));
         recruitmentPlanUpdate.setAmount(updateDTO.getAmount());
@@ -228,7 +226,7 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
 
     @Override
     public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlansByApprover(int approverId, int pageNo,
-                                                                                           int pageSize) {
+            int pageSize) {
 
         Employee approver = employeeRepository.findById(approverId)
                 .orElseThrow(() -> new NotFoundException(
@@ -254,7 +252,7 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
 
     @Override
     public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlansByCreator(int creatorId, int pageNo,
-                                                                                          int pageSize) {
+            int pageSize) {
 
         Employee creator = employeeRepository.findById(creatorId)
                 .orElseThrow(() -> new NotFoundException(
@@ -280,11 +278,12 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     }
 
     @Override
-    public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlansByDepartment(int departmentId, int pageNo,
-                                                                                             int pageSize) {
+    public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlansByDepartment(int departmentId,
+            int pageNo,
+            int pageSize) {
 
-        departmentRepository.findById(departmentId).orElseThrow(() ->
-                new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
+        departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
 
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<RecruitmentPlan> pageResult = recruitmentPlanRepository.findByDepartmentId(departmentId, pageable);
