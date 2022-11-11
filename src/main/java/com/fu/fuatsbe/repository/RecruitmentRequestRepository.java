@@ -30,7 +30,7 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
 
         @Modifying
         @Query(value = "select distinct r.* from recruitment_request r join position p on r.position_id = p.id \n"
-                        + " join recruitment_rquest_city rc on r.id = rc.request_id join city c on c.id = rc.city_id \n"
+                        + " join city c on r.city_id_many = c.id \n"
                         + "where concat(r.job_level,' ', p.name) like %?1% \n"
                         + "     and c.name like %?2% \n"
                         + "     and r.industry like %?3% \n"
