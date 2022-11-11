@@ -71,7 +71,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
 
     @Override
     public ResponseWithTotalPage<PlanDetailResponseDTO> getAllByRecruitmentPlans(int recruitmentPlanId, int pageNo,
-                                                                                 int pageSize) {
+            int pageSize) {
         Optional<RecruitmentPlan> optionalRecruitmentPlan = recruitmentPlanRepository.findById(recruitmentPlanId);
         if (!optionalRecruitmentPlan.isPresent())
             throw new NotFoundException(RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION);
@@ -106,8 +106,8 @@ public class PlanDetailServiceImpl implements PlanDetailService {
     public PlanDetailResponseDTO updatePlanDetailById(int id, PlanDetailUpdateDTO updateDTO) {
         PlanDetail planDetail = planDetailRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(PlanDetailErrorMessage.PLAN_DETAIL_NOT_FOUND_EXCEPTION));
-        Position position = positionRepository.findById(updateDTO.getPositionId()).orElseThrow(()
-                -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
+        Position position = positionRepository.findById(updateDTO.getPositionId())
+                .orElseThrow(() -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
         planDetail.setAmount(updateDTO.getAmount());
         planDetail.setSalary(updateDTO.getSalary());
         planDetail.setName(updateDTO.getName());
@@ -124,7 +124,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
 
     @Override
     public PlanDetailResponseDTO createPlanDetail(PlanDetailCreateDTO createDTO) {
-        Optional<Position> optionalPosition = positionRepository.findById(createDTO.getPositionId());
+        Optional<Position> optionalPosition = positionRepository.findPositionByName(createDTO.getPositionName());
         if (!optionalPosition.isPresent())
             throw new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST);
 
@@ -252,7 +252,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
 
     @Override
     public ResponseWithTotalPage<PlanDetailResponseDTO> getPlanDetailByApprover(int approverId, int pageNo,
-                                                                                int pageSize) {
+            int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
 
