@@ -17,6 +17,7 @@ import lombok.ToString;
 @Builder
 public class RecruitmentSearchCategoryDTO {
     private List<String> jobTitle;
+    private List<String> position;
     private List<String> industry;
     private List<String> province;
 }

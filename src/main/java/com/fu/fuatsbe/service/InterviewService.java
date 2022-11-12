@@ -13,9 +13,9 @@ public interface InterviewService {
 
     ResponseWithTotalPage<InterviewResponse> getAllInterview(int pageNo, int pageSize);
 
-    List<InterviewResponse> getInterviewByCandidateID(int candidateId);
+    ResponseWithTotalPage<InterviewResponse> getInterviewByCandidateID(int candidateId, int pageNo, int pageSize);
 
-    List<InterviewResponse> getInterviewByEmployeeID(int employeeId);
+    ResponseWithTotalPage<InterviewResponse> getInterviewByEmployeeID(int employeeId, int pageNo, int pageSize);
 
     InterviewResponse getInterviewByID(int id);
 
