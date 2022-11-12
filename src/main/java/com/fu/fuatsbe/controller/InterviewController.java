@@ -7,6 +7,7 @@ import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.response.InterviewResponse;
 import com.fu.fuatsbe.response.ResponseDTO;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.InterviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -48,20 +49,23 @@ public class InterviewController {
 
     @GetMapping("/getInterviewByCandidateID")
     @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
-    public ResponseEntity<ResponseDTO> getInterviewByCandidateID(@RequestParam int candidateId) {
+    public ResponseEntity<ResponseDTO> getInterviewByCandidateID(@RequestParam int candidateId,
+                                                                 @RequestParam(defaultValue = "0") int pageNo,
+                                                                 @RequestParam(defaultValue = "10") int pageSize) {
         ResponseDTO responseDTO = new ResponseDTO();
-        List<InterviewResponse> interviewResponses = interviewService.getInterviewByCandidateID(candidateId);
+        responseDTO.setData(interviewService.getInterviewByCandidateID(candidateId, pageNo, pageSize));
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
-        responseDTO.setData(interviewResponses);
         responseDTO.setMessage(InterviewSuccessMessage.GET_INTERVIEW_BY_CANDIDATE_ID);
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @GetMapping("/getInterviewByEmployeeID")
     @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
-    public ResponseEntity<ResponseDTO> getInterviewByEmployeeID(@RequestParam int employeeId) {
+    public ResponseEntity<ResponseDTO> getInterviewByEmployeeID(@RequestParam int employeeId,
+                                                                @RequestParam(defaultValue = "0") int pageNo,
+                                                                @RequestParam(defaultValue = "10") int pageSize) {
         ResponseDTO responseDTO = new ResponseDTO();
-        List<InterviewResponse> interviewResponses = interviewService.getInterviewByEmployeeID(employeeId);
+        ResponseWithTotalPage<InterviewResponse> interviewResponses = interviewService.getInterviewByEmployeeID(employeeId, pageNo, pageSize);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         responseDTO.setData(interviewResponses);
         responseDTO.setMessage(InterviewSuccessMessage.GET_INTERVIEW_BY_EMPLOYEE_ID);

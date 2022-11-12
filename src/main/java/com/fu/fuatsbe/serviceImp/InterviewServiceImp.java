@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -140,77 +141,88 @@ public class InterviewServiceImp implements InterviewService {
     }
 
     @Override
-    public List<InterviewResponse> getInterviewByCandidateID(int candidateId) {
+    public ResponseWithTotalPage<InterviewResponse> getInterviewByCandidateID(int candidateId, int pageNo, int pageSize) {
         Candidate candidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
-        List<Interview> interviews = interviewRepository.findInterviewByCandidateId(candidate.getId());
 
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        Page<Interview> interviews = interviewRepository.findInterviewByCandidateId(candidate.getId(), pageable);
+        ResponseWithTotalPage<InterviewResponse> listResponse = new ResponseWithTotalPage<>();
         List<InterviewResponse> responseList = new ArrayList<>();
-        for (Interview interview : interviews) {
-            DateTimeFormatter timeDislayFormatter = DateTimeFormatter.ofPattern("HH:mm");
-            String timeDislay = interview.getDate().toLocalDateTime().toLocalTime().format(timeDislayFormatter);
-            InterviewResponse response = InterviewResponse.builder()
-                    .id(interview.getId())
-                    .subject(interview.getSubject())
-                    .purpose(interview.getPurpose())
-                    .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()).toString())
-                    .time(timeDislay)
-                    .room(interview.getRoom())
-                    .address(interview.getAddress())
-                    .linkMeeting(interview.getLinkMeeting())
-                    .round(interview.getRound())
-                    .description(interview.getDescription())
-                    .status(interview.getStatus())
-                    .type(interview.getType())
-                    .jobApply(interview.getJobApply())
-                    .candidateName(interview.getCandidate().getName())
-                    .build();
-            responseList.add(response);
+        if(interviews.hasContent()){
+            for (Interview interview : interviews) {
+                DateTimeFormatter timeDislayFormatter = DateTimeFormatter.ofPattern("HH:mm");
+                String timeDislay = interview.getDate().toLocalDateTime().toLocalTime().format(timeDislayFormatter);
+                InterviewResponse response = InterviewResponse.builder()
+                        .id(interview.getId())
+                        .subject(interview.getSubject())
+                        .purpose(interview.getPurpose())
+                        .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()).toString())
+                        .time(timeDislay)
+                        .room(interview.getRoom())
+                        .address(interview.getAddress())
+                        .linkMeeting(interview.getLinkMeeting())
+                        .round(interview.getRound())
+                        .description(interview.getDescription())
+                        .status(interview.getStatus())
+                        .type(interview.getType())
+                        .jobApply(interview.getJobApply())
+                        .candidateName(interview.getCandidate().getName())
+                        .build();
+                responseList.add(response);
+            }
         }
+        listResponse.setResponseList(responseList);
+        listResponse.setTotalPage(interviews.getTotalPages());
 
-        return responseList;
+        return listResponse;
     }
 
     @Override
-    public List<InterviewResponse> getInterviewByEmployeeID(int employeeId) {
+    public ResponseWithTotalPage<InterviewResponse> getInterviewByEmployeeID(int employeeId, int pageNo, int pageSize) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
-        List<Interview> interviewList = interviewRepository.findInterviewByEmployeeId(employee.getId());
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Interview> interviewList = interviewRepository.findInterviewByEmployeeId(employee.getId(), pageable);
 
         List<String> empName = new ArrayList<>();
-
+        ResponseWithTotalPage<InterviewResponse> listResponse = new ResponseWithTotalPage<>();
         List<InterviewResponse> responseList = new ArrayList<>();
-        for (Interview interview : interviewList) {
-            if (empName.size() != 0) {
-                empName.clear();
+        if(interviewList.hasContent()){
+            for (Interview interview : interviewList) {
+                if (empName.size() != 0) {
+                    empName.clear();
+                }
+                for (InterviewEmployee interviewEmp : interview.getInterviewEmployees()) {
+                    empName.add(interviewEmp.getEmployee().getName());
+                }
+                DateTimeFormatter timeDislayFormatter = DateTimeFormatter.ofPattern("HH:mm");
+                String timeDislay = interview.getDate().toLocalDateTime().toLocalTime().format(timeDislayFormatter);
+                InterviewResponse response = InterviewResponse.builder()
+                        .id(interview.getId())
+                        .subject(interview.getSubject())
+                        .purpose(interview.getPurpose())
+                        .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()).toString())
+                        .time(timeDislay)
+                        .room(interview.getRoom())
+                        .address(interview.getAddress())
+                        .linkMeeting(interview.getLinkMeeting())
+                        .round(interview.getRound())
+                        .description(interview.getDescription())
+                        .status(interview.getStatus())
+                        .type(interview.getType())
+                        .jobApply(interview.getJobApply())
+                        .candidateName(interview.getCandidate().getName())
+                        .employeeNames(empName)
+                        .build();
+                responseList.add(response);
+
             }
-            for (InterviewEmployee interviewEmp : interview.getInterviewEmployees()) {
-                empName.add(interviewEmp.getEmployee().getName());
-            }
-            DateTimeFormatter timeDislayFormatter = DateTimeFormatter.ofPattern("HH:mm");
-            String timeDislay = interview.getDate().toLocalDateTime().toLocalTime().format(timeDislayFormatter);
-            InterviewResponse response = InterviewResponse.builder()
-                    .id(interview.getId())
-                    .subject(interview.getSubject())
-                    .purpose(interview.getPurpose())
-                    .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()).toString())
-                    .time(timeDislay)
-                    .room(interview.getRoom())
-                    .address(interview.getAddress())
-                    .linkMeeting(interview.getLinkMeeting())
-                    .round(interview.getRound())
-                    .description(interview.getDescription())
-                    .status(interview.getStatus())
-                    .type(interview.getType())
-                    .jobApply(interview.getJobApply())
-                    .candidateName(interview.getCandidate().getName())
-                    .employeeNames(empName)
-                    .build();
-            responseList.add(response);
 
         }
-
-        return responseList;
+        listResponse.setTotalPage(interviewList.getTotalPages());
+        listResponse.setResponseList(responseList);
+        return listResponse;
 
     }
 
