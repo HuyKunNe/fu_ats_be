@@ -230,7 +230,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         Optional<Employee> optionalCreator = employeeRepository.findById(createDTO.getEmployeeId());
         PlanDetail planDetail = planDetailRepository.findById(createDTO.getPlanDetailId())
                 .orElseThrow(() -> new NotFoundException(PlanDetailErrorMessage.PLAN_DETAIL_NOT_FOUND_EXCEPTION));
-        Position position = positionRepository.findById(createDTO.getPositionId())
+        Position position = positionRepository.findPositionByName(createDTO.getPositionName())
                 .orElseThrow(() -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
         if (!planDetail.getStatus().equalsIgnoreCase(PlanDetailStatus.APPROVED))
             throw new NotValidException(PlanDetailErrorMessage.PLAN_DETAIL_NOT_APPROVED_EXCEPTION);
@@ -348,6 +348,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     public RecruitmentSearchCategoryDTO searchCategory() {
         RecruitmentSearchCategoryDTO recruitmentSearchCategoryDTO = RecruitmentSearchCategoryDTO.builder()
                 .jobTitle(recruitmentRequestRepository.getDistinctByPosition())
+                .position(positionRepository.getAllPositionName())
                 .industry(recruitmentRequestRepository.getDistinctByIndustry())
                 .province(cityRepository.getAllCityName())
                 .build();

@@ -34,6 +34,6 @@ public class RecruitmentRequestCreateDTO {
     private String cityName;
     private int employeeId;
     private int planDetailId;
-    private int positionId;
+    private String positionName;
 
 }
