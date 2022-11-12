@@ -240,8 +240,18 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             LocalDate dateFormat = LocalDate.parse(date.toString(), format);
             LocalDate expiryDate = LocalDate.parse(createDTO.getExpiryDate().toString(), format);
 
+            LocalDate periodToPlanDetail = LocalDate.parse(planDetail.getPeriodTo().toString(), format);
+
+            if (!periodToPlanDetail.isEqual(expiryDate)) {
+                throw new NotValidException(RecruitmentRequestErrorMessage.NOT_VALID_EXPIRY_DATE_EXCEPTION);
+            }
+
             City city = cityRepository.findByName(createDTO.getCityName())
                     .orElseThrow(() -> new NotFoundException(CityErrorMessage.NOT_FOUND));
+
+            if (createDTO.getAmount() != planDetail.getAmount()) {
+                throw new NotValidException(RecruitmentRequestErrorMessage.NOT_VALID_AMOUNT_EXCEPTION);
+            }
 
             RecruitmentRequest request = RecruitmentRequest.builder().date(Date.valueOf(dateFormat))
                     .expiryDate(Date.valueOf(expiryDate)).industry(createDTO.getIndustry())
