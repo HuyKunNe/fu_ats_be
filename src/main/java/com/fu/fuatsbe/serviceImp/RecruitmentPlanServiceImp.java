@@ -198,6 +198,8 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
 
             RecruitmentPlan recruitmentPlan = RecruitmentPlan.builder().periodFrom(Date.valueOf(periodFrom))
                     .periodTo(Date.valueOf(periodTo))
+                    .name(createDTO.getName())
+                    .totalSalary(createDTO.getTotalSalary())
                     .amount(createDTO.getAmount()).status(RecruitmentPlanStatus.PENDING).creator(optionalCreator.get())
                     .build();
             recruitmentPlanRepository.save(recruitmentPlan);
