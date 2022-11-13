@@ -1,30 +1,5 @@
 package com.fu.fuatsbe.serviceImp;
 
-import com.fu.fuatsbe.DTO.InterviewCreateDTO;
-import com.fu.fuatsbe.DTO.InterviewUpdateDTO;
-import com.fu.fuatsbe.DTO.SendNotificationDTO;
-import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
-import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
-import com.fu.fuatsbe.constant.interview.InterviewErrorMessage;
-import com.fu.fuatsbe.constant.interview.InterviewRequestStatus;
-import com.fu.fuatsbe.constant.job_apply.JobApplyErrorMessage;
-import com.fu.fuatsbe.entity.*;
-import com.fu.fuatsbe.exceptions.ListEmptyException;
-import com.fu.fuatsbe.exceptions.NotFoundException;
-import com.fu.fuatsbe.exceptions.PermissionException;
-import com.fu.fuatsbe.repository.*;
-import com.fu.fuatsbe.response.InterviewResponse;
-import com.fu.fuatsbe.response.ResponseWithTotalPage;
-import com.fu.fuatsbe.service.InterviewService;
-import com.fu.fuatsbe.service.NotificationService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-
-import javax.mail.MessagingException;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -34,6 +9,45 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.mail.MessagingException;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import com.fu.fuatsbe.DTO.InterviewCreateDTO;
+import com.fu.fuatsbe.DTO.InterviewUpdateDTO;
+import com.fu.fuatsbe.DTO.SendNotificationDTO;
+import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
+import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
+import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
+import com.fu.fuatsbe.constant.interview.InterviewErrorMessage;
+import com.fu.fuatsbe.constant.interview.InterviewRequestStatus;
+import com.fu.fuatsbe.constant.job_apply.JobApplyErrorMessage;
+import com.fu.fuatsbe.entity.Candidate;
+import com.fu.fuatsbe.entity.Department;
+import com.fu.fuatsbe.entity.Employee;
+import com.fu.fuatsbe.entity.Interview;
+import com.fu.fuatsbe.entity.InterviewEmployee;
+import com.fu.fuatsbe.entity.JobApply;
+import com.fu.fuatsbe.exceptions.ListEmptyException;
+import com.fu.fuatsbe.exceptions.NotFoundException;
+import com.fu.fuatsbe.exceptions.PermissionException;
+import com.fu.fuatsbe.repository.CandidateRepository;
+import com.fu.fuatsbe.repository.DepartmentRepository;
+import com.fu.fuatsbe.repository.EmployeeRepository;
+import com.fu.fuatsbe.repository.InterviewEmployeeRepository;
+import com.fu.fuatsbe.repository.InterviewRepository;
+import com.fu.fuatsbe.repository.JobApplyRepository;
+import com.fu.fuatsbe.response.InterviewResponse;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
+import com.fu.fuatsbe.service.InterviewService;
+import com.fu.fuatsbe.service.NotificationService;
+
+import lombok.RequiredArgsConstructor;
+
 @Service
 @RequiredArgsConstructor
 public class InterviewServiceImp implements InterviewService {
@@ -42,6 +56,7 @@ public class InterviewServiceImp implements InterviewService {
     private final CandidateRepository candidateRepository;
 
     private final EmployeeRepository employeeRepository;
+    private final DepartmentRepository departmentRepository;
     private final JobApplyRepository jobApplyRepository;
 
     private final NotificationService notificationService;
@@ -405,5 +420,45 @@ public class InterviewServiceImp implements InterviewService {
                 .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
         interview.setStatus(InterviewRequestStatus.CANCELED);
         interviewRepository.save(interview);
+    }
+
+    @Override
+    public ResponseWithTotalPage<InterviewResponse> getInterviewByDepartment(int departmentId, int pageNo,
+            int pageSize) {
+        Department department = departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+
+        Page<Interview> interviews = interviewRepository.findInterviewByDepartrment(department.getId(), pageable);
+        ResponseWithTotalPage<InterviewResponse> listResponse = new ResponseWithTotalPage<>();
+        List<InterviewResponse> responseList = new ArrayList<>();
+        if (interviews.hasContent()) {
+            for (Interview interview : interviews) {
+                DateTimeFormatter timeDislayFormatter = DateTimeFormatter.ofPattern("HH:mm");
+                String timeDislay = interview.getDate().toLocalDateTime().toLocalTime().format(timeDislayFormatter);
+                InterviewResponse response = InterviewResponse.builder()
+                        .id(interview.getId())
+                        .subject(interview.getSubject())
+                        .purpose(interview.getPurpose())
+                        .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()).toString())
+                        .time(timeDislay)
+                        .room(interview.getRoom())
+                        .address(interview.getAddress())
+                        .linkMeeting(interview.getLinkMeeting())
+                        .round(interview.getRound())
+                        .description(interview.getDescription())
+                        .status(interview.getStatus())
+                        .type(interview.getType())
+                        .jobApply(interview.getJobApply())
+                        .candidateName(interview.getCandidate().getName())
+                        .build();
+                responseList.add(response);
+            }
+        }
+        listResponse.setResponseList(responseList);
+        listResponse.setTotalPage(interviews.getTotalPages());
+
+        return listResponse;
     }
 }

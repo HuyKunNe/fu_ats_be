@@ -1,12 +1,11 @@
 package com.fu.fuatsbe.service;
 
+import javax.mail.MessagingException;
+
 import com.fu.fuatsbe.DTO.InterviewCreateDTO;
 import com.fu.fuatsbe.DTO.InterviewUpdateDTO;
 import com.fu.fuatsbe.response.InterviewResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
-
-import javax.mail.MessagingException;
-import java.util.List;
 
 public interface InterviewService {
     InterviewResponse createInterview(InterviewCreateDTO interviewCreateDTO) throws MessagingException;
@@ -24,5 +23,7 @@ public interface InterviewService {
     void closeInterview(int id);
 
     void cancelInterview(int id);
+
+    ResponseWithTotalPage<InterviewResponse> getInterviewByDepartment(int departmentId, int pageNo, int pageSize);
 
 }
