@@ -52,4 +52,7 @@ public class RegisterDto {
     private String departmentName;
     @NotBlank(message = ValidationMessage.POSITION_VALID_MESSAGE)
     private String positionName;
+    @NotBlank(message = ValidationMessage.TOKEN_VALID_MESSAGE)
+    private String notificationToken;
+
 }
