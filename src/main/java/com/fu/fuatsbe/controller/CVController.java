@@ -35,7 +35,7 @@ public class CVController {
     private final CVService cvService;
 
     @GetMapping("/getAllCvs")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getAllCvs(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
@@ -65,7 +65,7 @@ public class CVController {
         return ResponseEntity.ok().body(responseDTO);
     }
     @GetMapping("/getAllCvRejected")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getAllCvRejected() {
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setData(cvService.getRejectedCv());
@@ -75,7 +75,7 @@ public class CVController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE_CANDIDATE)
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity<ResponseDTO> createCV(@RequestBody CvCreateDTO createDTO) {
         ResponseDTO<CvResponse> responseDTO = new ResponseDTO();
         CvResponse cvResponse = cvService.createCV(createDTO);
@@ -86,7 +86,7 @@ public class CVController {
     }
 
     @PutMapping("edit/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_CANDIDATE)
     public ResponseEntity<ResponseDTO> updateDepartment(@RequestParam("id") int id,
             @RequestBody CvUpdateDTO updateDTO) {
         ResponseDTO<CvResponse> responseDTO = new ResponseDTO();

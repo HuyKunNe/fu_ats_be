@@ -75,7 +75,7 @@ public class PlanDetailController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> createPlanDetail(
             @RequestBody PlanDetailCreateDTO createDTO) {
         ResponseDTO<PlanDetailResponseDTO> responseDTO = new ResponseDTO();
@@ -126,7 +126,7 @@ public class PlanDetailController {
     }
 
     @PutMapping("/update")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> updatePlanDetails(@RequestParam int id, @RequestBody PlanDetailUpdateDTO updateDTO) {
         ResponseDTO<PlanDetailResponseDTO> responseDTO = new ResponseDTO();
         responseDTO.setData(planDetailService.updatePlanDetailById(id, updateDTO));
@@ -136,7 +136,7 @@ public class PlanDetailController {
     }
 
     @PutMapping("/approved")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> approvedPlanDetails(
             @RequestBody PlanDetailActionDTO actionDTO) {
         ResponseDTO<PlanDetailResponseDTO> responseDTO = new ResponseDTO();
@@ -148,7 +148,7 @@ public class PlanDetailController {
     }
 
     @PutMapping("/canceled")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> canceledPlanDetails(
             @RequestBody PlanDetailActionDTO actionDTO) {
         ResponseDTO<PlanDetailResponseDTO> responseDTO = new ResponseDTO();
@@ -159,7 +159,7 @@ public class PlanDetailController {
         return ResponseEntity.ok().body(responseDTO);
     }
     @GetMapping("/getApprovedByDepartment")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getApprovedByDepartment(@RequestParam int departmentId) {
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setData(planDetailService.getPlanDetailApprovedByDepartment(departmentId));

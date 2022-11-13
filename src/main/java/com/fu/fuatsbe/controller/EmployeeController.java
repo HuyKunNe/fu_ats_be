@@ -101,7 +101,7 @@ public class EmployeeController {
     }
 
     @PutMapping("update/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> updateEmployee(@RequestParam("id") int id,
             @RequestBody EmployeeUpdateDTO updateDTO) {
         ResponseDTO<EmployeeResponse> responseDTO = new ResponseDTO();

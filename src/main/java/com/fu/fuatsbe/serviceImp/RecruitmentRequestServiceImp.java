@@ -50,6 +50,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     @Autowired
     private final RecruitmentRequestRepository recruitmentRequestRepository;
 
+    private static final String THOA_THUAN = "Thỏa thuận";
+
     private final ModelMapper modelMapper;
     private final EmployeeRepository employeeRepository;
     private final PlanDetailRepository planDetailRepository;
@@ -68,10 +70,12 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
-                if (recruitmentRequest.getSalaryTo() != null) {
+                if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
                     response.setSalaryDetail(
                             (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
                                     .trim());
+                } else if (recruitmentRequest.getSalaryFrom() == null) {
+                    response.setSalaryDetail(recruitmentRequest.getSalaryTo());
                 } else {
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
                 }
@@ -90,10 +94,12 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 .orElseThrow(() -> new NotFoundException(
                         RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
         RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest, RecruitmentRequestResponse.class);
-        if (recruitmentRequest.getSalaryTo() != null) {
+        if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
             response.setSalaryDetail(
                     (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
                             .trim());
+        } else if (recruitmentRequest.getSalaryFrom() == null) {
+            response.setSalaryDetail(recruitmentRequest.getSalaryTo());
         } else {
             response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
         }
@@ -113,10 +119,12 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
-                if (recruitmentRequest.getSalaryTo() != null) {
+                if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
                     response.setSalaryDetail(
                             (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
                                     .trim());
+                } else if (recruitmentRequest.getSalaryFrom() == null) {
+                    response.setSalaryDetail(recruitmentRequest.getSalaryTo());
                 } else {
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
                 }
@@ -142,10 +150,12 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
-                if (recruitmentRequest.getSalaryTo() != null) {
+                if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
                     response.setSalaryDetail(
                             (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
                                     .trim());
+                } else if (recruitmentRequest.getSalaryFrom() == null) {
+                    response.setSalaryDetail(recruitmentRequest.getSalaryTo());
                 } else {
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
                 }
@@ -170,10 +180,12 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
-                if (recruitmentRequest.getSalaryTo() != null) {
+                if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
                     response.setSalaryDetail(
                             (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
                                     .trim());
+                } else if (recruitmentRequest.getSalaryFrom() == null) {
+                    response.setSalaryDetail(recruitmentRequest.getSalaryTo());
                 } else {
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
                 }
@@ -196,6 +208,16 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         City city = cityRepository.findByName(updateDTO.getCityName())
                 .orElseThrow(() -> new NotFoundException(CityErrorMessage.NOT_FOUND));
 
+        if (updateDTO.getSalaryFrom().equalsIgnoreCase(updateDTO.getSalaryTo())) {
+            updateDTO.setSalaryTo(null);
+        } else if (updateDTO.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+            updateDTO.setSalaryTo("Lên đến " + updateDTO.getSalaryTo());
+            updateDTO.setSalaryFrom(null);
+        } else if (updateDTO.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+            updateDTO.setSalaryFrom("Trên " + updateDTO.getSalaryFrom());
+            updateDTO.setSalaryTo(null);
+        }
+
         recruitmentRequest.setAmount(updateDTO.getAmount());
         recruitmentRequest.setExpiryDate(updateDTO.getExpiryDate());
         recruitmentRequest.setIndustry(updateDTO.getIndustry());
@@ -214,12 +236,14 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         RecruitmentRequest recruitmentRequestSaved = recruitmentRequestRepository.save(recruitmentRequest);
         RecruitmentRequestResponse response = modelMapper.map(recruitmentRequestSaved,
                 RecruitmentRequestResponse.class);
-        if (recruitmentRequestSaved.getSalaryTo() != null) {
+        if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
             response.setSalaryDetail(
-                    (recruitmentRequestSaved.getSalaryFrom() + " - " + recruitmentRequestSaved.getSalaryTo())
+                    (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
                             .trim());
+        } else if (recruitmentRequest.getSalaryFrom() == null) {
+            response.setSalaryDetail(recruitmentRequest.getSalaryTo());
         } else {
-            response.setSalaryDetail(recruitmentRequestSaved.getSalaryFrom());
+            response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
         }
         return response;
 
@@ -253,6 +277,16 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 throw new NotValidException(RecruitmentRequestErrorMessage.NOT_VALID_AMOUNT_EXCEPTION);
             }
 
+            if (createDTO.getSalaryFrom().equalsIgnoreCase(createDTO.getSalaryTo())) {
+                createDTO.setSalaryTo(null);
+            } else if (createDTO.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+                createDTO.setSalaryTo("Lên đến " + createDTO.getSalaryTo());
+                createDTO.setSalaryFrom(null);
+            } else if (createDTO.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+                createDTO.setSalaryFrom("Trên " + createDTO.getSalaryFrom());
+                createDTO.setSalaryTo(null);
+            }
+
             RecruitmentRequest request = RecruitmentRequest.builder().date(Date.valueOf(dateFormat))
                     .expiryDate(Date.valueOf(expiryDate)).industry(createDTO.getIndustry())
                     .amount(createDTO.getAmount()).jobLevel(createDTO.getJobLevel())
@@ -269,8 +303,12 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                     .position(position).build();
             recruitmentRequestRepository.save(request);
             RecruitmentRequestResponse response = modelMapper.map(request, RecruitmentRequestResponse.class);
-            if (request.getSalaryTo() != null) {
-                response.setSalaryDetail((request.getSalaryFrom() + " - " + request.getSalaryTo()).trim());
+            if (request.getSalaryTo() != null && request.getSalaryFrom() != null) {
+                response.setSalaryDetail(
+                        (request.getSalaryFrom() + " - " + request.getSalaryTo())
+                                .trim());
+            } else if (request.getSalaryFrom() == null) {
+                response.setSalaryDetail(request.getSalaryTo());
             } else {
                 response.setSalaryDetail(request.getSalaryFrom());
             }
@@ -289,11 +327,14 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         RecruitmentRequest recruitmentRequestSaved = recruitmentRequestRepository.save(recruitmentRequest);
         RecruitmentRequestResponse response = modelMapper.map(recruitmentRequestSaved,
                 RecruitmentRequestResponse.class);
-        if (recruitmentRequestSaved.getSalaryTo() != null) {
+        if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
             response.setSalaryDetail(
-                    (recruitmentRequestSaved.getSalaryFrom() + " - " + recruitmentRequestSaved.getSalaryTo()).trim());
+                    (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                            .trim());
+        } else if (recruitmentRequest.getSalaryFrom() == null) {
+            response.setSalaryDetail(recruitmentRequest.getSalaryTo());
         } else {
-            response.setSalaryDetail(recruitmentRequestSaved.getSalaryFrom());
+            response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
         }
         return response;
     }
@@ -314,10 +355,12 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
-                if (recruitmentRequest.getSalaryTo() != null) {
+                if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
                     response.setSalaryDetail(
                             (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
                                     .trim());
+                } else if (recruitmentRequest.getSalaryFrom() == null) {
+                    response.setSalaryDetail(recruitmentRequest.getSalaryTo());
                 } else {
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
                 }
@@ -341,10 +384,12 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             for (RecruitmentRequest recruitmentRequest : list) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
-                if (recruitmentRequest.getSalaryTo() != null) {
+                if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
                     response.setSalaryDetail(
                             (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
                                     .trim());
+                } else if (recruitmentRequest.getSalaryFrom() == null) {
+                    response.setSalaryDetail(recruitmentRequest.getSalaryTo());
                 } else {
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
                 }
@@ -374,10 +419,12 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
-                if (recruitmentRequest.getSalaryTo() != null) {
+                if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
                     response.setSalaryDetail(
                             (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
                                     .trim());
+                } else if (recruitmentRequest.getSalaryFrom() == null) {
+                    response.setSalaryDetail(recruitmentRequest.getSalaryTo());
                 } else {
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
                 }

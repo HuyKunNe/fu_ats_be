@@ -36,7 +36,7 @@ public class InterviewController {
     }
 
     @PostMapping("/createInterview")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> createInterview(@RequestBody InterviewCreateDTO dto) throws MessagingException {
         ResponseDTO response = new ResponseDTO();
         InterviewResponse interviewResponse = interviewService.createInterview(dto);
@@ -87,7 +87,7 @@ public class InterviewController {
     }
 
     @PutMapping("/updateInterview")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> updateInterview(@RequestParam int interviewId,
             @RequestBody InterviewUpdateDTO interviewUpdateDTO) throws MessagingException {
         ResponseDTO response = new ResponseDTO();
@@ -98,7 +98,7 @@ public class InterviewController {
     }
 
     @PatchMapping("/closeInterview")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> closeInterview(@RequestParam int id) {
         ResponseDTO response = new ResponseDTO();
         interviewService.closeInterview(id);
@@ -108,7 +108,7 @@ public class InterviewController {
     }
 
     @PatchMapping("/cancelInterview")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> cancelInterview(@RequestParam int id) {
         ResponseDTO response = new ResponseDTO();
         interviewService.cancelInterview(id);

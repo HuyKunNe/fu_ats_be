@@ -195,7 +195,7 @@ public class RecruitmentPlanController {
     }
 
     @PutMapping("/approved")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> approvedRecruitmentPlan(
             @RequestBody RecruitmentPlanActionDTO actionDTO) {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
@@ -207,7 +207,7 @@ public class RecruitmentPlanController {
     }
 
     @PutMapping("/rejected")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> rejectedRecruitmentPlan(
             @RequestBody RecruitmentPlanActionDTO actionDTO) {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
@@ -219,7 +219,7 @@ public class RecruitmentPlanController {
     }
 
     @PutMapping("/canceled")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> canceledRecruitmentPlan(
             @RequestBody RecruitmentPlanActionDTO actionDTO) {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
@@ -231,7 +231,7 @@ public class RecruitmentPlanController {
     }
 
     @PutMapping("update/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> updateRecruitmentPlan(@RequestParam("id") int id,
             @RequestBody RecruimentPlanUpdateDTO updateDTO) {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();

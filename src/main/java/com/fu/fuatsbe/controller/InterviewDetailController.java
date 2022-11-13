@@ -19,7 +19,7 @@ public class InterviewDetailController {
     private final InterviewDetailService interviewDetailService;
 
     @GetMapping("/getAllInterviewDetail")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getAllInterviewDetail(@RequestParam(defaultValue = "0") int pageNo,
                                                              @RequestParam(defaultValue = "10") int pageSize) {
         ResponseDTO response = new ResponseDTO();
@@ -30,7 +30,7 @@ public class InterviewDetailController {
     }
 
     @GetMapping("/getInterviewDetailById")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE_CANDIDATE)
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity<ResponseDTO> getInterviewDetailById(@RequestParam int id) {
         ResponseDTO response = new ResponseDTO();
         response.setData(interviewDetailService.getInterviewDetailById(id));
@@ -40,7 +40,7 @@ public class InterviewDetailController {
     }
 
     @PutMapping("/updateInterviewDetail")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> updateInterviewDetail(@RequestParam int id,
                                                              @RequestBody InterviewDetailDTO interviewDetailDTO) {
         ResponseDTO response = new ResponseDTO();
@@ -51,7 +51,7 @@ public class InterviewDetailController {
     }
 
     @PostMapping("/createInterviewDetail")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> createInterviewDetail(@RequestBody InterviewDetailDTO interviewDetailDTO) {
         ResponseDTO response = new ResponseDTO();
         response.setData(interviewDetailService.createInterviewDetail(interviewDetailDTO));
@@ -60,7 +60,7 @@ public class InterviewDetailController {
         return ResponseEntity.ok().body(response);
     }
     @GetMapping("/getByInterviewId")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE_CANDIDATE)
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity<ResponseDTO> getInterviewDetailByInterviewId(@RequestParam int interviewId) {
         ResponseDTO response = new ResponseDTO();
         response.setData(interviewDetailService.getInterviewDetailByInterviewId(interviewId));

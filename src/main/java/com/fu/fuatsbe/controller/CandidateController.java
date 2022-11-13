@@ -111,7 +111,7 @@ public class CandidateController {
     }
 
     @PutMapping("/update/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_CANDIDATE)
     public ResponseEntity<ResponseDTO> updateCandidateById(@RequestParam("id") int id,
             @RequestBody CandidateUpdateDTO updateDTO) {
         ResponseDTO<CandidateResponseDTO> responseDTO = new ResponseDTO();

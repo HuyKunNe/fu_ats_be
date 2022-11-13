@@ -114,7 +114,7 @@ public class RecruitmentRequestController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> createRecruitmentRequest(@RequestBody RecruitmentRequestCreateDTO createDTO) {
         ResponseDTO<RecruitmentRequestResponse> responseDTO = new ResponseDTO();
         RecruitmentRequestResponse recruitmentRequest = recruitmentRequestService.createRecruitmentRequest(createDTO);
@@ -125,7 +125,7 @@ public class RecruitmentRequestController {
     }
 
     @PutMapping("/update/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> updateRecruitmentRequest(@RequestParam("id") int id,
             @RequestBody RecruitmentRequestUpdateDTO updateDTO) {
         ResponseDTO<RecruitmentRequestResponse> responseDTO = new ResponseDTO();
@@ -137,7 +137,7 @@ public class RecruitmentRequestController {
     }
 
     @PutMapping("/closeRecruitmentRequest/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> closeRecruitmentRequest(@RequestParam("id") int id) {
         ResponseDTO<RecruitmentRequestResponse> responseDTO = new ResponseDTO();
         RecruitmentRequestResponse planDetailDTO = recruitmentRequestService.closeRecruitmentRequest(id);

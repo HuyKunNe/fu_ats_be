@@ -31,7 +31,7 @@ public class JobApplyController {
     private final JobApplyService jobApplyService;
 
     @PostMapping("/create")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE_CANDIDATE)
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity<ResponseDTO> createInterview(@RequestBody JobApplyCreateDTO createDTO) {
         ResponseDTO<JobApplyResponse> responseDTO = new ResponseDTO();
         JobApplyResponse jobApplyResponse = jobApplyService.createJobApply(createDTO);
@@ -42,7 +42,7 @@ public class JobApplyController {
     }
 
     @GetMapping("/getAll")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getAllJobApplies(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
@@ -55,7 +55,7 @@ public class JobApplyController {
     }
 
     @GetMapping("/getByRecruitmentRequest")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getAllJobAppliesByRecruitmentRequest(
             @RequestParam int requestId,
             @RequestParam(defaultValue = "0") int pageNo,
@@ -70,7 +70,7 @@ public class JobApplyController {
     }
 
     @GetMapping("/getJobApplyByCandidate")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE_CANDIDATE)
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity<ResponseDTO> getJobApplyByCandidate(
             @RequestParam int candidateId,
             @RequestParam(defaultValue = "0") int pageNo,
@@ -85,7 +85,7 @@ public class JobApplyController {
     }
 
     @GetMapping("/getAllPendingJobApplies")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE_CANDIDATE)
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity<ResponseDTO> getJobApplyByCandidate(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
@@ -98,7 +98,7 @@ public class JobApplyController {
     }
 
     @GetMapping("/getAllApprovedJobApplies")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getAllApprovedJobApplies(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
@@ -111,7 +111,7 @@ public class JobApplyController {
     }
 
     @GetMapping("/getAllCancelJobApplies")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getAllCancelJobApplies(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
@@ -124,7 +124,7 @@ public class JobApplyController {
     }
 
     @PutMapping("/cancelJobApply/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> cancelJobApply(@RequestParam("id") int id,
             @RequestParam int employeeId) {
         ResponseDTO<JobApplyResponse> responseDTO = new ResponseDTO();
@@ -136,7 +136,7 @@ public class JobApplyController {
     }
 
     @PutMapping("/approvedJobApply/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> approvedJobApply(@RequestParam("id") int id,
             @RequestParam int employeeId) {
         ResponseDTO<JobApplyResponse> responseDTO = new ResponseDTO();
@@ -148,7 +148,7 @@ public class JobApplyController {
     }
 
     @GetMapping("getById/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE_CANDIDATE)
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity<ResponseDTO> getJobApplyById(@RequestParam("id") int id) {
         ResponseDTO<JobApplyResponse> responseDTO = new ResponseDTO();
         JobApplyResponse jobApplyResponse = jobApplyService.getJobApplyById(id);
