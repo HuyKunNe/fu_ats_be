@@ -81,7 +81,7 @@ public class JobApplyServiceImpl implements JobApplyService {
         Candidate candidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
-        Page<JobApply> pageResult = jobApplyRepository.findByCandidate(candidateId, pageable);
+        Page<JobApply> pageResult = jobApplyRepository.findByCandidate(candidate.getId(), pageable);
         List<JobApplyResponse> list = new ArrayList<JobApplyResponse>();
         ResponseWithTotalPage<JobApplyResponse> result = new ResponseWithTotalPage<>();
         if (pageResult.hasContent()) {

@@ -72,7 +72,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                         RecruitmentRequestResponse.class);
                 if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
                     response.setSalaryDetail(
-                            (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                            (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+                                    + recruitmentRequest.getSalaryTo())
                                     .trim());
                 } else if (recruitmentRequest.getSalaryFrom() == null) {
                     response.setSalaryDetail(recruitmentRequest.getSalaryTo());
@@ -96,7 +97,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest, RecruitmentRequestResponse.class);
         if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
             response.setSalaryDetail(
-                    (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                    (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+                            + recruitmentRequest.getSalaryTo())
                             .trim());
         } else if (recruitmentRequest.getSalaryFrom() == null) {
             response.setSalaryDetail(recruitmentRequest.getSalaryTo());
@@ -121,7 +123,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                         RecruitmentRequestResponse.class);
                 if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
                     response.setSalaryDetail(
-                            (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                            (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+                                    + recruitmentRequest.getSalaryTo())
                                     .trim());
                 } else if (recruitmentRequest.getSalaryFrom() == null) {
                     response.setSalaryDetail(recruitmentRequest.getSalaryTo());
@@ -152,7 +155,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                         RecruitmentRequestResponse.class);
                 if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
                     response.setSalaryDetail(
-                            (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                            (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+                                    + recruitmentRequest.getSalaryTo())
                                     .trim());
                 } else if (recruitmentRequest.getSalaryFrom() == null) {
                     response.setSalaryDetail(recruitmentRequest.getSalaryTo());
@@ -182,7 +186,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                         RecruitmentRequestResponse.class);
                 if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
                     response.setSalaryDetail(
-                            (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                            (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+                                    + recruitmentRequest.getSalaryTo())
                                     .trim());
                 } else if (recruitmentRequest.getSalaryFrom() == null) {
                     response.setSalaryDetail(recruitmentRequest.getSalaryTo());
@@ -238,7 +243,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 RecruitmentRequestResponse.class);
         if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
             response.setSalaryDetail(
-                    (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                    (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+                            + recruitmentRequest.getSalaryTo())
                             .trim());
         } else if (recruitmentRequest.getSalaryFrom() == null) {
             response.setSalaryDetail(recruitmentRequest.getSalaryTo());
@@ -305,7 +311,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             RecruitmentRequestResponse response = modelMapper.map(request, RecruitmentRequestResponse.class);
             if (request.getSalaryTo() != null && request.getSalaryFrom() != null) {
                 response.setSalaryDetail(
-                        (request.getSalaryFrom() + " - " + request.getSalaryTo())
+                        (request.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - " + request.getSalaryTo())
                                 .trim());
             } else if (request.getSalaryFrom() == null) {
                 response.setSalaryDetail(request.getSalaryTo());
@@ -329,7 +335,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 RecruitmentRequestResponse.class);
         if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
             response.setSalaryDetail(
-                    (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                    (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+                            + recruitmentRequest.getSalaryTo())
                             .trim());
         } else if (recruitmentRequest.getSalaryFrom() == null) {
             response.setSalaryDetail(recruitmentRequest.getSalaryTo());
@@ -357,7 +364,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                         RecruitmentRequestResponse.class);
                 if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
                     response.setSalaryDetail(
-                            (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                            (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+                                    + recruitmentRequest.getSalaryTo())
                                     .trim());
                 } else if (recruitmentRequest.getSalaryFrom() == null) {
                     response.setSalaryDetail(recruitmentRequest.getSalaryTo());
@@ -386,7 +394,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                         RecruitmentRequestResponse.class);
                 if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
                     response.setSalaryDetail(
-                            (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                            (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+                                    + recruitmentRequest.getSalaryTo())
                                     .trim());
                 } else if (recruitmentRequest.getSalaryFrom() == null) {
                     response.setSalaryDetail(recruitmentRequest.getSalaryTo());
@@ -421,7 +430,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                         RecruitmentRequestResponse.class);
                 if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
                     response.setSalaryDetail(
-                            (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                            (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+                                    + recruitmentRequest.getSalaryTo())
                                     .trim());
                 } else if (recruitmentRequest.getSalaryFrom() == null) {
                     response.setSalaryDetail(recruitmentRequest.getSalaryTo());
