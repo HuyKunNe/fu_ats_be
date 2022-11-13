@@ -141,7 +141,8 @@ public class InterviewServiceImp implements InterviewService {
     }
 
     @Override
-    public ResponseWithTotalPage<InterviewResponse> getInterviewByCandidateID(int candidateId, int pageNo, int pageSize) {
+    public ResponseWithTotalPage<InterviewResponse> getInterviewByCandidateID(int candidateId, int pageNo,
+            int pageSize) {
         Candidate candidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
 
@@ -149,7 +150,7 @@ public class InterviewServiceImp implements InterviewService {
         Page<Interview> interviews = interviewRepository.findInterviewByCandidateId(candidate.getId(), pageable);
         ResponseWithTotalPage<InterviewResponse> listResponse = new ResponseWithTotalPage<>();
         List<InterviewResponse> responseList = new ArrayList<>();
-        if(interviews.hasContent()){
+        if (interviews.hasContent()) {
             for (Interview interview : interviews) {
                 DateTimeFormatter timeDislayFormatter = DateTimeFormatter.ofPattern("HH:mm");
                 String timeDislay = interview.getDate().toLocalDateTime().toLocalTime().format(timeDislayFormatter);
@@ -188,7 +189,7 @@ public class InterviewServiceImp implements InterviewService {
         List<String> empName = new ArrayList<>();
         ResponseWithTotalPage<InterviewResponse> listResponse = new ResponseWithTotalPage<>();
         List<InterviewResponse> responseList = new ArrayList<>();
-        if(interviewList.hasContent()){
+        if (interviewList.hasContent()) {
             for (Interview interview : interviewList) {
                 if (empName.size() != 0) {
                     empName.clear();
@@ -228,7 +229,7 @@ public class InterviewServiceImp implements InterviewService {
 
     @Override
     public ResponseWithTotalPage<InterviewResponse> getAllInterview(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<Interview> interviews = interviewRepository.findAll(pageable);
         List<InterviewResponse> list = new ArrayList<InterviewResponse>();
         ResponseWithTotalPage<InterviewResponse> result = new ResponseWithTotalPage<>();

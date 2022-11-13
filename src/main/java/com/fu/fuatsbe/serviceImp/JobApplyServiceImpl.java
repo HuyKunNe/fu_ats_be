@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.JobApplyCreateDTO;
@@ -59,7 +60,7 @@ public class JobApplyServiceImpl implements JobApplyService {
 
     @Override
     public ResponseWithTotalPage<JobApplyResponse> getAllJobApplies(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<JobApply> pageResult = jobApplyRepository.findAll(pageable);
         List<JobApplyResponse> list = new ArrayList<JobApplyResponse>();
         ResponseWithTotalPage<JobApplyResponse> result = new ResponseWithTotalPage<>();
@@ -79,7 +80,7 @@ public class JobApplyServiceImpl implements JobApplyService {
     public ResponseWithTotalPage<JobApplyResponse> getJobApplyByCandidate(int candidateId, int pageNo, int pageSize) {
         Candidate candidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<JobApply> pageResult = jobApplyRepository.findByCandidate(candidateId, pageable);
         List<JobApplyResponse> list = new ArrayList<JobApplyResponse>();
         ResponseWithTotalPage<JobApplyResponse> result = new ResponseWithTotalPage<>();
@@ -173,7 +174,7 @@ public class JobApplyServiceImpl implements JobApplyService {
 
     @Override
     public ResponseWithTotalPage<JobApplyResponse> getAllPendingJobApplies(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<JobApply> pageResult = jobApplyRepository.findByStatus(JobApplyStatus.PEDNING, pageable);
         List<JobApplyResponse> list = new ArrayList<JobApplyResponse>();
         ResponseWithTotalPage<JobApplyResponse> result = new ResponseWithTotalPage<>();
@@ -191,7 +192,7 @@ public class JobApplyServiceImpl implements JobApplyService {
 
     @Override
     public ResponseWithTotalPage<JobApplyResponse> getAllApprovedJobApplies(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<JobApply> pageResult = jobApplyRepository.findByStatus(JobApplyStatus.APPROVED, pageable);
         List<JobApplyResponse> list = new ArrayList<JobApplyResponse>();
         ResponseWithTotalPage<JobApplyResponse> result = new ResponseWithTotalPage<>();
@@ -209,7 +210,7 @@ public class JobApplyServiceImpl implements JobApplyService {
 
     @Override
     public ResponseWithTotalPage<JobApplyResponse> getAllCancelJobApplies(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<JobApply> pageResult = jobApplyRepository.findByStatus(JobApplyStatus.CANCLED, pageable);
         List<JobApplyResponse> list = new ArrayList<JobApplyResponse>();
         ResponseWithTotalPage<JobApplyResponse> result = new ResponseWithTotalPage<>();

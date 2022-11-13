@@ -18,6 +18,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -35,7 +36,7 @@ public class InterviewDetailServiceImp implements InterviewDetailService {
 
         @Override
         public ResponseWithTotalPage<InterviewDetailResponse> getAllInterviewDetail(int pageNo, int pageSize) {
-                Pageable pageable = PageRequest.of(pageNo, pageSize);
+                Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
                 Page<InterviewDetail> interviewDetails = interviewDetailRepository.findAll(pageable);
                 List<InterviewDetailResponse> list = new ArrayList<InterviewDetailResponse>();
                 ResponseWithTotalPage<InterviewDetailResponse> result = new ResponseWithTotalPage<>();
