@@ -153,13 +153,15 @@ public class AuthServiceImp implements AuthService {
     }
 
     @Override
-    public LoginResponseDto login(LoginDto employee) {
-        Authentication authentication = new UsernamePasswordAuthenticationToken(employee.getEmail(),
-                employee.getPassword());
+    public LoginResponseDto login(LoginDto loginDTO) {
+        Account account = accountRepository.findAccountByEmail(loginDTO.getEmail()).orElseThrow(() ->
+                new NotFoundException(AccountErrorMessage.ACCOUNT_NOT_FOUND));
+        Authentication authentication = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(),
+                loginDTO.getPassword());
         LoginResponseDto loginResponseDTO = null;
         Authentication authenticate = authenticationManager.authenticate(authentication);
         if (authenticate.isAuthenticated()) {
-            Optional<Account> accountAuthencatedOptional = accountRepository.findAccountByEmail(employee.getEmail());
+            Optional<Account> accountAuthencatedOptional = accountRepository.findAccountByEmail(loginDTO.getEmail());
             Account accountAuthencated = accountAuthencatedOptional.get();
             if (accountAuthencated.getEmployee() != null) {
                 if (!accountAuthencated.getEmployee().getStatus().equals(AccountStatus.ACTIVATED)) {
@@ -174,6 +176,10 @@ public class AuthServiceImp implements AuthService {
                     .roleName(accountAuthencated.getRole().getName())
                     .token(token)
                     .build();
+            if(!loginDTO.getNotificationToken().isEmpty()){
+                account.setNotificationToken(loginDTO.getNotificationToken());
+                accountRepository.save(account);
+            }
             if (accountAuthencated.getRole().getName().equalsIgnoreCase(RoleName.ROLE_CANDIDATE)) {
                 loginResponseDTO.setCandidate(accountAuthencated.getCandidate());
             } else {

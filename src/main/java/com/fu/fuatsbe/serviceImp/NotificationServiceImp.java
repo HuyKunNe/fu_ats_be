@@ -2,6 +2,7 @@ package com.fu.fuatsbe.serviceImp;
 
 import com.fu.fuatsbe.DTO.NotificationCreateDTO;
 import com.fu.fuatsbe.DTO.SendNotificationDTO;
+import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.notification.NotificationErrorMessage;
 import com.fu.fuatsbe.constant.notification.NotificationStatus;
@@ -9,6 +10,7 @@ import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.Notification;
 import com.fu.fuatsbe.exceptions.NotFoundException;
+import com.fu.fuatsbe.repository.CandidateRepository;
 import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.NotificationRepository;
 import com.fu.fuatsbe.service.NotificationService;
@@ -38,6 +40,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NotificationServiceImp implements NotificationService {
     private final EmployeeRepository employeeRepository;
+    private final CandidateRepository candidateRepository;
 
     private final NotificationRepository notificationRepository;
     private final JavaMailSender javaMailSender;
@@ -66,19 +69,41 @@ public class NotificationServiceImp implements NotificationService {
 
     @Override
     public void createNotification(NotificationCreateDTO notificationCreateDTO) {
+        List<Candidate> listCandidate = new ArrayList<>();
+        List<Employee> listEmployee = new ArrayList<>();
+        for (Integer candidateId: notificationCreateDTO.getCandidateIDs()) {
+            Candidate candidateInRepo = candidateRepository.findById(candidateId).orElseThrow(()->
+                    new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+            listCandidate.add(candidateInRepo);
+        }for (Integer employeeId: notificationCreateDTO.getEmployeeIDs()) {
+            Employee employee = employeeRepository.findById(employeeId).orElseThrow(()->
+                    new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+            listEmployee.add(employee);
+        }
+
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String presentDate = simpleDateFormat.format(Date.valueOf(LocalDate.now()));
         Notification notification = Notification.builder()
                 .subject(notificationCreateDTO.getTitle())
                 .content(notificationCreateDTO.getContent())
                 .createTime(Date.valueOf(presentDate))
+                .candidates(listCandidate)
+                .employees(listEmployee)
                 .status(NotificationStatus.SUCCESSFULL)
                 .build();
 
         notificationRepository.save(notification);
-        pushNotification(notificationCreateDTO.getToken(),
-                notificationCreateDTO.getTitle(),
-                notificationCreateDTO.getContent());
+        for (Candidate candidate: listCandidate) {
+            pushNotification(candidate.getAccount().getNotificationToken(),
+                    notificationCreateDTO.getTitle(),
+                    notificationCreateDTO.getContent());
+        }for (Employee employee: listEmployee) {
+            pushNotification(employee.getAccount().getNotificationToken(),
+                    notificationCreateDTO.getTitle(),
+                    notificationCreateDTO.getContent());
+        }
+
+
     }
 
     @Override

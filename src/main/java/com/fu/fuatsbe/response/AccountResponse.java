@@ -20,6 +20,7 @@ public class AccountResponse {
     private int id;
     private String email;
     private String status;
+    private String notificationToken;
     private Role role;
     private Employee employee;
     private Candidate candidate;

@@ -25,4 +25,5 @@ public class LoginDto {
     private String email;
     @Size(min = ValidationSize.PASSWORD_MIN, max = ValidationSize.PASSWORD_MAX, message = ValidationMessage.PASSWORD_VALID_MESSAGE)
     private String password;
+    private String notificationToken;
 }
