@@ -135,8 +135,14 @@ public class AuthServiceImp implements AuthService {
                 .phone(registerDto.getPhone()).department(optionalDepartment.get()).address(registerDto.getAddress())
                 .position(optionalPosition.get())
                 .build();
-        Role role = roleRepository.findByName(registerDto.getRole())
-                .orElseThrow(() -> new NotFoundException(RoleErrorMessage.ROLE_NOT_EXIST));
+        Role role ;
+        if (optionalDepartment.get().getName().equals("Phòng điều hành")) {
+             role = roleRepository.findByName(RoleName.ROLE_ADMIN)
+                    .orElseThrow(() -> new NotFoundException(RoleErrorMessage.ROLE_NOT_EXIST));
+        } else {
+             role = roleRepository.findByName(registerDto.getRole())
+                    .orElseThrow(() -> new NotFoundException(RoleErrorMessage.ROLE_NOT_EXIST));
+        }
         Account account = Account.builder()
                 .email(registerDto.getEmail())
                 .role(role)
@@ -176,7 +182,7 @@ public class AuthServiceImp implements AuthService {
                     .roleName(accountAuthencated.getRole().getName())
                     .token(token)
                     .build();
-            if(!loginDTO.getNotificationToken().isEmpty()){
+            if (!loginDTO.getNotificationToken().isEmpty()) {
                 account.setNotificationToken(loginDTO.getNotificationToken());
                 accountRepository.save(account);
             }

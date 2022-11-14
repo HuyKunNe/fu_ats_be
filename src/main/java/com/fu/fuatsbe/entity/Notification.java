@@ -40,7 +40,7 @@ public class Notification {
     private String content;
     private Date createTime;
     private String status;
-    private boolean isConfirmed;
+
 
     @ManyToMany
     @JoinTable(name = "notified_candidate", joinColumns = @JoinColumn(name = "notifice_id"), inverseJoinColumns = @JoinColumn(name = "candidate_id"))

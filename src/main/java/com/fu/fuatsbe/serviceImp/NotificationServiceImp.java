@@ -35,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -68,15 +69,16 @@ public class NotificationServiceImp implements NotificationService {
     }
 
     @Override
-    public void createNotification(NotificationCreateDTO notificationCreateDTO) {
+    public void createNotification(NotificationCreateDTO notificationCreateDTO) throws MessagingException {
         List<Candidate> listCandidate = new ArrayList<>();
         List<Employee> listEmployee = new ArrayList<>();
-        for (Integer candidateId: notificationCreateDTO.getCandidateIDs()) {
-            Candidate candidateInRepo = candidateRepository.findById(candidateId).orElseThrow(()->
+        for (Integer candidateId : notificationCreateDTO.getCandidateIDs()) {
+            Candidate candidateInRepo = candidateRepository.findById(candidateId).orElseThrow(() ->
                     new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
             listCandidate.add(candidateInRepo);
-        }for (Integer employeeId: notificationCreateDTO.getEmployeeIDs()) {
-            Employee employee = employeeRepository.findById(employeeId).orElseThrow(()->
+        }
+        for (Integer employeeId : notificationCreateDTO.getEmployeeIDs()) {
+            Employee employee = employeeRepository.findById(employeeId).orElseThrow(() ->
                     new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
             listEmployee.add(employee);
         }
@@ -93,14 +95,20 @@ public class NotificationServiceImp implements NotificationService {
                 .build();
 
         notificationRepository.save(notification);
-        for (Candidate candidate: listCandidate) {
-            pushNotification(candidate.getAccount().getNotificationToken(),
-                    notificationCreateDTO.getTitle(),
-                    notificationCreateDTO.getContent());
-        }for (Employee employee: listEmployee) {
-            pushNotification(employee.getAccount().getNotificationToken(),
-                    notificationCreateDTO.getTitle(),
-                    notificationCreateDTO.getContent());
+        for (Candidate candidate : listCandidate) {
+            if(candidate.getAccount().getNotificationToken()!=null){
+                pushNotification(candidate.getAccount().getNotificationToken(),
+                        notificationCreateDTO.getTitle(),
+                        notificationCreateDTO.getContent());
+            }
+            sendEmail(candidate.getEmail(), notificationCreateDTO.getTitle(), notificationCreateDTO.getContent(), candidate.getName());
+        }
+        for (Employee employee : listEmployee) {
+            if(employee.getAccount().getNotificationToken() != null){
+                pushNotification(employee.getAccount().getNotificationToken(),
+                        notificationCreateDTO.getTitle(),
+                        notificationCreateDTO.getContent());
+            }
         }
 
 
@@ -126,9 +134,10 @@ public class NotificationServiceImp implements NotificationService {
         }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String presentDate = simpleDateFormat.format(Date.valueOf(LocalDate.now()));
+        String dateFormated = sendNotificationDTO.getDate().toString().substring(0,16);
 
         String subject = "Thông báo lịch phỏng vấn";
-        String content = "Bạn có 1 buổi phỏng vấn vào lúc " + sendNotificationDTO.getDate() + "\n"
+        String content = "Bạn có 1 buổi phỏng vấn vào lúc " + dateFormated+ "\n"
                 + "Bạn hãy đến địa chỉ này trước thời gian để tiến hành phỏng vấn\n"
                 + "Địa chỉ: " + interviewAddress + "\n"
                 + "Trân trọng.";
@@ -140,15 +149,23 @@ public class NotificationServiceImp implements NotificationService {
                 .candidates(listCandidate)
                 .employees(listEmployee)
                 .interview(sendNotificationDTO.getInterview())
-                .isConfirmed(false)
                 .status(NotificationStatus.SUCCESSFULL)
                 .build();
 
         notificationRepository.save(notification);
-
         sendEmail(sendNotificationDTO.getCandidate().getEmail(), subject, content, sendNotificationDTO.getCandidate().getName());
         for (Employee employee : listEmployee) {
             sendEmail(employee.getAccount().getEmail(), subject, content, employee.getName());
+        }
+        for (Candidate candidate : listCandidate) {
+            pushNotification(candidate.getAccount().getNotificationToken(),
+                    notification.getStatus(),
+                    notification.getContent());
+        }
+        for (Employee employee : listEmployee) {
+            pushNotification(employee.getAccount().getNotificationToken(),
+                    notification.getStatus(),
+                    notification.getContent());
         }
     }
 
@@ -157,21 +174,13 @@ public class NotificationServiceImp implements NotificationService {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
         mimeMessageHelper.setTo(email);
-        mimeMessageHelper.setSubject( title);
-        mimeMessageHelper.setText("Thân gửi " + name + ",\n" +content);
+        mimeMessageHelper.setSubject(title);
+        mimeMessageHelper.setText("Thân gửi " + name + ",\n" + content);
         javaMailSender.send(mimeMessage);
     }
 
-    @Override
-    public void confirmJoinMeeting(int notificationId) {
-        Notification notification = notificationRepository.findById(notificationId).orElseThrow(() ->
-                new NotFoundException(NotificationErrorMessage.NOTIFICATION_NOT_VALID));
-        notification.setConfirmed(true);
-        notificationRepository.save(notification);
 
-    }
-
-    public String pushNotification(String token, String title, String content) {
+    public void pushNotification(String token, String title, String content) {
         com.google.firebase.messaging.Notification firebaseNoti = com.google.firebase.messaging.Notification
                 .builder()
                 .setTitle(title)
@@ -184,13 +193,12 @@ public class NotificationServiceImp implements NotificationService {
                 .putData("content", content)
                 .build();
 
-        String response = null;
         try {
             FirebaseMessaging.getInstance().send(message);
         } catch (FirebaseMessagingException e) {
             log.error("Fail to send firebase notification", e);
+            throw new RuntimeException(NotificationStatus.UNSUCCESSFULL);
         }
 
-        return response;
     }
 }

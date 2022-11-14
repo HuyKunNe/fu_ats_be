@@ -2,6 +2,7 @@ package com.fu.fuatsbe.service;
 
 import javax.mail.MessagingException;
 
+import com.fu.fuatsbe.DTO.CancelInterviewDTO;
 import com.fu.fuatsbe.DTO.InterviewCreateDTO;
 import com.fu.fuatsbe.DTO.InterviewUpdateDTO;
 import com.fu.fuatsbe.response.InterviewResponse;
@@ -22,7 +23,9 @@ public interface InterviewService {
 
     void closeInterview(int id);
 
-    void cancelInterview(int id);
+    void cancelInterview(CancelInterviewDTO cancelInterviewDTO) throws MessagingException;
+    void confirmJoinInterviewByEmployee(int idInterview, int idEmployee);
+    void confirmJoinInterviewByCandidate(int idInterview, int idCandidate);
 
     ResponseWithTotalPage<InterviewResponse> getInterviewByDepartment(int departmentId, int pageNo, int pageSize);
 

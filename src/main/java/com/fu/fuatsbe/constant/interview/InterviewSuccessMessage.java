@@ -9,5 +9,6 @@ public final class InterviewSuccessMessage {
     public final static String UPDATE_INTERVIEW = "Update interview is successfully";
     public final static String CLOSE_INTERVIEW = "Close interview is successfully";
     public final static String CANCEL_INTERVIEW = "Cancel interview is successfully";
+    public final static String CONFIRM_INTERVIEW = "You just confirm to join the interview";
 
 }

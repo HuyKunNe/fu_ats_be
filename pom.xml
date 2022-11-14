@@ -11,7 +11,7 @@
 	<artifactId>fu-ats-be</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>fu-ats-be</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Capstone project by Spring Boot</description>
 	<!-- <url>http://maven.apache.org</url> -->
 	<properties>
 		<java.version>17</java.version>

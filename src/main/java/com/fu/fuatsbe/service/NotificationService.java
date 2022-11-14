@@ -8,7 +8,6 @@ import javax.mail.MessagingException;
 public interface NotificationService {
 
     public void sendNotificationForInterview(SendNotificationDTO sendNotificationDTO) throws MessagingException;
-    void createNotification(NotificationCreateDTO notificationCreateDTO);
+    void createNotification(NotificationCreateDTO notificationCreateDTO) throws MessagingException;
 
-    void confirmJoinMeeting(int notificationId);
 }

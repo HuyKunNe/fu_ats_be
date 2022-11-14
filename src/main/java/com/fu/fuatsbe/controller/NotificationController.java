@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+
 @RestController
 @RequestMapping("/notification")
 @CrossOrigin("*")
@@ -18,16 +20,8 @@ import org.springframework.web.bind.annotation.*;
 public class NotificationController {
     private final NotificationService notificationService;
 
-    @PutMapping("/confirm")
-    public ResponseEntity<ResponseDTO> confirmJoinMeeting(@RequestParam int notification_id) {
-        ResponseDTO response = new ResponseDTO();
-        notificationService.confirmJoinMeeting(notification_id);
-        response.setStatus(ResponseStatusDTO.SUCCESS);
-        response.setMessage(NotificationSuccessMessage.CONFIRM_JOIN_MEETING_SUCCESS);
-        return ResponseEntity.ok().body(response);
-    }
     @PostMapping("/createNotification")
-    public ResponseEntity<ResponseDTO> createNotification(@RequestBody NotificationCreateDTO notificationCreateDTO){
+    public ResponseEntity<ResponseDTO> createNotification(@RequestBody NotificationCreateDTO notificationCreateDTO) throws MessagingException {
         ResponseDTO response = new ResponseDTO();
         notificationService.createNotification(notificationCreateDTO);
         response.setStatus(ResponseStatusDTO.SUCCESS);
