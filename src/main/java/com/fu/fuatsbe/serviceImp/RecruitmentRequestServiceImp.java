@@ -50,7 +50,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     @Autowired
     private final RecruitmentRequestRepository recruitmentRequestRepository;
 
-    private static final String THOA_THUAN = "Thỏa thuận";
+    private static final String THOA_THUAN = "Negotiable";
 
     private final ModelMapper modelMapper;
     private final EmployeeRepository employeeRepository;
@@ -75,11 +75,14 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                             (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
                                     + recruitmentRequest.getSalaryTo())
                                     .trim());
-                } else if (recruitmentRequest.getSalaryFrom() == null) {
-                    response.setSalaryDetail(recruitmentRequest.getSalaryTo());
-                } else {
+                } else if (recruitmentRequest.getSalaryFrom() == null
+                        && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+                } else if (recruitmentRequest.getSalaryTo() == null
+                        && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+                } else
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
-                }
                 list.add(response);
             }
             result.setResponseList(list);
@@ -100,11 +103,14 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                     (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
                             + recruitmentRequest.getSalaryTo())
                             .trim());
-        } else if (recruitmentRequest.getSalaryFrom() == null) {
-            response.setSalaryDetail(recruitmentRequest.getSalaryTo());
-        } else {
+        } else if (recruitmentRequest.getSalaryFrom() == null
+                && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+            response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+        } else if (recruitmentRequest.getSalaryTo() == null
+                && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+            response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+        } else
             response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
-        }
         return response;
     }
 
@@ -126,11 +132,14 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                             (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
                                     + recruitmentRequest.getSalaryTo())
                                     .trim());
-                } else if (recruitmentRequest.getSalaryFrom() == null) {
-                    response.setSalaryDetail(recruitmentRequest.getSalaryTo());
-                } else {
+                } else if (recruitmentRequest.getSalaryFrom() == null
+                        && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+                } else if (recruitmentRequest.getSalaryTo() == null
+                        && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+                } else
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
-                }
                 list.add(response);
             }
             result.setResponseList(list);
@@ -158,11 +167,14 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                             (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
                                     + recruitmentRequest.getSalaryTo())
                                     .trim());
-                } else if (recruitmentRequest.getSalaryFrom() == null) {
-                    response.setSalaryDetail(recruitmentRequest.getSalaryTo());
-                } else {
+                } else if (recruitmentRequest.getSalaryFrom() == null
+                        && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+                } else if (recruitmentRequest.getSalaryTo() == null
+                        && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+                } else
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
-                }
                 list.add(response);
             }
             result.setResponseList(list);
@@ -189,11 +201,14 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                             (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
                                     + recruitmentRequest.getSalaryTo())
                                     .trim());
-                } else if (recruitmentRequest.getSalaryFrom() == null) {
-                    response.setSalaryDetail(recruitmentRequest.getSalaryTo());
-                } else {
+                } else if (recruitmentRequest.getSalaryFrom() == null
+                        && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+                } else if (recruitmentRequest.getSalaryTo() == null
+                        && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+                } else
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
-                }
                 list.add(response);
             }
             result.setResponseList(list);
@@ -213,13 +228,12 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         City city = cityRepository.findByName(updateDTO.getCityName())
                 .orElseThrow(() -> new NotFoundException(CityErrorMessage.NOT_FOUND));
 
-        if (updateDTO.getSalaryFrom().equalsIgnoreCase(updateDTO.getSalaryTo())) {
+        if (updateDTO.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)
+                && updateDTO.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
             updateDTO.setSalaryTo(null);
         } else if (updateDTO.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
-            updateDTO.setSalaryTo("Lên đến " + updateDTO.getSalaryTo());
             updateDTO.setSalaryFrom(null);
         } else if (updateDTO.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
-            updateDTO.setSalaryFrom("Trên " + updateDTO.getSalaryFrom());
             updateDTO.setSalaryTo(null);
         }
 
@@ -246,11 +260,14 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                     (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
                             + recruitmentRequest.getSalaryTo())
                             .trim());
-        } else if (recruitmentRequest.getSalaryFrom() == null) {
-            response.setSalaryDetail(recruitmentRequest.getSalaryTo());
-        } else {
+        } else if (recruitmentRequest.getSalaryFrom() == null
+                && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+            response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+        } else if (recruitmentRequest.getSalaryTo() == null
+                && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+            response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+        } else
             response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
-        }
         return response;
 
     }
@@ -283,13 +300,12 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 throw new NotValidException(RecruitmentRequestErrorMessage.NOT_VALID_AMOUNT_EXCEPTION);
             }
 
-            if (createDTO.getSalaryFrom().equalsIgnoreCase(createDTO.getSalaryTo())) {
+            if (createDTO.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)
+                    && createDTO.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
                 createDTO.setSalaryTo(null);
             } else if (createDTO.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
-                createDTO.setSalaryTo("Lên đến " + createDTO.getSalaryTo());
                 createDTO.setSalaryFrom(null);
             } else if (createDTO.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
-                createDTO.setSalaryFrom("Trên " + createDTO.getSalaryFrom());
                 createDTO.setSalaryTo(null);
             }
 
@@ -313,11 +329,14 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 response.setSalaryDetail(
                         (request.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - " + request.getSalaryTo())
                                 .trim());
-            } else if (request.getSalaryFrom() == null) {
-                response.setSalaryDetail(request.getSalaryTo());
-            } else {
+            } else if (request.getSalaryFrom() == null
+                    && !request.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+                response.setSalaryDetail("Lên đến " + request.getSalaryTo());
+            } else if (request.getSalaryTo() == null
+                    && !request.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+                response.setSalaryDetail("Trên " + request.getSalaryFrom());
+            } else
                 response.setSalaryDetail(request.getSalaryFrom());
-            }
             return response;
         } else {
             throw new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION);
@@ -338,11 +357,14 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                     (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
                             + recruitmentRequest.getSalaryTo())
                             .trim());
-        } else if (recruitmentRequest.getSalaryFrom() == null) {
-            response.setSalaryDetail(recruitmentRequest.getSalaryTo());
-        } else {
+        } else if (recruitmentRequest.getSalaryFrom() == null
+                && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+            response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+        } else if (recruitmentRequest.getSalaryTo() == null
+                && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+            response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+        } else
             response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
-        }
         return response;
     }
 
@@ -367,11 +389,14 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                             (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
                                     + recruitmentRequest.getSalaryTo())
                                     .trim());
-                } else if (recruitmentRequest.getSalaryFrom() == null) {
-                    response.setSalaryDetail(recruitmentRequest.getSalaryTo());
-                } else {
+                } else if (recruitmentRequest.getSalaryFrom() == null
+                        && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+                } else if (recruitmentRequest.getSalaryTo() == null
+                        && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+                } else
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
-                }
                 list.add(response);
             }
             result.setResponseList(list);
@@ -397,11 +422,14 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                             (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
                                     + recruitmentRequest.getSalaryTo())
                                     .trim());
-                } else if (recruitmentRequest.getSalaryFrom() == null) {
-                    response.setSalaryDetail(recruitmentRequest.getSalaryTo());
-                } else {
+                } else if (recruitmentRequest.getSalaryFrom() == null
+                        && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+                } else if (recruitmentRequest.getSalaryTo() == null
+                        && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+                } else
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
-                }
                 result.add(response);
             }
         }
@@ -433,11 +461,14 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                             (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
                                     + recruitmentRequest.getSalaryTo())
                                     .trim());
-                } else if (recruitmentRequest.getSalaryFrom() == null) {
-                    response.setSalaryDetail(recruitmentRequest.getSalaryTo());
-                } else {
+                } else if (recruitmentRequest.getSalaryFrom() == null
+                        && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+                } else if (recruitmentRequest.getSalaryTo() == null
+                        && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+                } else
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
-                }
                 list.add(response);
             }
         }
