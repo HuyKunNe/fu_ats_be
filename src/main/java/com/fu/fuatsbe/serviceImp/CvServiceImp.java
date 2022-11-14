@@ -97,7 +97,7 @@ public class CvServiceImp implements CVService {
 
         List<Position> listPositions = new ArrayList<Position>();
 
-        if (!createDTO.getPositionName().isEmpty()) {
+        if (createDTO.getPositionName().size() != 0) {
             for (String positionName : createDTO.getPositionName()) {
                 Position position = positionRepository.findPositionByName(positionName)
                         .orElseThrow(() -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
@@ -150,8 +150,8 @@ public class CvServiceImp implements CVService {
     public List<CvResponse> getRejectedCv() {
         List<CV> cvs = cvRepository.getRejectedCV();
         List<CvResponse> list = new ArrayList<>();
-        for (CV cv: cvs) {
-            CvResponse response = modelMapper.map(cv,CvResponse.class);
+        for (CV cv : cvs) {
+            CvResponse response = modelMapper.map(cv, CvResponse.class);
             list.add(response);
         }
         return list;
