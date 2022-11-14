@@ -1,8 +1,11 @@
 package com.fu.fuatsbe.service;
 
 import com.fu.fuatsbe.DTO.JobApplyCreateDTO;
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import com.fu.fuatsbe.response.JobApplyResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
+
+import java.util.List;
 
 public interface JobApplyService {
     public ResponseWithTotalPage<JobApplyResponse> getAllJobApplies(int pageNo, int pageSize);
@@ -17,6 +20,8 @@ public interface JobApplyService {
     public ResponseWithTotalPage<JobApplyResponse> getAllApprovedJobApplies(int pageNo, int pageSize);
 
     public ResponseWithTotalPage<JobApplyResponse> getAllCancelJobApplies(int pageNo, int pageSize);
+    public ResponseWithTotalPage<JobApplyResponse> getJobApplyByDepartment(int departmentId, int pageNo, int pageSize);
+
 
     public JobApplyResponse createJobApply(JobApplyCreateDTO createDTO);
 

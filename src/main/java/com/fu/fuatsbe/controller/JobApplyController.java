@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.controller;
 
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,6 +22,8 @@ import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.JobApplyService;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/jobApply")
@@ -86,7 +89,7 @@ public class JobApplyController {
 
     @GetMapping("/getAllPendingJobApplies")
     @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
-    public ResponseEntity<ResponseDTO> getJobApplyByCandidate(
+    public ResponseEntity<ResponseDTO> getAllPendingJobApplies(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
         ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
@@ -126,7 +129,7 @@ public class JobApplyController {
     @PutMapping("/cancelJobApply/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> cancelJobApply(@RequestParam("id") int id,
-            @RequestParam int employeeId) {
+                                                      @RequestParam int employeeId) {
         ResponseDTO<JobApplyResponse> responseDTO = new ResponseDTO();
         JobApplyResponse jobApplyResponse = jobApplyService.cancelJobApply(id, employeeId);
         responseDTO.setData(jobApplyResponse);
@@ -138,7 +141,7 @@ public class JobApplyController {
     @PutMapping("/approvedJobApply/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> approvedJobApply(@RequestParam("id") int id,
-            @RequestParam int employeeId) {
+                                                        @RequestParam int employeeId) {
         ResponseDTO<JobApplyResponse> responseDTO = new ResponseDTO();
         JobApplyResponse jobApplyResponse = jobApplyService.approvedJobApply(id, employeeId);
         responseDTO.setData(jobApplyResponse);
@@ -153,6 +156,19 @@ public class JobApplyController {
         ResponseDTO<JobApplyResponse> responseDTO = new ResponseDTO();
         JobApplyResponse jobApplyResponse = jobApplyService.getJobApplyById(id);
         responseDTO.setData(jobApplyResponse);
+        responseDTO.setMessage(JobApplySuccessMessage.GET_BY_ID);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/getJobApplyDepartment")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getJobApplyByDepartment(@RequestParam int departmentId,
+                                                                     @RequestParam(defaultValue = "0") int pageNo,
+                                                                     @RequestParam(defaultValue = "10") int pageSize) {
+        ResponseDTO responseDTO = new ResponseDTO();
+      ResponseWithTotalPage<JobApplyResponse> responseList = jobApplyService.getJobApplyByDepartment(departmentId, pageNo, pageSize);
+        responseDTO.setData(responseList);
         responseDTO.setMessage(JobApplySuccessMessage.GET_BY_ID);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);

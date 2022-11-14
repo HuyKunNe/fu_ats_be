@@ -1,7 +1,9 @@
 package com.fu.fuatsbe.repository;
 
+import java.util.List;
 import java.util.Optional;
 
+import com.fu.fuatsbe.entity.Candidate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,5 +21,10 @@ public interface JobApplyRepository extends JpaRepository<JobApply, Integer> {
     public Page<JobApply> findByStatus(String status, Pageable pageable);
 
     public Page<JobApply> findByRecruitmentRequest(RecruitmentRequest recruitmentRequest, Pageable pageable);
+
+    @Query(nativeQuery = true, value = "select * from job_apply where id in" +
+            "(select id from recruitment_request where position_id in " +
+            "(select id from position where department_id = ?1))")
+    Page<JobApply> getJobApplyByDepartment(int departmentId, Pageable pageable);
 
 }

@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -259,5 +260,24 @@ public class JobApplyServiceImpl implements JobApplyService {
         JobApplyResponse response = modelMapper.map(jobApplySaved, JobApplyResponse.class);
         return response;
     }
+
+    @Override
+    public ResponseWithTotalPage<JobApplyResponse> getJobApplyByDepartment(int departmentId, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        Page<JobApply> pageResult = jobApplyRepository.getJobApplyByDepartment(departmentId, pageable);
+        List<JobApplyResponse> list = new ArrayList<JobApplyResponse>();
+        ResponseWithTotalPage<JobApplyResponse> result = new ResponseWithTotalPage<>();
+        if (pageResult.hasContent()) {
+            for (JobApply jobApply : pageResult.getContent()) {
+                JobApplyResponse jobApplyResponse = modelMapper.map(jobApply, JobApplyResponse.class);
+                list.add(jobApplyResponse);
+            }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
+        } else
+            throw new ListEmptyException(JobApplyErrorMessage.LIST_IS_EMPTY);
+        return result;
+    }
+
 
 }

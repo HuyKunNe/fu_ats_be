@@ -3,6 +3,7 @@ package com.fu.fuatsbe.serviceImp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -148,6 +149,19 @@ public class CandidateServiceImp implements CandidateService {
         } else
             throw new ListEmptyException(CandidateErrorMessage.LIST_CANDIDATE_IS_EMPTY);
         return result;
+    }
+    @Override
+    public List<IdAndNameResponse> getCandidateAppliedByRecruitment(int recruimentId) {
+        List<Candidate> candidates = candidateRepository.getCandidateAppliedByRecruitment(recruimentId);
+        List<IdAndNameResponse> responses = new ArrayList<>();
+        for (Candidate candidate:candidates) {
+            IdAndNameResponse idAndNameResponse = IdAndNameResponse.builder()
+                    .id(candidate.getId())
+                    .name(candidate.getName())
+                    .build();
+            responses.add(idAndNameResponse);
+        }
+        return responses;
     }
 
 }
