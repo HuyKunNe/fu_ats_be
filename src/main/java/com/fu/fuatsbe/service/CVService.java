@@ -1,13 +1,12 @@
 package com.fu.fuatsbe.service;
 
+import java.util.List;
+
 import com.fu.fuatsbe.DTO.CvCreateDTO;
 import com.fu.fuatsbe.DTO.CvUpdateDTO;
 import com.fu.fuatsbe.entity.CV;
 import com.fu.fuatsbe.response.CvResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
-import org.springframework.data.jpa.repository.Query;
-
-import java.util.List;
 
 public interface CVService {
 
@@ -23,5 +22,5 @@ public interface CVService {
 
     public CV deleteCV(int id);
 
-   public List<CvResponse> getRejectedCv();
+    public List<CvResponse> getRejectedCv();
 }
