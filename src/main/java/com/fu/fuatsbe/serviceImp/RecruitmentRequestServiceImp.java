@@ -224,9 +224,19 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 () -> new NotFoundException(RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
         Position position = positionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         City city = cityRepository.findByName(updateDTO.getCityName())
                 .orElseThrow(() -> new NotFoundException(CityErrorMessage.NOT_FOUND));
+
+        LocalDate expiryDate = LocalDate.parse(updateDTO.getExpiryDate().toString(), format);
+
+        LocalDate periodToPlanDetail = LocalDate.parse(recruitmentRequest.getPlanDetail().getPeriodTo().toString(),
+                format);
+
+        if (expiryDate.isAfter(periodToPlanDetail)) {
+            throw new NotValidException(RecruitmentRequestErrorMessage.NOT_VALID_EXPIRY_DATE_EXCEPTION);
+        }
 
         if (updateDTO.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)
                 && updateDTO.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
@@ -289,7 +299,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
 
             LocalDate periodToPlanDetail = LocalDate.parse(planDetail.getPeriodTo().toString(), format);
 
-            if (!periodToPlanDetail.isEqual(expiryDate)) {
+            if (expiryDate.isAfter(periodToPlanDetail)) {
                 throw new NotValidException(RecruitmentRequestErrorMessage.NOT_VALID_EXPIRY_DATE_EXCEPTION);
             }
 
