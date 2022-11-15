@@ -159,12 +159,12 @@ public class NotificationServiceImp implements NotificationService {
         }
         for (Candidate candidate : listCandidate) {
             pushNotification(candidate.getAccount().getNotificationToken(),
-                    notification.getStatus(),
+                    notification.getSubject(),
                     notification.getContent());
         }
         for (Employee employee : listEmployee) {
             pushNotification(employee.getAccount().getNotificationToken(),
-                    notification.getStatus(),
+                    notification.getSubject(),
                     notification.getContent());
         }
     }

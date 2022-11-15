@@ -10,4 +10,6 @@ public final class PlanDetailSuccessMessage {
     public final static String UPDATE_PLAN_DETAIL_SUCCESS = "Update plan detail successfully";
     public final static String GET_PLAN_DETAIL_BY_RECRUITMENT_PLAN_SUCCESS = "Get plan detail by recruitment plan successfully";
     public final static String GET_PLAN_DETAIL_APPROVED_BY_RECRUITMENT_PLAN_SUCCESS = "Get plan detail approved by recruitment plan successfully";
+    public final static String GET_TOTAL_STATUS_SUCCESS = "Get total plan detail status successfully";
+
 }

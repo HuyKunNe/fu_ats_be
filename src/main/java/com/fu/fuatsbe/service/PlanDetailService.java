@@ -3,9 +3,8 @@ package com.fu.fuatsbe.service;
 import com.fu.fuatsbe.DTO.PlanDetailActionDTO;
 import com.fu.fuatsbe.DTO.PlanDetailCreateDTO;
 import com.fu.fuatsbe.DTO.PlanDetailUpdateDTO;
-import com.fu.fuatsbe.response.IdAndNameResponse;
-import com.fu.fuatsbe.response.PlanDetailResponseDTO;
-import com.fu.fuatsbe.response.ResponseWithTotalPage;
+import com.fu.fuatsbe.response.*;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -36,5 +35,7 @@ public interface PlanDetailService {
             int pageSize);
 
     List<IdAndNameResponse> getPlanDetailApprovedByDepartment(int departmentId);
+    List<AllStatusCounterResponse> getStatusTotal();
+
 
 }

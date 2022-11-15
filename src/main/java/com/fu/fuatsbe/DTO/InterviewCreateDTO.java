@@ -41,8 +41,8 @@ public class InterviewCreateDTO {
     private String type;
     @NotBlank(message = ValidationMessage.DESCRIPTION_VALID_MESSAGE)
     private String description;
-    @NotBlank(message = ValidationMessage.JOB_APPLY_VALID_MESSAGE)
-    private int JobApplyId;
+    @NotBlank(message = ValidationMessage.RECRUITMENT_REQUEST_VALID_MESSAGE)
+    private int recruitmentRequestId;
     @NotBlank(message = ValidationMessage.CANDIDATE_ID_VALID_MESSAGE)
     private int candidateId;
     @NotBlank(message = ValidationMessage.INTERVIEWEE_ID_VALID_MESSAGE)

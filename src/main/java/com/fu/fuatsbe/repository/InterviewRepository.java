@@ -16,7 +16,7 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
 
         Page<Interview> findInterviewByCandidateId(int candidate_id, Pageable pageable);
 
-        @Query(nativeQuery = true, value = "select distinct * from interview where id in \n" +
+        @Query(nativeQuery = true, value = "select * from interview where id in \n" +
                         "(select interview_id from interview_employee where employee_id = ?1)")
         Page<Interview> findInterviewByEmployeeId(int employee_id, Pageable pageable);
 

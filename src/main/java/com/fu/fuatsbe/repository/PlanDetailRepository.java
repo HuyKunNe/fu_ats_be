@@ -3,8 +3,11 @@ package com.fu.fuatsbe.repository;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.Tuple;
 import javax.transaction.Transactional;
 
+
+import com.fu.fuatsbe.response.CountStatusResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,4 +37,9 @@ public interface PlanDetailRepository extends JpaRepository<PlanDetail, Integer>
     @Query(nativeQuery = true, value = "select * from plan_detail where creator_id " +
             "in(select id from employee where department_id = ?1) and status like 'APPROVED';")
     List<PlanDetail> findApprovedByDepartment(int departmentId);
+
+    @Query(nativeQuery = true, value = "(select status, count(status) as total from plan_detail where status like 'PENDING') " +
+            "union (select  status, count(status)  from plan_detail where status like 'APPROVED') " +
+            "union( select  status,count(status) from plan_detail where status like'CANCELED')")
+    List<Tuple> getTotalStatusDetail();
 }

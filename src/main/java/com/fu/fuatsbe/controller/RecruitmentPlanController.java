@@ -155,6 +155,7 @@ public class RecruitmentPlanController {
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
+
     @GetMapping("/getByDepartment")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getByDepartmentId(
@@ -171,6 +172,7 @@ public class RecruitmentPlanController {
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
+
     @GetMapping("/getPlanApprovedByDepartment")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getPlanApprovedByDepartmentId(@RequestParam("departmentId") int id) {
@@ -233,7 +235,7 @@ public class RecruitmentPlanController {
     @PutMapping("update/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> updateRecruitmentPlan(@RequestParam("id") int id,
-            @RequestBody RecruimentPlanUpdateDTO updateDTO) {
+                                                             @RequestBody RecruimentPlanUpdateDTO updateDTO) {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
         RecruitmentPlanResponse recruitmentPlanResponse = recruitmentPlanService.updateRecruitmentPlan(id, updateDTO);
         responseDTO.setData(recruitmentPlanResponse);
@@ -241,4 +243,14 @@ public class RecruitmentPlanController {
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+
+//    @GetMapping("/getTotalStatus")
+//    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+//    public ResponseEntity<ResponseDTO> getTotalStatusPlan() {
+//        ResponseDTO response = new ResponseDTO();
+//        response.setData(recruitmentPlanService.getStatusTotal());
+//        response.setStatus(ResponseStatusDTO.SUCCESS);
+//        response.setMessage(RecruitmentPlanSuccessMessage.GET_TOTAL_STATUS_SUCCESS);
+//        return ResponseEntity.ok().body(response);
+//    }
 }

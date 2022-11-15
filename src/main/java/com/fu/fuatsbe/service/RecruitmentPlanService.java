@@ -3,6 +3,7 @@ package com.fu.fuatsbe.service;
 import com.fu.fuatsbe.DTO.RecruimentPlanUpdateDTO;
 import com.fu.fuatsbe.DTO.RecruitmentPlanActionDTO;
 import com.fu.fuatsbe.DTO.RecruitmentPlanCreateDTO;
+import com.fu.fuatsbe.response.CountStatusResponse;
 import com.fu.fuatsbe.response.IdAndNameResponse;
 import com.fu.fuatsbe.response.RecruitmentPlanResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
@@ -41,5 +42,8 @@ public interface RecruitmentPlanService {
     public RecruitmentPlanResponse canceledRecruitmentPlan(RecruitmentPlanActionDTO actionDTO);
 
     public RecruitmentPlanResponse rejectedRecruitmentPlan(RecruitmentPlanActionDTO actionDTO);
+
+    List<CountStatusResponse> getStatusTotal();
+
 
 }

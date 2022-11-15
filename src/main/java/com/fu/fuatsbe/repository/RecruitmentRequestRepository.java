@@ -3,6 +3,7 @@ package com.fu.fuatsbe.repository;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.Tuple;
 import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
@@ -91,5 +92,9 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
         List<String> getDistinctByIndustry();
 
         Page<RecruitmentRequest> findByOrderByIdDesc(Pageable pageable);
+        @Query(nativeQuery = true, value = "(select  status,count(status) as total from recruitment_request where status like 'OPENING') " +
+                "union (select  status,count(status)  from recruitment_request where status like 'CLOSED') " +
+                "union(select  status,count(status) from recruitment_request where status like'FILLED')")
+        List<Tuple> getTotalStatusRequest();
 
 }

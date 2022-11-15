@@ -1,20 +1,5 @@
 package com.fu.fuatsbe.serviceImp;
 
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-
 import com.fu.fuatsbe.DTO.PlanDetailActionDTO;
 import com.fu.fuatsbe.DTO.PlanDetailCreateDTO;
 import com.fu.fuatsbe.DTO.PlanDetailUpdateDTO;
@@ -32,17 +17,27 @@ import com.fu.fuatsbe.entity.RecruitmentPlan;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.exceptions.NotValidException;
-import com.fu.fuatsbe.repository.DepartmentRepository;
-import com.fu.fuatsbe.repository.EmployeeRepository;
-import com.fu.fuatsbe.repository.PlanDetailRepository;
-import com.fu.fuatsbe.repository.PositionRepository;
-import com.fu.fuatsbe.repository.RecruitmentPlanRepository;
-import com.fu.fuatsbe.response.IdAndNameResponse;
-import com.fu.fuatsbe.response.PlanDetailResponseDTO;
-import com.fu.fuatsbe.response.ResponseWithTotalPage;
+import com.fu.fuatsbe.repository.*;
+import com.fu.fuatsbe.response.*;
 import com.fu.fuatsbe.service.PlanDetailService;
-
+import com.fu.fuatsbe.service.RecruitmentPlanService;
+import com.fu.fuatsbe.service.RecruitmentRequestService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import javax.persistence.Tuple;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +47,8 @@ public class PlanDetailServiceImpl implements PlanDetailService {
     private final ModelMapper modelMapper;
     private final PlanDetailRepository planDetailRepository;
     private final RecruitmentPlanRepository recruitmentPlanRepository;
+    private final RecruitmentPlanService recruitmentPlanService;
+    private final RecruitmentRequestService recruitmentRequestService;
     private final PositionRepository positionRepository;
     private final EmployeeRepository employeeRepository;
 
@@ -339,4 +336,45 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         return list;
     }
 
+    @Override
+    public List<AllStatusCounterResponse> getStatusTotal() {
+        ArrayList<AllStatusCounterResponse> allList = new ArrayList<>();
+        List<Tuple> list = planDetailRepository.getTotalStatusDetail();
+        ArrayList<String> stt = new ArrayList<>();
+        stt.add(PlanDetailStatus.PENDING);
+        stt.add(PlanDetailStatus.APPROVED);
+        stt.add(PlanDetailStatus.CANCELED);
+        int count = 0;
+
+        List<CountStatusResponse> responses = new ArrayList<>();
+        for (Tuple total: list) {
+            CountStatusResponse countStatusResponse = CountStatusResponse.builder()
+                    .status(stt.get(count))
+                    .total(Integer.parseInt(total.get("total").toString()))
+                    .build();
+            responses.add(countStatusResponse);
+            count++;
+        }
+        //RecruitmentPlan
+        List<CountStatusResponse> countPlan = recruitmentPlanService.getStatusTotal();
+        AllStatusCounterResponse allStatusCounterResponsePlan = AllStatusCounterResponse.builder()
+                .className("RecruitmentPlan")
+                .countStatusResponses(countPlan)
+                .build();
+        allList.add(allStatusCounterResponsePlan);
+        //Plan detail
+        AllStatusCounterResponse allStatusCounterResponseDetail = AllStatusCounterResponse.builder()
+                .className("PlanDetail")
+                .countStatusResponses(responses)
+                .build();
+        allList.add(allStatusCounterResponseDetail);
+        //Recruitment Request
+        List<CountStatusResponse> countRequest = recruitmentRequestService.getStatusTotal();
+        AllStatusCounterResponse allStatusCounterResponseRequest = AllStatusCounterResponse.builder()
+                .className("RecruitmentRequest")
+                .countStatusResponses(countRequest)
+                .build();
+        allList.add(allStatusCounterResponseRequest);
+        return allList;
+    }
 }

@@ -7,4 +7,6 @@ public final class InterviewErrorMessage {
     public static final String INTERVIEW_WITH_CANDIDATE_ID_NOT_FOUND= "This candidate have no interview schedule";
     public static final String INTERVIEW_WITH_EMPLOYEE_ID_NOT_FOUND= "This employee have no interview schedule";
     public static final String INTERVIEW_CONFIRM_NOT_VALID= "You can not confirm this interview";
+    public static final String INTERVIEW_REJECT_NOT_VALID= "You can not reject this interview";
+    public static final String INTERVIEW_WAS_REJECT_NOT_VALID= "This interview was rejected before";
 }

@@ -142,4 +142,13 @@ public class InterviewController {
         response.setMessage(InterviewSuccessMessage.CONFIRM_INTERVIEW);
         return ResponseEntity.ok().body(response);
     }
+    @PatchMapping ("/rejectByEmployee")
+    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> rejectInterviewEmployee(@RequestParam int idInterview, @RequestParam int idEmployee) {
+        ResponseDTO response = new ResponseDTO<>();
+        interviewService.rejectJoinInterviewByEmployee(idInterview, idEmployee);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        response.setMessage(InterviewSuccessMessage.REJECT_INTERVIEW);
+        return ResponseEntity.ok().body(response);
+    }
 }

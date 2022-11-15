@@ -1,6 +1,7 @@
 package com.fu.fuatsbe.controller;
 
 import com.fu.fuatsbe.DTO.PlanDetailUpdateDTO;
+import com.fu.fuatsbe.constant.recruitmentPlan.RecruitmentPlanSuccessMessage;
 import com.fu.fuatsbe.response.IdAndNameResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -182,5 +183,13 @@ public class PlanDetailController {
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
-
+    @GetMapping("/getTotalStatusDetail")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getTotalStatusDetail() {
+        ResponseDTO response = new ResponseDTO();
+        response.setData(planDetailService.getStatusTotal());
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        response.setMessage(PlanDetailSuccessMessage.GET_TOTAL_STATUS_SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
 }

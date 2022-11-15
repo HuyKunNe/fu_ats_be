@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.fu.fuatsbe.DTO.*;
+import com.fu.fuatsbe.response.CountStatusResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,8 @@ import com.fu.fuatsbe.response.RecruitmentRequestResponse;
 import com.fu.fuatsbe.service.RecruitmentRequestService;
 
 import lombok.RequiredArgsConstructor;
+
+import javax.persistence.Tuple;
 
 @Service
 @RequiredArgsConstructor
@@ -483,5 +486,27 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             }
         }
         return list;
+    }
+
+    @Override
+    public List<CountStatusResponse> getStatusTotal() {
+        List<Tuple> list = recruitmentRequestRepository.getTotalStatusRequest();
+        ArrayList<String> stt = new ArrayList<>();
+        stt.add(RecruitmentRequestStatus.OPENING);
+        stt.add(RecruitmentRequestStatus.CLOSED);
+        stt.add(RecruitmentRequestStatus.FILLED);
+        int count = 0;
+
+        List<CountStatusResponse> responses = new ArrayList<>();
+        for (Tuple total: list) {
+            CountStatusResponse countStatusResponse = CountStatusResponse.builder()
+                    .status(stt.get(count))
+                    .total(Integer.parseInt(total.get("total").toString()))
+                    .build();
+            responses.add(countStatusResponse);
+            count++;
+        }
+        return responses;
+
     }
 }
