@@ -93,7 +93,6 @@ public class AuthServiceImp implements AuthService {
                 .role(role)
                 .candidate(candidate)
                 .status(AccountStatus.ACTIVATED)
-                .notificationToken(registerDTO.getNotificationToken())
                 .password(passwordEncoder.encode(registerDTO.getPassword())).build();
         candidateRepository.save(candidate);
         Account credentialInRepo = accountRepository.save(account);
@@ -148,7 +147,6 @@ public class AuthServiceImp implements AuthService {
                 .role(role)
                 .employee(employee)
                 .status(AccountStatus.ACTIVATED)
-                .notificationToken(registerDto.getNotificationToken())
                 .password(passwordEncoder.encode(registerDto.getPassword())).build();
         employeeRepository.save(employee);
         Account accountInRepo = accountRepository.save(account);
