@@ -24,6 +24,8 @@ public class PlanDetailUpdateDTO {
     private Date periodFrom;
     private Date periodTo;
     private String note;
-    private int positionId;
+    private String description;
+    private String requirement;
+    private String positionName;
 
 }

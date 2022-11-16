@@ -108,9 +108,9 @@ public class PlanDetailServiceImpl implements PlanDetailService {
     public PlanDetailResponseDTO updatePlanDetailById(int id, PlanDetailUpdateDTO updateDTO) {
         PlanDetail planDetail = planDetailRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(PlanDetailErrorMessage.PLAN_DETAIL_NOT_FOUND_EXCEPTION));
-        Position position = positionRepository.findById(updateDTO.getPositionId())
-                .orElseThrow(() -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
-
+        Optional<Position> optionalPosition = positionRepository.findPositionByName(updateDTO.getPositionName());
+        if (!optionalPosition.isPresent())
+            throw new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST);
         int totalAmount = planDetailRepository
                 .totalAmount(planDetail.getRecruitmentPlan().getId());
 
@@ -138,7 +138,9 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         planDetail.setPeriodFrom(Date.valueOf(periodFrom));
         planDetail.setPeriodTo(Date.valueOf(periodTo));
         planDetail.setDescription(updateDTO.getNote());
-        planDetail.setPosition(position);
+        planDetail.setPosition(optionalPosition.get());
+        planDetail.setRequirement(updateDTO.getRequirement());
+        planDetail.setDescription(updateDTO.getDescription());
 
         PlanDetail savedPlan = planDetailRepository.save(planDetail);
         PlanDetailResponseDTO planDetailResponse = modelMapper.map(savedPlan, PlanDetailResponseDTO.class);
