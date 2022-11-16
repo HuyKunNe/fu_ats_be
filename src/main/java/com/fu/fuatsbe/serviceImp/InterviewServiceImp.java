@@ -96,6 +96,9 @@ public class InterviewServiceImp implements InterviewService {
         }
         JobApply jobApply = jobApplyRepository.getJobAppliesByRecruitmentAndCandidate(
                 interviewCreateDTO.getRecruitmentRequestId(),interviewCreateDTO.getCandidateId());
+        if(jobApply == null){
+            throw new NotValidException(JobApplyErrorMessage.CANDIDATE_NOT_APPLY);
+        }
         Interview interview = Interview.builder()
                 .subject(interviewCreateDTO.getSubject())
                 .purpose(interviewCreateDTO.getPurpose())

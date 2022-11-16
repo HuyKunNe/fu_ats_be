@@ -72,7 +72,7 @@ public class DepartmentController {
     }
 
     @PutMapping("edit/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> updateDepartment(@RequestParam("id") int id,
             @RequestBody DepartmentUpdateDTO updateDTO) {
         ResponseDTO<DepartmentResponse> responseDTO = new ResponseDTO();
