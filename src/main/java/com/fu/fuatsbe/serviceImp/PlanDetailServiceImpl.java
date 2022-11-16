@@ -191,6 +191,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
                 .periodFrom(Date.valueOf(periodFrom))
                 .periodTo(Date.valueOf(periodTo))
                 .note(createDTO.getNote())
+                .name(createDTO.getName())
                 .date(Date.valueOf(dateFormat))
                 .requirement(createDTO.getRequirement())
                 .description(createDTO.getDescription())
