@@ -491,20 +491,16 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     @Override
     public List<CountStatusResponse> getStatusTotal() {
         List<Tuple> list = recruitmentRequestRepository.getTotalStatusRequest();
-        ArrayList<String> stt = new ArrayList<>();
-        stt.add(RecruitmentRequestStatus.OPENING);
-        stt.add(RecruitmentRequestStatus.CLOSED);
-        stt.add(RecruitmentRequestStatus.FILLED);
-        int count = 0;
+
 
         List<CountStatusResponse> responses = new ArrayList<>();
         for (Tuple total: list) {
             CountStatusResponse countStatusResponse = CountStatusResponse.builder()
-                    .status(stt.get(count))
+                    .status(total.get("status").toString())
                     .total(Integer.parseInt(total.get("total").toString()))
                     .build();
             responses.add(countStatusResponse);
-            count++;
+
         }
         return responses;
 

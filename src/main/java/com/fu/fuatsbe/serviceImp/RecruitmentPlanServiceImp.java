@@ -364,20 +364,14 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     @Override
     public List<CountStatusResponse> getStatusTotal() {
         List<Tuple> list = recruitmentPlanRepository.getTotalStatus();
-        ArrayList<String> stt = new ArrayList<>();
-        stt.add(RecruitmentPlanStatus.PENDING);
-        stt.add(RecruitmentPlanStatus.APPROVED);
-        stt.add(RecruitmentPlanStatus.REJECTED);
-        int count = 0;
 
         List<CountStatusResponse> responses = new ArrayList<>();
         for (Tuple total: list) {
             CountStatusResponse countStatusResponse = CountStatusResponse.builder()
-                    .status(stt.get(count))
+                    .status(total.get("status").toString())
                     .total(Integer.parseInt(total.get("total").toString()))
                     .build();
             responses.add(countStatusResponse);
-            count++;
         }
         return responses;
     }

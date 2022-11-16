@@ -92,9 +92,9 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
         List<String> getDistinctByIndustry();
 
         Page<RecruitmentRequest> findByOrderByIdDesc(Pageable pageable);
-        @Query(nativeQuery = true, value = "(select  status,count(status) as total from recruitment_request where status like 'OPENING') " +
-                "union (select  status,count(status)  from recruitment_request where status like 'CLOSED') " +
-                "union(select  status,count(status) from recruitment_request where status like'FILLED')")
+        @Query(nativeQuery = true, value = "(select  coalesce(status, 'PENDING') as status,count(status) as total from recruitment_request where status like 'OPENING') " +
+                "union (select  coalesce(status, 'CLOSED') ,count(status)  from recruitment_request where status like 'CLOSED') " +
+                "union(select  coalesce(status, 'FILLED') ,count(status) from recruitment_request where status like'FILLED')")
         List<Tuple> getTotalStatusRequest();
 
 }

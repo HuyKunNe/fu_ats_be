@@ -340,20 +340,16 @@ public class PlanDetailServiceImpl implements PlanDetailService {
     public List<AllStatusCounterResponse> getStatusTotal() {
         ArrayList<AllStatusCounterResponse> allList = new ArrayList<>();
         List<Tuple> list = planDetailRepository.getTotalStatusDetail();
-        ArrayList<String> stt = new ArrayList<>();
-        stt.add(PlanDetailStatus.PENDING);
-        stt.add(PlanDetailStatus.APPROVED);
-        stt.add(PlanDetailStatus.CANCELED);
-        int count = 0;
+
 
         List<CountStatusResponse> responses = new ArrayList<>();
         for (Tuple total: list) {
             CountStatusResponse countStatusResponse = CountStatusResponse.builder()
-                    .status(stt.get(count))
+                    .status(total.get("status").toString())
                     .total(Integer.parseInt(total.get("total").toString()))
                     .build();
             responses.add(countStatusResponse);
-            count++;
+
         }
         //RecruitmentPlan
         List<CountStatusResponse> countPlan = recruitmentPlanService.getStatusTotal();
