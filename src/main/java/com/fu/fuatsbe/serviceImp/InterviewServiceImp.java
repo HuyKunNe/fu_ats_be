@@ -105,7 +105,7 @@ public class InterviewServiceImp implements InterviewService {
                 .linkMeeting(interviewCreateDTO.getLinkMeeting())
                 .round(interviewCreateDTO.getRound())
                 .description(interviewCreateDTO.getDescription())
-                .status(InterviewRequestStatus.NEW)
+                .status(InterviewRequestStatus.PENDING)
                 .type(interviewCreateDTO.getType())
                 .candidate(candidate)
                 .jobApply(jobApply)
