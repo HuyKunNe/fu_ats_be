@@ -31,10 +31,8 @@ public class RecruitmentRequestResponse {
     private String jobLevel;
     private String experience;
     private String typeOfWork;
-    private String gender;
     private String address;
     private String salaryDetail;
-    private String age;
     private String foreignLanguage;
     private String description;
     private String benefit;

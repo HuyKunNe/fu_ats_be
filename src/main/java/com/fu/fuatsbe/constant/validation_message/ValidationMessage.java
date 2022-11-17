@@ -25,6 +25,7 @@ public final class ValidationMessage {
     public static final String DOB_VALID_MESSAGE = "Day of birth must be filled";
     public static final String END_DATE_VALID_MESSAGE = "End date must be filled";
     public static final String CANDIDATE_ID_VALID_MESSAGE = "Candidate must be assigned";
+    public static final String EMPLOYEE_ID_VALID_MESSAGE = "Employee must be assigned";
     public static final String INTERVIEWEE_ID_VALID_MESSAGE = "Interviewee must be assigned";
     public static final String INTERVIEW_ID_VALID_MESSAGE = "Interview must be assigned";
 

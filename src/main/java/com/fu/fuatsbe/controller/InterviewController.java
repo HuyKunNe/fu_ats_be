@@ -114,7 +114,7 @@ public class InterviewController {
     }
 
     @PatchMapping("/cancelInterview")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_CANDIDATE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> cancelInterview(@RequestBody CancelInterviewDTO cancelInterviewDTO) throws MessagingException {
         ResponseDTO response = new ResponseDTO();
         interviewService.cancelInterview(cancelInterviewDTO);
@@ -147,6 +147,25 @@ public class InterviewController {
     public ResponseEntity<ResponseDTO> rejectInterviewEmployee(@RequestParam int idInterview, @RequestParam int idEmployee) {
         ResponseDTO response = new ResponseDTO<>();
         interviewService.rejectJoinInterviewByEmployee(idInterview, idEmployee);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        response.setMessage(InterviewSuccessMessage.REJECT_INTERVIEW);
+        return ResponseEntity.ok().body(response);
+    }
+    @PatchMapping ("/confirmByCandidate")
+    @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
+    public ResponseEntity<ResponseDTO> confirmInterviewCandidate(@RequestParam int idInterview, @RequestParam int idCandidate) {
+        ResponseDTO response = new ResponseDTO<>();
+        interviewService.confirmJoinInterviewByCandidate(idInterview, idCandidate);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        response.setMessage(InterviewSuccessMessage.CONFIRM_INTERVIEW);
+        return ResponseEntity.ok().body(response);
+    }
+    @PatchMapping ("/rejectByCandidate")
+    @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
+    public ResponseEntity<ResponseDTO> rejectInterviewCandidate(
+            @RequestParam int idInterview, @RequestParam int idCandidate) throws MessagingException {
+        ResponseDTO response = new ResponseDTO<>();
+        interviewService.rejectJoinInterviewByCandidate(idInterview, idCandidate);
         response.setStatus(ResponseStatusDTO.SUCCESS);
         response.setMessage(InterviewSuccessMessage.REJECT_INTERVIEW);
         return ResponseEntity.ok().body(response);

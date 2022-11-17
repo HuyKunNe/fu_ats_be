@@ -27,7 +27,7 @@ public interface InterviewService {
     void confirmJoinInterviewByEmployee(int idInterview, int idEmployee);
     void rejectJoinInterviewByEmployee(int idInterview, int idEmployee);
     void confirmJoinInterviewByCandidate(int idInterview, int idCandidate);
-    void rejectJoinInterviewByCandidate(int idInterview, int idCandidate);
+    void rejectJoinInterviewByCandidate(int idInterview, int idCandidate) throws MessagingException;
 
     ResponseWithTotalPage<InterviewResponse> getInterviewByDepartment(int departmentId, int pageNo, int pageSize);
 
