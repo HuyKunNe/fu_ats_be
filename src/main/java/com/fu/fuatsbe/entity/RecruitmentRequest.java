@@ -61,6 +61,7 @@ public class RecruitmentRequest {
     private String foreignLanguage;
     @Nationalized
     private String address;
+    private String name;
 
     @Column(columnDefinition = "text")
     private String description;

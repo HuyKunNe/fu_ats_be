@@ -9,7 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 import com.fu.fuatsbe.DTO.*;
+import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
+import com.fu.fuatsbe.repository.*;
 import com.fu.fuatsbe.response.CountStatusResponse;
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +37,6 @@ import com.fu.fuatsbe.entity.RecruitmentRequest;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.exceptions.NotValidException;
-import com.fu.fuatsbe.repository.CityRepository;
-import com.fu.fuatsbe.repository.EmployeeRepository;
-import com.fu.fuatsbe.repository.PlanDetailRepository;
-import com.fu.fuatsbe.repository.PositionRepository;
-import com.fu.fuatsbe.repository.RecruitmentRequestRepository;
 import com.fu.fuatsbe.response.RecruitmentRequestResponse;
 import com.fu.fuatsbe.service.RecruitmentRequestService;
 
@@ -59,6 +57,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     private final EmployeeRepository employeeRepository;
     private final PlanDetailRepository planDetailRepository;
     private final PositionRepository positionRepository;
+    private final DepartmentRepository departmentRepository;
     private final CityRepository cityRepository;
 
     @Override
@@ -257,6 +256,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         recruitmentRequest.setExperience(updateDTO.getExperience());
         recruitmentRequest.setSalaryFrom(updateDTO.getSalaryFrom());
         recruitmentRequest.setSalaryTo(updateDTO.getSalaryTo());
+        recruitmentRequest.setName(updateDTO.getName());
         recruitmentRequest.setEducationLevel(updateDTO.getEducationLevel());
         recruitmentRequest.setAddress(updateDTO.getAddress());
         recruitmentRequest.setForeignLanguage(updateDTO.getForeignLanguage());
@@ -329,6 +329,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                     .cities(city)
                     .typeOfWork(createDTO.getTypeOfWork())
                     .benefit(createDTO.getBenefit())
+                    .name(createDTO.getName())
                     .foreignLanguage(createDTO.getForeignLanguage())
                     .educationLevel(createDTO.getEducationLevel())
                     .requirement(createDTO.getRequirement())
@@ -504,5 +505,21 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         }
         return responses;
 
+    }
+
+    @Override
+    public List<IdAndNameResponse> getIdAndNameRequestByDepartment(int departmentId) {
+        departmentRepository.findById(departmentId).orElseThrow(() ->
+                new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
+        List<Tuple> listRepo = recruitmentRequestRepository.getIdAndNameRequestByDepartment(departmentId);
+        List<IdAndNameResponse> responses = new ArrayList<>();
+        for (Tuple tuple: listRepo) {
+            IdAndNameResponse idAndNameResponse = IdAndNameResponse.builder()
+                    .id(Integer.parseInt(tuple.get("id").toString()))
+                    .name(tuple.get("name").toString())
+                    .build();
+            responses.add(idAndNameResponse);
+        }
+        return responses;
     }
 }

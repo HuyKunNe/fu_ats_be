@@ -180,13 +180,13 @@ public class RecruitmentRequestController {
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
-//    @GetMapping("/getTotalRequest")
-//    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-//    public ResponseEntity<ResponseDTO> getTotalStatusRequest() {
-//        ResponseDTO response = new ResponseDTO();
-//        response.setData(recruitmentRequestService.getStatusTotal());
-//        response.setStatus(ResponseStatusDTO.SUCCESS);
-//        response.setMessage(RecruitmentRequestSuccessMessage.GET_TOTAL_STATUS_SUCCESS);
-//        return ResponseEntity.ok().body(response);
-//    }
+    @GetMapping("/getIdAndNameByDepartment")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getIdAndNameByDepartment(@RequestParam("department_id") int departmentId) {
+        ResponseDTO response = new ResponseDTO();
+        response.setData(recruitmentRequestService.getIdAndNameRequestByDepartment(departmentId));
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        response.setMessage(RecruitmentRequestSuccessMessage.GET_ID_NAME_BY_DEPARTMENT);
+        return ResponseEntity.ok().body(response);
+    }
 }

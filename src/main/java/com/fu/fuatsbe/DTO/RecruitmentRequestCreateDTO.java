@@ -19,6 +19,7 @@ public class RecruitmentRequestCreateDTO {
 
     private Date expiryDate;
     private String industry;
+    private String name;
     private int amount;
     private String jobLevel;
     private String experience;

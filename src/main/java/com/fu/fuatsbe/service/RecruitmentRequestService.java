@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fu.fuatsbe.DTO.*;
 import com.fu.fuatsbe.response.CountStatusResponse;
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import com.fu.fuatsbe.response.RecruitmentRequestResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 
@@ -33,5 +34,6 @@ public interface RecruitmentRequestService {
 
     public List<RecruitmentRequestResponse> getNewestRecruitmentRequest();
     List<CountStatusResponse> getStatusTotal();
+    List<IdAndNameResponse> getIdAndNameRequestByDepartment(int departmentId);
 
 }

@@ -96,5 +96,8 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
                 "union (select  coalesce(status, 'CLOSED') ,count(status)  from recruitment_request where status like 'CLOSED') " +
                 "union(select  coalesce(status, 'FILLED') ,count(status) from recruitment_request where status like'FILLED')")
         List<Tuple> getTotalStatusRequest();
+        @Query(nativeQuery = true, value = "select id, name from recruitment_request where position_id " +
+                "in(select id from position where department_id = ?1) and status like 'OPENING'")
+        List<Tuple> getIdAndNameRequestByDepartment(int departmentId);
 
 }
