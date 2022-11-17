@@ -49,7 +49,7 @@ public class RecruitmentRequestController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/getById/{id}")
+    @GetMapping("/getById")
     @PermitAll
     public ResponseEntity<ResponseDTO> getRecruitmentRequestById(@RequestParam("id") int id) {
         ResponseDTO<RecruitmentRequestResponse> responseDTO = new ResponseDTO();
