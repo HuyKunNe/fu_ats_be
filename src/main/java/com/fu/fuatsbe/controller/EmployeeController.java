@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
 import javax.mail.MessagingException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/employee")
@@ -80,7 +81,7 @@ public class EmployeeController {
     }
 
     @PermitAll
-    @GetMapping("forgot-password")
+    @GetMapping("/forgot-password")
     public ResponseEntity<ResponseDTO> sendEmailToGetPassword(@RequestParam String email) throws MessagingException {
         ResponseDTO<Void> responseDTO = new ResponseDTO();
         emailService.sendEmailToGetBackPassword(email);
@@ -100,7 +101,7 @@ public class EmployeeController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PutMapping("update/{id}")
+    @PutMapping("/update/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> updateEmployee(@RequestParam("id") int id,
             @RequestBody EmployeeUpdateDTO updateDTO) {
@@ -112,4 +113,13 @@ public class EmployeeController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @GetMapping("/getEmployeeByRequest")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getEmpByReq(@RequestParam("requestId") int id){
+        ResponseDTO<List> responseDTO = new ResponseDTO<>();
+        responseDTO.setData(employeeService.getIdAndNameEmployeeByRequest(id));
+        responseDTO.setMessage(EmployeeSuccessMessage.GET_EMPLOYEE_BY_REQUEST);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }

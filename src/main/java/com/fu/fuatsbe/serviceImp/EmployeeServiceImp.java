@@ -10,13 +10,17 @@ import com.fu.fuatsbe.constant.account.AccountStatus;
 import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeStatus;
+import com.fu.fuatsbe.constant.recruitmentRequest.RecruitmentRequestErrorMessage;
 import com.fu.fuatsbe.entity.Department;
 import com.fu.fuatsbe.entity.Employee;
+import com.fu.fuatsbe.entity.RecruitmentRequest;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.repository.DepartmentRepository;
 import com.fu.fuatsbe.repository.EmployeeRepository;
+import com.fu.fuatsbe.repository.RecruitmentRequestRepository;
 
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import lombok.RequiredArgsConstructor;
 
 import org.modelmapper.ModelMapper;
@@ -30,11 +34,14 @@ import com.fu.fuatsbe.response.EmployeeResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.EmployeeService;
 
+import javax.persistence.Tuple;
+
 @Service
 @RequiredArgsConstructor
 public class EmployeeServiceImp implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final RecruitmentRequestRepository recruitmentRequestRepository;
     private final DepartmentRepository departmentRepository;
 
     private final ModelMapper modelMapper;
@@ -77,7 +84,7 @@ public class EmployeeServiceImp implements EmployeeService {
 
     @Override
     public ResponseWithTotalPage<EmployeeResponse> getAllEmployeeByDepartment(int departmentId, int pageNo,
-            int pageSize) {
+                                                                              int pageSize) {
 
         Department department = departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
@@ -137,4 +144,19 @@ public class EmployeeServiceImp implements EmployeeService {
         return null;
     }
 
+    @Override
+    public List<IdAndNameResponse> getIdAndNameEmployeeByRequest(int requestId) {
+        recruitmentRequestRepository.findById(requestId).orElseThrow(() ->
+                new NotFoundException(RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
+        List<Tuple> tupleList = employeeRepository.getEmployeeByRequest(requestId);
+        List<IdAndNameResponse> responses = new ArrayList<>();
+        for (Tuple tuple : tupleList) {
+            IdAndNameResponse response = IdAndNameResponse.builder()
+                    .id(Integer.parseInt(tuple.get("id").toString()))
+                    .name(tuple.get("name").toString())
+                    .build();
+            responses.add(response);
+        }
+        return responses;
+    }
 }

@@ -62,7 +62,7 @@ public class AuthController {
     }
 
     @PermitAll
-    @GetMapping("forgot-password")
+    @GetMapping("/forgot-password")
     public ResponseEntity<ResponseDTO> sendEmailToGetPassword(@RequestParam String email) throws MessagingException {
         ResponseDTO<Void> responseDTO = new ResponseDTO();
         emailService.sendEmailToGetBackPassword(email);
@@ -83,7 +83,7 @@ public class AuthController {
     }
 
     @PermitAll
-    @PatchMapping("change-password")
+    @PatchMapping("/change-password")
     public ResponseEntity<ResponseDTO> changePassword(@Validated @RequestBody ChangePasswordDTO changePasswordDTO) {
         ResponseDTO<Void> responseDTO = new ResponseDTO();
         authService.changePassword(changePasswordDTO);
