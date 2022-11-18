@@ -26,7 +26,7 @@ public interface JobApplyRepository extends JpaRepository<JobApply, Integer> {
             "(select id from recruitment_request where position_id in " +
             "(select id from position where department_id = ?1)) and status like 'APPROVED'")
     Page<JobApply> getJobApplyByDepartment(int departmentId, Pageable pageable);
-    @Query(nativeQuery = true, value = "select * from job_apply where recruitment_request_id = ?1 and candidate_id = ?2 order by status limit 1")
-    JobApply getJobAppliesByRecruitmentAndCandidate(int recruitmentId, int candidateId);
+    @Query(nativeQuery = true, value = "(select * from job_apply where recruitment_request_id = ?1 and candidate_id = ?2 order by status) limit 1")
+    Optional<JobApply> getJobAppliesByRecruitmentAndCandidate(int recruitmentId, int candidateId);
 
 }

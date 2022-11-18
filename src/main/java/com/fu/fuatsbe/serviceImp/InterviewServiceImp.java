@@ -75,7 +75,6 @@ public class InterviewServiceImp implements InterviewService {
 
         List<Employee> employeeList = new ArrayList<>();
         List<Integer> intervieweeIdList = new ArrayList<>();
-
         for (Integer employeeId : interviewCreateDTO.getEmployeeId()) {
             Employee employee = employeeRepository.findById(employeeId)
                     .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
@@ -96,10 +95,8 @@ public class InterviewServiceImp implements InterviewService {
             throw new PermissionException(InterviewErrorMessage.DATE_NOT_VALID);
         }
         JobApply jobApply = jobApplyRepository.getJobAppliesByRecruitmentAndCandidate(
-                interviewCreateDTO.getRecruitmentRequestId(),interviewCreateDTO.getCandidateId());
-        if(jobApply == null){
-            throw new NotValidException(JobApplyErrorMessage.CANDIDATE_NOT_APPLY);
-        }
+                interviewCreateDTO.getRecruitmentRequestId(), interviewCreateDTO.getCandidateId())
+                .orElseThrow(() -> new NotValidException(JobApplyErrorMessage.CANDIDATE_NOT_APPLY));
         Interview interview = Interview.builder()
                 .subject(interviewCreateDTO.getSubject())
                 .purpose(interviewCreateDTO.getPurpose())
@@ -428,7 +425,7 @@ public class InterviewServiceImp implements InterviewService {
                 .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
         InterviewEmployee interviewEmployee = interviewEmployeeRepository.findByInterviewAndEmployee(cancelInterviewDTO.getInterviewId(),
                 cancelInterviewDTO.getEmployeeId());
-        if(interviewEmployee == null){
+        if (interviewEmployee == null) {
             throw new NotValidException(InterviewErrorMessage.INTERVIEW_CONFIRM_NOT_VALID);
         }
         interview.setStatus(InterviewRequestStatus.CANCELED);
@@ -436,12 +433,12 @@ public class InterviewServiceImp implements InterviewService {
         List<Integer> candidateIDs = new ArrayList<>();
         candidateIDs.add(interview.getCandidate().getId());
         List<Integer> employeeIDs = new ArrayList<>();
-        for (InterviewEmployee employee: interview.getInterviewEmployees()) {
+        for (InterviewEmployee employee : interview.getInterviewEmployees()) {
             employeeIDs.add(employee.getEmployee().getId());
         }
-       String dateFormated = interview.getDate().toString().substring(0,16);
-        String message ="Lịch phỏng vấn vào ngày "+ dateFormated +" đã huỷ\n"
-                + "Lý do: "+cancelInterviewDTO.getReason()+"\n"+"Xin thứ lỗi.";
+        String dateFormated = interview.getDate().toString().substring(0, 16);
+        String message = "Lịch phỏng vấn vào ngày " + dateFormated + " đã huỷ\n"
+                + "Lý do: " + cancelInterviewDTO.getReason() + "\n" + "Xin thứ lỗi.";
         NotificationCreateDTO notificationCreateDTO = NotificationCreateDTO.builder()
                 .title("Huỷ lịch phỏng vấn")
                 .content(message)
@@ -499,7 +496,7 @@ public class InterviewServiceImp implements InterviewService {
                 new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
         InterviewEmployee interviewEmployee = interviewEmployeeRepository.findByInterviewAndEmployee(interview.getId(),
                 employee.getId());
-        if(interviewEmployee == null){
+        if (interviewEmployee == null) {
             throw new NotValidException(InterviewErrorMessage.INTERVIEW_CONFIRM_NOT_VALID);
         }
         interviewEmployee.setConfirmStatus(InterviewEmployeeRequestStatus.ACCEPTABLE);
@@ -508,12 +505,12 @@ public class InterviewServiceImp implements InterviewService {
         List<InterviewEmployee> interviewEmployeeList = interviewEmployeeRepository.findByInterviewId(idInterview);
 
         boolean checkAllConfirm = true;
-        for (InterviewEmployee interEmp: interviewEmployeeList) {
-            if(!interEmp.getConfirmStatus().equals(InterviewEmployeeRequestStatus.ACCEPTABLE) ){
+        for (InterviewEmployee interEmp : interviewEmployeeList) {
+            if (!interEmp.getConfirmStatus().equals(InterviewEmployeeRequestStatus.ACCEPTABLE)) {
                 checkAllConfirm = false;
             }
         }
-        if (checkAllConfirm){
+        if (checkAllConfirm) {
             interview.setStatus(InterviewRequestStatus.APPROVED);
             interviewRepository.save(interview);
         }
@@ -526,7 +523,7 @@ public class InterviewServiceImp implements InterviewService {
                 new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
         Candidate candidate = candidateRepository.findById(idCandidate).orElseThrow(() ->
                 new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
-        if(!interview.getCandidate().equals(candidate)){
+        if (!interview.getCandidate().equals(candidate)) {
             throw new NotValidException(InterviewErrorMessage.INTERVIEW_CONFIRM_NOT_VALID);
         }
         interview.setCandidateConfirm(CandidateStatus.INTERVIEW_ACCEPTABLE);
@@ -541,9 +538,9 @@ public class InterviewServiceImp implements InterviewService {
                 new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
         InterviewEmployee interviewEmployee = interviewEmployeeRepository.findByInterviewAndEmployee(interview.getId(),
                 employee.getId());
-        if(interviewEmployee == null){
+        if (interviewEmployee == null) {
             throw new NotValidException(InterviewErrorMessage.INTERVIEW_REJECT_NOT_VALID);
-        } else if (interviewEmployee.getConfirmStatus()!= null &&
+        } else if (interviewEmployee.getConfirmStatus() != null &&
                 interviewEmployee.getConfirmStatus().equals(InterviewEmployeeRequestStatus.REJECTED)) {
             throw new NotValidException(InterviewErrorMessage.INTERVIEW_WAS_REJECT_NOT_VALID);
         }
@@ -557,9 +554,9 @@ public class InterviewServiceImp implements InterviewService {
                 .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
         candidateRepository.findById(idCandidate).orElseThrow(() ->
                 new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
-        if(interview.getCandidate().getId() != idCandidate){
+        if (interview.getCandidate().getId() != idCandidate) {
             throw new NotValidException(InterviewErrorMessage.INTERVIEW_REJECT_NOT_VALID);
-        } else if (interview.getCandidateConfirm()!= null &&
+        } else if (interview.getCandidateConfirm() != null &&
                 interview.getCandidateConfirm().equals(CandidateStatus.INTERVIEW_REJECTED)) {
             throw new NotValidException(InterviewErrorMessage.INTERVIEW_WAS_REJECT_NOT_VALID);
         }
@@ -569,12 +566,12 @@ public class InterviewServiceImp implements InterviewService {
         List<Integer> candidateIDs = new ArrayList<>();
         candidateIDs.add(interview.getCandidate().getId());
         List<Integer> employeeIDs = new ArrayList<>();
-        for (InterviewEmployee employee: interview.getInterviewEmployees()) {
+        for (InterviewEmployee employee : interview.getInterviewEmployees()) {
             employeeIDs.add(employee.getEmployee().getId());
         }
-        String dateFormated = interview.getDate().toString().substring(0,16);
-        String message ="Lịch phỏng vấn vào ngày "+ dateFormated +" đã huỷ\n"
-                + "Lý do: Ứng viên từ chối tham gia\n"+"Xin thứ lỗi.";
+        String dateFormated = interview.getDate().toString().substring(0, 16);
+        String message = "Lịch phỏng vấn vào ngày " + dateFormated + " đã huỷ\n"
+                + "Lý do: Ứng viên từ chối tham gia\n" + "Xin thứ lỗi.";
         NotificationCreateDTO notificationCreateDTO = NotificationCreateDTO.builder()
                 .title("Huỷ lịch phỏng vấn")
                 .content(message)

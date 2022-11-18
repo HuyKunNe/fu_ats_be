@@ -151,8 +151,8 @@ public class CandidateServiceImp implements CandidateService {
         return result;
     }
     @Override
-    public List<IdAndNameResponse> getCandidateAppliedByRecruitment(int recruimentId) {
-        List<Candidate> candidates = candidateRepository.getCandidateAppliedByRecruitment(recruimentId);
+    public List<IdAndNameResponse> getCandidateAppliedByRecruitment(int recruitmentId) {
+        List<Candidate> candidates = candidateRepository.getCandidateAppliedByRecruitment(recruitmentId);
         List<IdAndNameResponse> responses = new ArrayList<>();
         for (Candidate candidate:candidates) {
             IdAndNameResponse idAndNameResponse = IdAndNameResponse.builder()

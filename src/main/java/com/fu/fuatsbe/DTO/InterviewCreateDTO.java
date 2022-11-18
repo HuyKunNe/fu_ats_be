@@ -42,9 +42,9 @@ public class InterviewCreateDTO {
     @NotBlank(message = ValidationMessage.DESCRIPTION_VALID_MESSAGE)
     private String description;
     @NotBlank(message = ValidationMessage.RECRUITMENT_REQUEST_VALID_MESSAGE)
-    private int recruitmentRequestId;
+    private Integer recruitmentRequestId;
     @NotBlank(message = ValidationMessage.CANDIDATE_ID_VALID_MESSAGE)
-    private int candidateId;
+    private Integer candidateId;
     @NotBlank(message = ValidationMessage.INTERVIEWEE_ID_VALID_MESSAGE)
     private List<Integer> employeeId;
 }
