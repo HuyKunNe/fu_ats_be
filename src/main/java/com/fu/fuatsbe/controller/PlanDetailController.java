@@ -192,4 +192,15 @@ public class PlanDetailController {
         response.setMessage(PlanDetailSuccessMessage.GET_TOTAL_STATUS_SUCCESS);
         return ResponseEntity.ok().body(response);
     }
+    @GetMapping("/getByDepartment")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getPlanByDepartment( @RequestParam("id") int departmentId,
+                                                            @RequestParam(defaultValue = "0") int pageNo,
+                                                            @RequestParam(defaultValue = "10") int pageSize){
+        ResponseDTO response = new ResponseDTO();
+        response.setData(planDetailService.getPlanDetailsByDepartment(departmentId, pageNo, pageSize));
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        response.setMessage(PlanDetailSuccessMessage.GET_BY_DEPARTMENT_SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
 }

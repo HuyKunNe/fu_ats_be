@@ -36,6 +36,7 @@ public interface PlanDetailService {
 
     List<IdAndNameResponse> getPlanDetailApprovedByDepartment(int departmentId);
     List<AllStatusCounterResponse> getStatusTotal();
+    ResponseWithTotalPage<PlanDetailResponseDTO> getPlanDetailsByDepartment(int departmentId, int pageNo, int pageSize);
 
 
 }

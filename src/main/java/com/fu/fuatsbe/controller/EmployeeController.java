@@ -80,27 +80,6 @@ public class EmployeeController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PermitAll
-    @GetMapping("/forgot-password")
-    public ResponseEntity<ResponseDTO> sendEmailToGetPassword(@RequestParam String email) throws MessagingException {
-        ResponseDTO<Void> responseDTO = new ResponseDTO();
-        emailService.sendEmailToGetBackPassword(email);
-        responseDTO.setMessage(EmployeeSuccessMessage.SEND_LINK_VERIFY_TO_GET_BACK_PASSWORD_SUCCESS);
-        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
-        return ResponseEntity.ok().body(responseDTO);
-    }
-
-    @PermitAll
-    @PatchMapping("/reset-password")
-    public ResponseEntity<ResponseDTO> resetPassword(@Validated @RequestBody ResetPasswordDto resetPasswordDto) {
-        ResponseDTO<Void> responseDTO = new ResponseDTO();
-        emailService.resetPassword(resetPasswordDto.getEmail(), resetPasswordDto.getToken(),
-                resetPasswordDto.getNewPassword());
-        responseDTO.setMessage(EmployeeSuccessMessage.RESET_PASSWORD_SUCCESS);
-        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
-        return ResponseEntity.ok().body(responseDTO);
-    }
-
     @PutMapping("/update/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> updateEmployee(@RequestParam("id") int id,

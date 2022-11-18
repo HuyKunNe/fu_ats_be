@@ -42,4 +42,6 @@ public interface PlanDetailRepository extends JpaRepository<PlanDetail, Integer>
             "union (select  coalesce(status, 'APPROVED') , count(status)  from plan_detail where status like 'APPROVED') " +
             "union( select  coalesce(status, 'CANCELED') ,count(status) from plan_detail where status like'CANCELED')")
     List<Tuple> getTotalStatusDetail();
+    @Query(nativeQuery = true, value = "select * from plan_detail where creator_id in(select id from employee where department_id = ?1) order by date desc")
+    Page<PlanDetail> getPlanDetailByDepartment(int departmentId, Pageable pageable);
 }

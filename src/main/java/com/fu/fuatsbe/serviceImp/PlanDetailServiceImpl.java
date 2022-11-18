@@ -376,4 +376,24 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         allList.add(allStatusCounterResponseRequest);
         return allList;
     }
+
+    @Override
+    public ResponseWithTotalPage<PlanDetailResponseDTO> getPlanDetailsByDepartment(int departmentId, int pageNo, int pageSize) {
+        departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Page<PlanDetail> pageResult = planDetailRepository.getPlanDetailByDepartment(departmentId, pageable);
+        List<PlanDetailResponseDTO> list = new ArrayList<PlanDetailResponseDTO>();
+        ResponseWithTotalPage<PlanDetailResponseDTO> result = new ResponseWithTotalPage<>();
+        if (pageResult.hasContent()) {
+            for (PlanDetail planDetail : pageResult.getContent()) {
+                PlanDetailResponseDTO planDetailResponse = modelMapper.map(planDetail, PlanDetailResponseDTO.class);
+                list.add(planDetailResponse);
+            }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
+        }else
+            throw new ListEmptyException(PlanDetailErrorMessage.LIST_EMPTY_EXCEPTION);
+        return result;
+    }
 }
