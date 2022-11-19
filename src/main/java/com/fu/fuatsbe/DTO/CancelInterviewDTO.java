@@ -15,8 +15,6 @@ import javax.validation.constraints.NotBlank;
 public class CancelInterviewDTO {
     @NotBlank(message = ValidationMessage.INTERVIEW_ID_VALID_MESSAGE)
     private int interviewId;
-    @NotBlank(message = ValidationMessage.EMPLOYEE_ID_VALID_MESSAGE)
-    private int employeeId;
     @NotBlank(message = ValidationMessage.REASON_CANCEL_INTERVIEW_VALID)
     private String reason;
 }

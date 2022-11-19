@@ -423,11 +423,7 @@ public class InterviewServiceImp implements InterviewService {
     public void cancelInterview(CancelInterviewDTO cancelInterviewDTO) throws MessagingException {
         Interview interview = interviewRepository.findById(cancelInterviewDTO.getInterviewId())
                 .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
-        InterviewEmployee interviewEmployee = interviewEmployeeRepository.findByInterviewAndEmployee(cancelInterviewDTO.getInterviewId(),
-                cancelInterviewDTO.getEmployeeId());
-        if (interviewEmployee == null) {
-            throw new NotValidException(InterviewErrorMessage.INTERVIEW_CONFIRM_NOT_VALID);
-        }
+
         interview.setStatus(InterviewRequestStatus.CANCELED);
         interviewRepository.save(interview);
         List<Integer> candidateIDs = new ArrayList<>();
