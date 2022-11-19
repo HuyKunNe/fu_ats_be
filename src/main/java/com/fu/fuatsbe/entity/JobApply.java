@@ -49,6 +49,8 @@ public class JobApply {
     private String educationLevel;
     @Nationalized
     private String foreignLanguage;
+    @Nationalized
+    private String experience;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)

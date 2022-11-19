@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -14,30 +15,34 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.fu.fuatsbe.DTO.CVScreeningDTO;
 import com.fu.fuatsbe.DTO.JobApplyCreateDTO;
 import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.city.CityErrorMessage;
 import com.fu.fuatsbe.constant.cv.CVStatus;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
+import com.fu.fuatsbe.constant.job_apply.EducationLevel;
+import com.fu.fuatsbe.constant.job_apply.Experience;
+import com.fu.fuatsbe.constant.job_apply.ForeignLanguage;
 import com.fu.fuatsbe.constant.job_apply.JobApplyErrorMessage;
 import com.fu.fuatsbe.constant.job_apply.JobApplyStatus;
-import com.fu.fuatsbe.constant.postion.PositionErrorMessage;
 import com.fu.fuatsbe.constant.recruitmentRequest.RecruitmentRequestErrorMessage;
 import com.fu.fuatsbe.entity.CV;
+import com.fu.fuatsbe.entity.CVScreening;
 import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.City;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.JobApply;
-import com.fu.fuatsbe.entity.Position;
 import com.fu.fuatsbe.entity.RecruitmentRequest;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
+import com.fu.fuatsbe.exceptions.NotValidException;
+import com.fu.fuatsbe.repository.CVScreeningRepository;
 import com.fu.fuatsbe.repository.CandidateRepository;
 import com.fu.fuatsbe.repository.CityRepository;
 import com.fu.fuatsbe.repository.CvRepository;
 import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.JobApplyRepository;
-import com.fu.fuatsbe.repository.PositionRepository;
 import com.fu.fuatsbe.repository.RecruitmentRequestRepository;
 import com.fu.fuatsbe.response.JobApplyResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
@@ -55,8 +60,17 @@ public class JobApplyServiceImpl implements JobApplyService {
     private final EmployeeRepository employeeRepository;
     private final CvRepository cvRepository;
     private final ModelMapper modelMapper;
-    private final PositionRepository positionRepository;
     private final CityRepository cityRepository;
+    private final CVScreeningRepository cvScreeningRepository;
+    public final List<String> listEducationLevel = Arrays.asList(EducationLevel.THPT, EducationLevel.TRUNG_CAP,
+            EducationLevel.CAO_DANG, EducationLevel.DAI_HOC);
+
+    public final List<String> listForeignLanguage = Arrays.asList(ForeignLanguage.ENGLISH, ForeignLanguage.FRENCH,
+            ForeignLanguage.JAPANESE);
+
+    public final List<String> listExperiences = Arrays.asList(Experience.LESS_THEN_1_YEAR, Experience.ONE_YEAR,
+            Experience.TWO_YEARS, Experience.THREE_YEARS, Experience.FOUR_YEARS, Experience.FIVE_YEARS,
+            Experience.OVER_5_YEARS, Experience.OVER_8_YEARS, Experience.OVER_10_YEARS);
 
     @Override
     public ResponseWithTotalPage<JobApplyResponse> getAllJobApplies(int pageNo, int pageSize) {
@@ -126,18 +140,10 @@ public class JobApplyServiceImpl implements JobApplyService {
                 .orElseThrow(() -> new NotFoundException(
                         RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
 
-        List<Position> positions = new ArrayList<>();
-
-        for (String positionName : createDTO.getPositionName()) {
-            Position position = positionRepository.findPositionByName(positionName)
-                    .orElseThrow(() -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
-            positions.add(position);
-        }
-
         Candidate candidate = candidateRepository.findById(createDTO.getCandidateId())
                 .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
 
-        CV cv = CV.builder().candidate(candidate).linkCV(createDTO.getLinkCV()).positions(positions)
+        CV cv = CV.builder().candidate(candidate).linkCV(createDTO.getLinkCV())
                 .status(CVStatus.ACTIVE).build();
 
         CV cvSaved = cvRepository.save(cv);
@@ -156,6 +162,11 @@ public class JobApplyServiceImpl implements JobApplyService {
                 .candidate(candidate).recruitmentRequest(recruitmentRequest).cv(cvSaved).build();
 
         JobApply jobApplySaved = jobApplyRepository.save(jobApply);
+
+        if (!screeningCV(jobApplySaved)) {
+            jobApply.setStatus(JobApplyStatus.REJECTED);
+            jobApplyRepository.save(jobApplySaved);
+        }
 
         JobApplyResponse jobApplyResponse = modelMapper.map(jobApplySaved, JobApplyResponse.class);
 
@@ -278,5 +289,54 @@ public class JobApplyServiceImpl implements JobApplyService {
         return result;
     }
 
+    @Override
+    public CVScreening cvScreeningSetting(CVScreeningDTO screeningDTO) {
+
+        CVScreening cvScreening = cvScreeningRepository.findTopByOrderByIdDesc();
+        if (screeningDTO.getCity() + screeningDTO.getEducationLevel() + screeningDTO.getExperience()
+                + screeningDTO.getForeignLanguage() != 100) {
+            throw new NotValidException("Total must be equal to 100");
+        } else {
+            cvScreening.setCity(screeningDTO.getCity());
+            cvScreening.setEducationLevel(screeningDTO.getEducationLevel());
+            cvScreening.setExperience(screeningDTO.getExperience());
+            cvScreening.setForeignLanguage(screeningDTO.getForeignLanguage());
+        }
+        return cvScreeningRepository.save(cvScreening);
+
+    }
+
+    public boolean screeningCV(JobApply jobApply) {
+        int total = 0;
+
+        CVScreening cvScreening = cvScreeningRepository.findTopByOrderByIdDesc();
+
+        int educationLevel = listEducationLevel.indexOf(jobApply.getEducationLevel());
+        int educationLevelRequired = listEducationLevel.indexOf(jobApply.getRecruitmentRequest().getEducationLevel());
+
+        total += (educationLevel >= educationLevelRequired ? cvScreening.getEducationLevel() : 0);
+
+        String foreignLanguageRequired = jobApply.getForeignLanguage();
+        String[] foreignLanguages = jobApply.getForeignLanguage().split(",");
+        int foreignLanguageContain = 0;
+
+        for (String foreignLanguage : foreignLanguages) {
+            foreignLanguageContain += foreignLanguageRequired.contains(foreignLanguage) ? 1 : 0;
+        }
+
+        total += ((foreignLanguageContain / foreignLanguages.length) * cvScreening.getForeignLanguage());
+
+        if (jobApply.getCities().getId() == jobApply.getRecruitmentRequest().getCities().getId()) {
+            total += cvScreening.getCity();
+        }
+
+        int experience = listExperiences.indexOf(jobApply.getExperience());
+        int experienceRequired = listExperiences.indexOf(jobApply.getRecruitmentRequest().getExperience());
+
+        total += (experience >= experienceRequired ? cvScreening.getExperience() : 0);
+
+        return total >= cvScreening.getPercentRequired() ? true : false;
+
+    }
 
 }
