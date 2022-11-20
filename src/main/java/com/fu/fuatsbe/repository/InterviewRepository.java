@@ -25,9 +25,14 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
         @Query(nativeQuery = true, value = "select distinct i.* from interview i join candidate c on i.candidate_id = c.id \n"
                         + "where c.name like %?1% \n" +
                         " and i.type like %?2% \n"
-                        + " and i.status like %?3% \n" +
-                        "order by i.id desc")
-        List<Interview> searchInterview(String candidateName, String type, String status);
+                        + " and i.status like %?3% \n"
+                        + "and (case \n"
+                        + "     when cast(?4 as date) is null then true \n"
+                        + "     when cast(?4 as date) is not null then ?4 = cast(i.date as date) \n"
+                        + "end) \n"
+                        + "and i.round like %?5% \n"
+                        + "order by i.id desc")
+        List<Interview> searchInterview(String candidateName, String type, String status, String date, String round);
 
         @Query(nativeQuery = true, value = "select * from interview \n"
                         + "where id in (select interview_id from interview_employee \n"

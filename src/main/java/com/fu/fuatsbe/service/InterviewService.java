@@ -37,6 +37,7 @@ public interface InterviewService {
 
     ResponseWithTotalPage<InterviewResponse> getInterviewByDepartment(int departmentId, int pageNo, int pageSize);
 
-    List<InterviewResponse> searchInterview(String candidateName, String type, String status);
+    List<InterviewResponse> searchInterview(String candidateName, String type, String status, String date,
+            String round);
 
 }

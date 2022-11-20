@@ -15,4 +15,6 @@ public class InterviewSearchDTO {
     private String candidateName;
     private String type;
     private String status;
+    private String date;
+    private String round;
 }

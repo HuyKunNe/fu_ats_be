@@ -185,7 +185,7 @@ public class InterviewController {
     public ResponseEntity<ListResponseDTO> searchInterview(@RequestBody InterviewSearchDTO searchDTO) {
         ListResponseDTO response = new ListResponseDTO<>();
         response.setData(interviewService.searchInterview(searchDTO.getCandidateName(), searchDTO.getType(),
-                searchDTO.getStatus()));
+                searchDTO.getStatus(), searchDTO.getDate(), searchDTO.getRound()));
         response.setStatus(ResponseStatusDTO.SUCCESS);
         response.setMessage(InterviewSuccessMessage.SEARCH_INTERVIEW);
         return ResponseEntity.ok().body(response);

@@ -582,9 +582,10 @@ public class InterviewServiceImp implements InterviewService {
     }
 
     @Override
-    public List<InterviewResponse> searchInterview(String candidateName, String type, String status) {
+    public List<InterviewResponse> searchInterview(String candidateName, String type, String status, String date,
+            String round) {
         List<InterviewResponse> result = new ArrayList<InterviewResponse>();
-        List<Interview> list = interviewRepository.searchInterview(candidateName, type, status);
+        List<Interview> list = interviewRepository.searchInterview(candidateName, type, status, date, round);
         if (list.size() > 0) {
             for (Interview interview : list) {
                 InterviewResponse response = modelMapper.map(interview, InterviewResponse.class);
