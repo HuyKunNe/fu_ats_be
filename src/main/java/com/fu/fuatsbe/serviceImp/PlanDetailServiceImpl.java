@@ -343,19 +343,23 @@ public class PlanDetailServiceImpl implements PlanDetailService {
     public AllStatusCounterResponse getStatusTotal() {
         List<Tuple> list = planDetailRepository.getTotalStatusDetail();
 
+
         List<CountStatusResponse> responses = new ArrayList<>();
-        for (Tuple total : list) {
-            CountStatusResponse countStatusResponse = CountStatusResponse.builder()
-                    .status(total.get("status").toString())
-                    .total(Integer.parseInt(total.get("total").toString()))
-                    .build();
-            responses.add(countStatusResponse);
+        List<String> statusList = new ArrayList<>();
+        List<Integer> totalList = new ArrayList<>();
+        for (Tuple total: list) {
+            statusList.add(total.get("status").toString());
+            totalList.add(Integer.parseInt(total.get("total").toString()));
 
         }
-        // RecruitmentPlan
+        CountStatusResponse countStatusResponse = CountStatusResponse.builder()
+                .status(statusList)
+                .total(totalList)
+                .build();
+        responses.add(countStatusResponse);
+        //RecruitmentPlan
         List<CountStatusResponse> countPlan = recruitmentPlanService.getStatusTotal();
-
-        // Recruitment Request
+        //Recruitment Request
         List<CountStatusResponse> countRequest = recruitmentRequestService.getStatusTotal();
         AllStatusCounterResponse allStatusCounterResponseRequest = AllStatusCounterResponse.builder()
                 .countStatusPlan(countPlan)
@@ -366,11 +370,10 @@ public class PlanDetailServiceImpl implements PlanDetailService {
     }
 
     @Override
-    public ResponseWithTotalPage<PlanDetailResponseDTO> getPlanDetailsByDepartment(int departmentId, int pageNo,
-            int pageSize) {
+    public ResponseWithTotalPage<PlanDetailResponseDTO> getPlanDetailsByDepartment(int departmentId, int pageNo, int pageSize) {
         departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
         Page<PlanDetail> pageResult = planDetailRepository.getPlanDetailByDepartment(departmentId, pageable);
         List<PlanDetailResponseDTO> list = new ArrayList<PlanDetailResponseDTO>();
         ResponseWithTotalPage<PlanDetailResponseDTO> result = new ResponseWithTotalPage<>();
@@ -381,7 +384,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
             }
             result.setResponseList(list);
             result.setTotalPage(pageResult.getTotalPages());
-        } else
+        }else
             throw new ListEmptyException(PlanDetailErrorMessage.LIST_EMPTY_EXCEPTION);
         return result;
     }

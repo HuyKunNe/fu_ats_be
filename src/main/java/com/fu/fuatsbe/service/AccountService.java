@@ -18,4 +18,7 @@ public interface AccountService {
     AccountResponse getAccountById(int id);
 
     boolean deleteAccountById(int id);
+
+    List<AccountResponse> getCandidateAccount(int pageNo, int pageSize);
+    List<AccountResponse> getEmployeeAccount(int pageNo, int pageSize);
 }

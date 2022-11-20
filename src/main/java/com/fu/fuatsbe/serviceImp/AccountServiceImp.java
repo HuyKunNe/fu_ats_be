@@ -140,4 +140,33 @@ public class AccountServiceImp implements AccountService {
         return result;
     }
 
+    @Override
+    public List<AccountResponse> getCandidateAccount(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Account> pageResult = accountRepository.getCandidateAccount(pageable);
+        List<AccountResponse> result = new ArrayList<AccountResponse>();
+        if (pageResult.hasContent()) {
+            for (Account account : pageResult.getContent()) {
+                AccountResponse accountResponse = modelMapper.map(account, AccountResponse.class);
+                result.add(accountResponse);
+            }
+        } else
+            throw new ListEmptyException(AccountErrorMessage.LIST_ACCOUNT_IS_EMPTY);
+        return result;
+    }
+
+    @Override
+    public List<AccountResponse> getEmployeeAccount(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Account> pageResult = accountRepository.getEmployeeAccount(pageable);
+        List<AccountResponse> result = new ArrayList<AccountResponse>();
+        if (pageResult.hasContent()) {
+            for (Account account : pageResult.getContent()) {
+                AccountResponse accountResponse = modelMapper.map(account, AccountResponse.class);
+                result.add(accountResponse);
+            }
+        } else
+            throw new ListEmptyException(AccountErrorMessage.LIST_ACCOUNT_IS_EMPTY);
+        return result;
+    }
 }

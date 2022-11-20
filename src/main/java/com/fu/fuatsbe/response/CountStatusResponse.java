@@ -2,6 +2,8 @@ package com.fu.fuatsbe.response;
 
 import lombok.*;
 
+import java.util.List;
+
 @Setter
 @Getter
 @ToString
@@ -9,6 +11,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class CountStatusResponse {
-    private String status;
-    private int total;
+    private List<String> status;
+    private List<Integer> total;
 }

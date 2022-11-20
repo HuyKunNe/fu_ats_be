@@ -366,13 +366,18 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
         List<Tuple> list = recruitmentPlanRepository.getTotalStatus();
 
         List<CountStatusResponse> responses = new ArrayList<>();
+        List<String> statusList = new ArrayList<>();
+        List<Integer> totalList = new ArrayList<>();
         for (Tuple total: list) {
-            CountStatusResponse countStatusResponse = CountStatusResponse.builder()
-                    .status(total.get("status").toString())
-                    .total(Integer.parseInt(total.get("total").toString()))
-                    .build();
-            responses.add(countStatusResponse);
+            statusList.add(total.get("status").toString());
+            totalList.add(Integer.parseInt(total.get("total").toString()));
+
         }
+        CountStatusResponse countStatusResponse = CountStatusResponse.builder()
+                .status(statusList)
+                .total(totalList)
+                .build();
+        responses.add(countStatusResponse);
         return responses;
     }
 }
