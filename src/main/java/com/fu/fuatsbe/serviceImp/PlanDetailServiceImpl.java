@@ -340,7 +340,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
     }
 
     @Override
-    public List<AllStatusCounterResponse> getStatusTotal() {
+    public AllStatusCounterResponse getStatusTotal() {
         ArrayList<AllStatusCounterResponse> allList = new ArrayList<>();
         List<Tuple> list = planDetailRepository.getTotalStatusDetail();
 
@@ -356,25 +356,17 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         }
         //RecruitmentPlan
         List<CountStatusResponse> countPlan = recruitmentPlanService.getStatusTotal();
-        AllStatusCounterResponse allStatusCounterResponsePlan = AllStatusCounterResponse.builder()
-                .className("RecruitmentPlan")
-                .countStatusResponses(countPlan)
-                .build();
-        allList.add(allStatusCounterResponsePlan);
-        //Plan detail
-        AllStatusCounterResponse allStatusCounterResponseDetail = AllStatusCounterResponse.builder()
-                .className("PlanDetail")
-                .countStatusResponses(responses)
-                .build();
-        allList.add(allStatusCounterResponseDetail);
+
+
+
         //Recruitment Request
         List<CountStatusResponse> countRequest = recruitmentRequestService.getStatusTotal();
         AllStatusCounterResponse allStatusCounterResponseRequest = AllStatusCounterResponse.builder()
-                .className("RecruitmentRequest")
-                .countStatusResponses(countRequest)
+                .countStatusPlan(countPlan)
+                .countStatusDetail(responses)
+                .countStatusRequest(countRequest)
                 .build();
-        allList.add(allStatusCounterResponseRequest);
-        return allList;
+        return allStatusCounterResponseRequest;
     }
 
     @Override
