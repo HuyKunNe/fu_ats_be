@@ -32,4 +32,7 @@ public interface JobApplyService {
 
     public CVScreening cvScreeningSetting(CVScreeningDTO screeningDTO);
 
+    public ResponseWithTotalPage<JobApplyResponse> getJobApplyNotReject(int recruitmentRequest, int pageNo,
+            int pageSize);
+
 }

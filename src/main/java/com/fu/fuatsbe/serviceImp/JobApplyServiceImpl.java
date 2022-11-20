@@ -339,4 +339,26 @@ public class JobApplyServiceImpl implements JobApplyService {
 
     }
 
+    @Override
+    public ResponseWithTotalPage<JobApplyResponse> getJobApplyNotReject(int recruitmentRequest, int pageNo,
+            int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        RecruitmentRequest request = recruitmentRequestRepository.findById(recruitmentRequest).orElseThrow(
+                () -> new NotFoundException(RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
+        Page<JobApply> pageResult = jobApplyRepository.findByRecruitmentRequestAndStatusNotLike(request,
+                JobApplyStatus.REJECTED, pageable);
+        List<JobApplyResponse> list = new ArrayList<JobApplyResponse>();
+        ResponseWithTotalPage<JobApplyResponse> result = new ResponseWithTotalPage<>();
+        if (pageResult.hasContent()) {
+            for (JobApply jobApply : pageResult.getContent()) {
+                JobApplyResponse jobApplyResponse = modelMapper.map(jobApply, JobApplyResponse.class);
+                list.add(jobApplyResponse);
+            }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
+        } else
+            throw new ListEmptyException(JobApplyErrorMessage.LIST_IS_EMPTY);
+        return result;
+    }
+
 }

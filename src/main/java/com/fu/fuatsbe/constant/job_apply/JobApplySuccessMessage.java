@@ -11,5 +11,6 @@ public final class JobApplySuccessMessage {
     public static final String GET_BY_ID = "Get job apply by id successfully";
     public static final String CANCEL = "Cancel job apply successfully";
     public static final String APPROVE = "Approve job apply successfully";
+    public static final String GET_JOB_APPLY_NOT_REJECT = "Get all job applies not reject successfully";
 
 }
