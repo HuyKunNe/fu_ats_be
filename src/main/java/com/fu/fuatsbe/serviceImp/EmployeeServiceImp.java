@@ -5,23 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fu.fuatsbe.constant.account.AccountErrorMessage;
-import com.fu.fuatsbe.constant.account.AccountStatus;
-import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
-import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
-import com.fu.fuatsbe.constant.employee.EmployeeStatus;
-import com.fu.fuatsbe.constant.recruitmentRequest.RecruitmentRequestErrorMessage;
-import com.fu.fuatsbe.entity.Department;
-import com.fu.fuatsbe.entity.Employee;
-import com.fu.fuatsbe.entity.RecruitmentRequest;
-import com.fu.fuatsbe.exceptions.ListEmptyException;
-import com.fu.fuatsbe.exceptions.NotFoundException;
-import com.fu.fuatsbe.repository.DepartmentRepository;
-import com.fu.fuatsbe.repository.EmployeeRepository;
-import com.fu.fuatsbe.repository.RecruitmentRequestRepository;
-
-import com.fu.fuatsbe.response.IdAndNameResponse;
-import lombok.RequiredArgsConstructor;
+import javax.persistence.Tuple;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -30,11 +14,25 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.EmployeeUpdateDTO;
+import com.fu.fuatsbe.constant.account.AccountErrorMessage;
+import com.fu.fuatsbe.constant.account.AccountStatus;
+import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
+import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
+import com.fu.fuatsbe.constant.employee.EmployeeStatus;
+import com.fu.fuatsbe.constant.recruitmentRequest.RecruitmentRequestErrorMessage;
+import com.fu.fuatsbe.entity.Department;
+import com.fu.fuatsbe.entity.Employee;
+import com.fu.fuatsbe.exceptions.ListEmptyException;
+import com.fu.fuatsbe.exceptions.NotFoundException;
+import com.fu.fuatsbe.repository.DepartmentRepository;
+import com.fu.fuatsbe.repository.EmployeeRepository;
+import com.fu.fuatsbe.repository.RecruitmentRequestRepository;
 import com.fu.fuatsbe.response.EmployeeResponse;
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.EmployeeService;
 
-import javax.persistence.Tuple;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

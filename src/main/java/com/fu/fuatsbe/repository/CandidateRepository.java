@@ -24,7 +24,9 @@ public interface CandidateRepository extends JpaRepository<Candidate, Integer> {
     Optional<Candidate> findByEmail(String email);
 
     Optional<Candidate> findByPhone(String phone);
-    @Query(nativeQuery = true, value = "select * from candidate where id " +
-            "in(select distinct candidate_id from job_apply where recruitment_request_id = ?1)")
+
+    @Query(nativeQuery = true, value = "select distinct c.* from candidate c join job_apply ja on c.id = ja.candidate_id \n"
+            + "where c.id in (select distinct candidate_id from job_apply where recruitment_request_id = ?1) \n"
+            + "and ja.status like 'APPROVED' ")
     List<Candidate> getCandidateAppliedByRecruitment(int recruitmentId);
 }

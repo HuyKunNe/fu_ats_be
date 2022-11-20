@@ -4,7 +4,6 @@ import com.fu.fuatsbe.DTO.NotificationCreateDTO;
 import com.fu.fuatsbe.DTO.SendNotificationDTO;
 import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
-import com.fu.fuatsbe.constant.notification.NotificationErrorMessage;
 import com.fu.fuatsbe.constant.notification.NotificationStatus;
 import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.Employee;
@@ -55,7 +54,8 @@ public class NotificationServiceImp implements NotificationService {
     private void initialize() {
         try {
             FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(new ClassPathResource(firebaseConfig).getInputStream()))
+                    .setCredentials(
+                            GoogleCredentials.fromStream(new ClassPathResource(firebaseConfig).getInputStream()))
                     .build();
 
             if (FirebaseApp.getApps().isEmpty()) {
@@ -73,13 +73,13 @@ public class NotificationServiceImp implements NotificationService {
         List<Candidate> listCandidate = new ArrayList<>();
         List<Employee> listEmployee = new ArrayList<>();
         for (Integer candidateId : notificationCreateDTO.getCandidateIDs()) {
-            Candidate candidateInRepo = candidateRepository.findById(candidateId).orElseThrow(() ->
-                    new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+            Candidate candidateInRepo = candidateRepository.findById(candidateId)
+                    .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
             listCandidate.add(candidateInRepo);
         }
         for (Integer employeeId : notificationCreateDTO.getEmployeeIDs()) {
-            Employee employee = employeeRepository.findById(employeeId).orElseThrow(() ->
-                    new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+            Employee employee = employeeRepository.findById(employeeId)
+                    .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
             listEmployee.add(employee);
         }
 
@@ -96,21 +96,21 @@ public class NotificationServiceImp implements NotificationService {
 
         notificationRepository.save(notification);
         for (Candidate candidate : listCandidate) {
-            if(candidate.getAccount().getNotificationToken()!=null){
+            if (candidate.getAccount().getNotificationToken() != null) {
                 pushNotification(candidate.getAccount().getNotificationToken(),
                         notificationCreateDTO.getTitle(),
                         notificationCreateDTO.getContent());
             }
-            sendEmail(candidate.getEmail(), notificationCreateDTO.getTitle(), notificationCreateDTO.getContent(), candidate.getName());
+            sendEmail(candidate.getEmail(), notificationCreateDTO.getTitle(), notificationCreateDTO.getContent(),
+                    candidate.getName());
         }
         for (Employee employee : listEmployee) {
-            if(employee.getAccount().getNotificationToken() != null){
+            if (employee.getAccount().getNotificationToken() != null) {
                 pushNotification(employee.getAccount().getNotificationToken(),
                         notificationCreateDTO.getTitle(),
                         notificationCreateDTO.getContent());
             }
         }
-
 
     }
 
@@ -134,10 +134,10 @@ public class NotificationServiceImp implements NotificationService {
         }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String presentDate = simpleDateFormat.format(Date.valueOf(LocalDate.now()));
-        String dateFormated = sendNotificationDTO.getDate().toString().substring(0,16);
+        String dateFormated = sendNotificationDTO.getDate().toString().substring(0, 16);
 
         String subject = "Thông báo lịch phỏng vấn";
-        String content = "Bạn có 1 buổi phỏng vấn vào lúc " + dateFormated+ "\n"
+        String content = "Bạn có 1 buổi phỏng vấn vào lúc " + dateFormated + "\n"
                 + "Bạn hãy đến địa chỉ này trước thời gian để tiến hành phỏng vấn\n"
                 + "Địa chỉ: " + interviewAddress + "\n"
                 + "Trân trọng.";
@@ -153,7 +153,8 @@ public class NotificationServiceImp implements NotificationService {
                 .build();
 
         notificationRepository.save(notification);
-        sendEmail(sendNotificationDTO.getCandidate().getEmail(), subject, content, sendNotificationDTO.getCandidate().getName());
+        sendEmail(sendNotificationDTO.getCandidate().getEmail(), subject, content,
+                sendNotificationDTO.getCandidate().getName());
         for (Employee employee : listEmployee) {
             sendEmail(employee.getAccount().getEmail(), subject, content, employee.getName());
         }
@@ -178,7 +179,6 @@ public class NotificationServiceImp implements NotificationService {
         mimeMessageHelper.setText("Thân gửi " + name + ",\n" + content);
         javaMailSender.send(mimeMessage);
     }
-
 
     public void pushNotification(String token, String title, String content) {
         com.google.firebase.messaging.Notification firebaseNoti = com.google.firebase.messaging.Notification

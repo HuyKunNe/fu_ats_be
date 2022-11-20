@@ -91,12 +91,12 @@ public class JobApply {
     @JoinColumn(name = "cityIdMany")
     @EqualsAndHashCode.Include
     @ToString.Include
-    @JsonIgnore
     private City cities;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cityId", referencedColumnName = "id")
     @EqualsAndHashCode.Include
     @ToString.Include
+    @JsonIgnore
     private City city;
 }

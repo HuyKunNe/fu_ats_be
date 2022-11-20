@@ -116,4 +116,20 @@ public class InterviewDetailServiceImp implements InterviewDetailService {
                                 InterviewDetailResponse.class);
                 return interviewDetailResponse;
         }
+
+        @Override
+        public List<InterviewDetailResponse> getAllInterviewDetailByDepartment(String departmentName) {
+                List<InterviewDetail> interviewDetails = interviewDetailRepository
+                                .getInterviewDetailByDepartment(departmentName);
+                List<InterviewDetailResponse> list = new ArrayList<InterviewDetailResponse>();
+                if (interviewDetails.size() > 0) {
+                        for (InterviewDetail interviewDetail : interviewDetails) {
+                                InterviewDetailResponse interviewDetailResponse = modelMapper.map(interviewDetail,
+                                                InterviewDetailResponse.class);
+                                list.add(interviewDetailResponse);
+                        }
+                } else
+                        throw new ListEmptyException(PlanDetailErrorMessage.LIST_EMPTY_EXCEPTION);
+                return list;
+        }
 }
