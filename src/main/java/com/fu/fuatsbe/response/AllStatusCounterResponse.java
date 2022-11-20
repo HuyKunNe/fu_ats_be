@@ -14,6 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class AllStatusCounterResponse {
-    private String className;
-    private List<CountStatusResponse> countStatusResponses;
+    private List<CountStatusResponse> countStatusPlan;
+    private List<CountStatusResponse> countStatusDetail;
+    private List<CountStatusResponse> countStatusRequest;
 }

@@ -158,7 +158,7 @@ public class JobApplyServiceImpl implements JobApplyService {
         JobApply jobApply = JobApply.builder().date(Date.valueOf(dateFormat)).cities(city)
                 .educationLevel(createDTO.getEducationLevel())
                 .foreignLanguage(createDTO.getForeignLanguage())
-                .status(JobApplyStatus.PEDNING)
+                .status(JobApplyStatus.PENDING)
                 .candidate(candidate).recruitmentRequest(recruitmentRequest).cv(cvSaved).build();
 
         JobApply jobApplySaved = jobApplyRepository.save(jobApply);
@@ -186,7 +186,7 @@ public class JobApplyServiceImpl implements JobApplyService {
     @Override
     public ResponseWithTotalPage<JobApplyResponse> getAllPendingJobApplies(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
-        Page<JobApply> pageResult = jobApplyRepository.findByStatus(JobApplyStatus.PEDNING, pageable);
+        Page<JobApply> pageResult = jobApplyRepository.findByStatus(JobApplyStatus.PENDING, pageable);
         List<JobApplyResponse> list = new ArrayList<JobApplyResponse>();
         ResponseWithTotalPage<JobApplyResponse> result = new ResponseWithTotalPage<>();
         if (pageResult.hasContent()) {
@@ -222,7 +222,7 @@ public class JobApplyServiceImpl implements JobApplyService {
     @Override
     public ResponseWithTotalPage<JobApplyResponse> getAllCancelJobApplies(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
-        Page<JobApply> pageResult = jobApplyRepository.findByStatus(JobApplyStatus.CANCLED, pageable);
+        Page<JobApply> pageResult = jobApplyRepository.findByStatus(JobApplyStatus.CANCELED, pageable);
         List<JobApplyResponse> list = new ArrayList<JobApplyResponse>();
         ResponseWithTotalPage<JobApplyResponse> result = new ResponseWithTotalPage<>();
         if (pageResult.hasContent()) {
@@ -246,7 +246,7 @@ public class JobApplyServiceImpl implements JobApplyService {
                 .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
 
         jobApply.setApplier(employee);
-        jobApply.setStatus(JobApplyStatus.CANCLED);
+        jobApply.setStatus(JobApplyStatus.CANCELED);
 
         JobApply jobApplySaved = jobApplyRepository.save(jobApply);
 
