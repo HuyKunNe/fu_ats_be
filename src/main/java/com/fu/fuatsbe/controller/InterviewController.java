@@ -2,12 +2,14 @@ package com.fu.fuatsbe.controller;
 
 import com.fu.fuatsbe.DTO.CancelInterviewDTO;
 import com.fu.fuatsbe.DTO.InterviewCreateDTO;
+import com.fu.fuatsbe.DTO.InterviewSearchDTO;
 import com.fu.fuatsbe.DTO.InterviewUpdateDTO;
 import com.fu.fuatsbe.constant.interview.InterviewErrorMessage;
 import com.fu.fuatsbe.constant.interview.InterviewSuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.response.InterviewResponse;
+import com.fu.fuatsbe.response.ListResponseDTO;
 import com.fu.fuatsbe.response.ResponseDTO;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.InterviewService;
@@ -29,7 +31,7 @@ public class InterviewController {
     @GetMapping("/getAllInterview")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getAllInterview(@RequestParam(defaultValue = "0") int pageNo,
-                                                       @RequestParam(defaultValue = "10") int pageSize) {
+            @RequestParam(defaultValue = "10") int pageSize) {
         ResponseDTO response = new ResponseDTO();
         response.setData(interviewService.getAllInterview(pageNo, pageSize));
         response.setStatus(ResponseStatusDTO.SUCCESS);
@@ -51,8 +53,8 @@ public class InterviewController {
     @GetMapping("/getInterviewByCandidateID")
     @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity<ResponseDTO> getInterviewByCandidateID(@RequestParam int candidateId,
-                                                                 @RequestParam(defaultValue = "0") int pageNo,
-                                                                 @RequestParam(defaultValue = "10") int pageSize) {
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setData(interviewService.getInterviewByCandidateID(candidateId, pageNo, pageSize));
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
@@ -63,16 +65,16 @@ public class InterviewController {
     @GetMapping("/getInterviewByEmployeeID")
     @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity<ResponseDTO> getInterviewByEmployeeID(@RequestParam int employeeId,
-                                                                @RequestParam(defaultValue = "0") int pageNo,
-                                                                @RequestParam(defaultValue = "10") int pageSize) {
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
         ResponseDTO responseDTO = new ResponseDTO();
         ResponseWithTotalPage<InterviewResponse> interviewResponses = interviewService
                 .getInterviewByEmployeeID(employeeId, pageNo, pageSize);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         responseDTO.setData(interviewResponses);
-        if(interviewResponses.getResponseList().size() ==0){
+        if (interviewResponses.getResponseList().size() == 0) {
             responseDTO.setMessage(InterviewErrorMessage.INTERVIEW_WITH_EMPLOYEE_ID_NOT_FOUND);
-        }else{
+        } else {
             responseDTO.setMessage(InterviewSuccessMessage.GET_INTERVIEW_BY_EMPLOYEE_ID);
         }
         return ResponseEntity.ok().body(responseDTO);
@@ -81,8 +83,8 @@ public class InterviewController {
     @GetMapping("/getInterviewByDepartment")
     @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity<ResponseDTO> getInterviewByDepartment(@RequestParam int departmentId,
-                                                                @RequestParam(defaultValue = "0") int pageNo,
-                                                                @RequestParam(defaultValue = "10") int pageSize) {
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
         ResponseDTO responseDTO = new ResponseDTO();
         ResponseWithTotalPage<InterviewResponse> interviewResponses = interviewService
                 .getInterviewByDepartment(departmentId, pageNo, pageSize);
@@ -95,7 +97,7 @@ public class InterviewController {
     @PutMapping("/updateInterview")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> updateInterview(@RequestParam int interviewId,
-                                                       @RequestBody InterviewUpdateDTO interviewUpdateDTO) throws MessagingException {
+            @RequestBody InterviewUpdateDTO interviewUpdateDTO) throws MessagingException {
         ResponseDTO response = new ResponseDTO();
         response.setData(interviewService.updateInterview(interviewId, interviewUpdateDTO));
         response.setStatus(ResponseStatusDTO.SUCCESS);
@@ -115,7 +117,8 @@ public class InterviewController {
 
     @PatchMapping("/cancelInterview")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> cancelInterview(@RequestBody CancelInterviewDTO cancelInterviewDTO) throws MessagingException {
+    public ResponseEntity<ResponseDTO> cancelInterview(@RequestBody CancelInterviewDTO cancelInterviewDTO)
+            throws MessagingException {
         ResponseDTO response = new ResponseDTO();
         interviewService.cancelInterview(cancelInterviewDTO);
         response.setMessage(InterviewSuccessMessage.CANCEL_INTERVIEW);
@@ -133,34 +136,40 @@ public class InterviewController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PatchMapping ("/confirmByEmployee")
+    @PatchMapping("/confirmByEmployee")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> confirmInterviewEmployee(@RequestParam int idInterview, @RequestParam int idEmployee) {
+    public ResponseEntity<ResponseDTO> confirmInterviewEmployee(@RequestParam int idInterview,
+            @RequestParam int idEmployee) {
         ResponseDTO response = new ResponseDTO<>();
         interviewService.confirmJoinInterviewByEmployee(idInterview, idEmployee);
         response.setStatus(ResponseStatusDTO.SUCCESS);
         response.setMessage(InterviewSuccessMessage.CONFIRM_INTERVIEW);
         return ResponseEntity.ok().body(response);
     }
-    @PatchMapping ("/rejectByEmployee")
+
+    @PatchMapping("/rejectByEmployee")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> rejectInterviewEmployee(@RequestParam int idInterview, @RequestParam int idEmployee) {
+    public ResponseEntity<ResponseDTO> rejectInterviewEmployee(@RequestParam int idInterview,
+            @RequestParam int idEmployee) {
         ResponseDTO response = new ResponseDTO<>();
         interviewService.rejectJoinInterviewByEmployee(idInterview, idEmployee);
         response.setStatus(ResponseStatusDTO.SUCCESS);
         response.setMessage(InterviewSuccessMessage.REJECT_INTERVIEW);
         return ResponseEntity.ok().body(response);
     }
-    @PatchMapping ("/confirmByCandidate")
+
+    @PatchMapping("/confirmByCandidate")
     @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
-    public ResponseEntity<ResponseDTO> confirmInterviewCandidate(@RequestParam int idInterview, @RequestParam int idCandidate) {
+    public ResponseEntity<ResponseDTO> confirmInterviewCandidate(@RequestParam int idInterview,
+            @RequestParam int idCandidate) {
         ResponseDTO response = new ResponseDTO<>();
         interviewService.confirmJoinInterviewByCandidate(idInterview, idCandidate);
         response.setStatus(ResponseStatusDTO.SUCCESS);
         response.setMessage(InterviewSuccessMessage.CONFIRM_INTERVIEW);
         return ResponseEntity.ok().body(response);
     }
-    @PatchMapping ("/rejectByCandidate")
+
+    @PatchMapping("/rejectByCandidate")
     @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
     public ResponseEntity<ResponseDTO> rejectInterviewCandidate(
             @RequestParam int idInterview, @RequestParam int idCandidate) throws MessagingException {
@@ -168,6 +177,17 @@ public class InterviewController {
         interviewService.rejectJoinInterviewByCandidate(idInterview, idCandidate);
         response.setStatus(ResponseStatusDTO.SUCCESS);
         response.setMessage(InterviewSuccessMessage.REJECT_INTERVIEW);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PutMapping("/searchInterview")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ListResponseDTO> searchInterview(@RequestBody InterviewSearchDTO searchDTO) {
+        ListResponseDTO response = new ListResponseDTO<>();
+        response.setData(interviewService.searchInterview(searchDTO.getCandidateName(), searchDTO.getType(),
+                searchDTO.getStatus()));
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        response.setMessage(InterviewSuccessMessage.SEARCH_INTERVIEW);
         return ResponseEntity.ok().body(response);
     }
 }

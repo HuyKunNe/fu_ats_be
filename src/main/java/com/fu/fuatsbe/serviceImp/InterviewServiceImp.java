@@ -12,6 +12,8 @@ import java.util.List;
 import javax.mail.MessagingException;
 
 import com.fu.fuatsbe.constant.candidate.CandidateStatus;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -67,6 +69,8 @@ public class InterviewServiceImp implements InterviewService {
     private final NotificationService notificationService;
 
     private final InterviewEmployeeRepository interviewEmployeeRepository;
+
+    private final ModelMapper modelMapper;
 
     @Override
     public InterviewResponse createInterview(InterviewCreateDTO interviewCreateDTO) throws MessagingException {
@@ -162,7 +166,7 @@ public class InterviewServiceImp implements InterviewService {
 
     @Override
     public ResponseWithTotalPage<InterviewResponse> getInterviewByCandidateID(int candidateId, int pageNo,
-                                                                              int pageSize) {
+            int pageSize) {
         Candidate candidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
 
@@ -446,7 +450,7 @@ public class InterviewServiceImp implements InterviewService {
 
     @Override
     public ResponseWithTotalPage<InterviewResponse> getInterviewByDepartment(int departmentId, int pageNo,
-                                                                             int pageSize) {
+            int pageSize) {
         Department department = departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
 
@@ -486,10 +490,10 @@ public class InterviewServiceImp implements InterviewService {
 
     @Override
     public void confirmJoinInterviewByEmployee(int idInterview, int idEmployee) {
-        Interview interview = interviewRepository.findById(idInterview).orElseThrow(() ->
-                new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
-        Employee employee = employeeRepository.findById(idEmployee).orElseThrow(() ->
-                new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+        Interview interview = interviewRepository.findById(idInterview)
+                .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
+        Employee employee = employeeRepository.findById(idEmployee)
+                .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
         InterviewEmployee interviewEmployee = interviewEmployeeRepository.findByInterviewAndEmployee(interview.getId(),
                 employee.getId());
         if (interviewEmployee == null) {
@@ -497,7 +501,7 @@ public class InterviewServiceImp implements InterviewService {
         }
         interviewEmployee.setConfirmStatus(InterviewEmployeeRequestStatus.ACCEPTABLE);
         interviewEmployeeRepository.save(interviewEmployee);
-        //Check if all emp accept -> interview to approved
+        // Check if all emp accept -> interview to approved
         List<InterviewEmployee> interviewEmployeeList = interviewEmployeeRepository.findByInterviewId(idInterview);
 
         boolean checkAllConfirm = true;
@@ -515,10 +519,10 @@ public class InterviewServiceImp implements InterviewService {
 
     @Override
     public void confirmJoinInterviewByCandidate(int idInterview, int idCandidate) {
-        Interview interview = interviewRepository.findById(idInterview).orElseThrow(() ->
-                new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
-        Candidate candidate = candidateRepository.findById(idCandidate).orElseThrow(() ->
-                new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+        Interview interview = interviewRepository.findById(idInterview)
+                .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
+        Candidate candidate = candidateRepository.findById(idCandidate)
+                .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
         if (!interview.getCandidate().equals(candidate)) {
             throw new NotValidException(InterviewErrorMessage.INTERVIEW_CONFIRM_NOT_VALID);
         }
@@ -528,10 +532,10 @@ public class InterviewServiceImp implements InterviewService {
 
     @Override
     public void rejectJoinInterviewByEmployee(int idInterview, int idEmployee) {
-        Interview interview = interviewRepository.findById(idInterview).orElseThrow(() ->
-                new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
-        Employee employee = employeeRepository.findById(idEmployee).orElseThrow(() ->
-                new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+        Interview interview = interviewRepository.findById(idInterview)
+                .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
+        Employee employee = employeeRepository.findById(idEmployee)
+                .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
         InterviewEmployee interviewEmployee = interviewEmployeeRepository.findByInterviewAndEmployee(interview.getId(),
                 employee.getId());
         if (interviewEmployee == null) {
@@ -548,8 +552,8 @@ public class InterviewServiceImp implements InterviewService {
     public void rejectJoinInterviewByCandidate(int idInterview, int idCandidate) throws MessagingException {
         Interview interview = interviewRepository.findById(idInterview)
                 .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
-        candidateRepository.findById(idCandidate).orElseThrow(() ->
-                new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+        candidateRepository.findById(idCandidate)
+                .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
         if (interview.getCandidate().getId() != idCandidate) {
             throw new NotValidException(InterviewErrorMessage.INTERVIEW_REJECT_NOT_VALID);
         } else if (interview.getCandidateConfirm() != null &&
@@ -575,5 +579,19 @@ public class InterviewServiceImp implements InterviewService {
                 .employeeIDs(employeeIDs)
                 .build();
         notificationService.createNotification(notificationCreateDTO);
+    }
+
+    @Override
+    public List<InterviewResponse> searchInterview(String candidateName, String type, String status) {
+        List<InterviewResponse> result = new ArrayList<InterviewResponse>();
+        List<Interview> list = interviewRepository.searchInterview(candidateName, type, status);
+        if (list.size() > 0) {
+            for (Interview interview : list) {
+                InterviewResponse response = modelMapper.map(interview, InterviewResponse.class);
+                result.add(response);
+            }
+        } else
+            throw new ListEmptyException(InterviewErrorMessage.LIST_EMPTY_EXCEPTION);
+        return result;
     }
 }
