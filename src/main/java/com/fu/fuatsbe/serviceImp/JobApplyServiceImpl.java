@@ -23,7 +23,6 @@ import com.fu.fuatsbe.constant.cv.CVStatus;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.job_apply.EducationLevel;
 import com.fu.fuatsbe.constant.job_apply.Experience;
-import com.fu.fuatsbe.constant.job_apply.ForeignLanguage;
 import com.fu.fuatsbe.constant.job_apply.JobApplyErrorMessage;
 import com.fu.fuatsbe.constant.job_apply.JobApplyStatus;
 import com.fu.fuatsbe.constant.recruitmentRequest.RecruitmentRequestErrorMessage;
@@ -62,11 +61,6 @@ public class JobApplyServiceImpl implements JobApplyService {
     private final ModelMapper modelMapper;
     private final CityRepository cityRepository;
     private final CVScreeningRepository cvScreeningRepository;
-    public final List<String> listEducationLevel = Arrays.asList(EducationLevel.THPT, EducationLevel.TRUNG_CAP,
-            EducationLevel.CAO_DANG, EducationLevel.DAI_HOC);
-
-    public final List<String> listForeignLanguage = Arrays.asList(ForeignLanguage.ENGLISH, ForeignLanguage.FRENCH,
-            ForeignLanguage.JAPANESE);
 
     public final List<String> listExperiences = Arrays.asList(Experience.LESS_THEN_1_YEAR, Experience.ONE_YEAR,
             Experience.TWO_YEARS, Experience.THREE_YEARS, Experience.FOUR_YEARS, Experience.FIVE_YEARS,
@@ -311,8 +305,9 @@ public class JobApplyServiceImpl implements JobApplyService {
 
         CVScreening cvScreening = cvScreeningRepository.findTopByOrderByIdDesc();
 
-        int educationLevel = listEducationLevel.indexOf(jobApply.getEducationLevel());
-        int educationLevelRequired = listEducationLevel.indexOf(jobApply.getRecruitmentRequest().getEducationLevel());
+        int educationLevel = EducationLevel.LIST_EDUCATION_LEVEL.indexOf(jobApply.getEducationLevel());
+        int educationLevelRequired = EducationLevel.LIST_EDUCATION_LEVEL
+                .indexOf(jobApply.getRecruitmentRequest().getEducationLevel());
 
         total += (educationLevel >= educationLevelRequired ? cvScreening.getEducationLevel() : 0);
 
@@ -321,7 +316,7 @@ public class JobApplyServiceImpl implements JobApplyService {
         int foreignLanguageContain = 0;
 
         for (String foreignLanguage : foreignLanguages) {
-            foreignLanguageContain += foreignLanguageRequired.contains(foreignLanguage) ? 1 : 0;
+            foreignLanguageContain += foreignLanguageRequired.contains(foreignLanguage.trim()) ? 1 : 0;
         }
 
         total += ((foreignLanguageContain / foreignLanguages.length) * cvScreening.getForeignLanguage());

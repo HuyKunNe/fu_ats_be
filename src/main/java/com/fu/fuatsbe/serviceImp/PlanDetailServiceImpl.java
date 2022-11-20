@@ -341,12 +341,10 @@ public class PlanDetailServiceImpl implements PlanDetailService {
 
     @Override
     public AllStatusCounterResponse getStatusTotal() {
-        ArrayList<AllStatusCounterResponse> allList = new ArrayList<>();
         List<Tuple> list = planDetailRepository.getTotalStatusDetail();
 
-
         List<CountStatusResponse> responses = new ArrayList<>();
-        for (Tuple total: list) {
+        for (Tuple total : list) {
             CountStatusResponse countStatusResponse = CountStatusResponse.builder()
                     .status(total.get("status").toString())
                     .total(Integer.parseInt(total.get("total").toString()))
@@ -354,12 +352,10 @@ public class PlanDetailServiceImpl implements PlanDetailService {
             responses.add(countStatusResponse);
 
         }
-        //RecruitmentPlan
+        // RecruitmentPlan
         List<CountStatusResponse> countPlan = recruitmentPlanService.getStatusTotal();
 
-
-
-        //Recruitment Request
+        // Recruitment Request
         List<CountStatusResponse> countRequest = recruitmentRequestService.getStatusTotal();
         AllStatusCounterResponse allStatusCounterResponseRequest = AllStatusCounterResponse.builder()
                 .countStatusPlan(countPlan)
@@ -370,10 +366,11 @@ public class PlanDetailServiceImpl implements PlanDetailService {
     }
 
     @Override
-    public ResponseWithTotalPage<PlanDetailResponseDTO> getPlanDetailsByDepartment(int departmentId, int pageNo, int pageSize) {
+    public ResponseWithTotalPage<PlanDetailResponseDTO> getPlanDetailsByDepartment(int departmentId, int pageNo,
+            int pageSize) {
         departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
-        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<PlanDetail> pageResult = planDetailRepository.getPlanDetailByDepartment(departmentId, pageable);
         List<PlanDetailResponseDTO> list = new ArrayList<PlanDetailResponseDTO>();
         ResponseWithTotalPage<PlanDetailResponseDTO> result = new ResponseWithTotalPage<>();
@@ -384,7 +381,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
             }
             result.setResponseList(list);
             result.setTotalPage(pageResult.getTotalPages());
-        }else
+        } else
             throw new ListEmptyException(PlanDetailErrorMessage.LIST_EMPTY_EXCEPTION);
         return result;
     }

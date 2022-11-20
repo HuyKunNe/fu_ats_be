@@ -92,12 +92,20 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
         List<String> getDistinctByIndustry();
 
         Page<RecruitmentRequest> findByOrderByIdDesc(Pageable pageable);
-        @Query(nativeQuery = true, value = "(select  coalesce(status, 'PENDING') as status,count(status) as total from recruitment_request where status like 'OPENING') " +
-                "union (select  coalesce(status, 'CLOSED') ,count(status)  from recruitment_request where status like 'CLOSED') " +
-                "union(select  coalesce(status, 'FILLED') ,count(status) from recruitment_request where status like'FILLED')")
+
+        @Query(nativeQuery = true, value = "(select  coalesce(status, 'PENDING') as status,count(status) as total from recruitment_request where status like 'OPENING') "
+                        +
+                        "union (select  coalesce(status, 'CLOSED') ,count(status)  from recruitment_request where status like 'CLOSED') "
+                        +
+                        "union(select  coalesce(status, 'FILLED') ,count(status) from recruitment_request where status like'FILLED')")
         List<Tuple> getTotalStatusRequest();
+
         @Query(nativeQuery = true, value = "select id, name from recruitment_request where position_id " +
-                "in(select id from position where department_id = ?1) and status like 'OPENING'")
+                        "in(select id from position where department_id = ?1) and status like 'OPENING'")
         List<Tuple> getIdAndNameRequestByDepartment(int departmentId);
+
+        @Query(nativeQuery = true, value = "select distinct foreign_language from recruitment_request \n"
+                        + " where foreign_language is not null and foreign_language not like '';")
+        List<String> getAllForeignLanguages();
 
 }
