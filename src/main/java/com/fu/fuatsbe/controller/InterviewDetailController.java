@@ -73,9 +73,11 @@ public class InterviewDetailController {
 
     @GetMapping("/getAllInterviewDetailByDepartment")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> getAllInterviewDetailByDepartment(@RequestParam String departmentName) {
-        ListResponseDTO response = new ListResponseDTO();
-        response.setData(interviewDetailService.getAllInterviewDetailByDepartment(departmentName));
+    public ResponseEntity<ResponseDTO> getAllInterviewDetailByDepartment(@RequestParam String departmentName,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        ResponseDTO response = new ResponseDTO();
+        response.setData(interviewDetailService.getAllInterviewDetailByDepartment(departmentName, pageNo, pageSize));
         response.setStatus(ResponseStatusDTO.SUCCESS);
         response.setMessage(InterviewDetailSuccessMessage.GET_ALL_INTERVIEW_DETAIL_SUCCESS);
         return ResponseEntity.ok().body(response);

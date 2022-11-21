@@ -118,18 +118,23 @@ public class InterviewDetailServiceImp implements InterviewDetailService {
         }
 
         @Override
-        public List<InterviewDetailResponse> getAllInterviewDetailByDepartment(String departmentName) {
-                List<InterviewDetail> interviewDetails = interviewDetailRepository
-                                .getInterviewDetailByDepartment(departmentName);
+        public ResponseWithTotalPage<InterviewDetailResponse> getAllInterviewDetailByDepartment(String departmentName,
+                        int pageNo, int pageSize) {
+                Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+                Page<InterviewDetail> interviewDetails = interviewDetailRepository
+                                .getInterviewDetailByDepartment(departmentName, pageable);
                 List<InterviewDetailResponse> list = new ArrayList<InterviewDetailResponse>();
-                if (interviewDetails.size() > 0) {
+                ResponseWithTotalPage<InterviewDetailResponse> result = new ResponseWithTotalPage<>();
+                if (interviewDetails.hasContent()) {
                         for (InterviewDetail interviewDetail : interviewDetails) {
                                 InterviewDetailResponse interviewDetailResponse = modelMapper.map(interviewDetail,
                                                 InterviewDetailResponse.class);
                                 list.add(interviewDetailResponse);
                         }
+                        result.setResponseList(list);
+                        result.setTotalPage(interviewDetails.getTotalPages());
                 } else
                         throw new ListEmptyException(PlanDetailErrorMessage.LIST_EMPTY_EXCEPTION);
-                return list;
+                return result;
         }
 }

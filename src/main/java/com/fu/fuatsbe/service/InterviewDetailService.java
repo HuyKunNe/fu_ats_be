@@ -1,7 +1,5 @@
 package com.fu.fuatsbe.service;
 
-import java.util.List;
-
 import com.fu.fuatsbe.DTO.InterviewDetailDTO;
 import com.fu.fuatsbe.response.InterviewDetailResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
@@ -17,5 +15,6 @@ public interface InterviewDetailService {
 
     InterviewDetailResponse getInterviewDetailByInterviewId(int interviewId);
 
-    List<InterviewDetailResponse> getAllInterviewDetailByDepartment(String departmentName);
+    ResponseWithTotalPage<InterviewDetailResponse> getAllInterviewDetailByDepartment(String departmentName, int pageNo,
+            int pageSize);
 }

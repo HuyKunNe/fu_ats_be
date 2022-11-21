@@ -1,10 +1,11 @@
 package com.fu.fuatsbe.repository;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -25,5 +26,5 @@ public interface InterviewDetailRepository extends JpaRepository<InterviewDetail
             " join department d on e.department_id = d.id \n" +
             "where d.name like %?1% \n"
             + "order by ind.id desc")
-    List<InterviewDetail> getInterviewDetailByDepartment(String departmentName);
+    Page<InterviewDetail> getInterviewDetailByDepartment(String departmentName, Pageable pageable);
 }
