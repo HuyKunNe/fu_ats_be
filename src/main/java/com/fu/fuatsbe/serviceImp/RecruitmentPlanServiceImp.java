@@ -362,10 +362,9 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
     }
 
     @Override
-    public List<CountStatusResponse> getStatusTotal() {
+    public CountStatusResponse getStatusTotal() {
         List<Tuple> list = recruitmentPlanRepository.getTotalStatus();
 
-        List<CountStatusResponse> responses = new ArrayList<>();
         List<String> statusList = new ArrayList<>();
         List<Integer> totalList = new ArrayList<>();
         for (Tuple total: list) {
@@ -377,7 +376,6 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
                 .status(statusList)
                 .total(totalList)
                 .build();
-        responses.add(countStatusResponse);
-        return responses;
+        return countStatusResponse;
     }
 }
