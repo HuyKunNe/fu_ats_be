@@ -27,4 +27,5 @@ public interface InterviewDetailRepository extends JpaRepository<InterviewDetail
             "where d.name like %?1% \n"
             + "order by ind.id desc")
     Page<InterviewDetail> getInterviewDetailByDepartment(String departmentName, Pageable pageable);
+    boolean existsByInterviewId(int interviewId);
 }

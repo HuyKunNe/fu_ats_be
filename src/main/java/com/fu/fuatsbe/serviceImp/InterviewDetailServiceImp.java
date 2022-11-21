@@ -6,6 +6,7 @@ import com.fu.fuatsbe.constant.interview_detail.InterviewDetailErrorMessage;
 import com.fu.fuatsbe.constant.planDetail.PlanDetailErrorMessage;
 import com.fu.fuatsbe.entity.Interview;
 import com.fu.fuatsbe.entity.InterviewDetail;
+import com.fu.fuatsbe.exceptions.ExistException;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.repository.InterviewDetailRepository;
@@ -57,8 +58,9 @@ public class InterviewDetailServiceImp implements InterviewDetailService {
     public InterviewDetailResponse createInterviewDetail(InterviewDetailDTO interviewDetailDTO) {
         Interview interview = interviewRepository.findById(interviewDetailDTO.getInterviewID())
                 .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
-        interviewDetailRepository.getInterviewDetailByInterviewId(interviewDetailDTO.getInterviewID()).orElseThrow(() ->
-                new NotFoundException(InterviewDetailErrorMessage.INTERVIEW_DETAIL_OF_INTERVIEW_CREATED));
+        if(interviewDetailRepository.existsByInterviewId(interviewDetailDTO.getInterviewID())){
+            throw new ExistException(InterviewDetailErrorMessage.INTERVIEW_DETAIL_OF_INTERVIEW_CREATED);
+        }
         InterviewDetail interviewDetail = InterviewDetail.builder()
                 .startAt(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()))
                 .endAt(interviewDetailDTO.getEnd())
