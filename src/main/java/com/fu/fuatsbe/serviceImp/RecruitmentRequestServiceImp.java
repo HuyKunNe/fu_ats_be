@@ -38,6 +38,7 @@ import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.exceptions.NotValidException;
 import com.fu.fuatsbe.response.RecruitmentRequestResponse;
+import com.fu.fuatsbe.response.RecruitmentRequestResponseWithJobApply;
 import com.fu.fuatsbe.service.RecruitmentRequestService;
 
 import lombok.RequiredArgsConstructor;
@@ -59,6 +60,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     private final PositionRepository positionRepository;
     private final DepartmentRepository departmentRepository;
     private final CityRepository cityRepository;
+    private final JobApplyRepository jobApplyRepository;
 
     @Override
     public ResponseWithTotalPage<RecruitmentRequestResponse> getAllRecruitmentRequests(int pageNo, int pageSize) {
@@ -117,18 +119,19 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     }
 
     @Override
-    public ResponseWithTotalPage<RecruitmentRequestResponse> getAllOpenRecruitmentRequest(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<RecruitmentRequestResponseWithJobApply> getAllOpenRecruitmentRequest(int pageNo,
+            int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<RecruitmentRequest> pageResult = recruitmentRequestRepository
                 .findByStatus(RecruitmentRequestStatus.OPENING, pageable);
 
-        List<RecruitmentRequestResponse> list = new ArrayList<RecruitmentRequestResponse>();
-        ResponseWithTotalPage<RecruitmentRequestResponse> result = new ResponseWithTotalPage<>();
+        List<RecruitmentRequestResponseWithJobApply> list = new ArrayList<RecruitmentRequestResponseWithJobApply>();
+        ResponseWithTotalPage<RecruitmentRequestResponseWithJobApply> result = new ResponseWithTotalPage<>();
 
         if (pageResult.hasContent()) {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
-                RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
-                        RecruitmentRequestResponse.class);
+                RecruitmentRequestResponseWithJobApply response = modelMapper.map(recruitmentRequest,
+                        RecruitmentRequestResponseWithJobApply.class);
                 if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
                     response.setSalaryDetail(
                             (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
@@ -142,6 +145,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                     response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
                 } else
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
+                int total = jobApplyRepository.countByRecruitmentRequestId(recruitmentRequest.getId());
+                response.setTotalJobApply(total);
                 list.add(response);
             }
             result.setResponseList(list);
@@ -493,10 +498,9 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     public CountStatusResponse getStatusTotal() {
         List<Tuple> list = recruitmentRequestRepository.getTotalStatusRequest();
 
-
         List<String> statusList = new ArrayList<>();
         List<Integer> totalList = new ArrayList<>();
-        for (Tuple total: list) {
+        for (Tuple total : list) {
             statusList.add(total.get("status").toString());
             totalList.add(Integer.parseInt(total.get("total").toString()));
 
@@ -511,11 +515,11 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
 
     @Override
     public List<IdAndNameResponse> getIdAndNameRequestByDepartment(int departmentId) {
-        departmentRepository.findById(departmentId).orElseThrow(() ->
-                new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
+        departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
         List<Tuple> listRepo = recruitmentRequestRepository.getIdAndNameRequestByDepartment(departmentId);
         List<IdAndNameResponse> responses = new ArrayList<>();
-        for (Tuple tuple: listRepo) {
+        for (Tuple tuple : listRepo) {
             IdAndNameResponse idAndNameResponse = IdAndNameResponse.builder()
                     .id(Integer.parseInt(tuple.get("id").toString()))
                     .name(tuple.get("name").toString())

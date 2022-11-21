@@ -6,6 +6,7 @@ import com.fu.fuatsbe.DTO.*;
 import com.fu.fuatsbe.response.CountStatusResponse;
 import com.fu.fuatsbe.response.IdAndNameResponse;
 import com.fu.fuatsbe.response.RecruitmentRequestResponse;
+import com.fu.fuatsbe.response.RecruitmentRequestResponseWithJobApply;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 
 public interface RecruitmentRequestService {
@@ -13,7 +14,8 @@ public interface RecruitmentRequestService {
 
     public RecruitmentRequestResponse getRecruitmentRequestById(int id);
 
-    public ResponseWithTotalPage<RecruitmentRequestResponse> getAllOpenRecruitmentRequest(int pageNo, int pageSize);
+    public ResponseWithTotalPage<RecruitmentRequestResponseWithJobApply> getAllOpenRecruitmentRequest(int pageNo,
+            int pageSize);
 
     public ResponseWithTotalPage<RecruitmentRequestResponse> getAllFilledRecruitmentRequest(int pageNo, int pageSize);
 
@@ -33,7 +35,9 @@ public interface RecruitmentRequestService {
     public RecruitmentSearchCategoryDTO searchCategory();
 
     public List<RecruitmentRequestResponse> getNewestRecruitmentRequest();
+
     CountStatusResponse getStatusTotal();
+
     List<IdAndNameResponse> getIdAndNameRequestByDepartment(int departmentId);
 
 }
