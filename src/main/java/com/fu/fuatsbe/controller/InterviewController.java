@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.PermitAll;
 import javax.mail.MessagingException;
 
 @RestController
@@ -148,7 +149,8 @@ public class InterviewController {
     }
 
     @PatchMapping("/rejectByEmployee")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+//    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
+    @PermitAll
     public ResponseEntity<ResponseDTO> rejectInterviewEmployee(@RequestParam int idInterview,
             @RequestParam int idEmployee) {
         ResponseDTO response = new ResponseDTO<>();

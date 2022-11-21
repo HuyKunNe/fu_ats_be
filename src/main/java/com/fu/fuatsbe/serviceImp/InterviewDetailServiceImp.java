@@ -29,112 +29,114 @@ import java.util.List;
 @RequiredArgsConstructor
 public class InterviewDetailServiceImp implements InterviewDetailService {
 
-        private final InterviewRepository interviewRepository;
+    private final InterviewRepository interviewRepository;
 
-        private final InterviewDetailRepository interviewDetailRepository;
-        private final ModelMapper modelMapper;
+    private final InterviewDetailRepository interviewDetailRepository;
+    private final ModelMapper modelMapper;
 
-        @Override
-        public ResponseWithTotalPage<InterviewDetailResponse> getAllInterviewDetail(int pageNo, int pageSize) {
-                Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
-                Page<InterviewDetail> interviewDetails = interviewDetailRepository.findAll(pageable);
-                List<InterviewDetailResponse> list = new ArrayList<InterviewDetailResponse>();
-                ResponseWithTotalPage<InterviewDetailResponse> result = new ResponseWithTotalPage<>();
-                if (interviewDetails.hasContent()) {
-                        for (InterviewDetail interviewDetail : interviewDetails.getContent()) {
-                                InterviewDetailResponse interviewDetailResponse = modelMapper.map(interviewDetail,
-                                                InterviewDetailResponse.class);
-                                list.add(interviewDetailResponse);
-                        }
-                        result.setResponseList(list);
-                        result.setTotalPage(interviewDetails.getTotalPages());
-                } else
-                        throw new ListEmptyException(PlanDetailErrorMessage.LIST_EMPTY_EXCEPTION);
-                return result;
-        }
-
-        @Override
-        public InterviewDetailResponse createInterviewDetail(InterviewDetailDTO interviewDetailDTO) {
-                Interview interview = interviewRepository.findById(interviewDetailDTO.getInterviewID())
-                                .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
-                InterviewDetail interviewDetail = InterviewDetail.builder()
-                                .startAt(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()))
-                                .endAt(interviewDetailDTO.getEnd())
-                                .result(interviewDetailDTO.getResult())
-                                .description(interviewDetailDTO.getDescription())
-                                .recordMeeting(interviewDetailDTO.getRecordMeeting())
-                                .interview(interview)
-                                .build();
-                InterviewDetail savedInterviewDetail = interviewDetailRepository.save(interviewDetail);
-                InterviewDetailResponse interviewDetailResponse = modelMapper.map(savedInterviewDetail,
-                                InterviewDetailResponse.class);
-                return interviewDetailResponse;
-        }
-
-        @Override
-        public InterviewDetailResponse getInterviewDetailById(int id) {
-                InterviewDetail interviewDetail = interviewDetailRepository.findById(id)
-                                .orElseThrow(() -> new NotFoundException(
-                                                InterviewDetailErrorMessage.INTERVIEW_DETAIL_NOT_FOUND));
-                System.out.println("Check data " + interviewDetail.getDescription());
+    @Override
+    public ResponseWithTotalPage<InterviewDetailResponse> getAllInterviewDetail(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        Page<InterviewDetail> interviewDetails = interviewDetailRepository.findAll(pageable);
+        List<InterviewDetailResponse> list = new ArrayList<InterviewDetailResponse>();
+        ResponseWithTotalPage<InterviewDetailResponse> result = new ResponseWithTotalPage<>();
+        if (interviewDetails.hasContent()) {
+            for (InterviewDetail interviewDetail : interviewDetails.getContent()) {
                 InterviewDetailResponse interviewDetailResponse = modelMapper.map(interviewDetail,
-                                InterviewDetailResponse.class);
-                return interviewDetailResponse;
-        }
+                        InterviewDetailResponse.class);
+                list.add(interviewDetailResponse);
+            }
+            result.setResponseList(list);
+            result.setTotalPage(interviewDetails.getTotalPages());
+        } else
+            throw new ListEmptyException(PlanDetailErrorMessage.LIST_EMPTY_EXCEPTION);
+        return result;
+    }
 
-        @Override
-        public InterviewDetailResponse updateInterviewDetail(int id, InterviewDetailDTO interviewDetailDTO) {
-                InterviewDetail interviewDetail = interviewDetailRepository.findById(id)
-                                .orElseThrow(() -> new NotFoundException(
-                                                InterviewDetailErrorMessage.INTERVIEW_DETAIL_NOT_FOUND));
-                Interview interview = interviewRepository.findById(interviewDetailDTO.getInterviewID())
-                                .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
+    @Override
+    public InterviewDetailResponse createInterviewDetail(InterviewDetailDTO interviewDetailDTO) {
+        Interview interview = interviewRepository.findById(interviewDetailDTO.getInterviewID())
+                .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
+        interviewDetailRepository.getInterviewDetailByInterviewId(interviewDetailDTO.getInterviewID()).orElseThrow(() ->
+                new NotFoundException(InterviewDetailErrorMessage.INTERVIEW_DETAIL_OF_INTERVIEW_CREATED));
+        InterviewDetail interviewDetail = InterviewDetail.builder()
+                .startAt(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()))
+                .endAt(interviewDetailDTO.getEnd())
+                .result(interviewDetailDTO.getResult())
+                .description(interviewDetailDTO.getDescription())
+                .recordMeeting(interviewDetailDTO.getRecordMeeting())
+                .interview(interview)
+                .build();
+        InterviewDetail savedInterviewDetail = interviewDetailRepository.save(interviewDetail);
+        InterviewDetailResponse interviewDetailResponse = modelMapper.map(savedInterviewDetail,
+                InterviewDetailResponse.class);
+        return interviewDetailResponse;
+    }
 
-                interviewDetail.setStartAt(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()));
-                interviewDetail.setEndAt(interviewDetailDTO.getEnd());
-                interviewDetail.setResult(interviewDetailDTO.getResult());
-                interviewDetail.setDescription(interviewDetailDTO.getDescription());
-                interviewDetail.setRecordMeeting(interviewDetailDTO.getRecordMeeting());
-                interviewDetail.setInterview(interview);
+    @Override
+    public InterviewDetailResponse getInterviewDetailById(int id) {
+        InterviewDetail interviewDetail = interviewDetailRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(
+                        InterviewDetailErrorMessage.INTERVIEW_DETAIL_NOT_FOUND));
+        System.out.println("Check data " + interviewDetail.getDescription());
+        InterviewDetailResponse interviewDetailResponse = modelMapper.map(interviewDetail,
+                InterviewDetailResponse.class);
+        return interviewDetailResponse;
+    }
 
-                InterviewDetail savedInterviewDetail = interviewDetailRepository.save(interviewDetail);
+    @Override
+    public InterviewDetailResponse updateInterviewDetail(int id, InterviewDetailDTO interviewDetailDTO) {
+        InterviewDetail interviewDetail = interviewDetailRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(
+                        InterviewDetailErrorMessage.INTERVIEW_DETAIL_NOT_FOUND));
+        Interview interview = interviewRepository.findById(interviewDetailDTO.getInterviewID())
+                .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
 
-                InterviewDetailResponse interviewDetailResponse = modelMapper.map(savedInterviewDetail,
-                                InterviewDetailResponse.class);
-                return interviewDetailResponse;
-        }
+        interviewDetail.setStartAt(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()));
+        interviewDetail.setEndAt(interviewDetailDTO.getEnd());
+        interviewDetail.setResult(interviewDetailDTO.getResult());
+        interviewDetail.setDescription(interviewDetailDTO.getDescription());
+        interviewDetail.setRecordMeeting(interviewDetailDTO.getRecordMeeting());
+        interviewDetail.setInterview(interview);
 
-        @Override
-        public InterviewDetailResponse getInterviewDetailByInterviewId(int interviewId) {
-                interviewRepository.findById(interviewId)
-                                .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
-                InterviewDetail interviewDetail = interviewDetailRepository.getInterviewDetailByInterviewId(interviewId)
-                                .orElseThrow(() -> new NotFoundException(
-                                                InterviewDetailErrorMessage.INTERVIEW_DETAIL_OF_INTERVIEW_NOT_FOUND));
+        InterviewDetail savedInterviewDetail = interviewDetailRepository.save(interviewDetail);
 
+        InterviewDetailResponse interviewDetailResponse = modelMapper.map(savedInterviewDetail,
+                InterviewDetailResponse.class);
+        return interviewDetailResponse;
+    }
+
+    @Override
+    public InterviewDetailResponse getInterviewDetailByInterviewId(int interviewId) {
+        interviewRepository.findById(interviewId)
+                .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
+        InterviewDetail interviewDetail = interviewDetailRepository.getInterviewDetailByInterviewId(interviewId)
+                .orElseThrow(() -> new NotFoundException(
+                        InterviewDetailErrorMessage.INTERVIEW_DETAIL_OF_INTERVIEW_NOT_FOUND));
+
+        InterviewDetailResponse interviewDetailResponse = modelMapper.map(interviewDetail,
+                InterviewDetailResponse.class);
+        return interviewDetailResponse;
+    }
+
+    @Override
+    public ResponseWithTotalPage<InterviewDetailResponse> getAllInterviewDetailByDepartment(String departmentName,
+                                                                                            int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        Page<InterviewDetail> interviewDetails = interviewDetailRepository
+                .getInterviewDetailByDepartment(departmentName, pageable);
+        List<InterviewDetailResponse> list = new ArrayList<InterviewDetailResponse>();
+        ResponseWithTotalPage<InterviewDetailResponse> result = new ResponseWithTotalPage<>();
+        if (interviewDetails.hasContent()) {
+            for (InterviewDetail interviewDetail : interviewDetails) {
                 InterviewDetailResponse interviewDetailResponse = modelMapper.map(interviewDetail,
-                                InterviewDetailResponse.class);
-                return interviewDetailResponse;
-        }
-
-        @Override
-        public ResponseWithTotalPage<InterviewDetailResponse> getAllInterviewDetailByDepartment(String departmentName,
-                        int pageNo, int pageSize) {
-                Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
-                Page<InterviewDetail> interviewDetails = interviewDetailRepository
-                                .getInterviewDetailByDepartment(departmentName, pageable);
-                List<InterviewDetailResponse> list = new ArrayList<InterviewDetailResponse>();
-                ResponseWithTotalPage<InterviewDetailResponse> result = new ResponseWithTotalPage<>();
-                if (interviewDetails.hasContent()) {
-                        for (InterviewDetail interviewDetail : interviewDetails) {
-                                InterviewDetailResponse interviewDetailResponse = modelMapper.map(interviewDetail,
-                                                InterviewDetailResponse.class);
-                                list.add(interviewDetailResponse);
-                        }
-                        result.setResponseList(list);
-                        result.setTotalPage(interviewDetails.getTotalPages());
-                } else
-                        throw new ListEmptyException(PlanDetailErrorMessage.LIST_EMPTY_EXCEPTION);
-                return result;
-        }
+                        InterviewDetailResponse.class);
+                list.add(interviewDetailResponse);
+            }
+            result.setResponseList(list);
+            result.setTotalPage(interviewDetails.getTotalPages());
+        } else
+            throw new ListEmptyException(PlanDetailErrorMessage.LIST_EMPTY_EXCEPTION);
+        return result;
+    }
 }
