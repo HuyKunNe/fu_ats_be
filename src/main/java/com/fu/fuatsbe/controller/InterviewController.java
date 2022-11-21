@@ -138,7 +138,8 @@ public class InterviewController {
     }
 
     @PatchMapping("/confirmByEmployee")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+//    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PermitAll
     public ResponseEntity<ResponseDTO> confirmInterviewEmployee(@RequestParam int idInterview,
             @RequestParam int idEmployee) {
         ResponseDTO response = new ResponseDTO<>();
@@ -161,7 +162,8 @@ public class InterviewController {
     }
 
     @PatchMapping("/confirmByCandidate")
-    @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
+//    @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
+    @PermitAll
     public ResponseEntity<ResponseDTO> confirmInterviewCandidate(@RequestParam int idInterview,
             @RequestParam int idCandidate) {
         ResponseDTO response = new ResponseDTO<>();
@@ -172,7 +174,8 @@ public class InterviewController {
     }
 
     @PatchMapping("/rejectByCandidate")
-    @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
+//    @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
+    @PermitAll
     public ResponseEntity<ResponseDTO> rejectInterviewCandidate(
             @RequestParam int idInterview, @RequestParam int idCandidate) throws MessagingException {
         ResponseDTO response = new ResponseDTO<>();
