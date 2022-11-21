@@ -33,7 +33,7 @@ public interface RecruitmentRequestService {
     public RecruitmentSearchCategoryDTO searchCategory();
 
     public List<RecruitmentRequestResponse> getNewestRecruitmentRequest();
-    List<CountStatusResponse> getStatusTotal();
+    CountStatusResponse getStatusTotal();
     List<IdAndNameResponse> getIdAndNameRequestByDepartment(int departmentId);
 
 }

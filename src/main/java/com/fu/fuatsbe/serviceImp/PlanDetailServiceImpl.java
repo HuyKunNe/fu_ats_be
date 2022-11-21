@@ -352,18 +352,22 @@ public class PlanDetailServiceImpl implements PlanDetailService {
             totalList.add(Integer.parseInt(total.get("total").toString()));
 
         }
+        CountStatusResponse planCount = CountStatusResponse.builder()
+                .status(statusList)
+                .total(totalList)
+                .build();
         CountStatusResponse countStatusResponse = CountStatusResponse.builder()
                 .status(statusList)
                 .total(totalList)
                 .build();
         responses.add(countStatusResponse);
         //RecruitmentPlan
-        List<CountStatusResponse> countPlan = recruitmentPlanService.getStatusTotal();
+        CountStatusResponse countPlan = recruitmentPlanService.getStatusTotal();
         //Recruitment Request
-        List<CountStatusResponse> countRequest = recruitmentRequestService.getStatusTotal();
+        CountStatusResponse countRequest = recruitmentRequestService.getStatusTotal();
         AllStatusCounterResponse allStatusCounterResponseRequest = AllStatusCounterResponse.builder()
                 .countStatusPlan(countPlan)
-                .countStatusDetail(responses)
+                .countStatusDetail(planCount)
                 .countStatusRequest(countRequest)
                 .build();
         return allStatusCounterResponseRequest;

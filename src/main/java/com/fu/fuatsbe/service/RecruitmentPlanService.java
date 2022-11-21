@@ -43,7 +43,7 @@ public interface RecruitmentPlanService {
 
     public RecruitmentPlanResponse rejectedRecruitmentPlan(RecruitmentPlanActionDTO actionDTO);
 
-    List<CountStatusResponse> getStatusTotal();
+    CountStatusResponse getStatusTotal();
 
 
 }
