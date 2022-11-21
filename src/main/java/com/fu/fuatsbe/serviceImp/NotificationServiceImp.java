@@ -201,4 +201,25 @@ public class NotificationServiceImp implements NotificationService {
         }
 
     }
+
+    @Override
+    public List<Notification> getAllByCandidate(int candidateId) {
+        Candidate candidate = candidateRepository.findById(candidateId)
+                .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+
+        List<Notification> list = notificationRepository.findNotificationByCandidates(candidate);
+
+        return list;
+    }
+
+    @Override
+    public List<Notification> getAllByEmployee(int employeeId) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+
+        List<Notification> list = notificationRepository.findNotificationByEmployees(employee);
+
+        return list;
+    }
+
 }
