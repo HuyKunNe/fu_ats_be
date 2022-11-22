@@ -221,6 +221,7 @@ public class InterviewServiceImp implements InterviewService {
                 for (InterviewEmployee interviewEmp : interview.getInterviewEmployees()) {
                     empName.add(interviewEmp.getEmployee().getName());
                 }
+                String interviewEmployeeStatus = interviewEmployeeRepository.findByInterviewAndEmployeeStatus(interview.getId(), employeeId);
                 DateTimeFormatter timeDislayFormatter = DateTimeFormatter.ofPattern("HH:mm");
                 String timeDislay = interview.getDate().toLocalDateTime().toLocalTime().format(timeDislayFormatter);
                 InterviewResponse response = InterviewResponse.builder()
@@ -233,6 +234,7 @@ public class InterviewServiceImp implements InterviewService {
                         .address(interview.getAddress())
                         .linkMeeting(interview.getLinkMeeting())
                         .round(interview.getRound())
+                        .employeeConfirm(interviewEmployeeStatus)
                         .description(interview.getDescription())
                         .status(interview.getStatus())
                         .type(interview.getType())

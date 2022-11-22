@@ -106,7 +106,7 @@ public class InterviewController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PatchMapping("/closeInterview")
+    @PutMapping("/closeInterview")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> closeInterview(@RequestParam int id) {
         ResponseDTO response = new ResponseDTO();

@@ -19,6 +19,8 @@ public interface InterviewEmployeeRepository extends JpaRepository<InterviewEmpl
 
     @Query(nativeQuery = true, value = "select * from  interview_employee where interview_id = ?1 and employee_id = ?2")
     InterviewEmployee findByInterviewAndEmployee(int idInterview, int idEmployee);
+    @Query(nativeQuery = true, value = "select confirm_status from  interview_employee where interview_id = ?1 and employee_id = ?2")
+    String findByInterviewAndEmployeeStatus(int idInterview, int idEmployee);
 
     @Query(nativeQuery = true, value = "select * from interview_employee where interview_id = ?1")
     List<InterviewEmployee> findByInterviewId(int id);
