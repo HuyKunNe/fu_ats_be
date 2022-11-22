@@ -107,7 +107,8 @@ public class InterviewController {
     }
 
     @PutMapping("/closeInterview")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    // @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    @PermitAll
     public ResponseEntity<ResponseDTO> closeInterview(@RequestParam int id) {
         ResponseDTO response = new ResponseDTO();
         interviewService.closeInterview(id);
@@ -117,7 +118,8 @@ public class InterviewController {
     }
 
     @PatchMapping("/cancelInterview")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    // @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    @PermitAll
     public ResponseEntity<ResponseDTO> cancelInterview(@RequestBody CancelInterviewDTO cancelInterviewDTO)
             throws MessagingException {
         ResponseDTO response = new ResponseDTO();

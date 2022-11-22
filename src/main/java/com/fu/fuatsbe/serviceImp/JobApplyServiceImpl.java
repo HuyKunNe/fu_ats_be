@@ -356,4 +356,10 @@ public class JobApplyServiceImpl implements JobApplyService {
         return result;
     }
 
+    @Override
+    public CVScreening getCVScreening() {
+        CVScreening cvScreening = cvScreeningRepository.findTopByOrderByIdDesc();
+        return cvScreening;
+    }
+
 }

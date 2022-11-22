@@ -16,6 +16,7 @@ import com.fu.fuatsbe.DTO.JobApplyCreateDTO;
 import com.fu.fuatsbe.constant.job_apply.JobApplySuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
+import com.fu.fuatsbe.entity.CVScreening;
 import com.fu.fuatsbe.response.JobApplyResponse;
 import com.fu.fuatsbe.response.ResponseDTO;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
@@ -185,6 +186,17 @@ public class JobApplyController {
                 recruitmentRequestId,
                 pageNo, pageSize);
         responseDTO.setData(responseList);
+        responseDTO.setMessage(JobApplySuccessMessage.GET_JOB_APPLY_NOT_REJECT);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/getCVScreening")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getCVScreening() {
+        ResponseDTO responseDTO = new ResponseDTO();
+        CVScreening cvScreening = jobApplyService.getCVScreening();
+        responseDTO.setData(cvScreening);
         responseDTO.setMessage(JobApplySuccessMessage.GET_JOB_APPLY_NOT_REJECT);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);

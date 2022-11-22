@@ -28,7 +28,7 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
                         + " and i.status like %?3% \n"
                         + "and (case \n"
                         + "     when cast(?4 as date) is null then true \n"
-                        + "     when cast(?4 as date) is not null then ?4 = cast(i.date as date) \n"
+                        + "     when cast(?4 as date) is not null then cast(?4 as date) = cast(i.date as date) \n"
                         + "end) \n"
                         + "and i.round like %?5% \n"
                         + "order by i.id desc")
