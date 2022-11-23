@@ -217,7 +217,7 @@ public class JobApplyController {
     }
 
     @GetMapping("/checkApplyByCandidateAndRequest")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
     public boolean checkApplyByCandidateAndRequest(@RequestParam int requestId, @RequestParam int candidateId) {
         return jobApplyService.checkApplyByRecruitmentRequestAndCandidate(requestId, candidateId);
     }
