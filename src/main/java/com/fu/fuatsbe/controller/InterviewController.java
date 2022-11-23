@@ -107,7 +107,7 @@ public class InterviewController {
     }
 
     @PutMapping("/closeInterview")
-     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> closeInterview(@RequestParam int id) {
         ResponseDTO response = new ResponseDTO();
         interviewService.closeInterview(id);
@@ -117,7 +117,7 @@ public class InterviewController {
     }
 
     @PatchMapping("/cancelInterview")
-     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> cancelInterview(@RequestBody CancelInterviewDTO cancelInterviewDTO)
             throws MessagingException {
         ResponseDTO response = new ResponseDTO();
@@ -191,13 +191,35 @@ public class InterviewController {
         response.setMessage(InterviewSuccessMessage.SEARCH_INTERVIEW);
         return ResponseEntity.ok().body(response);
     }
+
     @GetMapping("/getNameAndStatus")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> getNameAndConfirmStatus(@RequestParam("interviewId") int id){
+    public ResponseEntity<ResponseDTO> getNameAndConfirmStatus(@RequestParam("interviewId") int id) {
         ResponseDTO responseDTO = new ResponseDTO<>();
         responseDTO.setData(interviewService.getNameAndStatusByInterviewId(id));
         responseDTO.setMessage(InterviewSuccessMessage.GET_NAME_AND_STATUS_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @GetMapping("/getAcceptableByEmployee")
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
+    public ResponseEntity<ResponseDTO> getAcceptableByEmployee(@RequestParam int employeeId) {
+        ResponseDTO response = new ResponseDTO();
+        response.setData(interviewService.getAcceptableByEmployee(employeeId));
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        response.setMessage(InterviewSuccessMessage.GET_ACCEPTABLE_BY_EMPLOYEE);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/getAcceptableByDepartment")
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
+    public ResponseEntity<ResponseDTO> getAcceptableByDepartment(@RequestParam int departmentId) {
+        ResponseDTO response = new ResponseDTO();
+        response.setData(interviewService.getAcceptableByDepartment(departmentId));
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        response.setMessage(InterviewSuccessMessage.GET_ACCEPTABLE_BY_DEPARTMENT);
+        return ResponseEntity.ok().body(response);
+    }
+
 }

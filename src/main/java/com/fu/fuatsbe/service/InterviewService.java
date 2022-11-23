@@ -40,6 +40,11 @@ public interface InterviewService {
 
     List<InterviewResponse> searchInterview(String candidateName, String type, String status, String date,
             String round);
+
     List<NameAndStatusResponse> getNameAndStatusByInterviewId(int interviewId);
+
+    public List<InterviewResponse> getAcceptableByEmployee(int employeeId);
+
+    public List<InterviewResponse> getAcceptableByDepartment(int departmentId);
 
 }
