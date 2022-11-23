@@ -12,5 +12,6 @@ public final class InterviewSuccessMessage {
     public final static String CONFIRM_INTERVIEW = "You just confirm to join the interview";
     public final static String REJECT_INTERVIEW = "You just reject to join the interview";
     public final static String SEARCH_INTERVIEW = "Search interview is successfully";
+    public final static String GET_NAME_AND_STATUS_SUCCESS = "Get employee name and confirm status is successfully";
 
 }

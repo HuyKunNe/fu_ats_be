@@ -10,9 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.mail.MessagingException;
+import javax.persistence.Tuple;
 
 import com.fu.fuatsbe.constant.candidate.CandidateStatus;
 
+import com.fu.fuatsbe.response.NameAndStatusResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -512,6 +514,9 @@ public class InterviewServiceImp implements InterviewService {
                 checkAllConfirm = false;
             }
         }
+        if(!interview.getCandidateConfirm().equals(CandidateStatus.INTERVIEW_ACCEPTABLE)){
+            checkAllConfirm = false;
+        }
         if (checkAllConfirm) {
             interview.setStatus(InterviewRequestStatus.APPROVED);
             interviewRepository.save(interview);
@@ -527,6 +532,18 @@ public class InterviewServiceImp implements InterviewService {
                 .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
         if (!interview.getCandidate().equals(candidate)) {
             throw new NotValidException(InterviewErrorMessage.INTERVIEW_CONFIRM_NOT_VALID);
+        }
+
+        List<InterviewEmployee> interviewEmployeeList = interviewEmployeeRepository.findByInterviewId(idInterview);
+        boolean checkAllConfirm = true;
+        for (InterviewEmployee interEmp : interviewEmployeeList) {
+            if (!interEmp.getConfirmStatus().equals(InterviewEmployeeRequestStatus.ACCEPTABLE)) {
+                checkAllConfirm = false;
+            }
+        }
+        if (checkAllConfirm) {
+            interview.setStatus(InterviewRequestStatus.APPROVED);
+            interviewRepository.save(interview);
         }
         interview.setCandidateConfirm(CandidateStatus.INTERVIEW_ACCEPTABLE);
         interviewRepository.save(interview);
@@ -596,5 +613,22 @@ public class InterviewServiceImp implements InterviewService {
         } else
             throw new ListEmptyException(InterviewErrorMessage.LIST_EMPTY_EXCEPTION);
         return result;
+    }
+
+    @Override
+    public List<NameAndStatusResponse> getNameAndStatusByInterviewId(int interviewId) {
+        List<Tuple> list = interviewEmployeeRepository.getNameAndConfirmStatusByInterviewId(interviewId);
+        if(list.size() <= 0 ){
+            throw new NotFoundException(InterviewErrorMessage.INTERVIEW_DOES_NOT_ANY_APPLY);
+        }
+        List<NameAndStatusResponse> responseList = new ArrayList<>();
+        for (Tuple tuple: list) {
+            NameAndStatusResponse nameAndStatusResponse = NameAndStatusResponse.builder()
+                    .name(tuple.get("name").toString())
+                    .status(tuple.get("status").toString())
+                    .build();
+            responseList.add(nameAndStatusResponse);
+        }
+        return responseList;
     }
 }

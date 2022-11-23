@@ -107,8 +107,7 @@ public class InterviewController {
     }
 
     @PutMapping("/closeInterview")
-    // @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    @PermitAll
+     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> closeInterview(@RequestParam int id) {
         ResponseDTO response = new ResponseDTO();
         interviewService.closeInterview(id);
@@ -118,8 +117,7 @@ public class InterviewController {
     }
 
     @PatchMapping("/cancelInterview")
-    // @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    @PermitAll
+     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> cancelInterview(@RequestBody CancelInterviewDTO cancelInterviewDTO)
             throws MessagingException {
         ResponseDTO response = new ResponseDTO();
@@ -140,8 +138,7 @@ public class InterviewController {
     }
 
     @PatchMapping("/confirmByEmployee")
-//    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    @PermitAll
+    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
     public ResponseEntity<ResponseDTO> confirmInterviewEmployee(@RequestParam int idInterview,
             @RequestParam int idEmployee) {
         ResponseDTO response = new ResponseDTO<>();
@@ -152,8 +149,7 @@ public class InterviewController {
     }
 
     @PatchMapping("/rejectByEmployee")
-//    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
-    @PermitAll
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity<ResponseDTO> rejectInterviewEmployee(@RequestParam int idInterview,
             @RequestParam int idEmployee) {
         ResponseDTO response = new ResponseDTO<>();
@@ -164,8 +160,7 @@ public class InterviewController {
     }
 
     @PatchMapping("/confirmByCandidate")
-//    @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
-    @PermitAll
+    @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
     public ResponseEntity<ResponseDTO> confirmInterviewCandidate(@RequestParam int idInterview,
             @RequestParam int idCandidate) {
         ResponseDTO response = new ResponseDTO<>();
@@ -176,8 +171,7 @@ public class InterviewController {
     }
 
     @PatchMapping("/rejectByCandidate")
-//    @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
-    @PermitAll
+    @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
     public ResponseEntity<ResponseDTO> rejectInterviewCandidate(
             @RequestParam int idInterview, @RequestParam int idCandidate) throws MessagingException {
         ResponseDTO response = new ResponseDTO<>();
@@ -196,5 +190,14 @@ public class InterviewController {
         response.setStatus(ResponseStatusDTO.SUCCESS);
         response.setMessage(InterviewSuccessMessage.SEARCH_INTERVIEW);
         return ResponseEntity.ok().body(response);
+    }
+    @GetMapping("/getNameAndStatus")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getNameAndConfirmStatus(@RequestParam("interviewId") int id){
+        ResponseDTO responseDTO = new ResponseDTO<>();
+        responseDTO.setData(interviewService.getNameAndStatusByInterviewId(id));
+        responseDTO.setMessage(InterviewSuccessMessage.GET_NAME_AND_STATUS_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
     }
 }

@@ -8,6 +8,7 @@ import com.fu.fuatsbe.DTO.CancelInterviewDTO;
 import com.fu.fuatsbe.DTO.InterviewCreateDTO;
 import com.fu.fuatsbe.DTO.InterviewUpdateDTO;
 import com.fu.fuatsbe.response.InterviewResponse;
+import com.fu.fuatsbe.response.NameAndStatusResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 
 public interface InterviewService {
@@ -39,5 +40,6 @@ public interface InterviewService {
 
     List<InterviewResponse> searchInterview(String candidateName, String type, String status, String date,
             String round);
+    List<NameAndStatusResponse> getNameAndStatusByInterviewId(int interviewId);
 
 }
