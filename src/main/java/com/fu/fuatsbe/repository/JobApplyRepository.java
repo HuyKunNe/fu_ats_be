@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.JobApply;
 import com.fu.fuatsbe.entity.RecruitmentRequest;
 
@@ -32,6 +33,8 @@ public interface JobApplyRepository extends JpaRepository<JobApply, Integer> {
                         Pageable pageable);
 
         public int countByRecruitmentRequestId(int id);
+
+        public int countByRecruitmentRequestAndCandidate(RecruitmentRequest request, Candidate candidate);
 
         Page<JobApply> findByScreeningStatus(String screeningStatus, Pageable pageable);
 

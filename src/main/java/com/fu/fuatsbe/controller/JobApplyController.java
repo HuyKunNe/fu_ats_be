@@ -216,18 +216,10 @@ public class JobApplyController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    // @GetMapping("/getAllFailedJobApplies")
-    // @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    // public ResponseEntity<ResponseDTO>
-    // getAllFailedJobApplies(@RequestParam(defaultValue = "0") int pageNo,
-    // @RequestParam(defaultValue = "10") int pageSize) {
-    // ResponseDTO responseDTO = new ResponseDTO();
-    // ResponseWithTotalPage<JobApplyResponse> responseList =
-    // jobApplyService.getAllFailedJobApplies(pageNo, pageSize);
-    // responseDTO.setData(responseList);
-    // responseDTO.setMessage(JobApplySuccessMessage.GET_JOB_APPLY_NOT_REJECT);
-    // responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
-    // return ResponseEntity.ok().body(responseDTO);
-    // }
+    @GetMapping("/checkApplyByCandidateAndRequest")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public boolean checkApplyByCandidateAndRequest(@RequestParam int requestId, @RequestParam int candidateId) {
+        return jobApplyService.checkApplyByRecruitmentRequestAndCandidate(requestId, candidateId);
+    }
 
 }

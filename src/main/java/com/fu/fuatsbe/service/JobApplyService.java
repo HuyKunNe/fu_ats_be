@@ -43,4 +43,6 @@ public interface JobApplyService {
 
         public ResponseWithTotalPage<JobApplyResponse> getAllFailedJobApplies(int pageNo, int pageSize);
 
+        public boolean checkApplyByRecruitmentRequestAndCandidate(int requestId, int candidateId);
+
 }

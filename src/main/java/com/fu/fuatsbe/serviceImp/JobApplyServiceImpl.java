@@ -402,4 +402,17 @@ public class JobApplyServiceImpl implements JobApplyService {
         return result;
     }
 
+    @Override
+    public boolean checkApplyByRecruitmentRequestAndCandidate(int requestId, int candidateId) {
+        boolean result = false;
+        RecruitmentRequest request = recruitmentRequestRepository.findById(requestId).orElseThrow(
+                () -> new NotFoundException(RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
+
+        Candidate candidate = candidateRepository.findById(candidateId)
+                .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+
+        result = jobApplyRepository.countByRecruitmentRequestAndCandidate(request, candidate) > 0;
+        return result;
+    }
+
 }
