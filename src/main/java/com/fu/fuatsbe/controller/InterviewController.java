@@ -204,9 +204,13 @@ public class InterviewController {
 
     @GetMapping("/getAcceptableByEmployee")
     @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
-    public ResponseEntity<ResponseDTO> getAcceptableByEmployee(@RequestParam int employeeId) {
+    public ResponseEntity<ResponseDTO> getAcceptableByEmployee(@RequestParam int employeeId,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
         ResponseDTO response = new ResponseDTO();
-        response.setData(interviewService.getAcceptableByEmployee(employeeId));
+        ResponseWithTotalPage<InterviewResponse> interviewResponses = interviewService
+                .getAcceptableByEmployee(employeeId, pageNo, pageSize);
+        response.setData(interviewResponses);
         response.setStatus(ResponseStatusDTO.SUCCESS);
         response.setMessage(InterviewSuccessMessage.GET_ACCEPTABLE_BY_EMPLOYEE);
         return ResponseEntity.ok().body(response);
@@ -214,9 +218,13 @@ public class InterviewController {
 
     @GetMapping("/getAcceptableByDepartment")
     @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
-    public ResponseEntity<ResponseDTO> getAcceptableByDepartment(@RequestParam int departmentId) {
+    public ResponseEntity<ResponseDTO> getAcceptableByDepartment(@RequestParam int departmentId,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
         ResponseDTO response = new ResponseDTO();
-        response.setData(interviewService.getAcceptableByDepartment(departmentId));
+        ResponseWithTotalPage<InterviewResponse> interviewResponses = interviewService
+                .getAcceptableByDepartment(departmentId, pageNo, pageSize);
+        response.setData(interviewResponses);
         response.setStatus(ResponseStatusDTO.SUCCESS);
         response.setMessage(InterviewSuccessMessage.GET_ACCEPTABLE_BY_DEPARTMENT);
         return ResponseEntity.ok().body(response);

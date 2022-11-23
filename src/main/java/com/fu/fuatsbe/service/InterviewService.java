@@ -43,8 +43,9 @@ public interface InterviewService {
 
     List<NameAndStatusResponse> getNameAndStatusByInterviewId(int interviewId);
 
-    public List<InterviewResponse> getAcceptableByEmployee(int employeeId);
+    public ResponseWithTotalPage<InterviewResponse> getAcceptableByEmployee(int employeeId, int pageNo, int pageSize);
 
-    public List<InterviewResponse> getAcceptableByDepartment(int departmentId);
+    public ResponseWithTotalPage<InterviewResponse> getAcceptableByDepartment(int departmentId, int pageNo,
+            int pageSize);
 
 }
