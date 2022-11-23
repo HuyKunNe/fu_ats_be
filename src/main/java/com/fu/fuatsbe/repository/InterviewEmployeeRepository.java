@@ -27,6 +27,6 @@ public interface InterviewEmployeeRepository extends JpaRepository<InterviewEmpl
     @Query(nativeQuery = true, value = "select * from interview_employee where interview_id = ?1")
     List<InterviewEmployee> findByInterviewId(int id);
 
-    @Query(nativeQuery = true, value = "select e.name, ie.confirm_status as status from employee e, interview_employee ie where ie.employee_id = e.id and ie.interview_id = ?1")
+    @Query(nativeQuery = true, value = "select e.name,coalesce(ie.confirm_status, 'null') as status from employee e, interview_employee ie where ie.employee_id = e.id and ie.interview_id = ?1")
     List<Tuple> getNameAndConfirmStatusByInterviewId(int id);
 }
