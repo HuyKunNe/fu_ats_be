@@ -28,6 +28,7 @@ public class JobApplyResponse {
     private String foreignLanguage;
     private String educationLevel;
     private String status;
+    private String screeningStatus;
 
     private RecruitmentRequest recruitmentRequest;
     private Candidate candidate;

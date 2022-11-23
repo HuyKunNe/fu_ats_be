@@ -13,5 +13,8 @@ public final class JobApplySuccessMessage {
     public static final String APPROVE = "Approve job apply successfully";
     public static final String GET_JOB_APPLY_NOT_REJECT = "Get all job applies not reject successfully";
     public static final String GET_CV_SCREENING = "Get cv screening successfully";
+    public static final String GET_NOT_PASS_SCREENING = "Get not pass cv screening successfully";
+
+    public static final String GET_FAILED_JOB_APPLY = "Get fail job apply successfully";
 
 }

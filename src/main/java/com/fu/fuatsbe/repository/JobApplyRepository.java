@@ -33,4 +33,8 @@ public interface JobApplyRepository extends JpaRepository<JobApply, Integer> {
 
         public int countByRecruitmentRequestId(int id);
 
+        Page<JobApply> findByScreeningStatus(String screeningStatus, Pageable pageable);
+
+        Page<JobApply> findByScreeningStatusLikeOrStatusLike(String screeningStatus, String status, Pageable pageable);
+
 }

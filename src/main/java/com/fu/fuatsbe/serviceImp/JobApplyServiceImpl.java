@@ -25,6 +25,7 @@ import com.fu.fuatsbe.constant.job_apply.EducationLevel;
 import com.fu.fuatsbe.constant.job_apply.Experience;
 import com.fu.fuatsbe.constant.job_apply.JobApplyErrorMessage;
 import com.fu.fuatsbe.constant.job_apply.JobApplyStatus;
+import com.fu.fuatsbe.constant.job_apply.ScreeningStatus;
 import com.fu.fuatsbe.constant.recruitmentRequest.RecruitmentRequestErrorMessage;
 import com.fu.fuatsbe.entity.CV;
 import com.fu.fuatsbe.entity.CVScreening;
@@ -153,12 +154,13 @@ public class JobApplyServiceImpl implements JobApplyService {
                 .educationLevel(createDTO.getEducationLevel())
                 .foreignLanguage(createDTO.getForeignLanguage())
                 .status(JobApplyStatus.PENDING)
+                .screeningStatus(ScreeningStatus.PASS)
                 .candidate(candidate).recruitmentRequest(recruitmentRequest).cv(cvSaved).build();
 
         JobApply jobApplySaved = jobApplyRepository.save(jobApply);
 
         if (!screeningCV(jobApplySaved)) {
-            jobApply.setStatus(JobApplyStatus.REJECTED);
+            jobApply.setScreeningStatus(ScreeningStatus.NOT_PASS);
             jobApplyRepository.save(jobApplySaved);
         }
 
@@ -360,6 +362,44 @@ public class JobApplyServiceImpl implements JobApplyService {
     public CVScreening getCVScreening() {
         CVScreening cvScreening = cvScreeningRepository.findTopByOrderByIdDesc();
         return cvScreening;
+    }
+
+    @Override
+    public ResponseWithTotalPage<JobApplyResponse> getJobApplyPassScreenig(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        Page<JobApply> pageResult = jobApplyRepository.findByScreeningStatus(
+                ScreeningStatus.NOT_PASS, pageable);
+        List<JobApplyResponse> list = new ArrayList<JobApplyResponse>();
+        ResponseWithTotalPage<JobApplyResponse> result = new ResponseWithTotalPage<>();
+        if (pageResult.hasContent()) {
+            for (JobApply jobApply : pageResult.getContent()) {
+                JobApplyResponse jobApplyResponse = modelMapper.map(jobApply, JobApplyResponse.class);
+                list.add(jobApplyResponse);
+            }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
+        } else
+            throw new ListEmptyException(JobApplyErrorMessage.LIST_IS_EMPTY);
+        return result;
+    }
+
+    @Override
+    public ResponseWithTotalPage<JobApplyResponse> getAllFailedJobApplies(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        Page<JobApply> pageResult = jobApplyRepository.findByScreeningStatusLikeOrStatusLike(
+                ScreeningStatus.NOT_PASS, JobApplyStatus.REJECTED, pageable);
+        List<JobApplyResponse> list = new ArrayList<JobApplyResponse>();
+        ResponseWithTotalPage<JobApplyResponse> result = new ResponseWithTotalPage<>();
+        if (pageResult.hasContent()) {
+            for (JobApply jobApply : pageResult.getContent()) {
+                JobApplyResponse jobApplyResponse = modelMapper.map(jobApply, JobApplyResponse.class);
+                list.add(jobApplyResponse);
+            }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
+        } else
+            throw new ListEmptyException(JobApplyErrorMessage.LIST_IS_EMPTY);
+        return result;
     }
 
 }

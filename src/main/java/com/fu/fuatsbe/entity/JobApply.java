@@ -52,6 +52,8 @@ public class JobApply {
     @Nationalized
     private String experience;
 
+    private String screeningStatus;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "recruitmentRequestId")
