@@ -39,7 +39,11 @@ public interface JobApplyService {
         public ResponseWithTotalPage<JobApplyResponse> getJobApplyNotReject(int recruitmentRequest, int pageNo,
                         int pageSize);
 
-        public ResponseWithTotalPage<JobApplyResponse> getJobApplyPassScreening(int requestId,int pageNo, int pageSize);
+        public ResponseWithTotalPage<JobApplyResponse> getJobApplyPassScreening(int requestId, int pageNo,
+                        int pageSize);
+
+        public ResponseWithTotalPage<JobApplyResponse> getJobApplyFailScreening(int requestId, int pageNo,
+                        int pageSize);
 
         public ResponseWithTotalPage<JobApplyResponse> getAllFailedJobApplies(int pageNo, int pageSize);
 

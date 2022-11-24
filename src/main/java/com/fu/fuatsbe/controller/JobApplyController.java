@@ -211,7 +211,21 @@ public class JobApplyController {
         ResponseWithTotalPage<JobApplyResponse> responseList = jobApplyService.getJobApplyPassScreening(
                 recruitmentRequestId, pageNo, pageSize);
         responseDTO.setData(responseList);
-        responseDTO.setMessage(JobApplySuccessMessage.GET_JOB_APPLY_NOT_REJECT);
+        responseDTO.setMessage(JobApplySuccessMessage.GET_PASS_SCREENING);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/getJobApplyFailScreening")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getJobApplyFailScreening(@RequestParam int recruitmentRequestId,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        ResponseWithTotalPage<JobApplyResponse> responseList = jobApplyService.getJobApplyFailScreening(
+                recruitmentRequestId, pageNo, pageSize);
+        responseDTO.setData(responseList);
+        responseDTO.setMessage(JobApplySuccessMessage.GET_NOT_PASS_SCREENING);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
