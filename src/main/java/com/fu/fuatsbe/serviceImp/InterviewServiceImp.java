@@ -525,6 +525,14 @@ public class InterviewServiceImp implements InterviewService {
     }
 
     @Override
+    public void confirmInterviewByManager(int idInterview) {
+        Interview interview = interviewRepository.findById(idInterview)
+                .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
+        interview.setStatus(InterviewRequestStatus.APPROVED);
+        interviewRepository.save(interview);
+    }
+
+    @Override
     public void confirmJoinInterviewByCandidate(int idInterview, int idCandidate) {
         Interview interview = interviewRepository.findById(idInterview)
                 .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
@@ -566,6 +574,7 @@ public class InterviewServiceImp implements InterviewService {
         interviewEmployee.setConfirmStatus(InterviewEmployeeRequestStatus.REJECTED);
         interviewEmployeeRepository.save(interviewEmployee);
     }
+
 
     @Override
     public void rejectJoinInterviewByCandidate(int idInterview, int idCandidate) throws MessagingException {

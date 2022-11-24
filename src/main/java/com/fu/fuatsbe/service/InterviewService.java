@@ -31,6 +31,8 @@ public interface InterviewService {
     void confirmJoinInterviewByEmployee(int idInterview, int idEmployee);
 
     void rejectJoinInterviewByEmployee(int idInterview, int idEmployee);
+    void confirmInterviewByManager(int idInterview);
+
 
     void confirmJoinInterviewByCandidate(int idInterview, int idCandidate);
 

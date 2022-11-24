@@ -147,6 +147,15 @@ public class InterviewController {
         response.setMessage(InterviewSuccessMessage.CONFIRM_INTERVIEW);
         return ResponseEntity.ok().body(response);
     }
+    @PatchMapping("/confirmByManager")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> confirmInterviewManager(@RequestParam int idInterview) {
+        ResponseDTO response = new ResponseDTO<>();
+        interviewService.confirmInterviewByManager(idInterview);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        response.setMessage(InterviewSuccessMessage.CONFIRM_INTERVIEW);
+        return ResponseEntity.ok().body(response);
+    }
 
     @PatchMapping("/rejectByEmployee")
     @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
