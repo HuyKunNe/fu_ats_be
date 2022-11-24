@@ -38,6 +38,9 @@ public interface JobApplyRepository extends JpaRepository<JobApply, Integer> {
 
         Page<JobApply> findByScreeningStatus(String screeningStatus, Pageable pageable);
 
+        Page<JobApply> findByScreeningStatusAndRecruitmentRequest(String screeningStatus,
+                        RecruitmentRequest recruitmentRequest, Pageable pageable);
+
         Page<JobApply> findByScreeningStatusLikeOrStatusLike(String screeningStatus, String status, Pageable pageable);
 
 }

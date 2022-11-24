@@ -365,10 +365,14 @@ public class JobApplyServiceImpl implements JobApplyService {
     }
 
     @Override
-    public ResponseWithTotalPage<JobApplyResponse> getJobApplyPassScreenig(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<JobApplyResponse> getJobApplyPassScreening(int requestId, int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
-        Page<JobApply> pageResult = jobApplyRepository.findByScreeningStatus(
-                ScreeningStatus.NOT_PASS, pageable);
+
+        RecruitmentRequest request = recruitmentRequestRepository.findById(requestId).orElseThrow(
+                () -> new NotFoundException(RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
+
+        Page<JobApply> pageResult = jobApplyRepository
+                .findByScreeningStatusAndRecruitmentRequest(ScreeningStatus.PASS, request, pageable);
         List<JobApplyResponse> list = new ArrayList<JobApplyResponse>();
         ResponseWithTotalPage<JobApplyResponse> result = new ResponseWithTotalPage<>();
         if (pageResult.hasContent()) {
