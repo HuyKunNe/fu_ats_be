@@ -563,7 +563,7 @@ public class InterviewServiceImp implements InterviewService {
         List<InterviewEmployee> interviewEmployeeList = interviewEmployeeRepository.findByInterviewId(idInterview);
         boolean checkAllConfirm = true;
         for (InterviewEmployee interEmp : interviewEmployeeList) {
-            if (!interEmp.getConfirmStatus().equals(InterviewEmployeeRequestStatus.ACCEPTABLE)) {
+            if (interEmp.getConfirmStatus() != null &&!interEmp.getConfirmStatus().equals(InterviewEmployeeRequestStatus.ACCEPTABLE)) {
                 checkAllConfirm = false;
             }
         }
