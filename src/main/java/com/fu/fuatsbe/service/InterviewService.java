@@ -42,6 +42,12 @@ public interface InterviewService {
 
     List<InterviewResponse> searchInterview(String candidateName, String type, String status, String date,
             String round);
+
     List<NameAndStatusResponse> getNameAndStatusByInterviewId(int interviewId);
+
+    public ResponseWithTotalPage<InterviewResponse> getAcceptableByEmployee(int employeeId, int pageNo, int pageSize);
+
+    public ResponseWithTotalPage<InterviewResponse> getAcceptableByDepartment(int departmentId, int pageNo,
+            int pageSize);
 
 }

@@ -191,11 +191,18 @@ public class InterviewServiceImp implements InterviewService {
                         .linkMeeting(interview.getLinkMeeting())
                         .round(interview.getRound())
                         .description(interview.getDescription())
+                        .candidateConfirm(interview.getCandidateConfirm())
                         .status(interview.getStatus())
                         .type(interview.getType())
                         .jobApply(interview.getJobApply())
                         .candidateName(interview.getCandidate().getName())
                         .build();
+
+                List<String> empName = new ArrayList<>();
+                for (InterviewEmployee interEmp : interview.getInterviewEmployees()) {
+                    empName.add(interEmp.getEmployee().getName());
+                }
+                response.setEmployeeNames(empName);
                 responseList.add(response);
             }
         }
@@ -223,7 +230,8 @@ public class InterviewServiceImp implements InterviewService {
                 for (InterviewEmployee interviewEmp : interview.getInterviewEmployees()) {
                     empName.add(interviewEmp.getEmployee().getName());
                 }
-                String interviewEmployeeStatus = interviewEmployeeRepository.findByInterviewAndEmployeeStatus(interview.getId(), employeeId);
+                String interviewEmployeeStatus = interviewEmployeeRepository
+                        .findByInterviewAndEmployeeStatus(interview.getId(), employeeId);
                 DateTimeFormatter timeDislayFormatter = DateTimeFormatter.ofPattern("HH:mm");
                 String timeDislay = interview.getDate().toLocalDateTime().toLocalTime().format(timeDislayFormatter);
                 InterviewResponse response = InterviewResponse.builder()
@@ -237,6 +245,7 @@ public class InterviewServiceImp implements InterviewService {
                         .linkMeeting(interview.getLinkMeeting())
                         .round(interview.getRound())
                         .employeeConfirm(interviewEmployeeStatus)
+                        .candidateConfirm(interview.getCandidateConfirm())
                         .description(interview.getDescription())
                         .status(interview.getStatus())
                         .type(interview.getType())
@@ -282,6 +291,7 @@ public class InterviewServiceImp implements InterviewService {
                         .address(interview.getAddress())
                         .linkMeeting(interview.getLinkMeeting())
                         .round(interview.getRound())
+                        .candidateConfirm(interview.getCandidateConfirm())
                         .description(interview.getDescription())
                         .status(interview.getStatus())
                         .type(interview.getType())
@@ -321,6 +331,7 @@ public class InterviewServiceImp implements InterviewService {
                 .linkMeeting(interview.getLinkMeeting())
                 .round(interview.getRound())
                 .description(interview.getDescription())
+                .candidateConfirm(interview.getCandidateConfirm())
                 .status(interview.getStatus())
                 .type(interview.getType())
                 .jobApply(interview.getJobApply())
@@ -478,11 +489,18 @@ public class InterviewServiceImp implements InterviewService {
                         .linkMeeting(interview.getLinkMeeting())
                         .round(interview.getRound())
                         .description(interview.getDescription())
+                        .candidateConfirm(interview.getCandidateConfirm())
                         .status(interview.getStatus())
                         .type(interview.getType())
                         .jobApply(interview.getJobApply())
                         .candidateName(interview.getCandidate().getName())
                         .build();
+
+                List<String> empName = new ArrayList<>();
+                for (InterviewEmployee interEmp : interview.getInterviewEmployees()) {
+                    empName.add(interEmp.getEmployee().getName());
+                }
+                response.setEmployeeNames(empName);
                 responseList.add(response);
             }
         }
@@ -514,7 +532,7 @@ public class InterviewServiceImp implements InterviewService {
                 checkAllConfirm = false;
             }
         }
-        if(!interview.getCandidateConfirm().equals(CandidateStatus.INTERVIEW_ACCEPTABLE)){
+        if (!interview.getCandidateConfirm().equals(CandidateStatus.INTERVIEW_ACCEPTABLE)) {
             checkAllConfirm = false;
         }
         if (checkAllConfirm) {
@@ -627,11 +645,11 @@ public class InterviewServiceImp implements InterviewService {
     @Override
     public List<NameAndStatusResponse> getNameAndStatusByInterviewId(int interviewId) {
         List<Tuple> list = interviewEmployeeRepository.getNameAndConfirmStatusByInterviewId(interviewId);
-        if(list.size() <= 0 ){
+        if (list.size() <= 0) {
             throw new NotFoundException(InterviewErrorMessage.INTERVIEW_DOES_NOT_ANY_APPLY);
         }
         List<NameAndStatusResponse> responseList = new ArrayList<>();
-        for (Tuple tuple: list) {
+        for (Tuple tuple : list) {
             NameAndStatusResponse nameAndStatusResponse = NameAndStatusResponse.builder()
                     .name(tuple.get("name").toString())
                     .status(tuple.get("status").toString())
@@ -640,4 +658,177 @@ public class InterviewServiceImp implements InterviewService {
         }
         return responseList;
     }
+
+    @Override
+    public ResponseWithTotalPage<InterviewResponse> getAcceptableByEmployee(int employeeId, int pageNo,
+            int pageSize) {
+        ResponseWithTotalPage<InterviewResponse> result = new ResponseWithTotalPage<>();
+        List<InterviewResponse> listResponse = new ArrayList<>();
+        pageNo *= pageSize;
+        List<Interview> listInterviews = interviewRepository.getAcceptableInterviewByEmployee(employeeId, pageSize,
+                pageNo);
+        if (listInterviews.size() > 0) {
+            for (Interview interview : listInterviews) {
+                DateTimeFormatter timeDislayFormatter = DateTimeFormatter.ofPattern("HH:mm");
+                String timeDislay = interview.getDate().toLocalDateTime().toLocalTime().format(timeDislayFormatter);
+                InterviewResponse response = InterviewResponse.builder()
+                        .id(interview.getId())
+                        .subject(interview.getSubject())
+                        .purpose(interview.getPurpose())
+                        .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()).toString())
+                        .time(timeDislay)
+                        .room(interview.getRoom())
+                        .address(interview.getAddress())
+                        .linkMeeting(interview.getLinkMeeting())
+                        .round(interview.getRound())
+                        .description(interview.getDescription())
+                        .candidateConfirm(interview.getCandidateConfirm())
+                        .status(interview.getStatus())
+                        .type(interview.getType())
+                        .jobApply(interview.getJobApply())
+                        .candidateName(interview.getCandidate().getName())
+                        .build();
+                List<String> empName = new ArrayList<>();
+                for (InterviewEmployee interEmp : interview.getInterviewEmployees()) {
+                    empName.add(interEmp.getEmployee().getName());
+                }
+                response.setEmployeeNames(empName);
+                listResponse.add(response);
+            }
+            int totalElements = interviewRepository.getTotalAcceptableInterviewByEmployee(employeeId);
+            int totalPage = (totalElements / pageSize) + ((totalElements % pageSize == 0) ? 0 : 1);
+            result.setTotalPage(totalPage);
+            result.setResponseList(listResponse);
+        } else {
+            throw new ListEmptyException(InterviewErrorMessage.LIST_EMPTY_EXCEPTION);
+        }
+        return result;
+    }
+
+    @Override
+    public ResponseWithTotalPage<InterviewResponse> getAcceptableByDepartment(int departmentId, int pageNo,
+            int pageSize) {
+        ResponseWithTotalPage<InterviewResponse> result = new ResponseWithTotalPage<>();
+        List<InterviewResponse> listResponse = new ArrayList<>();
+        pageNo *= pageSize;
+        List<Interview> listInterviews = interviewRepository.getAcceptableInterviewByDepartment(departmentId, pageSize,
+                pageNo);
+        if (listInterviews.size() > 0) {
+            for (Interview interview : listInterviews) {
+                DateTimeFormatter timeDislayFormatter = DateTimeFormatter.ofPattern("HH:mm");
+                String timeDislay = interview.getDate().toLocalDateTime().toLocalTime().format(timeDislayFormatter);
+                InterviewResponse response = InterviewResponse.builder()
+                        .id(interview.getId())
+                        .subject(interview.getSubject())
+                        .purpose(interview.getPurpose())
+                        .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()).toString())
+                        .time(timeDislay)
+                        .room(interview.getRoom())
+                        .address(interview.getAddress())
+                        .linkMeeting(interview.getLinkMeeting())
+                        .round(interview.getRound())
+                        .description(interview.getDescription())
+                        .candidateConfirm(interview.getCandidateConfirm())
+                        .status(interview.getStatus())
+                        .type(interview.getType())
+                        .jobApply(interview.getJobApply())
+                        .candidateName(interview.getCandidate().getName())
+                        .build();
+                List<String> empName = new ArrayList<>();
+                for (InterviewEmployee interEmp : interview.getInterviewEmployees()) {
+                    empName.add(interEmp.getEmployee().getName());
+                }
+                response.setEmployeeNames(empName);
+                listResponse.add(response);
+            }
+            int totalElements = interviewRepository.getTotalAcceptableInterviewByDepartment(departmentId);
+            int totalPage = (totalElements / pageSize) + ((totalElements % pageSize == 0) ? 0 : 1);
+            result.setTotalPage(totalPage);
+            result.setResponseList(listResponse);
+        } else {
+            throw new ListEmptyException(InterviewErrorMessage.LIST_EMPTY_EXCEPTION);
+        }
+        return result;
+    }
+
+    // @Override
+    // public List<InterviewResponse> getAcceptableByEmployee(int employeeId) { a /
+    // b + ((a % b == 0) ? 0 : 1)
+    // List<InterviewResponse> result = new ArrayList<>();
+    // List<Interview> listInterviews =
+    // interviewRepository.getAcceptableInterviewByEmployee(employeeId);
+    // if (listInterviews.size() > 0) {
+    // for (Interview interview : listInterviews) {
+    // DateTimeFormatter timeDislayFormatter = DateTimeFormatter.ofPattern("HH:mm");
+    // String timeDislay =
+    // interview.getDate().toLocalDateTime().toLocalTime().format(timeDislayFormatter);
+    // InterviewResponse response = InterviewResponse.builder()
+    // .id(interview.getId())
+    // .subject(interview.getSubject())
+    // .purpose(interview.getPurpose())
+    // .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()).toString())
+    // .time(timeDislay)
+    // .room(interview.getRoom())
+    // .address(interview.getAddress())
+    // .linkMeeting(interview.getLinkMeeting())
+    // .round(interview.getRound())
+    // .description(interview.getDescription())
+    // .candidateConfirm(interview.getCandidateConfirm())
+    // .status(interview.getStatus())
+    // .type(interview.getType())
+    // .jobApply(interview.getJobApply())
+    // .candidateName(interview.getCandidate().getName())
+    // .build();
+    // List<String> empName = new ArrayList<>();
+    // for (InterviewEmployee interEmp : interview.getInterviewEmployees()) {
+    // empName.add(interEmp.getEmployee().getName());
+    // }
+    // response.setEmployeeNames(empName);
+    // result.add(response);
+    // }
+    // } else {
+    // throw new ListEmptyException(InterviewErrorMessage.LIST_EMPTY_EXCEPTION);
+    // }
+    // return result;
+    // }
+
+    // @Override
+    // public List<InterviewResponse> getAcceptableByDepartment(int departmentId) {
+    // List<InterviewResponse> result = new ArrayList<>();
+    // List<Interview> listInterviews =
+    // interviewRepository.getAcceptableInterviewByDepartment(departmentId);
+    // if (listInterviews.size() > 0) {
+    // for (Interview interview : listInterviews) {
+    // DateTimeFormatter timeDislayFormatter = DateTimeFormatter.ofPattern("HH:mm");
+    // String timeDislay =
+    // interview.getDate().toLocalDateTime().toLocalTime().format(timeDislayFormatter);
+    // InterviewResponse response = InterviewResponse.builder()
+    // .id(interview.getId())
+    // .subject(interview.getSubject())
+    // .purpose(interview.getPurpose())
+    // .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()).toString())
+    // .time(timeDislay)
+    // .room(interview.getRoom())
+    // .address(interview.getAddress())
+    // .linkMeeting(interview.getLinkMeeting())
+    // .round(interview.getRound())
+    // .description(interview.getDescription())
+    // .candidateConfirm(interview.getCandidateConfirm())
+    // .status(interview.getStatus())
+    // .type(interview.getType())
+    // .jobApply(interview.getJobApply())
+    // .candidateName(interview.getCandidate().getName())
+    // .build();
+    // List<String> empName = new ArrayList<>();
+    // for (InterviewEmployee interEmp : interview.getInterviewEmployees()) {
+    // empName.add(interEmp.getEmployee().getName());
+    // }
+    // response.setEmployeeNames(empName);
+    // result.add(response);
+    // }
+    // } else {
+    // throw new ListEmptyException(InterviewErrorMessage.LIST_EMPTY_EXCEPTION);
+    // }
+    // return result;
+    // }
 }

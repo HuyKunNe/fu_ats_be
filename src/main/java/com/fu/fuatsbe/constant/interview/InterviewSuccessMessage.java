@@ -13,5 +13,7 @@ public final class InterviewSuccessMessage {
     public final static String REJECT_INTERVIEW = "You just reject to join the interview";
     public final static String SEARCH_INTERVIEW = "Search interview is successfully";
     public final static String GET_NAME_AND_STATUS_SUCCESS = "Get employee name and confirm status is successfully";
+    public final static String GET_ACCEPTABLE_BY_EMPLOYEE = "Get all acceptable interviews by employee successfully";
+    public final static String GET_ACCEPTABLE_BY_DEPARTMENT = "Get all acceptable interviews by department successfully";
 
 }

@@ -107,7 +107,7 @@ public class InterviewController {
     }
 
     @PutMapping("/closeInterview")
-     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> closeInterview(@RequestParam int id) {
         ResponseDTO response = new ResponseDTO();
         interviewService.closeInterview(id);
@@ -117,7 +117,7 @@ public class InterviewController {
     }
 
     @PatchMapping("/cancelInterview")
-     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> cancelInterview(@RequestBody CancelInterviewDTO cancelInterviewDTO)
             throws MessagingException {
         ResponseDTO response = new ResponseDTO();
@@ -200,13 +200,43 @@ public class InterviewController {
         response.setMessage(InterviewSuccessMessage.SEARCH_INTERVIEW);
         return ResponseEntity.ok().body(response);
     }
+
     @GetMapping("/getNameAndStatus")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> getNameAndConfirmStatus(@RequestParam("interviewId") int id){
+    public ResponseEntity<ResponseDTO> getNameAndConfirmStatus(@RequestParam("interviewId") int id) {
         ResponseDTO responseDTO = new ResponseDTO<>();
         responseDTO.setData(interviewService.getNameAndStatusByInterviewId(id));
         responseDTO.setMessage(InterviewSuccessMessage.GET_NAME_AND_STATUS_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @GetMapping("/getAcceptableByEmployee")
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
+    public ResponseEntity<ResponseDTO> getAcceptableByEmployee(@RequestParam int employeeId,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        ResponseDTO response = new ResponseDTO();
+        ResponseWithTotalPage<InterviewResponse> interviewResponses = interviewService
+                .getAcceptableByEmployee(employeeId, pageNo, pageSize);
+        response.setData(interviewResponses);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        response.setMessage(InterviewSuccessMessage.GET_ACCEPTABLE_BY_EMPLOYEE);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/getAcceptableByDepartment")
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
+    public ResponseEntity<ResponseDTO> getAcceptableByDepartment(@RequestParam int departmentId,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        ResponseDTO response = new ResponseDTO();
+        ResponseWithTotalPage<InterviewResponse> interviewResponses = interviewService
+                .getAcceptableByDepartment(departmentId, pageNo, pageSize);
+        response.setData(interviewResponses);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        response.setMessage(InterviewSuccessMessage.GET_ACCEPTABLE_BY_DEPARTMENT);
+        return ResponseEntity.ok().body(response);
+    }
+
 }

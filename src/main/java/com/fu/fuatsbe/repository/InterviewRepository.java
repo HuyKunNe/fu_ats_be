@@ -39,4 +39,35 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
                         + "where employee_id in (select id from employee where department_id = ?1))")
         Page<Interview> findInterviewByDepartrment(int department_id, Pageable pageable);
 
+        @Query(nativeQuery = true, value = "select distinct i.* from interview i \n" +
+                        " join interview_employee ie on i.id = ie.interview_id \n" +
+                        " where i.candidate_confirm like 'ACCEPTABLE' \n" +
+                        " and ie.employee_id = ?1 \n"
+                        + " order by i.id desc \n"
+                        + " limit ?2 offset ?3")
+        public List<Interview> getAcceptableInterviewByEmployee(int employeeId, int pageNo, int pageSize);
+
+        @Query(nativeQuery = true, value = "select count(distinct i.id) from interview i \n" +
+                        " join interview_employee ie on i.id = ie.interview_id \n" +
+                        " where i.candidate_confirm like 'ACCEPTABLE' \n" +
+                        " and ie.employee_id = ?1 ")
+        public int getTotalAcceptableInterviewByEmployee(int employeeId);
+
+        @Query(nativeQuery = true, value = "select distinct i.* from interview i \n" +
+                        " join interview_employee ie on i.id = ie.interview_id \n" +
+                        " join employee e on ie.employee_id = e.id \n" +
+                        " join department d on e.department_id = d.id \n" +
+                        " where i.candidate_confirm like 'ACCEPTABLE' \n" +
+                        " and d.id = ?1 \n"
+                        + "order by i.id desc \n"
+                        + "limit ?2 offset ?3")
+        public List<Interview> getAcceptableInterviewByDepartment(int departmentId, int pageNo, int pageSize);
+
+        @Query(nativeQuery = true, value = "select count(distinct i.id) from interview i \n" +
+                        " join interview_employee ie on i.id = ie.interview_id \n" +
+                        " join employee e on ie.employee_id = e.id \n" +
+                        " join department d on e.department_id = d.id \n" +
+                        " where i.candidate_confirm like 'ACCEPTABLE' \n" +
+                        " and d.id = ?1 \n")
+        public int getTotalAcceptableInterviewByDepartment(int departmentId);
 }
