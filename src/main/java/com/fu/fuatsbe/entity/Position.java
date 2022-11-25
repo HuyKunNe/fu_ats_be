@@ -61,10 +61,6 @@ public class Position {
     @JsonIgnore
     private Collection<CV> cvs;
 
-    @ManyToMany(mappedBy = "suitablePositions", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private Collection<CV> recommentCVs;
-
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)

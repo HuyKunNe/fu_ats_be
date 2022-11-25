@@ -24,7 +24,7 @@ public class CvResponse {
     private String note;
     private String experience;
     private String title;
-    private String suitablePosition;
+    private String recommendPositions;
 
     private Position position;
 

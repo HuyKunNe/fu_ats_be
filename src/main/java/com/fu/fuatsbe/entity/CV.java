@@ -47,6 +47,7 @@ public class CV {
     @Column(columnDefinition = "text")
     private String note;
     private String status;
+    private String recommendPositions;
     private String title;
 
     @OneToMany(mappedBy = "cv", cascade = CascadeType.ALL)
@@ -65,9 +66,5 @@ public class CV {
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "cv_position", joinColumns = @JoinColumn(name = "cv_id"), inverseJoinColumns = @JoinColumn(name = "position_id"))
     private Collection<Position> positions;
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "cv_suitable_position", joinColumns = @JoinColumn(name = "cv_id"), inverseJoinColumns = @JoinColumn(name = "position_id"))
-    private Collection<Position> suitablePositions;
 
 }
