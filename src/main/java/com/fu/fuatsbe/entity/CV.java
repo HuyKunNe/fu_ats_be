@@ -43,7 +43,6 @@ public class CV {
     private int id;
 
     private String linkCV;
-    private String result;
     @Column(columnDefinition = "text")
     private String note;
     private String status;

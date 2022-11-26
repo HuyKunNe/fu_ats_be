@@ -20,7 +20,6 @@ public class CvResponse {
 
     private int id;
     private String linkCV;
-    private String result;
     private String note;
     private String experience;
     private String title;

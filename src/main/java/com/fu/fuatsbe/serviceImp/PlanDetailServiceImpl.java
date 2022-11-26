@@ -7,6 +7,7 @@ import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.planDetail.PlanDetailErrorMessage;
 import com.fu.fuatsbe.constant.planDetail.PlanDetailStatus;
+import com.fu.fuatsbe.constant.postion.PositionCEO;
 import com.fu.fuatsbe.constant.postion.PositionErrorMessage;
 import com.fu.fuatsbe.constant.recruitmentPlan.RecruitmentPlanErrorMessage;
 import com.fu.fuatsbe.constant.recruitmentPlan.RecruitmentPlanStatus;
@@ -271,8 +272,14 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         Employee approver = employeeRepository.findById(actionDTO.getEmployeeId())
                 .orElseThrow(() -> new NotFoundException(
                         EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
-        planDetail.setStatus(PlanDetailStatus.APPROVED);
-        planDetail.setApprover(approver);
+        if (approver.getPosition().getName().equalsIgnoreCase(PositionCEO.CEO)) {
+            planDetail.setCeo(approver);
+        } else {
+            planDetail.setApprover(approver);
+        }
+        if (planDetail.getCeo() != null && planDetail.getApprover() != null) {
+            planDetail.setStatus(PlanDetailStatus.APPROVED);
+        }
         PlanDetail planDetailSaved = planDetailRepository.save(planDetail);
         PlanDetailResponseDTO response = modelMapper.map(planDetailSaved,
                 PlanDetailResponseDTO.class);
@@ -343,11 +350,10 @@ public class PlanDetailServiceImpl implements PlanDetailService {
     public AllStatusCounterResponse getStatusTotal() {
         List<Tuple> list = planDetailRepository.getTotalStatusDetail();
 
-
         List<CountStatusResponse> responses = new ArrayList<>();
         List<String> statusList = new ArrayList<>();
         List<Integer> totalList = new ArrayList<>();
-        for (Tuple total: list) {
+        for (Tuple total : list) {
             statusList.add(total.get("status").toString());
             totalList.add(Integer.parseInt(total.get("total").toString()));
 
@@ -361,9 +367,9 @@ public class PlanDetailServiceImpl implements PlanDetailService {
                 .total(totalList)
                 .build();
         responses.add(countStatusResponse);
-        //RecruitmentPlan
+        // RecruitmentPlan
         CountStatusResponse countPlan = recruitmentPlanService.getStatusTotal();
-        //Recruitment Request
+        // Recruitment Request
         CountStatusResponse countRequest = recruitmentRequestService.getStatusTotal();
         AllStatusCounterResponse allStatusCounterResponseRequest = AllStatusCounterResponse.builder()
                 .countStatusPlan(countPlan)
@@ -374,10 +380,11 @@ public class PlanDetailServiceImpl implements PlanDetailService {
     }
 
     @Override
-    public ResponseWithTotalPage<PlanDetailResponseDTO> getPlanDetailsByDepartment(int departmentId, int pageNo, int pageSize) {
+    public ResponseWithTotalPage<PlanDetailResponseDTO> getPlanDetailsByDepartment(int departmentId, int pageNo,
+            int pageSize) {
         departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
-        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<PlanDetail> pageResult = planDetailRepository.getPlanDetailByDepartment(departmentId, pageable);
         List<PlanDetailResponseDTO> list = new ArrayList<PlanDetailResponseDTO>();
         ResponseWithTotalPage<PlanDetailResponseDTO> result = new ResponseWithTotalPage<>();
@@ -388,7 +395,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
             }
             result.setResponseList(list);
             result.setTotalPage(pageResult.getTotalPages());
-        }else
+        } else
             throw new ListEmptyException(PlanDetailErrorMessage.LIST_EMPTY_EXCEPTION);
         return result;
     }
