@@ -294,6 +294,12 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         Employee approver = employeeRepository.findById(actionDTO.getEmployeeId())
                 .orElseThrow(() -> new NotFoundException(
                         EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+
+        if (approver.getPosition().getName().equalsIgnoreCase(PositionCEO.CEO)) {
+            planDetail.setCeo(approver);
+        } else {
+            planDetail.setApprover(approver);
+        }
         planDetail.setStatus(PlanDetailStatus.CANCELED);
         planDetail.setApprover(approver);
         PlanDetail planDetailSaved = planDetailRepository.save(planDetail);
