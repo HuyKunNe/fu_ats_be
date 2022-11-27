@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fu.fuatsbe.constant.recruitmentRequest.RecruitmentRequestSuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import com.fu.fuatsbe.response.ListResponseDTO;
 import com.fu.fuatsbe.response.RecruitmentRequestResponse;
 import com.fu.fuatsbe.response.ResponseDTO;
@@ -180,6 +181,7 @@ public class RecruitmentRequestController {
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
+
     @GetMapping("/getIdAndNameByDepartment")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getIdAndNameByDepartment(@RequestParam("department_id") int departmentId) {
@@ -188,5 +190,16 @@ public class RecruitmentRequestController {
         response.setStatus(ResponseStatusDTO.SUCCESS);
         response.setMessage(RecruitmentRequestSuccessMessage.GET_ID_NAME_BY_DEPARTMENT);
         return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/getAllActiveRequest")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getAllActiveRequest() {
+        ResponseDTO responseDTO = new ResponseDTO();
+        List<IdAndNameResponse> responseList = recruitmentRequestService.getAllActiveRequest();
+        responseDTO.setData(responseList);
+        responseDTO.setMessage(RecruitmentRequestSuccessMessage.GET_ACTIVE_REQUEST_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
     }
 }

@@ -3,6 +3,8 @@ package com.fu.fuatsbe.serviceImp;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Tuple;
+
 import com.fu.fuatsbe.response.IdAndNameResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -150,14 +152,29 @@ public class CandidateServiceImp implements CandidateService {
             throw new ListEmptyException(CandidateErrorMessage.LIST_CANDIDATE_IS_EMPTY);
         return result;
     }
+
     @Override
     public List<IdAndNameResponse> getCandidateAppliedByRecruitment(int recruitmentId) {
         List<Candidate> candidates = candidateRepository.getCandidateAppliedByRecruitment(recruitmentId);
         List<IdAndNameResponse> responses = new ArrayList<>();
-        for (Candidate candidate:candidates) {
+        for (Candidate candidate : candidates) {
             IdAndNameResponse idAndNameResponse = IdAndNameResponse.builder()
                     .id(candidate.getId())
                     .name(candidate.getName())
+                    .build();
+            responses.add(idAndNameResponse);
+        }
+        return responses;
+    }
+
+    @Override
+    public List<IdAndNameResponse> getAllAcitveCandidate() {
+        List<Tuple> candidates = candidateRepository.getAllAcitveCandidate();
+        List<IdAndNameResponse> responses = new ArrayList<>();
+        for (Tuple tuple : candidates) {
+            IdAndNameResponse idAndNameResponse = IdAndNameResponse.builder()
+                    .id(Integer.parseInt(tuple.get("id").toString()))
+                    .name(tuple.get("name").toString())
                     .build();
             responses.add(idAndNameResponse);
         }

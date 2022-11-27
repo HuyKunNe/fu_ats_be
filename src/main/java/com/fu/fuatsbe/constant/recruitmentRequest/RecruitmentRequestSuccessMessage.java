@@ -15,6 +15,6 @@ public final class RecruitmentRequestSuccessMessage {
     public final static String GET_SEARCH_CATEGORY_SUCCESS = "Get search category successfully";
     public final static String GET_TOTAL_STATUS_SUCCESS = "Get total status recruitment request successfully";
     public final static String GET_ID_NAME_BY_DEPARTMENT = "Get id and name of recruitment request by department successfully";
-
+    public final static String GET_ACTIVE_REQUEST_SUCCESS = "Get active request successfully";
 
 }

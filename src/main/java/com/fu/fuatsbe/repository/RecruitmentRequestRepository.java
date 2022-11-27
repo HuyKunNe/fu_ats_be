@@ -108,4 +108,8 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
                         + " where foreign_language is not null and foreign_language not like '';")
         List<String> getAllForeignLanguages();
 
+        @Query(nativeQuery = true, value = "select id, r.name from recruitment_request r \n" +
+                        " where r.status like 'OPENING' and current_date() <= r.expiry_date")
+        List<Tuple> getAllActiveRequest();
+
 }

@@ -3,6 +3,7 @@ package com.fu.fuatsbe.repository;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.Tuple;
 import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
@@ -29,4 +30,8 @@ public interface CandidateRepository extends JpaRepository<Candidate, Integer> {
             + "where c.id in (select distinct candidate_id from job_apply where recruitment_request_id = ?1) \n"
             + "and ja.status like 'APPROVED' ")
     List<Candidate> getCandidateAppliedByRecruitment(int recruitmentId);
+
+    @Query(nativeQuery = true, value = "select id, name from candidate where status like 'ACTIVATE'")
+    List<Tuple> getAllAcitveCandidate();
+
 }

@@ -119,9 +119,10 @@ public class CandidateController {
         responseDTO.setMessage(CandidateSuccessMessage.UPDATE_CANDIDATE_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+
     @GetMapping("/getCandidateAppliedByRecruitment")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public  ResponseEntity<ResponseDTO> getCandidateApplied(@RequestParam int recruitmentId){
+    public ResponseEntity<ResponseDTO> getCandidateApplied(@RequestParam int recruitmentId) {
         ResponseDTO responseDTO = new ResponseDTO();
         List<IdAndNameResponse> responseList = candidateService.getCandidateAppliedByRecruitment(recruitmentId);
         responseDTO.setData(responseList);
@@ -130,4 +131,14 @@ public class CandidateController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @GetMapping("/getIdAndNameAcitveCandidate")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getIdAndNameAcitveCandidate() {
+        ResponseDTO responseDTO = new ResponseDTO();
+        List<IdAndNameResponse> responseList = candidateService.getAllAcitveCandidate();
+        responseDTO.setData(responseList);
+        responseDTO.setMessage(CandidateSuccessMessage.GET_ALL_ACTIVE_CANDIDATE_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }

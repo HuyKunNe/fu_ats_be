@@ -24,5 +24,9 @@ public interface CandidateService {
     public CandidateResponseDTO updateCandidateById(int id, CandidateUpdateDTO updateDTO);
 
     public Candidate deleteCandidateById(int id);
+
     List<IdAndNameResponse> getCandidateAppliedByRecruitment(int recruitment);
+
+    public List<IdAndNameResponse> getAllAcitveCandidate();
+
 }

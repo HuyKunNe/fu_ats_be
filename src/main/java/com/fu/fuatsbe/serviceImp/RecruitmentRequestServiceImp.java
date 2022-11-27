@@ -528,4 +528,18 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         }
         return responses;
     }
+
+    @Override
+    public List<IdAndNameResponse> getAllActiveRequest() {
+        List<Tuple> request = recruitmentRequestRepository.getAllActiveRequest();
+        List<IdAndNameResponse> responses = new ArrayList<>();
+        for (Tuple tuple : request) {
+            IdAndNameResponse idAndNameResponse = IdAndNameResponse.builder()
+                    .id(Integer.parseInt(tuple.get("id").toString()))
+                    .name(tuple.get("name").toString())
+                    .build();
+            responses.add(idAndNameResponse);
+        }
+        return responses;
+    }
 }
