@@ -34,7 +34,7 @@ public class NotificationController {
     }
 
     @GetMapping("/getByCandidate")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
     public ResponseEntity<ResponseDTO> getByCandidate(
             @RequestParam("candidateId") int id) {
 
