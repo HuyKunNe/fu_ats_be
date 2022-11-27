@@ -4,14 +4,17 @@ import com.fu.fuatsbe.DTO.NotificationCreateDTO;
 import com.fu.fuatsbe.DTO.SendNotificationDTO;
 import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
+import com.fu.fuatsbe.constant.notification.NotificationErrorMessage;
 import com.fu.fuatsbe.constant.notification.NotificationStatus;
 import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.Notification;
+import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.repository.CandidateRepository;
 import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.NotificationRepository;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.NotificationService;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -21,6 +24,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -203,23 +210,43 @@ public class NotificationServiceImp implements NotificationService {
     }
 
     @Override
-    public List<Notification> getAllByCandidate(int candidateId) {
+    public ResponseWithTotalPage<Notification> getAllByCandidate(int candidateId, int pageNo, int pageSize) {
         Candidate candidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
 
-        List<Notification> list = notificationRepository.findNotificationByCandidates(candidate);
-
-        return list;
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        Page<Notification> pageResult = notificationRepository.findNotificationByCandidates(candidate, pageable);
+        List<Notification> list = new ArrayList<Notification>();
+        ResponseWithTotalPage<Notification> result = new ResponseWithTotalPage<>();
+        if (pageResult.hasContent()) {
+            for (Notification notification : pageResult.getContent()) {
+                list.add(notification);
+            }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
+        } else
+            throw new ListEmptyException(NotificationErrorMessage.LIST_EMPTY_EXCEPTION);
+        return result;
     }
 
     @Override
-    public List<Notification> getAllByEmployee(int employeeId) {
+    public ResponseWithTotalPage<Notification> getAllByEmployee(int employeeId, int pageNo, int pageSize) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
 
-        List<Notification> list = notificationRepository.findNotificationByEmployees(employee);
-
-        return list;
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        Page<Notification> pageResult = notificationRepository.findNotificationByEmployees(employee, pageable);
+        List<Notification> list = new ArrayList<Notification>();
+        ResponseWithTotalPage<Notification> result = new ResponseWithTotalPage<>();
+        if (pageResult.hasContent()) {
+            for (Notification notification : pageResult.getContent()) {
+                list.add(notification);
+            }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
+        } else
+            throw new ListEmptyException(NotificationErrorMessage.LIST_EMPTY_EXCEPTION);
+        return result;
     }
 
 }

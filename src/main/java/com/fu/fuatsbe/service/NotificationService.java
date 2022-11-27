@@ -1,12 +1,11 @@
 package com.fu.fuatsbe.service;
 
-import java.util.List;
-
 import javax.mail.MessagingException;
 
 import com.fu.fuatsbe.DTO.NotificationCreateDTO;
 import com.fu.fuatsbe.DTO.SendNotificationDTO;
 import com.fu.fuatsbe.entity.Notification;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 
 public interface NotificationService {
 
@@ -14,8 +13,8 @@ public interface NotificationService {
 
     void createNotification(NotificationCreateDTO notificationCreateDTO) throws MessagingException;
 
-    public List<Notification> getAllByCandidate(int candidateId);
+    public ResponseWithTotalPage<Notification> getAllByCandidate(int candidateId, int pageNo, int pageSize);
 
-    public List<Notification> getAllByEmployee(int employeeId);
+    public ResponseWithTotalPage<Notification> getAllByEmployee(int employeeId, int pageNo, int pageSize);
 
 }

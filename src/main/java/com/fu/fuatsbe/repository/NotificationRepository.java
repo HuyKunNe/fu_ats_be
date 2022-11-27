@@ -3,6 +3,9 @@ package com.fu.fuatsbe.repository;
 import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.Notification;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,8 +19,8 @@ public interface NotificationRepository extends JpaRepository<Notification, Inte
 
     public Notification findById(int id);
 
-    public List<Notification> findNotificationByEmployees(Employee employee);
+    public Page<Notification> findNotificationByEmployees(Employee employee, Pageable pageable);
 
-    public List<Notification> findNotificationByCandidates(Candidate candidate);
+    public Page<Notification> findNotificationByCandidates(Candidate candidate, Pageable pageable);
 
 }

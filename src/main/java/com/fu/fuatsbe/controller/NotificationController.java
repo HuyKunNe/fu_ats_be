@@ -6,6 +6,7 @@ import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.entity.Notification;
 import com.fu.fuatsbe.response.ResponseDTO;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -34,29 +35,31 @@ public class NotificationController {
     }
 
     @GetMapping("/getByCandidate")
-    @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity<ResponseDTO> getByCandidate(
-            @RequestParam("candidateId") int id) {
-
-        ResponseDTO response = new ResponseDTO();
-        List<Notification> list = notificationService.getAllByCandidate(id);
-        response.setData(list);
-        response.setMessage(NotificationSuccessMessage.GET_NOTIFICATION_SUCCESS);
-        response.setStatus(ResponseStatusDTO.SUCCESS);
-        return ResponseEntity.ok().body(response);
+            @RequestParam("candidateId") int id,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
+        ResponseWithTotalPage<Notification> list = notificationService.getAllByCandidate(id, pageNo, pageSize);
+        responseDTO.setData(list);
+        responseDTO.setMessage(NotificationSuccessMessage.GET_NOTIFICATION_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @GetMapping("/getByEmployee")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getByEmployee(
-            @RequestParam("employeeId") int id) {
-
-        ResponseDTO response = new ResponseDTO();
-        List<Notification> list = notificationService.getAllByEmployee(id);
-        response.setData(list);
-        response.setMessage(NotificationSuccessMessage.GET_NOTIFICATION_SUCCESS);
-        response.setStatus(ResponseStatusDTO.SUCCESS);
-        return ResponseEntity.ok().body(response);
+            @RequestParam("employeeId") int id,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
+        ResponseWithTotalPage<Notification> list = notificationService.getAllByEmployee(id, pageNo, pageSize);
+        responseDTO.setData(list);
+        responseDTO.setMessage(NotificationSuccessMessage.GET_NOTIFICATION_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
     }
 
 }

@@ -563,7 +563,8 @@ public class InterviewServiceImp implements InterviewService {
         List<InterviewEmployee> interviewEmployeeList = interviewEmployeeRepository.findByInterviewId(idInterview);
         boolean checkAllConfirm = true;
         for (InterviewEmployee interEmp : interviewEmployeeList) {
-            if (interEmp.getConfirmStatus() == null || !interEmp.getConfirmStatus().equals(InterviewEmployeeRequestStatus.ACCEPTABLE)) {
+            if (interEmp.getConfirmStatus() == null
+                    || !interEmp.getConfirmStatus().equals(InterviewEmployeeRequestStatus.ACCEPTABLE)) {
                 checkAllConfirm = false;
             }
         }
@@ -592,7 +593,6 @@ public class InterviewServiceImp implements InterviewService {
         interviewEmployee.setConfirmStatus(InterviewEmployeeRequestStatus.REJECTED);
         interviewEmployeeRepository.save(interviewEmployee);
     }
-
 
     @Override
     public void rejectJoinInterviewByCandidate(int idInterview, int idCandidate) throws MessagingException {
@@ -751,84 +751,4 @@ public class InterviewServiceImp implements InterviewService {
         return result;
     }
 
-    // @Override
-    // public List<InterviewResponse> getAcceptableByEmployee(int employeeId) { a /
-    // b + ((a % b == 0) ? 0 : 1)
-    // List<InterviewResponse> result = new ArrayList<>();
-    // List<Interview> listInterviews =
-    // interviewRepository.getAcceptableInterviewByEmployee(employeeId);
-    // if (listInterviews.size() > 0) {
-    // for (Interview interview : listInterviews) {
-    // DateTimeFormatter timeDislayFormatter = DateTimeFormatter.ofPattern("HH:mm");
-    // String timeDislay =
-    // interview.getDate().toLocalDateTime().toLocalTime().format(timeDislayFormatter);
-    // InterviewResponse response = InterviewResponse.builder()
-    // .id(interview.getId())
-    // .subject(interview.getSubject())
-    // .purpose(interview.getPurpose())
-    // .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()).toString())
-    // .time(timeDislay)
-    // .room(interview.getRoom())
-    // .address(interview.getAddress())
-    // .linkMeeting(interview.getLinkMeeting())
-    // .round(interview.getRound())
-    // .description(interview.getDescription())
-    // .candidateConfirm(interview.getCandidateConfirm())
-    // .status(interview.getStatus())
-    // .type(interview.getType())
-    // .jobApply(interview.getJobApply())
-    // .candidateName(interview.getCandidate().getName())
-    // .build();
-    // List<String> empName = new ArrayList<>();
-    // for (InterviewEmployee interEmp : interview.getInterviewEmployees()) {
-    // empName.add(interEmp.getEmployee().getName());
-    // }
-    // response.setEmployeeNames(empName);
-    // result.add(response);
-    // }
-    // } else {
-    // throw new ListEmptyException(InterviewErrorMessage.LIST_EMPTY_EXCEPTION);
-    // }
-    // return result;
-    // }
-
-    // @Override
-    // public List<InterviewResponse> getAcceptableByDepartment(int departmentId) {
-    // List<InterviewResponse> result = new ArrayList<>();
-    // List<Interview> listInterviews =
-    // interviewRepository.getAcceptableInterviewByDepartment(departmentId);
-    // if (listInterviews.size() > 0) {
-    // for (Interview interview : listInterviews) {
-    // DateTimeFormatter timeDislayFormatter = DateTimeFormatter.ofPattern("HH:mm");
-    // String timeDislay =
-    // interview.getDate().toLocalDateTime().toLocalTime().format(timeDislayFormatter);
-    // InterviewResponse response = InterviewResponse.builder()
-    // .id(interview.getId())
-    // .subject(interview.getSubject())
-    // .purpose(interview.getPurpose())
-    // .date(Date.valueOf(interview.getDate().toLocalDateTime().toLocalDate()).toString())
-    // .time(timeDislay)
-    // .room(interview.getRoom())
-    // .address(interview.getAddress())
-    // .linkMeeting(interview.getLinkMeeting())
-    // .round(interview.getRound())
-    // .description(interview.getDescription())
-    // .candidateConfirm(interview.getCandidateConfirm())
-    // .status(interview.getStatus())
-    // .type(interview.getType())
-    // .jobApply(interview.getJobApply())
-    // .candidateName(interview.getCandidate().getName())
-    // .build();
-    // List<String> empName = new ArrayList<>();
-    // for (InterviewEmployee interEmp : interview.getInterviewEmployees()) {
-    // empName.add(interEmp.getEmployee().getName());
-    // }
-    // response.setEmployeeNames(empName);
-    // result.add(response);
-    // }
-    // } else {
-    // throw new ListEmptyException(InterviewErrorMessage.LIST_EMPTY_EXCEPTION);
-    // }
-    // return result;
-    // }
 }
