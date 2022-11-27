@@ -70,6 +70,15 @@ public class DepartmentController {
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
+    @GetMapping("/getIdName")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getDepartmentIdAndName() {
+        ResponseDTO response = new ResponseDTO();
+        response.setData(departmentService.getDepartmentName());
+        response.setMessage(DepartmentSuccessMessage.GET_DEPARTMENT_ID_NAME);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
 
     @PutMapping("edit/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +29,8 @@ import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.PositionService;
 
 import lombok.RequiredArgsConstructor;
+
+import javax.persistence.Tuple;
 
 @Service
 @RequiredArgsConstructor
@@ -133,5 +136,22 @@ public class PositionServiceImp implements PositionService {
         } else
             throw new ListEmptyException(PositionErrorMessage.LIST_POSITION_EMPTY);
         return result;
+    }
+
+    @Override
+    public List<IdAndNameResponse> getPositionIdAndName() {
+        List<Tuple> tupleList = positionRepository.getPositionIdAndName();
+        if (tupleList.size() <= 0 ){
+            throw new NotFoundException(PositionErrorMessage.LIST_POSITION_EMPTY);
+        }
+        List<IdAndNameResponse> responseList = new ArrayList<>();
+        for (Tuple tuple: tupleList) {
+            IdAndNameResponse response = IdAndNameResponse.builder()
+                    .id(Integer.parseInt(tuple.get("id").toString()))
+                    .name(tuple.get("name").toString())
+                    .build();
+            responseList.add(response);
+        }
+        return responseList;
     }
 }

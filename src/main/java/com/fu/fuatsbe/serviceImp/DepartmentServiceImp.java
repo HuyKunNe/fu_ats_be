@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +27,8 @@ import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.DepartmentService;
 
 import lombok.RequiredArgsConstructor;
+
+import javax.persistence.Tuple;
 
 @Service
 @RequiredArgsConstructor
@@ -124,4 +127,20 @@ public class DepartmentServiceImp implements DepartmentService {
         return true;
     }
 
+    @Override
+    public List<IdAndNameResponse> getDepartmentName() {
+        List<Tuple> tupleList = departmentRepository.getIdAndNameDepartment();
+        if (tupleList.size() <= 0 ){
+            throw new NotFoundException(DepartmentErrorMessage.LIST_DEPARTMENT_EMPTY_EXCEPTION);
+        }
+        List<IdAndNameResponse> responseList = new ArrayList<>();
+        for (Tuple tuple: tupleList) {
+            IdAndNameResponse response = IdAndNameResponse.builder()
+                    .id(Integer.parseInt(tuple.get("id").toString()))
+                    .name(tuple.get("name").toString())
+                    .build();
+            responseList.add(response);
+        }
+        return responseList;
+    }
 }
