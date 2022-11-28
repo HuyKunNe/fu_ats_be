@@ -108,9 +108,9 @@ public class CVController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/getCvStore")
+    @GetMapping("/getCvStorage")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> getCvStore(
+    public ResponseEntity<ResponseDTO> getCvStorage(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
         ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
