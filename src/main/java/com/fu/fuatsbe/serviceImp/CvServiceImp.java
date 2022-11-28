@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.CvCreateDTO;
@@ -41,7 +42,7 @@ public class CvServiceImp implements CVService {
 
     @Override
     public ResponseWithTotalPage<CvResponse> getAllCvs(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<CV> pageResult = cvRepository.findAll(pageable);
 
         ResponseWithTotalPage<CvResponse> result = new ResponseWithTotalPage<>();
@@ -68,7 +69,7 @@ public class CvServiceImp implements CVService {
             throw new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION);
         }
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<CV> pageResult = cvRepository.findByCandidate(candidate.get(), pageable);
         ResponseWithTotalPage<CvResponse> result = new ResponseWithTotalPage<>();
         List<CvResponse> list = new ArrayList<>();
@@ -155,5 +156,28 @@ public class CvServiceImp implements CVService {
             list.add(response);
         }
         return list;
+    }
+
+    @Override
+    public ResponseWithTotalPage<CvResponse> getCvStore(int pageNo, int pageSize) {
+        ResponseWithTotalPage<CvResponse> result = new ResponseWithTotalPage<>();
+        List<CvResponse> list = new ArrayList<>();
+        pageNo *= pageSize;
+        List<CV> listCv = cvRepository.getCVs(pageSize, pageNo);
+
+        if (listCv.size() > 0) {
+            for (CV cv : listCv) {
+                CvResponse cvResponse = modelMapper.map(cv, CvResponse.class);
+                list.add(cvResponse);
+            }
+            result.setResponseList(list);
+
+            int totalElements = cvRepository.getTotalCVs();
+            int totalPage = (totalElements / pageSize) + ((totalElements % pageSize == 0) ? 0 : 1);
+            result.setTotalPage(totalPage);
+        } else {
+            throw new ListEmptyException(CVErrorMessage.LIST_EMPTY);
+        }
+        return result;
     }
 }

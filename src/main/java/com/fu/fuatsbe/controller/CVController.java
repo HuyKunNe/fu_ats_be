@@ -64,6 +64,7 @@ public class CVController {
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+
     @GetMapping("/getAllCvRejected")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getAllCvRejected() {
@@ -103,6 +104,19 @@ public class CVController {
         ResponseDTO<CV> responseDTO = new ResponseDTO();
         cvService.deleteCV(id);
         responseDTO.setMessage(CVSuccessMessage.DELETE_CV);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/getCvStore")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getCvStore(
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
+        ResponseWithTotalPage<CvResponse> list = cvService.getCvStore(pageNo, pageSize);
+        responseDTO.setData(list);
+        responseDTO.setMessage(CVSuccessMessage.GET_ALL_CVS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }

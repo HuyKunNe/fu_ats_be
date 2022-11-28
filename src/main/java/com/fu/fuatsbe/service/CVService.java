@@ -23,4 +23,7 @@ public interface CVService {
     public CV deleteCV(int id);
 
     public List<CvResponse> getRejectedCv();
+
+    public ResponseWithTotalPage<CvResponse> getCvStore(int pageNo, int pageSize);
+
 }

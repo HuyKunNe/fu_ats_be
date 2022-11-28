@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.EmployeeUpdateDTO;
@@ -46,7 +47,7 @@ public class EmployeeServiceImp implements EmployeeService {
 
     @Override
     public ResponseWithTotalPage<EmployeeResponse> getAllEmployees(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<Employee> pageResult = employeeRepository.findAll(pageable);
 
         List<EmployeeResponse> list = new ArrayList<EmployeeResponse>();
@@ -82,12 +83,12 @@ public class EmployeeServiceImp implements EmployeeService {
 
     @Override
     public ResponseWithTotalPage<EmployeeResponse> getAllEmployeeByDepartment(int departmentId, int pageNo,
-                                                                              int pageSize) {
+            int pageSize) {
 
         Department department = departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<Employee> pageResult = employeeRepository.findByDepartment(department, pageable);
 
         List<EmployeeResponse> list = new ArrayList<EmployeeResponse>();
@@ -144,8 +145,8 @@ public class EmployeeServiceImp implements EmployeeService {
 
     @Override
     public List<IdAndNameResponse> getIdAndNameEmployeeByRequest(int requestId) {
-        recruitmentRequestRepository.findById(requestId).orElseThrow(() ->
-                new NotFoundException(RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
+        recruitmentRequestRepository.findById(requestId).orElseThrow(
+                () -> new NotFoundException(RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
         List<Tuple> tupleList = employeeRepository.getEmployeeByRequest(requestId);
         List<IdAndNameResponse> responses = new ArrayList<>();
         for (Tuple tuple : tupleList) {

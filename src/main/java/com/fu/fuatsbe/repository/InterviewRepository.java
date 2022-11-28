@@ -61,7 +61,7 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
                         " and d.id = ?1 \n"
                         + "order by i.id desc \n"
                         + "limit ?2 offset ?3")
-        public List<Interview> getAcceptableInterviewByDepartment(int departmentId, int pageNo, int pageSize);
+        public List<Interview> getAcceptableInterviewByDepartment(int departmentId, int pageSize, int pageNo);
 
         @Query(nativeQuery = true, value = "select count(distinct i.id) from interview i \n" +
                         " join interview_employee ie on i.id = ie.interview_id \n" +

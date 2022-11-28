@@ -26,5 +26,24 @@ public interface CvRepository extends JpaRepository<CV, Integer> {
             "in(select cv_id from job_apply where status like 'REJECTED')")
     List<CV> getRejectedCV();
 
+    @Transactional
+    @Query(nativeQuery = true, value = "select cv.* from cv \n"
+            + " where cv.id not in \n (select cv.id \n"
+            + "     from cv join job_apply on cv.id = job_apply.cv_id \n"
+            + "         join interview on interview.job_apply_id = job_apply.id \n"
+            + "         join interview_detail on interview.id = interview_detail.interview_id \n"
+            + "     where interview_detail.result like 'Pass' \n"
+            + " ) \n"
+            + " order by id desc \n"
+            + " limit ?1 offset ?2")
+    public List<CV> getCVs(int pageSize, int pageNo);
 
+    @Query(nativeQuery = true, value = "select count(id) from cv \n"
+            + " where cv.id not in \n (select cv.id \n"
+            + "     from cv join job_apply on cv.id = job_apply.cv_id \n"
+            + "         join interview on interview.job_apply_id = job_apply.id \n"
+            + "         join interview_detail on interview.id = interview_detail.interview_id \n"
+            + "     where interview_detail.result like 'Pass' \n"
+            + " ) \n")
+    public int getTotalCVs();
 }
