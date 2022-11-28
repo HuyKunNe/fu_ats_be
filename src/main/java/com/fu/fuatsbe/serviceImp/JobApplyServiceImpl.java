@@ -139,6 +139,7 @@ public class JobApplyServiceImpl implements JobApplyService {
                 .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
 
         CV cv = CV.builder().candidate(candidate).linkCV(createDTO.getLinkCV())
+                .title(createDTO.getTitleCV())
                 .status(CVStatus.ACTIVE).build();
 
         CV cvSaved = cvRepository.save(cv);

@@ -17,6 +17,7 @@ public class JobApplyCreateDTO {
 
     private String educationLevel;
     private String foreignLanguage;
+    private String titleCV;
     private String cityName;
     private String linkCV;
     private String experience;
