@@ -1,5 +1,7 @@
 package com.fu.fuatsbe.response;
 
+import java.util.Collection;
+
 import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.Position;
 
@@ -24,7 +26,7 @@ public class CvResponse {
     private String title;
     private String recommendPositions;
 
-    private Position position;
+    private Collection<Position> positions;
 
     private Candidate candidate;
 

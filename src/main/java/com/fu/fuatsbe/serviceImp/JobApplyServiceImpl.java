@@ -142,7 +142,6 @@ public class JobApplyServiceImpl implements JobApplyService {
                 .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
 
         Optional<CV> cv = cvRepository.findById(createDTO.getCvId());
-        System.out.println(cv);
         CV cvSaved = null;
         if (cv.isPresent()) {
             cv.get().getPositions().add(recruitmentRequest.getPosition());
@@ -153,6 +152,7 @@ public class JobApplyServiceImpl implements JobApplyService {
             CV newCV = CV.builder().candidate(candidate).linkCV(createDTO.getLinkCV())
                     .title(createDTO.getTitleCV())
                     .positions(list)
+                    .recommendPositions("N/A")
                     .status(CVStatus.ACTIVE).build();
             cvSaved = cvRepository.save(newCV);
         }
