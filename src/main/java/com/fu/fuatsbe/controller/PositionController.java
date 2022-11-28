@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.controller;
 
+import com.fu.fuatsbe.constant.department.DepartmentSuccessMessage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -101,6 +102,15 @@ public class PositionController {
         ResponseWithTotalPage<PositionResponse> list = positionService.getPositionByDepartment(id, pageNo, pageSize);
         response.setData(list);
         response.setMessage(PositionSuccessMessage.GET_POSITION_BY_DEPARTMENT);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
+    @GetMapping("/getIdName")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getPositionIdAndName() {
+        ResponseDTO response = new ResponseDTO();
+        response.setData(positionService.getPositionIdAndName());
+        response.setMessage(PositionSuccessMessage.GET_POSITION_ID_NAME);
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
