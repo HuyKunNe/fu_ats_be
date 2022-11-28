@@ -6,7 +6,9 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -33,6 +35,7 @@ import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.City;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.JobApply;
+import com.fu.fuatsbe.entity.Position;
 import com.fu.fuatsbe.entity.RecruitmentRequest;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
@@ -138,11 +141,21 @@ public class JobApplyServiceImpl implements JobApplyService {
         Candidate candidate = candidateRepository.findById(createDTO.getCandidateId())
                 .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
 
-        CV cv = CV.builder().candidate(candidate).linkCV(createDTO.getLinkCV())
-                .title(createDTO.getTitleCV())
-                .status(CVStatus.ACTIVE).build();
-
-        CV cvSaved = cvRepository.save(cv);
+        Optional<CV> cv = cvRepository.findById(createDTO.getCvId());
+        System.out.println(cv);
+        CV cvSaved = null;
+        if (cv.isPresent()) {
+            cv.get().getPositions().add(recruitmentRequest.getPosition());
+            cvSaved = cvRepository.save(cv.get());
+        } else {
+            Collection<Position> list = new ArrayList<Position>();
+            list.add(recruitmentRequest.getPosition());
+            CV newCV = CV.builder().candidate(candidate).linkCV(createDTO.getLinkCV())
+                    .title(createDTO.getTitleCV())
+                    .positions(list)
+                    .status(CVStatus.ACTIVE).build();
+            cvSaved = cvRepository.save(newCV);
+        }
 
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
