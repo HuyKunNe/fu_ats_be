@@ -80,12 +80,6 @@ public class Employee {
     @JsonIgnore
     private Collection<PlanDetail> approvePlanDetails;
 
-    @OneToMany(mappedBy = "ceo", cascade = CascadeType.ALL)
-    @EqualsAndHashCode.Include
-    @ToString.Include
-    @JsonIgnore
-    private Collection<PlanDetail> ceoApprovePlanDetails;
-
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Include
     @ToString.Include

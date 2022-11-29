@@ -36,7 +36,6 @@ public class PlanDetailResponseDTO {
     private RecruitmentPlan recruitmentPlan;
     private Employee creator;
     private Employee approver;
-    private Employee ceo;
     private Position position;
 
 }

@@ -1,5 +1,22 @@
 package com.fu.fuatsbe.serviceImp;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.persistence.Tuple;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
 import com.fu.fuatsbe.DTO.PlanDetailActionDTO;
 import com.fu.fuatsbe.DTO.PlanDetailCreateDTO;
 import com.fu.fuatsbe.DTO.PlanDetailUpdateDTO;
@@ -7,7 +24,6 @@ import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.planDetail.PlanDetailErrorMessage;
 import com.fu.fuatsbe.constant.planDetail.PlanDetailStatus;
-import com.fu.fuatsbe.constant.postion.PositionCEO;
 import com.fu.fuatsbe.constant.postion.PositionErrorMessage;
 import com.fu.fuatsbe.constant.recruitmentPlan.RecruitmentPlanErrorMessage;
 import com.fu.fuatsbe.constant.recruitmentPlan.RecruitmentPlanStatus;
@@ -18,27 +34,21 @@ import com.fu.fuatsbe.entity.RecruitmentPlan;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.exceptions.NotValidException;
-import com.fu.fuatsbe.repository.*;
-import com.fu.fuatsbe.response.*;
+import com.fu.fuatsbe.repository.DepartmentRepository;
+import com.fu.fuatsbe.repository.EmployeeRepository;
+import com.fu.fuatsbe.repository.PlanDetailRepository;
+import com.fu.fuatsbe.repository.PositionRepository;
+import com.fu.fuatsbe.repository.RecruitmentPlanRepository;
+import com.fu.fuatsbe.response.AllStatusCounterResponse;
+import com.fu.fuatsbe.response.CountStatusResponse;
+import com.fu.fuatsbe.response.IdAndNameResponse;
+import com.fu.fuatsbe.response.PlanDetailResponseDTO;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.PlanDetailService;
 import com.fu.fuatsbe.service.RecruitmentPlanService;
 import com.fu.fuatsbe.service.RecruitmentRequestService;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
 
-import javax.persistence.Tuple;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -272,14 +282,9 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         Employee approver = employeeRepository.findById(actionDTO.getEmployeeId())
                 .orElseThrow(() -> new NotFoundException(
                         EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
-        if (approver.getPosition().getName().equalsIgnoreCase(PositionCEO.CEO)) {
-            planDetail.setCeo(approver);
-        } else {
-            planDetail.setApprover(approver);
-        }
-        if (planDetail.getCeo() != null && planDetail.getApprover() != null) {
-            planDetail.setStatus(PlanDetailStatus.APPROVED);
-        }
+
+        planDetail.setApprover(approver);
+        planDetail.setStatus(PlanDetailStatus.APPROVED);
         PlanDetail planDetailSaved = planDetailRepository.save(planDetail);
         PlanDetailResponseDTO response = modelMapper.map(planDetailSaved,
                 PlanDetailResponseDTO.class);
@@ -294,12 +299,6 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         Employee approver = employeeRepository.findById(actionDTO.getEmployeeId())
                 .orElseThrow(() -> new NotFoundException(
                         EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
-
-        if (approver.getPosition().getName().equalsIgnoreCase(PositionCEO.CEO)) {
-            planDetail.setCeo(approver);
-        } else {
-            planDetail.setApprover(approver);
-        }
         planDetail.setStatus(PlanDetailStatus.CANCELED);
         planDetail.setApprover(approver);
         PlanDetail planDetailSaved = planDetailRepository.save(planDetail);

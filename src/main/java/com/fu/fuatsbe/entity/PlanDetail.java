@@ -74,13 +74,6 @@ public class PlanDetail {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)
-    @JoinColumn(name = "ceoId")
-    @EqualsAndHashCode.Include
-    @ToString.Include
-    private Employee ceo;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "approverId")
     @EqualsAndHashCode.Include
     @ToString.Include
