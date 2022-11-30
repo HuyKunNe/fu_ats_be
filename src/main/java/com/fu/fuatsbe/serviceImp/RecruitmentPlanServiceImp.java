@@ -170,6 +170,10 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
         if (recruitmentPlan.getStatus().equalsIgnoreCase(RecruitmentPlanStatus.APPROVED)) {
             throw new NotValidException(RecruitmentPlanErrorMessage.RECRUITMENT_PLAN_IS_APPROVED);
         }
+
+        recruitmentPlan.setStatus(RecruitmentPlanStatus.CANCELED);
+        recruitmentPlanRepository.save(recruitmentPlan);
+
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate periodFrom = LocalDate.parse(updateDTO.getPeriodFrom().toString(), format);
         LocalDate periodTo = LocalDate.parse(updateDTO.getPeriodTo().toString(), format);
@@ -367,7 +371,7 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
 
         List<String> statusList = new ArrayList<>();
         List<Integer> totalList = new ArrayList<>();
-        for (Tuple total: list) {
+        for (Tuple total : list) {
             statusList.add(total.get("status").toString());
             totalList.add(Integer.parseInt(total.get("total").toString()));
 
