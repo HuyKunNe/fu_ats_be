@@ -203,9 +203,9 @@ public class RecruitmentRequestController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/getExpiryDateRecruitmentRequest")
+    @GetMapping("/getAllExpiredDate")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> getExpiryDateRecruitmentRequest(
+    public ResponseEntity<ResponseDTO> getAllExpiredDate(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
         ResponseDTO response = new ResponseDTO();

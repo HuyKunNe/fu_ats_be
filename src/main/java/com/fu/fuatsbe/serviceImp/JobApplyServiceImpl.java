@@ -141,6 +141,10 @@ public class JobApplyServiceImpl implements JobApplyService {
         Candidate candidate = candidateRepository.findById(createDTO.getCandidateId())
                 .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
 
+        candidate.getPositions().add(recruitmentRequest.getPosition());
+
+        candidateRepository.save(candidate);
+
         Optional<CV> cv = cvRepository.findById(createDTO.getCvId());
         CV cvSaved = null;
         if (cv.isPresent()) {
