@@ -16,6 +16,7 @@ public class InterviewDetailResponse {
     private Date start;
     private Date end;
     private String result;
+    private String recommendPositions;
     private String recordMeeting;
     private String description;
     private Interview interview;

@@ -49,6 +49,8 @@ public class InterviewDetailServiceImp implements InterviewDetailService {
                         for (InterviewDetail interviewDetail : interviewDetails.getContent()) {
                                 InterviewDetailResponse interviewDetailResponse = modelMapper.map(interviewDetail,
                                                 InterviewDetailResponse.class);
+                                interviewDetailResponse.setRecommendPositions(interviewDetail.getInterview()
+                                                .getJobApply().getCv().getRecommendPositions());
                                 list.add(interviewDetailResponse);
                         }
                         result.setResponseList(list);
@@ -88,6 +90,8 @@ public class InterviewDetailServiceImp implements InterviewDetailService {
                 InterviewDetail savedInterviewDetail = interviewDetailRepository.save(interviewDetail);
                 InterviewDetailResponse interviewDetailResponse = modelMapper.map(savedInterviewDetail,
                                 InterviewDetailResponse.class);
+                interviewDetailResponse.setRecommendPositions(interviewDetail.getInterview()
+                                .getJobApply().getCv().getRecommendPositions());
                 return interviewDetailResponse;
         }
 
@@ -96,9 +100,10 @@ public class InterviewDetailServiceImp implements InterviewDetailService {
                 InterviewDetail interviewDetail = interviewDetailRepository.findById(id)
                                 .orElseThrow(() -> new NotFoundException(
                                                 InterviewDetailErrorMessage.INTERVIEW_DETAIL_NOT_FOUND));
-                System.out.println("Check data " + interviewDetail.getDescription());
                 InterviewDetailResponse interviewDetailResponse = modelMapper.map(interviewDetail,
                                 InterviewDetailResponse.class);
+                interviewDetailResponse.setRecommendPositions(interviewDetail.getInterview()
+                                .getJobApply().getCv().getRecommendPositions());
                 return interviewDetailResponse;
         }
 
@@ -127,6 +132,8 @@ public class InterviewDetailServiceImp implements InterviewDetailService {
 
                 InterviewDetailResponse interviewDetailResponse = modelMapper.map(savedInterviewDetail,
                                 InterviewDetailResponse.class);
+                interviewDetailResponse.setRecommendPositions(interviewDetail.getInterview()
+                                .getJobApply().getCv().getRecommendPositions());
                 return interviewDetailResponse;
         }
 
@@ -140,6 +147,8 @@ public class InterviewDetailServiceImp implements InterviewDetailService {
 
                 InterviewDetailResponse interviewDetailResponse = modelMapper.map(interviewDetail,
                                 InterviewDetailResponse.class);
+                interviewDetailResponse.setRecommendPositions(interviewDetail.getInterview()
+                                .getJobApply().getCv().getRecommendPositions());
                 return interviewDetailResponse;
         }
 
@@ -155,6 +164,8 @@ public class InterviewDetailServiceImp implements InterviewDetailService {
                         for (InterviewDetail interviewDetail : interviewDetails) {
                                 InterviewDetailResponse interviewDetailResponse = modelMapper.map(interviewDetail,
                                                 InterviewDetailResponse.class);
+                                interviewDetailResponse.setRecommendPositions(interviewDetail.getInterview()
+                                                .getJobApply().getCv().getRecommendPositions());
                                 list.add(interviewDetailResponse);
                         }
                         result.setResponseList(list);
