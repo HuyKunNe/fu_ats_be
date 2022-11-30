@@ -44,7 +44,11 @@ public interface RecruitmentRequestService {
 
         List<IdAndNameResponse> getAllActiveRequest();
 
-        public ResponseWithTotalPage<RecruitmentRequestResponse> getExpiryDateRecruitmentRequest(int pageNo,
-                        int pageSize);
+        // public ResponseWithTotalPage<RecruitmentRequestResponse>
+        // getExpiryDateRecruitmentRequest(int pageNo,
+        // int pageSize);
 
+        public List<RecruitmentRequestResponse> getExpiryDateRecruitmentRequest();
+
+        public boolean closeListRecruitmentRequest(List<Integer> listId);
 }

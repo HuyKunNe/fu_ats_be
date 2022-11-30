@@ -544,21 +544,18 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     }
 
     @Override
-    public ResponseWithTotalPage<RecruitmentRequestResponse> getExpiryDateRecruitmentRequest(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "expiryDate"));
-
+    public List<RecruitmentRequestResponse> getExpiryDateRecruitmentRequest() {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate localDate = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         String date = localDate.format(format);
         Date currentDate = Date.valueOf(date);
 
-        Page<RecruitmentRequest> pageResult = recruitmentRequestRepository.findByExpiryDateLessThanAndStatusNotLike(
-                currentDate, RecruitmentRequestStatus.CLOSED,
-                pageable);
+        List<RecruitmentRequest> pageResult = recruitmentRequestRepository
+                .findByExpiryDateLessThanAndStatusNotLikeOrderByExpiryDateDesc(
+                        currentDate, RecruitmentRequestStatus.CLOSED);
         List<RecruitmentRequestResponse> list = new ArrayList<RecruitmentRequestResponse>();
-        ResponseWithTotalPage<RecruitmentRequestResponse> result = new ResponseWithTotalPage<>();
-        if (pageResult.hasContent()) {
-            for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
+        if (pageResult.size() > 0) {
+            for (RecruitmentRequest recruitmentRequest : pageResult) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
                 if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
@@ -576,9 +573,66 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
                 list.add(response);
             }
-            result.setResponseList(list);
-            result.setTotalPage(pageResult.getTotalPages());
         }
-        return result;
+        return list;
     }
+
+    @Override
+    public boolean closeListRecruitmentRequest(List<Integer> listId) {
+
+        for (Integer id : listId) {
+            RecruitmentRequest recruitmentRequest = recruitmentRequestRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundException(
+                            RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
+
+            recruitmentRequest.setStatus(RecruitmentRequestStatus.CLOSED);
+        }
+        return true;
+
+    }
+
+    // @Override
+    // public ResponseWithTotalPage<RecruitmentRequestResponse>
+    // getExpiryDateRecruitmentRequest(int pageNo, int pageSize) {
+    // Pageable pageable = PageRequest.of(pageNo, pageSize,
+    // Sort.by(Sort.Direction.DESC, "expiryDate"));
+
+    // DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    // LocalDate localDate = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+    // String date = localDate.format(format);
+    // Date currentDate = Date.valueOf(date);
+
+    // Page<RecruitmentRequest> pageResult =
+    // recruitmentRequestRepository.findByExpiryDateLessThanAndStatusNotLike(
+    // currentDate, RecruitmentRequestStatus.CLOSED,
+    // pageable);
+    // List<RecruitmentRequestResponse> list = new
+    // ArrayList<RecruitmentRequestResponse>();
+    // ResponseWithTotalPage<RecruitmentRequestResponse> result = new
+    // ResponseWithTotalPage<>();
+    // if (pageResult.hasContent()) {
+    // for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
+    // RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
+    // RecruitmentRequestResponse.class);
+    // if (recruitmentRequest.getSalaryTo() != null &&
+    // recruitmentRequest.getSalaryFrom() != null) {
+    // response.setSalaryDetail(
+    // (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+    // + recruitmentRequest.getSalaryTo())
+    // .trim());
+    // } else if (recruitmentRequest.getSalaryFrom() == null
+    // && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+    // response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+    // } else if (recruitmentRequest.getSalaryTo() == null
+    // && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+    // response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+    // } else
+    // response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
+    // list.add(response);
+    // }
+    // result.setResponseList(list);
+    // result.setTotalPage(pageResult.getTotalPages());
+    // }
+    // return result;
+    // }
 }

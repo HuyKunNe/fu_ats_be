@@ -113,5 +113,10 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
                         " where r.status like 'OPENING' and current_date() <= r.expiry_date")
         List<Tuple> getAllActiveRequest();
 
-        Page<RecruitmentRequest> findByExpiryDateLessThanAndStatusNotLike(Date date, String status, Pageable pageable);
+        // Page<RecruitmentRequest> findByExpiryDateLessThanAndStatusNotLike(Date date,
+        // String status, Pageable pageable);
+
+        List<RecruitmentRequest> findByExpiryDateLessThanAndStatusNotLikeOrderByExpiryDateDesc(Date date,
+                        String status);
+
 }

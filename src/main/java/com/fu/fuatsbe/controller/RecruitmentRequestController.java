@@ -203,16 +203,41 @@ public class RecruitmentRequestController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    // @GetMapping("/getAllExpiredRecruitmentRequest")
+    // @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    // public ResponseEntity<ResponseDTO> getAllExpiredRecruitmentRequest(
+    // @RequestParam(defaultValue = "0") int pageNo,
+    // @RequestParam(defaultValue = "10") int pageSize) {
+    // ResponseDTO response = new ResponseDTO();
+    // ResponseWithTotalPage responseWithTotalPages =
+    // recruitmentRequestService.getExpiryDateRecruitmentRequest(pageNo,
+    // pageSize);
+    // response.setData(responseWithTotalPages);
+    // response.setMessage(RecruitmentRequestSuccessMessage.GET_EXPIRY_REQUEST_SUCCESS);
+    // response.setStatus(ResponseStatusDTO.SUCCESS);
+    // return ResponseEntity.ok().body(response);
+    // }
+
     @GetMapping("/getAllExpiredRecruitmentRequest")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> getAllExpiredRecruitmentRequest(
-            @RequestParam(defaultValue = "0") int pageNo,
-            @RequestParam(defaultValue = "10") int pageSize) {
-        ResponseDTO response = new ResponseDTO();
-        ResponseWithTotalPage responseWithTotalPages = recruitmentRequestService.getExpiryDateRecruitmentRequest(pageNo,
-                pageSize);
-        response.setData(responseWithTotalPages);
+    public ResponseEntity<ListResponseDTO> getAllExpiredRecruitmentRequest() {
+        ListResponseDTO<RecruitmentRequestResponse> response = new ListResponseDTO();
+        List<RecruitmentRequestResponse> list = recruitmentRequestService.getExpiryDateRecruitmentRequest();
+        response.setData(list);
         response.setMessage(RecruitmentRequestSuccessMessage.GET_EXPIRY_REQUEST_SUCCESS);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PutMapping("/closeListRequest")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> closeListRequest(
+            @RequestBody List<Integer> listId) {
+        ResponseDTO<String> response = new ResponseDTO();
+        boolean data = recruitmentRequestService.closeListRecruitmentRequest(listId);
+        String result = data ? "true" : "false";
+        response.setData(result);
+        response.setMessage(RecruitmentRequestSuccessMessage.CLOSED_RECRUITMENT_REQUEST_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
