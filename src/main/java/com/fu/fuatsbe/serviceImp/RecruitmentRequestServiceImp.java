@@ -586,6 +586,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                             RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
 
             recruitmentRequest.setStatus(RecruitmentRequestStatus.CLOSED);
+            recruitmentRequestRepository.save(recruitmentRequest);
         }
         return true;
 
