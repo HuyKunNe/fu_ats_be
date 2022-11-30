@@ -183,7 +183,7 @@ public class RecruitmentRequestController {
     }
 
     @GetMapping("/getIdAndNameByDepartment")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    @PermitAll
     public ResponseEntity<ResponseDTO> getIdAndNameByDepartment(@RequestParam("department_id") int departmentId) {
         ResponseDTO response = new ResponseDTO();
         response.setData(recruitmentRequestService.getIdAndNameRequestByDepartment(departmentId));
@@ -193,7 +193,7 @@ public class RecruitmentRequestController {
     }
 
     @GetMapping("/getAllActiveRequest")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    @PermitAll
     public ResponseEntity<ResponseDTO> getAllActiveRequest() {
         ResponseDTO responseDTO = new ResponseDTO();
         List<IdAndNameResponse> responseList = recruitmentRequestService.getAllActiveRequest();
@@ -219,7 +219,7 @@ public class RecruitmentRequestController {
     // }
 
     @GetMapping("/getAllExpiredRecruitmentRequest")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    @PermitAll
     public ResponseEntity<ListResponseDTO> getAllExpiredRecruitmentRequest() {
         ListResponseDTO<RecruitmentRequestResponse> response = new ListResponseDTO();
         List<RecruitmentRequestResponse> list = recruitmentRequestService.getExpiryDateRecruitmentRequest();
@@ -230,7 +230,7 @@ public class RecruitmentRequestController {
     }
 
     @PutMapping("/closeListRequest")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    @PermitAll
     public ResponseEntity<ResponseDTO> closeListRequest(
             @RequestBody List<Integer> listId) {
         ResponseDTO<String> response = new ResponseDTO();
