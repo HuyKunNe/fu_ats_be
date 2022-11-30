@@ -18,32 +18,38 @@ import com.fu.fuatsbe.entity.Candidate;
 @Transactional
 public interface CvRepository extends JpaRepository<CV, Integer> {
 
-    Page<CV> findByCandidate(Candidate candidate, Pageable pageable);
+        Page<CV> findByCandidate(Candidate candidate, Pageable pageable);
 
-    Optional<CV> findById(int id);
+        Optional<CV> findById(int id);
 
-    @Query(nativeQuery = true, value = "select * from cv where id " +
-            "in(select cv_id from job_apply where status like 'REJECTED')")
-    List<CV> getRejectedCV();
+        @Query(nativeQuery = true, value = "select * from cv where id " +
+                        "in(select cv_id from job_apply where status like 'REJECTED')")
+        List<CV> getRejectedCV();
 
-    @Transactional
-    @Query(nativeQuery = true, value = "select cv.* from cv \n"
-            + " where cv.id not in \n (select cv.id \n"
-            + "     from cv join job_apply on cv.id = job_apply.cv_id \n"
-            + "         join interview on interview.job_apply_id = job_apply.id \n"
-            + "         join interview_detail on interview.id = interview_detail.interview_id \n"
-            + "     where interview_detail.result like 'Pass' \n"
-            + " ) \n"
-            + " order by id desc \n"
-            + " limit ?1 offset ?2")
-    public List<CV> getCVs(int pageSize, int pageNo);
+        @Transactional
+        @Query(nativeQuery = true, value = "select cv.* from cv \n"
+                        + " where cv.id not in \n (select cv.id \n"
+                        + "     from cv join job_apply on cv.id = job_apply.cv_id \n"
+                        + "         join interview on interview.job_apply_id = job_apply.id \n"
+                        + "         join interview_detail on interview.id = interview_detail.interview_id \n"
+                        + "     where interview_detail.result like 'Pass' \n"
+                        + " ) \n"
+                        + " order by id desc \n"
+                        + " limit ?1 offset ?2")
+        public List<CV> getCVs(int pageSize, int pageNo);
 
-    @Query(nativeQuery = true, value = "select count(id) from cv \n"
-            + " where cv.id not in \n (select cv.id \n"
-            + "     from cv join job_apply on cv.id = job_apply.cv_id \n"
-            + "         join interview on interview.job_apply_id = job_apply.id \n"
-            + "         join interview_detail on interview.id = interview_detail.interview_id \n"
-            + "     where interview_detail.result like 'Pass' \n"
-            + " ) \n")
-    public int getTotalCVs();
+        @Query(nativeQuery = true, value = "select count(id) from cv \n"
+                        + " where cv.id not in \n (select cv.id \n"
+                        + "     from cv join job_apply on cv.id = job_apply.cv_id \n"
+                        + "         join interview on interview.job_apply_id = job_apply.id \n"
+                        + "         join interview_detail on interview.id = interview_detail.interview_id \n"
+                        + "     where interview_detail.result like 'Pass' \n"
+                        + " ) \n")
+        public int getTotalCVs();
+
+        @Query(nativeQuery = true, value = "Select distinct p.name \n" +
+                        " from position p join cv_position cp on p.id = cp.position_id \n" +
+                        " join cv c on c.id = cp.cv_id \n" +
+                        " where c.id = ?1")
+        public List<String> getPositionAppliedById(int id);
 }

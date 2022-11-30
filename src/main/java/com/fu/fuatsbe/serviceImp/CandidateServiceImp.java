@@ -46,6 +46,19 @@ public class CandidateServiceImp implements CandidateService {
         if (pageResult.hasContent()) {
             for (Candidate candidate : pageResult.getContent()) {
                 CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
+
+                List<String> listPosition = candidateRepository.getPositionAppliedById(candidate.getId());
+                String positionApplied = "";
+                if (listPosition.size() > 0) {
+                    for (String positionName : listPosition) {
+                        positionApplied = positionApplied + ", " + positionName;
+                    }
+                    positionApplied = positionApplied.substring(1);
+                } else {
+                    positionApplied = "N/A";
+                }
+                candidateResponseDTO.setPositionApplied(positionApplied.trim());
+
                 list.add(candidateResponseDTO);
             }
             result.setResponseList(list);
@@ -61,6 +74,19 @@ public class CandidateServiceImp implements CandidateService {
         Candidate candidate = candidateRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
         CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
+
+        List<String> listPosition = candidateRepository.getPositionAppliedById(candidate.getId());
+        String positionApplied = "";
+        if (listPosition.size() > 0) {
+            for (String positionName : listPosition) {
+                positionApplied = positionApplied + ", " + positionName;
+            }
+            positionApplied = positionApplied.substring(1);
+        } else {
+            positionApplied = "N/A";
+        }
+        candidateResponseDTO.setPositionApplied(positionApplied.trim());
+
         return candidateResponseDTO;
 
     }
@@ -70,6 +96,19 @@ public class CandidateServiceImp implements CandidateService {
         Candidate candidate = candidateRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
         CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
+
+        List<String> listPosition = candidateRepository.getPositionAppliedById(candidate.getId());
+        String positionApplied = "";
+        if (listPosition.size() > 0) {
+            for (String positionName : listPosition) {
+                positionApplied = positionApplied + ", " + positionName;
+            }
+            positionApplied = positionApplied.substring(1);
+        } else {
+            positionApplied = "N/A";
+        }
+        candidateResponseDTO.setPositionApplied(positionApplied.trim());
+
         return candidateResponseDTO;
 
     }
@@ -79,6 +118,19 @@ public class CandidateServiceImp implements CandidateService {
         Candidate candidate = candidateRepository.findByPhone(phone)
                 .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
         CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
+
+        List<String> listPosition = candidateRepository.getPositionAppliedById(candidate.getId());
+        String positionApplied = "";
+        if (listPosition.size() > 0) {
+            for (String positionName : listPosition) {
+                positionApplied = positionApplied + ", " + positionName;
+            }
+            positionApplied = positionApplied.substring(1);
+        } else {
+            positionApplied = "N/A";
+        }
+        candidateResponseDTO.setPositionApplied(positionApplied.trim());
+
         return candidateResponseDTO;
     }
 
@@ -95,6 +147,19 @@ public class CandidateServiceImp implements CandidateService {
 
         Candidate candidateSaved = candidateRepository.save(candidate);
         CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidateSaved, CandidateResponseDTO.class);
+
+        List<String> listPosition = candidateRepository.getPositionAppliedById(candidate.getId());
+        String positionApplied = "";
+        if (listPosition.size() > 0) {
+            for (String positionName : listPosition) {
+                positionApplied = positionApplied + ", " + positionName;
+            }
+            positionApplied = positionApplied.substring(1);
+        } else {
+            positionApplied = "N/A";
+        }
+        candidateResponseDTO.setPositionApplied(positionApplied.trim());
+
         return candidateResponseDTO;
     }
 
@@ -126,6 +191,19 @@ public class CandidateServiceImp implements CandidateService {
         if (pageResult.hasContent()) {
             for (Candidate candidate : pageResult.getContent()) {
                 CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
+
+                List<String> listPosition = candidateRepository.getPositionAppliedById(candidate.getId());
+                String positionApplied = "";
+                if (listPosition.size() > 0) {
+                    for (String positionName : listPosition) {
+                        positionApplied = positionApplied + ", " + positionName;
+                    }
+                    positionApplied = positionApplied.substring(1);
+                } else {
+                    positionApplied = "N/A";
+                }
+                candidateResponseDTO.setPositionApplied(positionApplied.trim());
+
                 list.add(candidateResponseDTO);
             }
             result.setResponseList(list);
@@ -144,6 +222,19 @@ public class CandidateServiceImp implements CandidateService {
         if (pageResult.hasContent()) {
             for (Candidate candidate : pageResult.getContent()) {
                 CandidateResponseDTO candidateResponseDTO = modelMapper.map(candidate, CandidateResponseDTO.class);
+
+                List<String> listPosition = candidateRepository.getPositionAppliedById(candidate.getId());
+                String positionApplied = "";
+                if (listPosition.size() > 0) {
+                    for (String positionName : listPosition) {
+                        positionApplied = positionApplied + ", " + positionName;
+                    }
+                    positionApplied = positionApplied.substring(1);
+                } else {
+                    positionApplied = "N/A";
+                }
+                candidateResponseDTO.setPositionApplied(positionApplied.trim());
+
                 list.add(candidateResponseDTO);
             }
             result.setResponseList(list);

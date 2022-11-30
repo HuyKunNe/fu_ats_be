@@ -34,4 +34,10 @@ public interface CandidateRepository extends JpaRepository<Candidate, Integer> {
     @Query(nativeQuery = true, value = "select id, name from candidate where status like 'ACTIVATE'")
     List<Tuple> getAllAcitveCandidate();
 
+    @Query(nativeQuery = true, value = "Select distinct p.name \n" +
+            " from position p join cadidate_position cp on p.id = cp.position_id \n" +
+            " join candidate c on c.id = cp.cadidate_id \n" +
+            " where c.id = ?1")
+    public List<String> getPositionAppliedById(int id);
+
 }

@@ -51,6 +51,17 @@ public class CvServiceImp implements CVService {
         if (pageResult.hasContent()) {
             for (CV cv : pageResult.getContent()) {
                 CvResponse cvResponse = modelMapper.map(cv, CvResponse.class);
+                List<String> listPosition = cvRepository.getPositionAppliedById(cv.getId());
+                String positionApplied = "";
+                if (listPosition.size() > 0) {
+                    for (String positionName : listPosition) {
+                        positionApplied = positionApplied + ", " + positionName;
+                    }
+                    positionApplied = positionApplied.substring(1);
+                } else {
+                    positionApplied = "N/A";
+                }
+                cvResponse.setPositionApplied(positionApplied.trim());
                 list.add(cvResponse);
             }
             result.setResponseList(list);
@@ -77,6 +88,17 @@ public class CvServiceImp implements CVService {
         if (pageResult.hasContent()) {
             for (CV cv : pageResult.getContent()) {
                 CvResponse cvResponse = modelMapper.map(cv, CvResponse.class);
+                List<String> listPosition = cvRepository.getPositionAppliedById(cv.getId());
+                String positionApplied = "";
+                if (listPosition.size() > 0) {
+                    for (String positionName : listPosition) {
+                        positionApplied = positionApplied + ", " + positionName;
+                    }
+                    positionApplied = positionApplied.substring(1);
+                } else {
+                    positionApplied = "N/A";
+                }
+                cvResponse.setPositionApplied(positionApplied.trim());
                 list.add(cvResponse);
             }
             result.setResponseList(list);
@@ -115,6 +137,7 @@ public class CvServiceImp implements CVService {
         CV cvSaved = cvRepository.save(cv);
 
         CvResponse response = modelMapper.map(cvSaved, CvResponse.class);
+        response.setPositionApplied("N/A");
         return response;
     }
 
@@ -137,6 +160,17 @@ public class CvServiceImp implements CVService {
         CV cvSaved = cvRepository.save(cv);
 
         CvResponse response = modelMapper.map(cvSaved, CvResponse.class);
+        List<String> listPosition = cvRepository.getPositionAppliedById(cvSaved.getId());
+        String positionApplied = "";
+        if (listPosition.size() > 0) {
+            for (String positionName : listPosition) {
+                positionApplied = positionApplied + ", " + positionName;
+            }
+            positionApplied = positionApplied.substring(1);
+        } else {
+            positionApplied = "N/A";
+        }
+        response.setPositionApplied(positionApplied.trim());
         return response;
     }
 
@@ -153,6 +187,17 @@ public class CvServiceImp implements CVService {
         List<CvResponse> list = new ArrayList<>();
         for (CV cv : cvs) {
             CvResponse response = modelMapper.map(cv, CvResponse.class);
+            List<String> listPosition = cvRepository.getPositionAppliedById(cv.getId());
+            String positionApplied = "";
+            if (listPosition.size() > 0) {
+                for (String positionName : listPosition) {
+                    positionApplied = positionApplied + ", " + positionName;
+                }
+                positionApplied = positionApplied.substring(1);
+            } else {
+                positionApplied = "N/A";
+            }
+            response.setPositionApplied(positionApplied.trim());
             list.add(response);
         }
         return list;
@@ -168,6 +213,17 @@ public class CvServiceImp implements CVService {
         if (listCv.size() > 0) {
             for (CV cv : listCv) {
                 CvResponse cvResponse = modelMapper.map(cv, CvResponse.class);
+                List<String> listPosition = cvRepository.getPositionAppliedById(cv.getId());
+                String positionApplied = "";
+                if (listPosition.size() > 0) {
+                    for (String positionName : listPosition) {
+                        positionApplied = positionApplied + ", " + positionName;
+                    }
+                    positionApplied = positionApplied.substring(1);
+                } else {
+                    positionApplied = "N/A";
+                }
+                cvResponse.setPositionApplied(positionApplied.trim());
                 list.add(cvResponse);
             }
             result.setResponseList(list);
