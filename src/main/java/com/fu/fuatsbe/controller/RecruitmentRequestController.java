@@ -202,4 +202,18 @@ public class RecruitmentRequestController {
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @GetMapping("/getExpiryDateRecruitmentRequest")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getExpiryDateRecruitmentRequest(
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        ResponseDTO response = new ResponseDTO();
+        ResponseWithTotalPage responseWithTotalPages = recruitmentRequestService.getExpiryDateRecruitmentRequest(pageNo,
+                pageSize);
+        response.setData(responseWithTotalPages);
+        response.setMessage(RecruitmentRequestSuccessMessage.GET_EXPIRY_REQUEST_SUCCESS);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
 }

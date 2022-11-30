@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.repository;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -112,4 +113,5 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
                         " where r.status like 'OPENING' and current_date() <= r.expiry_date")
         List<Tuple> getAllActiveRequest();
 
+        Page<RecruitmentRequest> findByExpiryDateLessThanAndStatusNotLike(Date date, String status, Pageable pageable);
 }
