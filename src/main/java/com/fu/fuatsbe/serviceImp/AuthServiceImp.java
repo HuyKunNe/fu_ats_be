@@ -129,17 +129,18 @@ public class AuthServiceImp implements AuthService {
         Employee employee = Employee.builder().name(registerDto.getName()).employeeCode(registerDto.getEmployeeCode())
                 .image(registerDto.getImage())
                 .gender(registerDto.getGender())
-                .Dob(Date.valueOf(dob))
+                .dob(Date.valueOf(dob))
+                .jobLevel(registerDto.getJobLevel())
                 .status(EmployeeStatus.ACTIVATE)
                 .phone(registerDto.getPhone()).department(optionalDepartment.get()).address(registerDto.getAddress())
                 .position(optionalPosition.get())
                 .build();
-        Role role ;
+        Role role;
         if (optionalDepartment.get().getName().equals("Phòng điều hành")) {
-             role = roleRepository.findByName(RoleName.ROLE_ADMIN)
+            role = roleRepository.findByName(RoleName.ROLE_ADMIN)
                     .orElseThrow(() -> new NotFoundException(RoleErrorMessage.ROLE_NOT_EXIST));
         } else {
-             role = roleRepository.findByName(registerDto.getRole())
+            role = roleRepository.findByName(registerDto.getRole())
                     .orElseThrow(() -> new NotFoundException(RoleErrorMessage.ROLE_NOT_EXIST));
         }
         Account account = Account.builder()
@@ -158,8 +159,8 @@ public class AuthServiceImp implements AuthService {
 
     @Override
     public LoginResponseDto login(LoginDto loginDTO) {
-        Account account = accountRepository.findAccountByEmail(loginDTO.getEmail()).orElseThrow(() ->
-                new NotFoundException(AccountErrorMessage.ACCOUNT_NOT_FOUND));
+        Account account = accountRepository.findAccountByEmail(loginDTO.getEmail())
+                .orElseThrow(() -> new NotFoundException(AccountErrorMessage.ACCOUNT_NOT_FOUND));
         Authentication authentication = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(),
                 loginDTO.getPassword());
         LoginResponseDto loginResponseDTO = null;

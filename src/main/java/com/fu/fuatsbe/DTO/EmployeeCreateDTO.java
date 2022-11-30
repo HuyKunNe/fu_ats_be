@@ -25,6 +25,7 @@ public class EmployeeCreateDTO {
 
     @NotBlank(message = ValidationMessage.NAME_VALID_MESSAGE)
     private String name;
+    private String jobLevel;
     private String image;
     @NotBlank(message = ValidationMessage.EMPLOYEE_CODE_VALID_MESSAGE)
     private String employeeCode;

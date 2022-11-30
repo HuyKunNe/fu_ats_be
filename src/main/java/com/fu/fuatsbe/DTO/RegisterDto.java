@@ -3,7 +3,6 @@ package com.fu.fuatsbe.DTO;
 import com.fu.fuatsbe.constant.validation_message.ValidationMessage;
 import com.fu.fuatsbe.constant.validation_size.ValidationSize;
 
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -36,6 +35,7 @@ public class RegisterDto {
     private String name;
     @NotBlank(message = ValidationMessage.EMPLOYEE_CODE_VALID_MESSAGE)
     private String EmployeeCode;
+    private String jobLevel;
     @NotBlank(message = ValidationMessage.PHONE_NOT_EMPTY_VALID_MESSAGE)
     @Size(min = ValidationSize.PHONE_MIN, max = ValidationSize.PHONE_MAX, message = ValidationMessage.PHONE_SIZE_VALID_MESSAGE)
     private String phone;

@@ -42,7 +42,9 @@ public class Employee {
     private String employeeCode;
     private String image;
     private String gender;
-    private Date Dob;
+    private Date dob;
+    @Nationalized
+    private String jobLevel;
     private String phone;
     @Nationalized
     private String address;
