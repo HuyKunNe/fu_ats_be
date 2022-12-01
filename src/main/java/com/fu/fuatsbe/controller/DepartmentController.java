@@ -37,9 +37,10 @@ public class DepartmentController {
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getAllDepartments(
             @RequestParam(defaultValue = "0") int pageNo,
-            @RequestParam(defaultValue = "10") int pageSize) {
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "") String name) {
         ResponseDTO<ResponseWithTotalPage> response = new ResponseDTO();
-        ResponseWithTotalPage<DepartmentResponse> list = departmentService.getAllDepartments(pageNo, pageSize);
+        ResponseWithTotalPage<DepartmentResponse> list = departmentService.getAllDepartments(pageNo, pageSize, name);
         response.setData(list);
         response.setMessage(DepartmentSuccessMessage.GET_ALL_DEPARTMENT);
         response.setStatus(ResponseStatusDTO.SUCCESS);

@@ -19,6 +19,7 @@ public class EmployeeUpdateDTO {
 
     private String image;
     private String gender;
+    private String name;
     private Date Dob;
     private String phone;
     private String address;

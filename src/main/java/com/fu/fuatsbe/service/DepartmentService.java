@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface DepartmentService {
 
-    public ResponseWithTotalPage<DepartmentResponse> getAllDepartments(int pageNo, int pageSize);
+    public ResponseWithTotalPage<DepartmentResponse> getAllDepartments(int pageNo, int pageSize, String name);
 
     public DepartmentResponse getDepartmentById(int id);
 

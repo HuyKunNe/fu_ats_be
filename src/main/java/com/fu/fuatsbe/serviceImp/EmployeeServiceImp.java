@@ -119,6 +119,7 @@ public class EmployeeServiceImp implements EmployeeService {
         String dob = simpleDateFormat.format(updateDTO.getDob());
 
         employee.setDob(Date.valueOf(dob));
+        employee.setName(updateDTO.getName());
         employee.setPhone(updateDTO.getPhone());
         employee.setAddress(updateDTO.getAddress());
 

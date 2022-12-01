@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.controller;
 
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -60,25 +61,14 @@ public class AccountController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/getCandidateAccounts")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ListResponseDTO> getCandidateAccounts(@RequestParam(defaultValue = "0") int pageNo,
-                                                              @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<AccountResponse> responseDTO = new ListResponseDTO();
-        List<AccountResponse> list = accountService.getCandidateAccount(pageNo, pageSize);
-        responseDTO.setData(list);
-        responseDTO.setMessage(AccountSuccessMessage.GET_ALL_DISABLE_ACCOUNT_SUCCESS);
-        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
-        return ResponseEntity.ok().body(responseDTO);
-    }
-
     @GetMapping("/getEmployeeAccounts")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ListResponseDTO> getEmployeeAccounts(@RequestParam(defaultValue = "0") int pageNo,
-                                                              @RequestParam(defaultValue = "10") int pageSize) {
-        ListResponseDTO<AccountResponse> responseDTO = new ListResponseDTO();
-        List<AccountResponse> list = accountService.getEmployeeAccount(pageNo, pageSize);
-        responseDTO.setData(list);
+    public ResponseEntity<ResponseDTO> getEmployeeAccounts(@RequestParam(defaultValue = "0") int pageNo,
+                                                              @RequestParam(defaultValue = "10") int pageSize,
+                                                              @RequestParam(defaultValue = " ") String name) {
+        ResponseDTO responseDTO = new ResponseDTO<>();
+        ResponseWithTotalPage responseWithTotalPages = accountService.getEmployeeAccount(pageNo, pageSize, name);
+        responseDTO.setData(responseWithTotalPages);
         responseDTO.setMessage(AccountSuccessMessage.GET_ALL_DISABLE_ACCOUNT_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);

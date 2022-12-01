@@ -101,4 +101,14 @@ public class EmployeeController {
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+    @PutMapping ("/disable/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ResponseEntity<ResponseDTO> disableEmployee(@PathVariable("id") int id){
+        ResponseDTO responseDTO = new ResponseDTO<>();
+        responseDTO.setData(employeeService.deleteEmployeeById(id));
+        responseDTO.setMessage(EmployeeSuccessMessage.DISABLE_EMPLOYEE_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
 }

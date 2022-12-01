@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.repository;
 
+import javax.annotation.Nullable;
 import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
@@ -27,7 +28,7 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     @Query(nativeQuery = true, value = "select * from account where role_id = 3")
     Page<Account> getCandidateAccount(Pageable pageable);
 
-    @Query(nativeQuery = true, value = "select * from account where role_id != 3")
+    @Query(nativeQuery = true, value = "select * from account where role_id != 3 and status like 'ACTIVATE'")
     Page<Account> getEmployeeAccount(Pageable pageable);
 
 }

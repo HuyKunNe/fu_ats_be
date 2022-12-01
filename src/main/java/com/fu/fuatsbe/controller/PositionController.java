@@ -38,10 +38,11 @@ public class PositionController {
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getAllPositions(
             @RequestParam(defaultValue = "0") int pageNo,
-            @RequestParam(defaultValue = "10") int pageSize) {
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "") String name) {
 
         ResponseDTO<ResponseWithTotalPage> response = new ResponseDTO();
-        ResponseWithTotalPage<PositionResponse> list = positionService.getAllPositions(pageNo, pageSize);
+        ResponseWithTotalPage<PositionResponse> list = positionService.getAllPositions(pageNo, pageSize, name);
         response.setData(list);
         response.setMessage(PositionSuccessMessage.GET_ALL_POSITION_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);
@@ -85,9 +86,8 @@ public class PositionController {
     @DeleteMapping("/delete/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity<ResponseDTO> deletePosition(@RequestParam("id") int id) {
-        ResponseDTO<Boolean> responseDTO = new ResponseDTO();
-        Position position = positionService.deletePosition(id);
-        responseDTO.setData(true);
+        ResponseDTO responseDTO = new ResponseDTO();
+        positionService.deletePosition(id);
         responseDTO.setMessage(PositionSuccessMessage.DELETE_POSITION);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
@@ -107,9 +107,9 @@ public class PositionController {
     }
     @GetMapping("/getIdName")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> getPositionIdAndName() {
+    public ResponseEntity<ResponseDTO> getPositionIdAndName(@RequestParam String departmentName) {
         ResponseDTO response = new ResponseDTO();
-        response.setData(positionService.getPositionIdAndName());
+        response.setData(positionService.getPositionIdAndName(departmentName));
         response.setMessage(PositionSuccessMessage.GET_POSITION_ID_NAME);
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);

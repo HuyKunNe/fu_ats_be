@@ -2,6 +2,7 @@ package com.fu.fuatsbe.service;
 
 import java.util.List;
 import com.fu.fuatsbe.response.AccountResponse;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 
 public interface AccountService {
 
@@ -19,6 +20,5 @@ public interface AccountService {
 
     boolean deleteAccountById(int id);
 
-    List<AccountResponse> getCandidateAccount(int pageNo, int pageSize);
-    List<AccountResponse> getEmployeeAccount(int pageNo, int pageSize);
+    ResponseWithTotalPage getEmployeeAccount(int pageNo, int pageSize, String name);
 }

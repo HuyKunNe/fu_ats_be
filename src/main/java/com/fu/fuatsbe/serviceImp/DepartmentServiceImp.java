@@ -39,16 +39,18 @@ public class DepartmentServiceImp implements DepartmentService {
     private final ModelMapper modelMapper;
 
     @Override
-    public ResponseWithTotalPage<DepartmentResponse> getAllDepartments(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<DepartmentResponse> getAllDepartments(int pageNo, int pageSize, String name) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Department> pageResult = departmentRepository.findAll(pageable);
+        Page<Department> pageResult = departmentRepository.getAll(pageable);
 
         ResponseWithTotalPage<DepartmentResponse> result = new ResponseWithTotalPage<>();
         List<DepartmentResponse> list = new ArrayList<>();
         if (pageResult.hasContent()) {
             for (Department department : pageResult.getContent()) {
-                DepartmentResponse response = modelMapper.map(department, DepartmentResponse.class);
-                list.add(response);
+                if(department.getName().toLowerCase().contains(name.toLowerCase())){
+                    DepartmentResponse response = modelMapper.map(department, DepartmentResponse.class);
+                    list.add(response);
+                }
             }
             result.setResponseList(list);
             result.setTotalPage(pageResult.getTotalPages());
@@ -92,7 +94,6 @@ public class DepartmentServiceImp implements DepartmentService {
         department.setName(departmentUpdateDTO.getName());
         department.setRoom(departmentUpdateDTO.getRoom());
         department.setPhone(departmentUpdateDTO.getPhone());
-        department.setStatus(departmentUpdateDTO.getStatus());
         departmentRepository.save(department);
         DepartmentResponse response = modelMapper.map(department, DepartmentResponse.class);
         return response;

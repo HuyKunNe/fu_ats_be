@@ -10,7 +10,7 @@ import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import java.util.List;
 
 public interface PositionService {
-    public ResponseWithTotalPage<PositionResponse> getAllPositions(int pageNo, int pageSize);
+    public ResponseWithTotalPage<PositionResponse> getAllPositions(int pageNo, int pageSize, String search);
 
     public PositionResponse getPosionById(int id);
 
@@ -18,9 +18,9 @@ public interface PositionService {
 
     public PositionResponse updatePosition(int id, PositionUpdateDTO updateDTO);
 
-    public Position deletePosition(int id);
+    public void deletePosition(int id);
 
     public ResponseWithTotalPage<PositionResponse> getPositionByDepartment(int id, int pageNo, int pageSize);
-    List<IdAndNameResponse> getPositionIdAndName();
+    List<IdAndNameResponse> getPositionIdAndName(String departmentName);
 
 }

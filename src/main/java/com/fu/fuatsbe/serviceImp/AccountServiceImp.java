@@ -3,6 +3,8 @@ package com.fu.fuatsbe.serviceImp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fu.fuatsbe.response.DepartmentResponse;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -141,32 +143,22 @@ public class AccountServiceImp implements AccountService {
     }
 
     @Override
-    public List<AccountResponse> getCandidateAccount(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Account> pageResult = accountRepository.getCandidateAccount(pageable);
-        List<AccountResponse> result = new ArrayList<AccountResponse>();
-        if (pageResult.hasContent()) {
-            for (Account account : pageResult.getContent()) {
-                AccountResponse accountResponse = modelMapper.map(account, AccountResponse.class);
-                result.add(accountResponse);
-            }
-        } else
-            throw new ListEmptyException(AccountErrorMessage.LIST_ACCOUNT_IS_EMPTY);
-        return result;
-    }
-
-    @Override
-    public List<AccountResponse> getEmployeeAccount(int pageNo, int pageSize) {
+    public ResponseWithTotalPage getEmployeeAccount(int pageNo, int pageSize, String name) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Account> pageResult = accountRepository.getEmployeeAccount(pageable);
-        List<AccountResponse> result = new ArrayList<AccountResponse>();
+        ResponseWithTotalPage response = new ResponseWithTotalPage();
+        List<AccountResponse> list = new ArrayList<>();
         if (pageResult.hasContent()) {
             for (Account account : pageResult.getContent()) {
-                AccountResponse accountResponse = modelMapper.map(account, AccountResponse.class);
-                result.add(accountResponse);
+                if(account.getEmployee().getName().toLowerCase().contains(name.toLowerCase())){
+                    AccountResponse accountResponse = modelMapper.map(account, AccountResponse.class);
+                    list.add(accountResponse);
+                }
             }
+            response.setTotalPage(pageResult.getTotalPages());
+            response.setResponseList(list);
         } else
             throw new ListEmptyException(AccountErrorMessage.LIST_ACCOUNT_IS_EMPTY);
-        return result;
+        return response;
     }
 }

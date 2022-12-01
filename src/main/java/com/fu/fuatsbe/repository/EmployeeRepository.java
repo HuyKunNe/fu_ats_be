@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.persistence.Tuple;
 import javax.transaction.Transactional;
 
+import com.fu.fuatsbe.entity.Position;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,8 +27,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     public Optional<Employee> findByPhone(String phone);
 
-    // public Page<Employee> findByPositionAndStatus(Position position, String
-    // status, Pageable pageable);
+    List<Employee> findByPositionAndStatus(Position position, String status);
 
     public Page<Employee> findByDepartment(Department department, Pageable pageable);
 

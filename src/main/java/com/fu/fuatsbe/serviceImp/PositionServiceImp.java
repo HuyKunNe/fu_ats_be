@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.fu.fuatsbe.constant.employee.EmployeeStatus;
+import com.fu.fuatsbe.entity.Employee;
+import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.response.IdAndNameResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -39,9 +42,10 @@ public class PositionServiceImp implements PositionService {
     private final ModelMapper modelMapper;
     private final PositionRepository positionRepository;
     private final DepartmentRepository departmentRepository;
+    private final EmployeeRepository employeeRepository;
 
     @Override
-    public ResponseWithTotalPage<PositionResponse> getAllPositions(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<PositionResponse> getAllPositions(int pageNo, int pageSize, String search) {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Position> pageResult = positionRepository.findAll(pageable);
@@ -49,8 +53,12 @@ public class PositionServiceImp implements PositionService {
         ResponseWithTotalPage<PositionResponse> result = new ResponseWithTotalPage<>();
         if (pageResult.hasContent()) {
             for (Position position : pageResult.getContent()) {
-                PositionResponse response = modelMapper.map(position, PositionResponse.class);
-                list.add(response);
+                if(position.getName().toLowerCase().contains(search.toLowerCase())){
+                    int total = positionRepository.countUsedPosition(position.getId());
+                    PositionResponse response = modelMapper.map(position, PositionResponse.class);
+                    response.setNumberUsePosition(total);
+                    list.add(response);
+                }
             }
             result.setResponseList(list);
             result.setTotalPage(pageResult.getTotalPages());
@@ -100,21 +108,13 @@ public class PositionServiceImp implements PositionService {
     }
 
     @Override
-    public Position deletePosition(int id) {
-        // Position position = positionRepository.findById(id)
-        // .orElseThrow(() -> new
-        // NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
-        //
-        // Pageable pageable = PageRequest.of(0, 1);
-        // Page<Employee> list = employeeRepository.findByPositionAndStatus(position,
-        // EmployeeStatus.ACTIVATE, pageable);
-        // if (list == null) {
-        // position.setStatus(PositionStatus.DISABLE);
-        // Position positionSaved = positionRepository.save(position);
-        // return positionSaved;
-        // } else
-        // throw new NotValidException("There is still employees in this position");
-        return null;
+    public void deletePosition(int id) {
+         Position position = positionRepository.findById(id)
+         .orElseThrow(() -> new
+         NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
+
+         position.setStatus(PositionStatus.DISABLE);
+         positionRepository.save(position);
     }
 
     @Override
@@ -139,8 +139,10 @@ public class PositionServiceImp implements PositionService {
     }
 
     @Override
-    public List<IdAndNameResponse> getPositionIdAndName() {
-        List<Tuple> tupleList = positionRepository.getPositionIdAndName();
+    public List<IdAndNameResponse> getPositionIdAndName(String departmentName) {
+        Department department = departmentRepository.findDepartmentByName(departmentName).orElseThrow(()
+        -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
+        List<Tuple> tupleList = positionRepository.getPositionIdAndName(department.getId());
         if (tupleList.size() <= 0 ){
             throw new NotFoundException(PositionErrorMessage.LIST_POSITION_EMPTY);
         }

@@ -25,4 +25,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
     Optional<Department> findDepartmentByName(String name);
     @Query(nativeQuery = true, value = "select id, name from department")
     List<Tuple> getIdAndNameDepartment();
+
+    @Query(nativeQuery = true,value = "select * from department where status like 'ACTIVATE'")
+    Page<Department> getAll(Pageable pageable);
 }
