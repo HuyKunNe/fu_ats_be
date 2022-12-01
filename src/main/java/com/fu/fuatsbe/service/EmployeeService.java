@@ -22,6 +22,7 @@ public interface EmployeeService {
     public EmployeeResponse updateEmployee(int id, EmployeeUpdateDTO updateDTO);
 
     public Employee deleteEmployeeById(int id);
+    Employee activeEmployeeById(int id);
     List<IdAndNameResponse> getIdAndNameEmployeeByRequest(int requestId);
 
 }

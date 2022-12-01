@@ -7,4 +7,6 @@ public interface EmailService {
     public void sendEmailToGetBackPassword(String email) throws MessagingException;
     public void confirm(String email, String token);
     public void resetPassword(String email, String token, String password);
+
+    void sendEmailToInviteReapply(String email, String candidateName, String JobName)throws MessagingException;
 }

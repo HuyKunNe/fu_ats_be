@@ -145,6 +145,19 @@ public class EmployeeServiceImp implements EmployeeService {
     }
 
     @Override
+    public Employee activeEmployeeById(int id) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+        if (employee.getAccount() != null) {
+            employee.getAccount().setStatus(AccountStatus.ACTIVATED);
+            employee.setStatus(EmployeeStatus.ACTIVATE);
+            Employee employeeSaved = employeeRepository.save(employee);
+            return employeeSaved;
+        }
+        return null;
+    }
+
+    @Override
     public List<IdAndNameResponse> getIdAndNameEmployeeByRequest(int requestId) {
         recruitmentRequestRepository.findById(requestId).orElseThrow(
                 () -> new NotFoundException(RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));

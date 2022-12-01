@@ -22,5 +22,6 @@ public interface DepartmentService {
     public Department createDepartment(DepartmentCreateDTO departmentCreateDTO);
 
     public boolean deleteDepartmentById(int id);
+     boolean activeDepartmentById(int id);
     List<IdAndNameResponse> getDepartmentName();
 }

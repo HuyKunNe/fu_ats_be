@@ -69,7 +69,7 @@ public class AccountController {
         ResponseDTO responseDTO = new ResponseDTO<>();
         ResponseWithTotalPage responseWithTotalPages = accountService.getEmployeeAccount(pageNo, pageSize, name);
         responseDTO.setData(responseWithTotalPages);
-        responseDTO.setMessage(AccountSuccessMessage.GET_ALL_DISABLE_ACCOUNT_SUCCESS);
+        responseDTO.setMessage(AccountSuccessMessage.GET_ALL_ACCOUNT_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }

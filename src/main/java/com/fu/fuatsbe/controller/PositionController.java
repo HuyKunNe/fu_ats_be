@@ -3,15 +3,7 @@ package com.fu.fuatsbe.controller;
 import com.fu.fuatsbe.constant.department.DepartmentSuccessMessage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.fu.fuatsbe.DTO.PositionCreateDTO;
 import com.fu.fuatsbe.DTO.PositionUpdateDTO;
@@ -89,6 +81,15 @@ public class PositionController {
         ResponseDTO responseDTO = new ResponseDTO();
         positionService.deletePosition(id);
         responseDTO.setMessage(PositionSuccessMessage.DELETE_POSITION);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @PatchMapping("/active/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ResponseEntity<ResponseDTO> activePosition(@RequestParam("id") int id) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        positionService.activePosition(id);
+        responseDTO.setMessage(PositionSuccessMessage.ACTIVE_POSITION);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }

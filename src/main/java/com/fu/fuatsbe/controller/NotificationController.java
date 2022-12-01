@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.controller;
 
+import com.fu.fuatsbe.DTO.InviteReapplyDTO;
 import com.fu.fuatsbe.DTO.NotificationCreateDTO;
 import com.fu.fuatsbe.constant.notification.NotificationSuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
@@ -7,6 +8,7 @@ import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.entity.Notification;
 import com.fu.fuatsbe.response.ResponseDTO;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
+import com.fu.fuatsbe.service.EmailService;
 import com.fu.fuatsbe.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ import javax.mail.MessagingException;
 @RequiredArgsConstructor
 public class NotificationController {
     private final NotificationService notificationService;
+    private final EmailService emailService;
 
     @PostMapping("/createNotification")
     public ResponseEntity<ResponseDTO> createNotification(@RequestBody NotificationCreateDTO notificationCreateDTO)
@@ -61,5 +64,13 @@ public class NotificationController {
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
-
+    @PostMapping("/inviteReapply")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> inviteReapplyJob(InviteReapplyDTO inviteReapplyDTO) throws MessagingException {
+        ResponseDTO responseDTO = new ResponseDTO();
+        emailService.sendEmailToInviteReapply(inviteReapplyDTO.getEmail(), inviteReapplyDTO.getCandidateName(), inviteReapplyDTO.getJobName());
+        responseDTO.setMessage(NotificationSuccessMessage.INVITE_MAIL_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }

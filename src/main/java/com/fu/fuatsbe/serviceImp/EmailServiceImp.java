@@ -89,4 +89,19 @@ public class EmailServiceImp implements EmailService {
         account.setPassword(passwordEncoder.encode(password));
         accountRepository.save(account);
     }
+
+    @Override
+    public void sendEmailToInviteReapply(String email, String candidateName, String jobName) throws MessagingException {
+    String content = "Thân gửi "+candidateName +",\n" +"Chúng tôi hiện có một công việc phù hợp với vị trí và chuyên môn của bạn \n"
+            +"Tên công việc là: "+jobName +"\n" +"Nếu bạn có ý định tìm kiếm một cơ hội thì hãy liên lạc với chúng tôi thông qua email này. \n"
+            +"Trân trọng, \n ATS Recruitment.";
+        if(email != null){
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
+            mimeMessageHelper.setTo(email);
+            mimeMessageHelper.setSubject("Thư giới thiệu công việc");
+            mimeMessageHelper.setText(content);
+            javaMailSender.send(mimeMessage);
+        }
+    }
 }

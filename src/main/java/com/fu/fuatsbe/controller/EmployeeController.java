@@ -110,5 +110,14 @@ public class EmployeeController {
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+    @PatchMapping ("/active/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ResponseEntity<ResponseDTO> activeEmployee(@PathVariable("id") int id){
+        ResponseDTO responseDTO = new ResponseDTO<>();
+        responseDTO.setData(employeeService.activeEmployeeById(id));
+        responseDTO.setMessage(EmployeeSuccessMessage.ACTIVE_EMPLOYEE_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 
 }

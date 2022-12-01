@@ -18,6 +18,7 @@ public interface PositionService {
     public PositionResponse updatePosition(int id, PositionUpdateDTO updateDTO);
 
     public void deletePosition(int id);
+    void activePosition(int id);
 
     public ResponseWithTotalPage<PositionResponse> getPositionByDepartment(int id, int pageNo, int pageSize);
     List<IdAndNameResponse> getPositionIdAndName(String departmentName);

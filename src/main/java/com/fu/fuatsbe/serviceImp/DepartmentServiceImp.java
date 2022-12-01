@@ -127,6 +127,17 @@ public class DepartmentServiceImp implements DepartmentService {
             throw new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION);
         return true;
     }
+    @Override
+    public boolean activeDepartmentById(int id) {
+        Department department = departmentRepository.findById(id).orElseThrow(() -> new NotFoundException(
+                DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
+        if (department != null) {
+            department.setStatus(DepartmentStatus.DEPARTMENT_ACTIVE);
+            departmentRepository.save(department);
+        } else
+            throw new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION);
+        return true;
+    }
 
     @Override
     public List<IdAndNameResponse> getDepartmentName() {

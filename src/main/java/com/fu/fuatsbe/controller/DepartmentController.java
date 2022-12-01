@@ -2,15 +2,7 @@ package com.fu.fuatsbe.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.fu.fuatsbe.DTO.DepartmentCreateDTO;
 import com.fu.fuatsbe.DTO.DepartmentUpdateDTO;
@@ -88,7 +80,7 @@ public class DepartmentController {
         ResponseDTO<DepartmentResponse> responseDTO = new ResponseDTO();
         DepartmentResponse department = departmentService.updateDepartment(id, updateDTO);
         responseDTO.setData(department);
-        responseDTO.setMessage("Update department successfully");
+        responseDTO.setMessage(DepartmentSuccessMessage.UPDATE_DEPARTMENT_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
@@ -100,7 +92,7 @@ public class DepartmentController {
         ResponseDTO<Department> responseDTO = new ResponseDTO();
         Department department = departmentService.createDepartment(createDTO);
         responseDTO.setData(department);
-        responseDTO.setMessage("Create department successfully");
+        responseDTO.setMessage(DepartmentSuccessMessage.CREATE_DEPARTMENT_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
@@ -110,7 +102,16 @@ public class DepartmentController {
     public ResponseEntity deleteDepartmnetById(@RequestParam("id") int id) {
         ResponseDTO<Department> responseDTO = new ResponseDTO();
         departmentService.deleteDepartmentById(id);
-        responseDTO.setMessage("delete department successfully");
+        responseDTO.setMessage(DepartmentSuccessMessage.DELETE_DEPARTMENT_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @PatchMapping("/active/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ResponseEntity activeDepartmnetById(@RequestParam("id") int id) {
+        ResponseDTO<Department> responseDTO = new ResponseDTO();
+        departmentService.activeDepartmentById(id);
+        responseDTO.setMessage(DepartmentSuccessMessage.ACTIVE_DEPARTMENT_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }

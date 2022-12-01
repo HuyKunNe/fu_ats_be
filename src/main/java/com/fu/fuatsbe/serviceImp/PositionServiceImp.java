@@ -116,6 +116,15 @@ public class PositionServiceImp implements PositionService {
          position.setStatus(PositionStatus.DISABLE);
          positionRepository.save(position);
     }
+    @Override
+    public void activePosition(int id) {
+         Position position = positionRepository.findById(id)
+         .orElseThrow(() -> new
+         NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
+
+         position.setStatus(PositionStatus.ACTIVATE);
+         positionRepository.save(position);
+    }
 
     @Override
     public ResponseWithTotalPage<PositionResponse> getPositionByDepartment(int id, int pageNo, int pageSize) {
