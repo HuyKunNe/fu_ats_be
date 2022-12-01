@@ -50,5 +50,5 @@ public interface RecruitmentRequestService {
 
         public List<RecruitmentRequestResponse> getExpiryDateRecruitmentRequest();
 
-        public boolean closeListRecruitmentRequest(List<Integer> listId);
+        public boolean closeListRecruitmentRequest(ListRequestClose listId);
 }

@@ -232,7 +232,7 @@ public class RecruitmentRequestController {
     @PutMapping("/closeListRequest")
     @PermitAll
     public ResponseEntity<ResponseDTO> closeListRequest(
-            @RequestBody List<Integer> listId) {
+            @RequestBody ListRequestClose listId) {
         ResponseDTO<String> response = new ResponseDTO();
         boolean data = recruitmentRequestService.closeListRecruitmentRequest(listId);
         String result = data ? "true" : "false";
