@@ -12,6 +12,7 @@ import com.fu.fuatsbe.entity.Account;
 import com.fu.fuatsbe.entity.VerificationToken;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,6 +34,9 @@ public class EmailServiceImp implements EmailService {
     private final VerificationTokenService verificationTokenService;
     private final JavaMailSender javaMailSender;
     private final PasswordEncoder passwordEncoder;
+
+    @Value("${ats.forgot-password}")
+    private String forgotPasswordLink;
 
     private Timestamp calculateExpiryTime(int expiryTimeInMinutes){
         Calendar cal = Calendar.getInstance();
@@ -60,7 +64,7 @@ public class EmailServiceImp implements EmailService {
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
         mimeMessageHelper.setTo(account.getEmail());
         mimeMessageHelper.setSubject("Reset password from ATS");
-        mimeMessageHelper.setText("Lấy lại mật khẩu thành công, vui lòng nhấn đường link bên dưới để đặt lại mật khẩu  \n"+"http://localhost:3000/#/reset-password/"
+        mimeMessageHelper.setText("Lấy lại mật khẩu thành công, vui lòng nhấn đường link bên dưới để đặt lại mật khẩu  \n"+forgotPasswordLink
                 +account.getEmail()+"/"
                 +token
                 +"\nChúc bạn một ngày làm việc tốt lành, \n" +
