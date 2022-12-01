@@ -236,4 +236,27 @@ public class CvServiceImp implements CVService {
         }
         return result;
     }
+
+    @Override
+    public List<CvResponse> getCvForRequest(String postionName) {
+
+        List<CV> cvs = cvRepository.getCvForRequest(postionName);
+        List<CvResponse> list = new ArrayList<>();
+        for (CV cv : cvs) {
+            CvResponse response = modelMapper.map(cv, CvResponse.class);
+            List<String> listPosition = cvRepository.getPositionAppliedById(cv.getId());
+            String positionApplied = "";
+            if (listPosition.size() > 0) {
+                for (String positionName : listPosition) {
+                    positionApplied = positionApplied + ", " + positionName;
+                }
+                positionApplied = positionApplied.substring(1);
+            } else {
+                positionApplied = "N/A";
+            }
+            response.setPositionApplied(positionApplied.trim());
+            list.add(response);
+        }
+        return list;
+    }
 }

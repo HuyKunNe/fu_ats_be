@@ -26,4 +26,6 @@ public interface CVService {
 
     public ResponseWithTotalPage<CvResponse> getCvStore(int pageNo, int pageSize);
 
+    public List<CvResponse> getCvForRequest(String postionName);
+
 }

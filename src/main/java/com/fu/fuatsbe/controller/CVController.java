@@ -1,6 +1,9 @@
 package com.fu.fuatsbe.controller;
 
 import com.fu.fuatsbe.constant.cv.CVErrorMessage;
+
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,6 +23,7 @@ import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.entity.CV;
 import com.fu.fuatsbe.response.CvResponse;
+import com.fu.fuatsbe.response.ListResponseDTO;
 import com.fu.fuatsbe.response.ResponseDTO;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.CVService;
@@ -115,6 +119,17 @@ public class CVController {
             @RequestParam(defaultValue = "10") int pageSize) {
         ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
         ResponseWithTotalPage<CvResponse> list = cvService.getCvStore(pageNo, pageSize);
+        responseDTO.setData(list);
+        responseDTO.setMessage(CVSuccessMessage.GET_ALL_CVS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/getCVForRequest")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ListResponseDTO> getCVForRequest(@RequestParam String positionName) {
+        ListResponseDTO<CvResponse> responseDTO = new ListResponseDTO();
+        List<CvResponse> list = cvService.getCvForRequest(positionName);
         responseDTO.setData(list);
         responseDTO.setMessage(CVSuccessMessage.GET_ALL_CVS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
