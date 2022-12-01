@@ -25,10 +25,8 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     public Page<Account> findByRole(Role role, Pageable pageable);
 
     public Page<Account> findByStatus(String status, Pageable pageable);
-    @Query(nativeQuery = true, value = "select * from account where role_id = 3")
-    Page<Account> getCandidateAccount(Pageable pageable);
 
-    @Query(nativeQuery = true, value = "select * from account where role_id != 3 and status like 'ACTIVATE'")
+    @Query(nativeQuery = true, value = "select * from account where role_id != 3")
     Page<Account> getEmployeeAccount(Pageable pageable);
 
 }
