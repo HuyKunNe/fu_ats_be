@@ -119,5 +119,14 @@ public class EmployeeController {
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+    @GetMapping("/countTotal")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> countTotal(){
+        ResponseDTO response = new ResponseDTO();
+        response.setData(employeeService.countTotal());
+        response.setMessage(EmployeeSuccessMessage.COUNT_EMPLOYEE_SUCCESS);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
 
 }

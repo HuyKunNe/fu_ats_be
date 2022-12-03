@@ -41,7 +41,7 @@ public class DepartmentServiceImp implements DepartmentService {
     @Override
     public ResponseWithTotalPage<DepartmentResponse> getAllDepartments(int pageNo, int pageSize, String name) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Department> pageResult = departmentRepository.getAll(pageable);
+        Page<Department> pageResult = departmentRepository.findAll(pageable);
 
         ResponseWithTotalPage<DepartmentResponse> result = new ResponseWithTotalPage<>();
         List<DepartmentResponse> list = new ArrayList<>();
@@ -155,4 +155,5 @@ public class DepartmentServiceImp implements DepartmentService {
         }
         return responseList;
     }
+
 }

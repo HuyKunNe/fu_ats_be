@@ -28,4 +28,6 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
 
     @Query(nativeQuery = true,value = "select * from department where status like 'ACTIVATE'")
     Page<Department> getAll(Pageable pageable);
+    @Query(nativeQuery = true, value = "select count(id) as total from department")
+    int countTotal();
 }

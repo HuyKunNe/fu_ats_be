@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.service;
 
+import com.fu.fuatsbe.DTO.CountTotalDTO;
 import com.fu.fuatsbe.DTO.EmployeeUpdateDTO;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.response.EmployeeResponse;
@@ -24,5 +25,6 @@ public interface EmployeeService {
     public Employee deleteEmployeeById(int id);
     Employee activeEmployeeById(int id);
     List<IdAndNameResponse> getIdAndNameEmployeeByRequest(int requestId);
+    CountTotalDTO countTotal();
 
 }

@@ -10,6 +10,6 @@ import lombok.*;
 @Builder
 public class InviteReapplyDTO {
     private String email;
-    private String candidateName;
-    private String jobName;
+    private String title;
+    private String content;
 }

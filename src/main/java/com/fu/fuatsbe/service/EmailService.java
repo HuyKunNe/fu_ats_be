@@ -1,5 +1,7 @@
 package com.fu.fuatsbe.service;
 
+import com.fu.fuatsbe.DTO.InviteReapplyDTO;
+
 import javax.mail.MessagingException;
 
 public interface EmailService {
@@ -8,5 +10,5 @@ public interface EmailService {
     public void confirm(String email, String token);
     public void resetPassword(String email, String token, String password);
 
-    void sendEmailToInviteReapply(String email, String candidateName, String JobName)throws MessagingException;
+    void sendEmailToInviteReapply(InviteReapplyDTO inviteReapplyDTO)throws MessagingException;
 }

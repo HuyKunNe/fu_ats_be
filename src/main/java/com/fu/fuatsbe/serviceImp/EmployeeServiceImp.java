@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.persistence.Tuple;
 
+import com.fu.fuatsbe.DTO.CountTotalDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -171,5 +172,16 @@ public class EmployeeServiceImp implements EmployeeService {
             responses.add(response);
         }
         return responses;
+    }
+
+    @Override
+    public CountTotalDTO countTotal() {
+        Tuple tuple = employeeRepository.countTotal();
+        CountTotalDTO count = CountTotalDTO.builder()
+                .totalEmployee(Integer.parseInt(tuple.get("totalEmp").toString()))
+                .totalDepartment(Integer.parseInt(tuple.get("totalDep").toString()))
+                .totalPosition(Integer.parseInt(tuple.get("totalPos").toString()))
+                .build();
+        return count;
     }
 }

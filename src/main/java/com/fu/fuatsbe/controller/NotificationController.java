@@ -66,9 +66,9 @@ public class NotificationController {
     }
     @PostMapping("/inviteReapply")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> inviteReapplyJob(InviteReapplyDTO inviteReapplyDTO) throws MessagingException {
+    public ResponseEntity<ResponseDTO> inviteReapplyJob(@RequestBody InviteReapplyDTO inviteReapplyDTO) throws MessagingException {
         ResponseDTO responseDTO = new ResponseDTO();
-        emailService.sendEmailToInviteReapply(inviteReapplyDTO.getEmail(), inviteReapplyDTO.getCandidateName(), inviteReapplyDTO.getJobName());
+        emailService.sendEmailToInviteReapply(inviteReapplyDTO);
         responseDTO.setMessage(NotificationSuccessMessage.INVITE_MAIL_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
