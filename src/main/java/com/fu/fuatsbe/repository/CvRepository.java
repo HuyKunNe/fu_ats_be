@@ -34,9 +34,9 @@ public interface CvRepository extends JpaRepository<CV, Integer> {
                         + "         join interview_detail on interview.id = interview_detail.interview_id \n"
                         + "     where interview_detail.result like 'Pass' \n"
                         + " ) \n"
-                        + " order by id desc \n"
-                        + " limit ?1 offset ?2")
-        public List<CV> getCVs(int pageSize, int pageNo);
+                        + " order by id desc \n")
+        // + " limit ?1 offset ?2")
+        public List<CV> getCVs();
 
         @Query(nativeQuery = true, value = "select count(id) from cv \n"
                         + " where cv.id not in \n (select cv.id \n"

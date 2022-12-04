@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.fu.fuatsbe.constant.employee.EmployeeStatus;
-import com.fu.fuatsbe.entity.Employee;
-import com.fu.fuatsbe.repository.EmployeeRepository;
-import com.fu.fuatsbe.response.IdAndNameResponse;
+import javax.persistence.Tuple;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,13 +25,12 @@ import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.exceptions.NotValidException;
 import com.fu.fuatsbe.repository.DepartmentRepository;
 import com.fu.fuatsbe.repository.PositionRepository;
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import com.fu.fuatsbe.response.PositionResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.PositionService;
 
 import lombok.RequiredArgsConstructor;
-
-import javax.persistence.Tuple;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +39,6 @@ public class PositionServiceImp implements PositionService {
     private final ModelMapper modelMapper;
     private final PositionRepository positionRepository;
     private final DepartmentRepository departmentRepository;
-    private final EmployeeRepository employeeRepository;
 
     @Override
     public ResponseWithTotalPage<PositionResponse> getAllPositions(int pageNo, int pageSize, String search) {
@@ -53,7 +49,7 @@ public class PositionServiceImp implements PositionService {
         ResponseWithTotalPage<PositionResponse> result = new ResponseWithTotalPage<>();
         if (pageResult.hasContent()) {
             for (Position position : pageResult.getContent()) {
-                if(position.getName().toLowerCase().contains(search.toLowerCase())){
+                if (position.getName().toLowerCase().contains(search.toLowerCase())) {
                     int total = positionRepository.countUsedPosition(position.getId());
                     PositionResponse response = modelMapper.map(position, PositionResponse.class);
                     response.setNumberUsePosition(total);
@@ -109,21 +105,20 @@ public class PositionServiceImp implements PositionService {
 
     @Override
     public void deletePosition(int id) {
-         Position position = positionRepository.findById(id)
-         .orElseThrow(() -> new
-         NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
+        Position position = positionRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
 
-         position.setStatus(PositionStatus.DISABLE);
-         positionRepository.save(position);
+        position.setStatus(PositionStatus.DISABLE);
+        positionRepository.save(position);
     }
+
     @Override
     public void activePosition(int id) {
-         Position position = positionRepository.findById(id)
-         .orElseThrow(() -> new
-         NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
+        Position position = positionRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
 
-         position.setStatus(PositionStatus.ACTIVATE);
-         positionRepository.save(position);
+        position.setStatus(PositionStatus.ACTIVATE);
+        positionRepository.save(position);
     }
 
     @Override
@@ -149,14 +144,14 @@ public class PositionServiceImp implements PositionService {
 
     @Override
     public List<IdAndNameResponse> getPositionIdAndName(String departmentName) {
-        Department department = departmentRepository.findDepartmentByName(departmentName).orElseThrow(()
-        -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
+        Department department = departmentRepository.findDepartmentByName(departmentName)
+                .orElseThrow(() -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
         List<Tuple> tupleList = positionRepository.getPositionIdAndName(department.getId());
-        if (tupleList.size() <= 0 ){
+        if (tupleList.size() <= 0) {
             throw new NotFoundException(PositionErrorMessage.LIST_POSITION_EMPTY);
         }
         List<IdAndNameResponse> responseList = new ArrayList<>();
-        for (Tuple tuple: tupleList) {
+        for (Tuple tuple : tupleList) {
             IdAndNameResponse response = IdAndNameResponse.builder()
                     .id(Integer.parseInt(tuple.get("id").toString()))
                     .name(tuple.get("name").toString())

@@ -114,11 +114,9 @@ public class CVController {
 
     @GetMapping("/getCvStorage")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> getCvStorage(
-            @RequestParam(defaultValue = "0") int pageNo,
-            @RequestParam(defaultValue = "10") int pageSize) {
-        ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
-        ResponseWithTotalPage<CvResponse> list = cvService.getCvStore(pageNo, pageSize);
+    public ResponseEntity<ListResponseDTO> getCvStorage() {
+        ListResponseDTO<CvResponse> responseDTO = new ListResponseDTO();
+        List<CvResponse> list = cvService.getCvStore();
         responseDTO.setData(list);
         responseDTO.setMessage(CVSuccessMessage.GET_ALL_CVS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);

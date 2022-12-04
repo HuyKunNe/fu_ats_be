@@ -204,11 +204,9 @@ public class CvServiceImp implements CVService {
     }
 
     @Override
-    public ResponseWithTotalPage<CvResponse> getCvStore(int pageNo, int pageSize) {
-        ResponseWithTotalPage<CvResponse> result = new ResponseWithTotalPage<>();
-        List<CvResponse> list = new ArrayList<>();
-        pageNo *= pageSize;
-        List<CV> listCv = cvRepository.getCVs(pageSize, pageNo);
+    public List<CvResponse> getCvStore() {
+        List<CvResponse> response = new ArrayList<>();
+        List<CV> listCv = cvRepository.getCVs();
 
         if (listCv.size() > 0) {
             for (CV cv : listCv) {
@@ -224,17 +222,12 @@ public class CvServiceImp implements CVService {
                     positionApplied = "N/A";
                 }
                 cvResponse.setPositionApplied(positionApplied.trim());
-                list.add(cvResponse);
+                response.add(cvResponse);
             }
-            result.setResponseList(list);
-
-            int totalElements = cvRepository.getTotalCVs();
-            int totalPage = (totalElements / pageSize) + ((totalElements % pageSize == 0) ? 0 : 1);
-            result.setTotalPage(totalPage);
         } else {
             throw new ListEmptyException(CVErrorMessage.LIST_EMPTY);
         }
-        return result;
+        return response;
     }
 
     @Override

@@ -24,7 +24,7 @@ public interface CVService {
 
     public List<CvResponse> getRejectedCv();
 
-    public ResponseWithTotalPage<CvResponse> getCvStore(int pageNo, int pageSize);
+    public List<CvResponse> getCvStore();
 
     public List<CvResponse> getCvForRequest(String postionName);
 
