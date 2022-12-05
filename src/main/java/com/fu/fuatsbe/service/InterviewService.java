@@ -28,10 +28,10 @@ public interface InterviewService {
 
     void cancelInterview(CancelInterviewDTO cancelInterviewDTO) throws MessagingException;
 
-    void confirmJoinInterviewByEmployee(int idInterview, int idEmployee);
+    void confirmJoinInterviewByEmployee(int idInterview, int idEmployee) throws MessagingException;
 
     void rejectJoinInterviewByEmployee(int idInterview, int idEmployee);
-    void confirmInterviewByManager(int idInterview);
+    void confirmInterviewByManager(int idInterview) throws MessagingException;
 
 
     void confirmJoinInterviewByCandidate(int idInterview, int idCandidate);

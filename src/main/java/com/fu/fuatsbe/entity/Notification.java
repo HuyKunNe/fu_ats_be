@@ -40,6 +40,8 @@ public class Notification {
     private String content;
     private Date createTime;
     private String status;
+    private String type;
+    private boolean isMailSendCandidate;
 
 
     @ManyToMany

@@ -23,6 +23,7 @@ public class InterviewEmployee {
     @Column(length = 36)
     private String id;
     private String confirmStatus;
+    private boolean isMailSend;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)

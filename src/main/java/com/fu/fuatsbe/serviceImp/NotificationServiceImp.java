@@ -6,6 +6,7 @@ import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.notification.NotificationErrorMessage;
 import com.fu.fuatsbe.constant.notification.NotificationStatus;
+import com.fu.fuatsbe.constant.notification.NotificationType;
 import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.Notification;
@@ -30,6 +31,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -39,12 +42,14 @@ import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@EnableScheduling
 public class NotificationServiceImp implements NotificationService {
     private final EmployeeRepository employeeRepository;
     private final CandidateRepository candidateRepository;
@@ -135,9 +140,9 @@ public class NotificationServiceImp implements NotificationService {
         }
         String interviewAddress = "";
         if (!sendNotificationDTO.getLink().isEmpty()) {
-            interviewAddress = sendNotificationDTO.getLink();
+            interviewAddress = "Link meeting: " + sendNotificationDTO.getLink();
         } else {
-            interviewAddress = "Phòng " + sendNotificationDTO.getRoom() + ", " + sendNotificationDTO.getAddress();
+            interviewAddress = "Địa chỉ: Phòng " + sendNotificationDTO.getRoom() + ", " + sendNotificationDTO.getAddress();
         }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String presentDate = simpleDateFormat.format(Date.valueOf(LocalDate.now()));
@@ -146,7 +151,7 @@ public class NotificationServiceImp implements NotificationService {
         String subject = "Thông báo lịch phỏng vấn";
         String content = "Bạn có 1 buổi phỏng vấn vào lúc " + dateFormated + "\n"
                 + "Bạn hãy đến địa chỉ này trước thời gian để tiến hành phỏng vấn\n"
-                + "Địa chỉ: " + interviewAddress + "\n"
+                + interviewAddress + "\n"
                 + "Trân trọng.";
 
         Notification notification = Notification.builder()
@@ -156,20 +161,22 @@ public class NotificationServiceImp implements NotificationService {
                 .candidates(listCandidate)
                 .employees(listEmployee)
                 .interview(sendNotificationDTO.getInterview())
+                .type(NotificationType.INTERVIEW)
                 .status(NotificationStatus.SUCCESSFULL)
                 .build();
 
         notificationRepository.save(notification);
-        sendEmail(sendNotificationDTO.getCandidate().getEmail(), subject, content,
-                sendNotificationDTO.getCandidate().getName());
+
         for (Employee employee : listEmployee) {
             sendEmail(employee.getAccount().getEmail(), subject, content, employee.getName());
         }
-        for (Candidate candidate : listCandidate) {
-            pushNotification(candidate.getAccount().getNotificationToken(),
-                    notification.getSubject(),
-                    notification.getContent());
-        }
+        //        sendEmail(sendNotificationDTO.getCandidate().getEmail(), subject, content,
+//                sendNotificationDTO.getCandidate().getName());
+//        for (Candidate candidate : listCandidate) {
+//            pushNotification(candidate.getAccount().getNotificationToken(),
+//                    notification.getSubject(),
+//                    notification.getContent());
+//        }
         for (Employee employee : listEmployee) {
             pushNotification(employee.getAccount().getNotificationToken(),
                     notification.getSubject(),
@@ -248,5 +255,14 @@ public class NotificationServiceImp implements NotificationService {
             throw new ListEmptyException(NotificationErrorMessage.LIST_EMPTY_EXCEPTION);
         return result;
     }
+//lam push noti cho candidate interview luc approve
+    //    @Scheduled(cron = "*/10 * * * * *")//10 second
+//    @Scheduled(cron = "*/60 * * * * *")//1 minute
+//    public void sendMail() {
+//        // Your mail logic will go here
+//        LocalDateTime localDateTime = LocalDateTime.now();
+//        System.out.println("Scheduled task running" + localDateTime.getMinute());
+//
+//    }
 
 }

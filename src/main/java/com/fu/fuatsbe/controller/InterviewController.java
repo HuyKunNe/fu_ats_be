@@ -140,7 +140,7 @@ public class InterviewController {
     @PatchMapping("/confirmByEmployee")
     @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
     public ResponseEntity<ResponseDTO> confirmInterviewEmployee(@RequestParam int idInterview,
-            @RequestParam int idEmployee) {
+            @RequestParam int idEmployee) throws MessagingException {
         ResponseDTO response = new ResponseDTO<>();
         interviewService.confirmJoinInterviewByEmployee(idInterview, idEmployee);
         response.setStatus(ResponseStatusDTO.SUCCESS);
@@ -149,7 +149,7 @@ public class InterviewController {
     }
     @PatchMapping("/confirmByManager")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> confirmInterviewManager(@RequestParam int idInterview) {
+    public ResponseEntity<ResponseDTO> confirmInterviewManager(@RequestParam int idInterview) throws MessagingException {
         ResponseDTO response = new ResponseDTO<>();
         interviewService.confirmInterviewByManager(idInterview);
         response.setStatus(ResponseStatusDTO.SUCCESS);

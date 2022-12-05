@@ -70,4 +70,7 @@ public interface CvRepository extends JpaRepository<CV, Integer> {
                         "       )  \n" +
                         "       and p.name like ?1")
         public List<CV> getCvForRequest(String positionName);
+
+        @Query(nativeQuery = true,value = "select distinct c.email from cv cv join candidate c on c.id = cv.candidate_id where cv.id = ?1")
+        String getEmailByCVId(int id);
 }
