@@ -159,7 +159,7 @@ public class JobApplyServiceImpl implements JobApplyService {
             CV newCV = CV.builder().candidate(candidate).linkCV(createDTO.getLinkCV())
                     .title(createDTO.getTitleCV())
                     .positions(list)
-                    .source(CVSource.CANDIDATE)
+                    .source(CVSource.CKHR)
                     .recommendPositions("N/A")
                     .status(CVStatus.ACTIVE).build();
             cvSaved = cvRepository.save(newCV);

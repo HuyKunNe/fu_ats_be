@@ -132,7 +132,7 @@ public class CvServiceImp implements CVService {
         CV cv = CV.builder().linkCV(createDTO.getLinkCV())
                 .candidate(candidate).positions(listPositions)
                 .title(createDTO.getTitle())
-                .source(CVSource.CANDIDATE)
+                .source(CVSource.CKHR)
                 .status(CVStatus.ACTIVE)
                 .build();
 
