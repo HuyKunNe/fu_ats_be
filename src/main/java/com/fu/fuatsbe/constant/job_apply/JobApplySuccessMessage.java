@@ -19,4 +19,6 @@ public final class JobApplySuccessMessage {
 
     public static final String GET_FAILED_JOB_APPLY = "Get fail job apply successfully";
 
+    public static final String APPLY_JOB_BY_EMPLOYEE = "Apply job by employee successfully";
+
 }

@@ -48,6 +48,7 @@ public class CV {
     private String status;
     private String recommendPositions;
     private String title;
+    private String source;
 
     @OneToMany(mappedBy = "cv", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Include

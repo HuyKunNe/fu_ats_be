@@ -22,6 +22,7 @@ public class CvResponse {
     private String note;
     private String title;
     private String recommendPositions;
+    private String source;
 
     private String positionApplied;
 

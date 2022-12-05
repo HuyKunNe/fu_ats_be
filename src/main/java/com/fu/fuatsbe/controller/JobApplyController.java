@@ -1,6 +1,7 @@
 package com.fu.fuatsbe.controller;
 
-import com.fu.fuatsbe.response.IdAndNameResponse;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,18 +14,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fu.fuatsbe.DTO.JobApplyCreateDTO;
+import com.fu.fuatsbe.DTO.ListJobApplyByEmployee;
 import com.fu.fuatsbe.constant.job_apply.JobApplySuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.entity.CVScreening;
 import com.fu.fuatsbe.response.JobApplyResponse;
+import com.fu.fuatsbe.response.ListResponseDTO;
 import com.fu.fuatsbe.response.ResponseDTO;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.JobApplyService;
 
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/jobApply")
@@ -234,6 +235,17 @@ public class JobApplyController {
     @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
     public boolean checkApplyByCandidateAndRequest(@RequestParam int requestId, @RequestParam int candidateId) {
         return jobApplyService.checkApplyByRecruitmentRequestAndCandidate(requestId, candidateId);
+    }
+
+    @PostMapping("/createJobApplyByEmployee")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ListResponseDTO> createJobApplyByEmployee(@RequestBody ListJobApplyByEmployee createDTO) {
+        ListResponseDTO<JobApplyResponse> responseDTO = new ListResponseDTO();
+        List<JobApplyResponse> jobApplyResponse = jobApplyService.createJobApplyByEmployee(createDTO);
+        responseDTO.setData(jobApplyResponse);
+        responseDTO.setMessage(JobApplySuccessMessage.APPLY_JOB_BY_EMPLOYEE);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
     }
 
 }

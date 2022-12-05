@@ -1,7 +1,11 @@
 package com.fu.fuatsbe.service;
 
+import java.util.List;
+
 import com.fu.fuatsbe.DTO.CVScreeningDTO;
+import com.fu.fuatsbe.DTO.JobApplyByEmployeeDTO;
 import com.fu.fuatsbe.DTO.JobApplyCreateDTO;
+import com.fu.fuatsbe.DTO.ListJobApplyByEmployee;
 import com.fu.fuatsbe.entity.CVScreening;
 import com.fu.fuatsbe.response.JobApplyResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
@@ -49,4 +53,5 @@ public interface JobApplyService {
 
         public boolean checkApplyByRecruitmentRequestAndCandidate(int requestId, int candidateId);
 
+        public List<JobApplyResponse> createJobApplyByEmployee(ListJobApplyByEmployee listJobApplyByEmployee);
 }

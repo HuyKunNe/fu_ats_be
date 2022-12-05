@@ -15,6 +15,7 @@ import com.fu.fuatsbe.DTO.CvCreateDTO;
 import com.fu.fuatsbe.DTO.CvUpdateDTO;
 import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.cv.CVErrorMessage;
+import com.fu.fuatsbe.constant.cv.CVSource;
 import com.fu.fuatsbe.constant.cv.CVStatus;
 import com.fu.fuatsbe.constant.postion.PositionErrorMessage;
 import com.fu.fuatsbe.entity.CV;
@@ -131,6 +132,7 @@ public class CvServiceImp implements CVService {
         CV cv = CV.builder().linkCV(createDTO.getLinkCV())
                 .candidate(candidate).positions(listPositions)
                 .title(createDTO.getTitle())
+                .source(CVSource.CANDIDATE)
                 .status(CVStatus.ACTIVE)
                 .build();
 

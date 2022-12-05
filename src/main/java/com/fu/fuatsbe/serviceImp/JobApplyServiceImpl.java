@@ -18,9 +18,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.CVScreeningDTO;
+import com.fu.fuatsbe.DTO.JobApplyByEmployeeDTO;
 import com.fu.fuatsbe.DTO.JobApplyCreateDTO;
+import com.fu.fuatsbe.DTO.ListJobApplyByEmployee;
 import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.city.CityErrorMessage;
+import com.fu.fuatsbe.constant.cv.CVSource;
 import com.fu.fuatsbe.constant.cv.CVStatus;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.job_apply.EducationLevel;
@@ -156,6 +159,7 @@ public class JobApplyServiceImpl implements JobApplyService {
             CV newCV = CV.builder().candidate(candidate).linkCV(createDTO.getLinkCV())
                     .title(createDTO.getTitleCV())
                     .positions(list)
+                    .source(CVSource.CANDIDATE)
                     .recommendPositions("N/A")
                     .status(CVStatus.ACTIVE).build();
             cvSaved = cvRepository.save(newCV);
@@ -457,6 +461,65 @@ public class JobApplyServiceImpl implements JobApplyService {
             result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(JobApplyErrorMessage.LIST_IS_EMPTY);
+        return result;
+    }
+
+    @Override
+    public List<JobApplyResponse> createJobApplyByEmployee(ListJobApplyByEmployee listJobApplyByEmployee) {
+        List<JobApplyResponse> result = new ArrayList<JobApplyResponse>();
+
+        RecruitmentRequest recruitmentRequest = recruitmentRequestRepository
+                .findById(listJobApplyByEmployee.getRequestId())
+                .orElseThrow(() -> new NotFoundException(
+                        RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
+
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+        LocalDate dateFormat = LocalDate.parse(date.toString(), format);
+
+        City city = recruitmentRequest.getCities();
+
+        for (JobApplyByEmployeeDTO jobApplyByEmployeeDTO : listJobApplyByEmployee.getListJobApplyByEmployee()) {
+            Optional<Candidate> candidate = candidateRepository.findByEmail(jobApplyByEmployeeDTO.getEmail());
+
+            Collection<Position> list = new ArrayList<Position>();
+            list.add(recruitmentRequest.getPosition());
+
+            CV cv = CV.builder()
+                    .linkCV(jobApplyByEmployeeDTO.getLinkCV())
+                    .source(jobApplyByEmployeeDTO.getSource())
+                    .positions(list)
+                    .build();
+
+            if (candidate.isPresent()) {
+                candidate.get().getPositions().add(recruitmentRequest.getPosition());
+                Candidate candidateSave = candidateRepository.save(candidate.get());
+                cv.setCandidate(candidateSave);
+
+            } else {
+                Candidate newCandidate = Candidate.builder().email(jobApplyByEmployeeDTO.getEmail())
+                        .name(jobApplyByEmployeeDTO.getName())
+                        .build();
+
+                Candidate candidateSaved = candidateRepository.save(newCandidate);
+                candidateSaved.getPositions().add(recruitmentRequest.getPosition());
+                candidateRepository.save(candidateSaved);
+                cv.setCandidate(candidateSaved);
+            }
+            CV cvSaved = cvRepository.save(cv);
+            JobApply jobApply = JobApply.builder().date(Date.valueOf(dateFormat)).cities(city)
+                    .status(JobApplyStatus.APPROVED)
+                    .screeningStatus(ScreeningStatus.PASS)
+                    .candidate(candidate.get())
+                    .recruitmentRequest(recruitmentRequest)
+                    .cv(cvSaved).build();
+
+            JobApply jobApplySaved = jobApplyRepository.save(jobApply);
+            JobApplyResponse jobApplyResponse = modelMapper.map(jobApplySaved, JobApplyResponse.class);
+
+            result.add(jobApplyResponse);
+        }
+
         return result;
     }
 
