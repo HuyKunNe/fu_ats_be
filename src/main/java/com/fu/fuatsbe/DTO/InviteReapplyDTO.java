@@ -2,6 +2,8 @@ package com.fu.fuatsbe.DTO;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @ToString
@@ -9,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class InviteReapplyDTO {
-    private String email;
+    private List<Integer> cvIds;
     private String title;
     private String content;
 }

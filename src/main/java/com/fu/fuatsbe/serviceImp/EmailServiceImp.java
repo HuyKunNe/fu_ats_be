@@ -5,6 +5,7 @@ import com.fu.fuatsbe.constant.account.AccountErrorMessage;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.exceptions.PermissionException;
 import com.fu.fuatsbe.repository.AccountRepository;
+import com.fu.fuatsbe.repository.CvRepository;
 import com.fu.fuatsbe.repository.VerificationRepository;
 import com.fu.fuatsbe.service.EmailService;
 import com.fu.fuatsbe.service.VerificationTokenService;
@@ -30,6 +31,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EmailServiceImp implements EmailService {
     private final AccountRepository accountRepository;
+    private final CvRepository cvRepository;
 
     private final VerificationRepository verificationRepository;
     private final VerificationTokenService verificationTokenService;
@@ -45,8 +47,13 @@ public class EmailServiceImp implements EmailService {
         return new Timestamp(cal.getTime().getTime());
     }
     @Override
-    public void sendEmail() {
-
+    public void sendEmailInterview(String email, String title, String name, String content) throws MessagingException {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+        mimeMessageHelper.setTo(email);
+        mimeMessageHelper.setSubject(title);
+        mimeMessageHelper.setText("Thân gửi " + name + ",\n" + content);
+        javaMailSender.send(mimeMessage);
     }
 
     @Override
@@ -93,13 +100,17 @@ public class EmailServiceImp implements EmailService {
 
     @Override
     public void sendEmailToInviteReapply(InviteReapplyDTO invite) throws MessagingException {
-        if(invite.getEmail() != null){
-            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
-            mimeMessageHelper.setTo(invite.getEmail());
-            mimeMessageHelper.setSubject(invite.getTitle());
-            mimeMessageHelper.setText(invite.getContent());
-            javaMailSender.send(mimeMessage);
+        for (Integer cvId: invite.getCvIds()) {
+            String email = cvRepository.getEmailByCVId(cvId);
+            if(email != null){
+                MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+                MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
+                mimeMessageHelper.setTo(email);
+                mimeMessageHelper.setSubject(invite.getTitle());
+                mimeMessageHelper.setText(invite.getContent());
+                javaMailSender.send(mimeMessage);
+            }
         }
+
     }
 }
