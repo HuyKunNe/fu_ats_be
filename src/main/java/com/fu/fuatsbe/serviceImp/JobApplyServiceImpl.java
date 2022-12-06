@@ -466,7 +466,11 @@ public class JobApplyServiceImpl implements JobApplyService {
 
     @Override
     public List<JobApplyResponse> createJobApplyByEmployee(ListJobApplyByEmployee listJobApplyByEmployee) {
+
         List<JobApplyResponse> result = new ArrayList<JobApplyResponse>();
+
+        Employee employee = employeeRepository.findById(listJobApplyByEmployee.getEmployeeId())
+                .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
 
         RecruitmentRequest recruitmentRequest = recruitmentRequestRepository
                 .findById(listJobApplyByEmployee.getRequestId())
@@ -480,6 +484,7 @@ public class JobApplyServiceImpl implements JobApplyService {
         City city = recruitmentRequest.getCities();
 
         for (JobApplyByEmployeeDTO jobApplyByEmployeeDTO : listJobApplyByEmployee.getListJobApplyByEmployee()) {
+
             Optional<Candidate> candidate = candidateRepository.findByEmail(jobApplyByEmployeeDTO.getEmail());
 
             Collection<Position> list = new ArrayList<Position>();
@@ -489,32 +494,41 @@ public class JobApplyServiceImpl implements JobApplyService {
                     .linkCV(jobApplyByEmployeeDTO.getLinkCV())
                     .source(jobApplyByEmployeeDTO.getSource())
                     .positions(list)
+                    .recommendPositions("N/A")
+                    .status(CVStatus.ACTIVE)
+                    .build();
+
+            JobApply jobApply = JobApply.builder().date(Date.valueOf(dateFormat)).cities(city)
+                    .status(JobApplyStatus.APPROVED)
+                    .applier(employee)
+                    .screeningStatus(ScreeningStatus.PASS)
+                    .recruitmentRequest(recruitmentRequest)
                     .build();
 
             if (candidate.isPresent()) {
                 candidate.get().getPositions().add(recruitmentRequest.getPosition());
                 Candidate candidateSave = candidateRepository.save(candidate.get());
+                cv.setTitle(candidateSave.getName() + " CV");
                 cv.setCandidate(candidateSave);
+                jobApply.setCandidate(candidateSave);
 
             } else {
                 Candidate newCandidate = Candidate.builder().email(jobApplyByEmployeeDTO.getEmail())
+                        .positions(list)
                         .name(jobApplyByEmployeeDTO.getName())
                         .build();
 
                 Candidate candidateSaved = candidateRepository.save(newCandidate);
-                candidateSaved.getPositions().add(recruitmentRequest.getPosition());
-                candidateRepository.save(candidateSaved);
+                cv.setTitle(candidateSaved.getName() + " CV");
                 cv.setCandidate(candidateSaved);
+                jobApply.setCandidate(candidateSaved);
             }
+
             CV cvSaved = cvRepository.save(cv);
-            JobApply jobApply = JobApply.builder().date(Date.valueOf(dateFormat)).cities(city)
-                    .status(JobApplyStatus.APPROVED)
-                    .screeningStatus(ScreeningStatus.PASS)
-                    .candidate(candidate.get())
-                    .recruitmentRequest(recruitmentRequest)
-                    .cv(cvSaved).build();
+            jobApply.setCv(cvSaved);
 
             JobApply jobApplySaved = jobApplyRepository.save(jobApply);
+
             JobApplyResponse jobApplyResponse = modelMapper.map(jobApplySaved, JobApplyResponse.class);
 
             result.add(jobApplyResponse);
