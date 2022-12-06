@@ -119,4 +119,8 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
         List<RecruitmentRequest> findByExpiryDateLessThanAndStatusNotLikeOrderByExpiryDateDesc(Date date,
                         String status);
 
+        @Query(nativeQuery = true, value = "select COALESCE(sum(r.amount), 0) from recruitment_request r \n" +
+                        " join plan_detail p on r.plan_detail_id = p.id \n" +
+                        " where p.id = ?1 and r.status not like '%CLOSED%' ")
+        int totalAmount(int planDetailId);
 }

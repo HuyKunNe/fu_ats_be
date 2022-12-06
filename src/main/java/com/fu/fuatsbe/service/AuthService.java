@@ -2,6 +2,8 @@ package com.fu.fuatsbe.service;
 
 import javax.management.relation.RoleNotFoundException;
 
+import org.springframework.boot.configurationprocessor.json.JSONException;
+
 import com.fu.fuatsbe.DTO.ChangePasswordDTO;
 import com.fu.fuatsbe.DTO.LoginDto;
 import com.fu.fuatsbe.DTO.RegisterCandidateDto;
@@ -17,5 +19,7 @@ public interface AuthService {
     public LoginResponseDto login(LoginDto employee);
 
     public void changePassword(ChangePasswordDTO changePasswordDTO);
+
+    public LoginResponseDto loginWithGoogle(String token) throws JSONException;
 
 }

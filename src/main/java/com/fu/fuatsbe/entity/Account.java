@@ -30,6 +30,9 @@ public class Account {
     @Column(name = "notification_token")
     private String notificationToken;
 
+    @JsonIgnore
+    private String provider;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "roleId")

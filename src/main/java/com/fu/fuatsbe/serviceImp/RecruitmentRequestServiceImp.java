@@ -102,6 +102,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 .orElseThrow(() -> new NotFoundException(
                         RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
         RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest, RecruitmentRequestResponse.class);
+
         if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
             response.setSalaryDetail(
                     (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
@@ -254,6 +255,13 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             updateDTO.setSalaryTo(null);
         }
 
+        int totalAmount = recruitmentRequestRepository.totalAmount(recruitmentRequest.getPlanDetail().getId());
+
+        if ((updateDTO.getAmount() > (recruitmentRequest.getPlanDetail().getAmount() - totalAmount))
+                || updateDTO.getAmount() <= 0) {
+            throw new NotValidException(RecruitmentRequestErrorMessage.NOT_VALID_AMOUNT_EXCEPTION);
+        }
+
         recruitmentRequest.setAmount(updateDTO.getAmount());
         recruitmentRequest.setExpiryDate(updateDTO.getExpiryDate());
         recruitmentRequest.setIndustry(updateDTO.getIndustry());
@@ -314,7 +322,9 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             City city = cityRepository.findByName(createDTO.getCityName())
                     .orElseThrow(() -> new NotFoundException(CityErrorMessage.NOT_FOUND));
 
-            if (createDTO.getAmount() != planDetail.getAmount()) {
+            int totalAmount = recruitmentRequestRepository.totalAmount(createDTO.getPlanDetailId());
+
+            if (createDTO.getAmount() > (planDetail.getAmount() - totalAmount) || createDTO.getAmount() <= 0) {
                 throw new NotValidException(RecruitmentRequestErrorMessage.NOT_VALID_AMOUNT_EXCEPTION);
             }
 

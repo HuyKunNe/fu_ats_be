@@ -1,6 +1,7 @@
 package com.fu.fuatsbe.repository;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
@@ -11,8 +12,6 @@ import org.springframework.stereotype.Repository;
 
 import com.fu.fuatsbe.entity.Account;
 import com.fu.fuatsbe.entity.Role;
-
-import java.util.Optional;
 
 @Repository
 @Transactional

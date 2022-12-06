@@ -11,6 +11,8 @@ import com.fu.fuatsbe.response.ResponseDTO;
 import com.fu.fuatsbe.service.AuthService;
 import com.fu.fuatsbe.service.EmailService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -88,6 +90,16 @@ public class AuthController {
         ResponseDTO<Void> responseDTO = new ResponseDTO();
         authService.changePassword(changePasswordDTO);
         responseDTO.setMessage(AccountSuccessMessage.CHANGE_PASSWORD_ACCOUNT_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PostMapping("/loginWithGoogle")
+    public ResponseEntity<ResponseDTO> loginWithGoogle(@RequestBody String token) throws JSONException {
+        ResponseDTO<LoginResponseDto> responseDTO = new ResponseDTO();
+        LoginResponseDto loginResponseDTO = authService.loginWithGoogle(token);
+        responseDTO.setData(loginResponseDTO);
+        responseDTO.setMessage("Login success");
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
