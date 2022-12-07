@@ -3,8 +3,6 @@ package com.fu.fuatsbe.serviceImp;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fu.fuatsbe.response.DepartmentResponse;
-import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +24,7 @@ import com.fu.fuatsbe.repository.CandidateRepository;
 import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.RoleRepository;
 import com.fu.fuatsbe.response.AccountResponse;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.AccountService;
 
 import lombok.RequiredArgsConstructor;

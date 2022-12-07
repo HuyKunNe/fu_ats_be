@@ -32,6 +32,7 @@ import com.fu.fuatsbe.response.RegisterResponseDto;
 import com.fu.fuatsbe.service.AuthService;
 import com.fu.fuatsbe.utils.Utils;
 
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 
 import org.apache.commons.codec.binary.Base64;
@@ -41,15 +42,18 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import javax.management.relation.RoleNotFoundException;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -131,7 +135,7 @@ public class AuthServiceImp implements AuthService {
                     .email(registerDTO.getEmail())
                     .phone(registerDTO.getPhone())
                     .image(registerDTO.getImage())
-                    .dob(Date.valueOf(dob))
+                    .dob(java.sql.Date.valueOf(dob))
                     .gender(registerDTO.getGender())
                     .address(registerDTO.getAddress())
                     .status(CandidateStatus.ACTIVATED)
@@ -182,7 +186,7 @@ public class AuthServiceImp implements AuthService {
         Employee employee = Employee.builder().name(registerDto.getName()).employeeCode(registerDto.getEmployeeCode())
                 .image(registerDto.getImage())
                 .gender(registerDto.getGender())
-                .dob(Date.valueOf(dob))
+                .dob(java.sql.Date.valueOf(dob))
                 .jobLevel(registerDto.getJobLevel())
                 .status(EmployeeStatus.ACTIVATE)
                 .phone(registerDto.getPhone()).department(optionalDepartment.get()).address(registerDto.getAddress())
@@ -276,11 +280,12 @@ public class AuthServiceImp implements AuthService {
             String picture = jsonObject.get("picture").toString();
             String name = jsonObject.get("name").toString();
 
+            Optional<Candidate> candidateExist = candidateRepository.findByEmail(email);
             Candidate candidate = Candidate.builder()
                     .name(name)
                     .email(email)
                     .image(picture)
-                    .dob(Date.valueOf("2000-01-01"))
+                    .dob(java.sql.Date.valueOf("2000-01-01"))
                     .status(CandidateStatus.ACTIVATED)
                     .build();
 
@@ -290,15 +295,28 @@ public class AuthServiceImp implements AuthService {
             Account newAccount = Account.builder()
                     .email(candidate.getEmail())
                     .role(role)
-                    .candidate(candidate)
                     .provider(AccountProvider.GOOGLE)
                     .password(passwordEncoder.encode(""))
                     .status(AccountStatus.ACTIVATED).build();
 
+            if (candidateExist.isPresent()) {
+                newAccount.setCandidate(candidateExist.get());
+            } else {
+                newAccount.setCandidate(candidate);
+            }
+
             candidateRepository.save(candidate);
             Account credentialInRepo = accountRepository.save(newAccount);
-            candidate.setAccount(credentialInRepo);
-            candidateRepository.save(candidate);
+
+            if (candidateExist.isPresent()) {
+                newAccount.setCandidate(candidateExist.get());
+                candidateExist.get().setAccount(credentialInRepo);
+                candidateRepository.save(candidateExist.get());
+            } else {
+                newAccount.setCandidate(candidate);
+                candidate.setAccount(credentialInRepo);
+                candidateRepository.save(candidate);
+            }
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(credentialInRepo.getEmail(), "");
             Authentication authenticate = authenticationManager.authenticate(authentication);
@@ -317,25 +335,29 @@ public class AuthServiceImp implements AuthService {
             }
 
         } else {
-            Authentication authentication = new UsernamePasswordAuthenticationToken(account.get().getEmail(),
-                    account.get().getPassword());
-            Authentication authenticate = authenticationManager.authenticate(authentication);
-            if (authenticate.isAuthenticated()) {
+            List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
+            SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(RoleName.ROLE_CANDIDATE);
+            simpleGrantedAuthorities.add(simpleGrantedAuthority);
 
-                Account accountAuthencated = accountRepository.findAccountByEmail(account.get().getEmail()).get();
-                String tokenResponse = Utils.buildJWT(authenticate, accountAuthencated, secretKey, jwtConfig);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(account.get().getEmail(), null);
 
-                loginResponseDTO = LoginResponseDto.builder()
-                        .accountId(accountAuthencated.getId())
-                        .email(accountAuthencated.getEmail())
-                        .status(accountAuthencated.getStatus())
-                        .roleName(accountAuthencated.getRole().getName())
-                        .token(tokenResponse)
-                        .candidate(accountAuthencated.getCandidate())
-                        .build();
-            }
+            String tokenResponse = Jwts.builder().setSubject(authentication.getName())
+                    .claim(("authorities"), simpleGrantedAuthorities).claim("id", account.get().getId())
+                    .setIssuedAt((new Date())).setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(1)))
+                    .signWith(jwtConfig.secretKey()).compact();
+
+            loginResponseDTO = LoginResponseDto.builder()
+                    .accountId(account.get().getId())
+                    .email(account.get().getEmail())
+                    .status(account.get().getStatus())
+                    .roleName(account.get().getRole().getName())
+                    .candidate(account.get().getCandidate())
+                    .employee(account.get().getEmployee())
+                    .token(tokenResponse)
+                    .candidate(account.get().getCandidate())
+                    .build();
         }
-
         return loginResponseDTO;
     }
+
 }
