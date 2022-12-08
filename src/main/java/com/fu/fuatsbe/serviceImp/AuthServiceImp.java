@@ -263,28 +263,44 @@ public class AuthServiceImp implements AuthService {
 
     @Override
     public LoginResponseDto loginGoogle(String token) {
-        LoginResponseDto loginResponseDTO = null;
+
+        List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
+        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(RoleName.ROLE_CANDIDATE);
+        simpleGrantedAuthorities.add(simpleGrantedAuthority);
 
         String[] split_string = token.split("\\.");
         String base64EncodedBody = split_string[1];
         Base64 base64Url = new Base64(true);
         String body = new String(base64Url.decode(base64EncodedBody));
         JSONObject jsonObject = new JSONObject(body);
-        // JSONObject jsonObject = new JSONObject(body);
 
-        String email = jsonObject.getString("email");
-        String image = jsonObject.getString("picture");
-        String name = jsonObject.getString("name");
-        loginResponseDTO.setEmail(email);
+        String email = jsonObject.get("email").toString();
+        String image = jsonObject.get("picture").toString();
+        String name = jsonObject.get("name").toString();
+        LoginResponseDto loginResponseDTO = null;
 
-        List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
-        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(RoleName.ROLE_CANDIDATE);
-        simpleGrantedAuthorities.add(simpleGrantedAuthority);
         Account account = accountRepository.findByEmail(email);
         if (account == null) {
             account = registerAccountForGoogleLogin(email, name, image);
         }
 
+        Authentication authentication = new UsernamePasswordAuthenticationToken(account.getEmail(), null);
+
+        String tokenResponse = Jwts.builder().setSubject(authentication.getName())
+                .claim(("authorities"), simpleGrantedAuthorities).claim("id", account.getId())
+                .setIssuedAt((new Date())).setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(1)))
+                .signWith(jwtConfig.secretKey()).compact();
+
+        loginResponseDTO = LoginResponseDto.builder()
+                .accountId(account.getId())
+                .email(account.getEmail())
+                .status(account.getStatus())
+                .roleName(account.getRole().getName())
+                .candidate(account.getCandidate())
+                .employee(account.getEmployee())
+                .token(tokenResponse)
+                .candidate(account.getCandidate())
+                .build();
         return loginResponseDTO;
     }
 
