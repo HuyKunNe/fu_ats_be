@@ -262,6 +262,65 @@ public class AuthServiceImp implements AuthService {
         accountRepository.save(account);
     }
 
+    @Override
+    public LoginResponseDto loginGoogle(String token) throws JSONException {
+        List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
+        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(RoleName.ROLE_CANDIDATE);
+        simpleGrantedAuthorities.add(simpleGrantedAuthority);
 
+        String[] split_string = token.split("\\.");
+        String base64EncodedBody = split_string[1];
+        Base64 base64Url = new Base64(true);
+        String body = new String(base64Url.decode(base64EncodedBody));
+        JSONObject jsonObject = new JSONObject(body);
+
+        String email = jsonObject.get("email").toString();
+        String image = jsonObject.get("picture").toString();
+        String name = jsonObject.get("name").toString();
+        LoginResponseDto loginResponseDTO = null;
+
+        Account account = accountRepository.findByEmail(email);
+        if (account == null) {
+            account = registerAccountForGoogleLogin(email, name, image);
+        }
+
+        return loginResponseDTO;
+    }
+
+    @Override
+    public Account registerAccountForGoogleLogin(String email, String name, String image) {
+        Role role = roleRepository.findByName(RoleName.ROLE_CANDIDATE)
+                .orElseThrow(() -> new NotFoundException(RoleErrorMessage.ROLE_NOT_EXIST));
+
+        Candidate candidate = candidateRepository.findCandidateByEmail(email);
+
+        if (candidate == null) {
+            candidate = Candidate.builder()
+                    .name(name)
+                    .email(email)
+                    .image(image)
+                    .dob(java.sql.Date.valueOf("2000-01-01"))
+                    .status(CandidateStatus.ACTIVATED)
+                    .build();
+        } else {
+            candidate.setImage(image);
+            candidate.setDob(java.sql.Date.valueOf("2000-01-01"));
+        }
+
+        Account account = Account.builder()
+                .email(email)
+                .role(role)
+                .candidate(candidate)
+                .provider(AccountProvider.GOOGLE)
+                .status(AccountStatus.ACTIVATED)
+                .password(passwordEncoder.encode("")).build();
+
+        candidateRepository.save(candidate);
+        Account credentialInRepo = accountRepository.save(account);
+        candidate.setAccount(credentialInRepo);
+        candidateRepository.save(candidate);
+
+        return credentialInRepo;
+    }
 
 }

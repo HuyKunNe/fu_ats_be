@@ -40,6 +40,16 @@ public class AuthController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @PostMapping("/loginGoogle")
+    public ResponseEntity<ResponseDTO> loginGoogle(@RequestBody String token) throws JSONException {
+        ResponseDTO<LoginResponseDto> responseDTO = new ResponseDTO();
+        LoginResponseDto loginResponseDTO = authService.loginGoogle(token);
+        responseDTO.setData(loginResponseDTO);
+        responseDTO.setMessage("Login success");
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
     @PostMapping("/register")
     public ResponseEntity<ResponseDTO> register(@Validated @RequestBody RegisterCandidateDto candidate)
             throws RoleNotFoundException {
@@ -93,6 +103,5 @@ public class AuthController {
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
-
 
 }
