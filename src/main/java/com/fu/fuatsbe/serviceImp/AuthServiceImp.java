@@ -264,9 +264,6 @@ public class AuthServiceImp implements AuthService {
 
     @Override
     public LoginResponseDto loginGoogle(String token) throws JSONException {
-        List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
-        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(RoleName.ROLE_CANDIDATE);
-        simpleGrantedAuthorities.add(simpleGrantedAuthority);
 
         String[] split_string = token.split("\\.");
         String base64EncodedBody = split_string[1];
@@ -278,7 +275,12 @@ public class AuthServiceImp implements AuthService {
         String image = jsonObject.get("picture").toString();
         String name = jsonObject.get("name").toString();
         LoginResponseDto loginResponseDTO = null;
+        loginResponseDTO.setEmail(email);
 
+        // List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
+        // SimpleGrantedAuthority simpleGrantedAuthority = new
+        // SimpleGrantedAuthority(RoleName.ROLE_CANDIDATE);
+        // simpleGrantedAuthorities.add(simpleGrantedAuthority);
         Account account = accountRepository.findByEmail(email);
         if (account == null) {
             account = registerAccountForGoogleLogin(email, name, image);
