@@ -12,7 +12,6 @@ import com.fu.fuatsbe.service.AuthService;
 import com.fu.fuatsbe.service.EmailService;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;

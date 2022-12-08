@@ -37,7 +37,6 @@ import lombok.RequiredArgsConstructor;
 
 import org.apache.commons.codec.binary.Base64;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -45,6 +44,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import org.json.*;
 import javax.crypto.SecretKey;
 import javax.management.relation.RoleNotFoundException;
 
@@ -268,22 +268,22 @@ public class AuthServiceImp implements AuthService {
         String[] split_string = token.split("\\.");
         String base64EncodedBody = split_string[1];
         Base64 base64Url = new Base64(true);
-        // String body = new String(base64Url.decode(base64EncodedBody));
+        String body = new String(base64Url.decode(base64EncodedBody));
+        JSONObject jsonObject = new JSONObject(body);
         // JSONObject jsonObject = new JSONObject(body);
 
-        // String email = jsonObject.get("email").toString();
-        // String image = jsonObject.get("picture").toString();
-        // String name = jsonObject.get("name").toString();
-        // loginResponseDTO.setEmail(email);
+        String email = jsonObject.getString("email");
+        String image = jsonObject.getString("picture");
+        String name = jsonObject.getString("name");
+        loginResponseDTO.setEmail(email);
 
-        // List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
-        // SimpleGrantedAuthority simpleGrantedAuthority = new
-        // SimpleGrantedAuthority(RoleName.ROLE_CANDIDATE);
-        // simpleGrantedAuthorities.add(simpleGrantedAuthority);
-        // Account account = accountRepository.findByEmail(email);
-        // if (account == null) {
-        // account = registerAccountForGoogleLogin(email, name, image);
-        // }
+        List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
+        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(RoleName.ROLE_CANDIDATE);
+        simpleGrantedAuthorities.add(simpleGrantedAuthority);
+        Account account = accountRepository.findByEmail(email);
+        if (account == null) {
+            account = registerAccountForGoogleLogin(email, name, image);
+        }
 
         return loginResponseDTO;
     }
