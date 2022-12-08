@@ -268,6 +268,7 @@ public class AuthServiceImp implements AuthService {
         SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(RoleName.ROLE_CANDIDATE);
         simpleGrantedAuthorities.add(simpleGrantedAuthority);
 
+        LoginResponseDto loginResponseDTO = null;
         String[] split_string = token.split("\\.");
         String base64EncodedBody = split_string[1];
         Base64 base64Url = new Base64(true);
@@ -277,7 +278,6 @@ public class AuthServiceImp implements AuthService {
         String email = jsonObject.get("email").toString();
         String image = jsonObject.get("picture").toString();
         String name = jsonObject.get("name").toString();
-        LoginResponseDto loginResponseDTO = null;
 
         Account account = accountRepository.findByEmail(email);
         if (account == null) {
