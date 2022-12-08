@@ -1,7 +1,7 @@
 package com.fu.fuatsbe.constant.validation_message;
 
 public final class ValidationMessage {
-    public static final String PHONE_SIZE_VALID_MESSAGE = "Phone size between 9 -> 11 number";
+    public static final String PHONE_SIZE_VALID_MESSAGE = "Phone size must 10 number";
     public static final String PHONE_NOT_EMPTY_VALID_MESSAGE = "Phone must be filled";
     public static final String EMAIL_VALID_MESSAGE = "Email is incorrect";
     public static final String EMAIL_VALID_MESSAGE_WHEN_LOGIN = "Wrong email address, please try again";

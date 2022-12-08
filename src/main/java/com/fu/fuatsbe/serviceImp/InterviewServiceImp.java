@@ -532,16 +532,6 @@ public class InterviewServiceImp implements InterviewService {
         if (checkAllConfirm) {
             interview.setStatus(InterviewRequestStatus.APPROVED);
             interviewRepository.save(interview);
-            List<Notification> notis = notificationRepository.findNotiNotSendByCandidate(interview.getCandidate().getId());
-            for (Notification notification: notis) {
-                String mail = interview.getCandidate().getEmail();
-                String name = interview.getCandidate().getName();
-                String title = notification.getSubject();
-                String content = notification.getContent();
-                emailService.sendEmailInterview(mail,title,name,content);
-                notification.setMailSendCandidate(true);
-                notificationRepository.save(notification);
-            }
         }
 
     }
@@ -552,16 +542,6 @@ public class InterviewServiceImp implements InterviewService {
                 .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
         interview.setStatus(InterviewRequestStatus.APPROVED);
         interviewRepository.save(interview);
-        List<Notification> notis = notificationRepository.findNotiNotSendByCandidate(interview.getCandidate().getId());
-        for (Notification notification: notis) {
-            String mail = interview.getCandidate().getEmail();
-            String name = interview.getCandidate().getName();
-            String title = notification.getSubject();
-            String content = notification.getContent();
-            emailService.sendEmailInterview(mail,title,name,content);
-            notification.setMailSendCandidate(true);
-            notificationRepository.save(notification);
-        }
     }
 
     @Override

@@ -148,7 +148,7 @@ public class NotificationServiceImp implements NotificationService {
         String presentDate = simpleDateFormat.format(Date.valueOf(LocalDate.now()));
         String dateFormated = sendNotificationDTO.getDate().toString().substring(0, 16);
 
-        String subject = "Thông báo lịch phỏng vấn";
+        String subject = "Interview Letter";
         String content = "Bạn có 1 buổi phỏng vấn vào lúc " + dateFormated + "\n"
                 + "Bạn hãy đến địa chỉ này trước thời gian để tiến hành phỏng vấn\n"
                 + interviewAddress + "\n"
@@ -161,7 +161,6 @@ public class NotificationServiceImp implements NotificationService {
                 .candidates(listCandidate)
                 .employees(listEmployee)
                 .interview(sendNotificationDTO.getInterview())
-                .type(NotificationType.INTERVIEW)
                 .status(NotificationStatus.SUCCESSFULL)
                 .build();
 
