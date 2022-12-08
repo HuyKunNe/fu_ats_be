@@ -37,7 +37,6 @@ import lombok.RequiredArgsConstructor;
 
 import org.apache.commons.codec.binary.Base64;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -263,28 +262,28 @@ public class AuthServiceImp implements AuthService {
     }
 
     @Override
-    public LoginResponseDto loginGoogle(String token) throws JSONException {
+    public LoginResponseDto loginGoogle(String token) {
+        LoginResponseDto loginResponseDTO = null;
 
         String[] split_string = token.split("\\.");
         String base64EncodedBody = split_string[1];
         Base64 base64Url = new Base64(true);
-        String body = new String(base64Url.decode(base64EncodedBody));
-        JSONObject jsonObject = new JSONObject(body);
+        // String body = new String(base64Url.decode(base64EncodedBody));
+        // JSONObject jsonObject = new JSONObject(body);
 
-        String email = jsonObject.get("email").toString();
-        String image = jsonObject.get("picture").toString();
-        String name = jsonObject.get("name").toString();
-        LoginResponseDto loginResponseDTO = null;
-        loginResponseDTO.setEmail(email);
+        // String email = jsonObject.get("email").toString();
+        // String image = jsonObject.get("picture").toString();
+        // String name = jsonObject.get("name").toString();
+        // loginResponseDTO.setEmail(email);
 
         // List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
         // SimpleGrantedAuthority simpleGrantedAuthority = new
         // SimpleGrantedAuthority(RoleName.ROLE_CANDIDATE);
         // simpleGrantedAuthorities.add(simpleGrantedAuthority);
-        Account account = accountRepository.findByEmail(email);
-        if (account == null) {
-            account = registerAccountForGoogleLogin(email, name, image);
-        }
+        // Account account = accountRepository.findByEmail(email);
+        // if (account == null) {
+        // account = registerAccountForGoogleLogin(email, name, image);
+        // }
 
         return loginResponseDTO;
     }
