@@ -8,14 +8,17 @@ import com.fu.fuatsbe.constant.notification.NotificationErrorMessage;
 import com.fu.fuatsbe.constant.notification.NotificationStatus;
 import com.fu.fuatsbe.constant.notification.NotificationType;
 import com.fu.fuatsbe.entity.Candidate;
+import com.fu.fuatsbe.entity.EmailSchedule;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.Notification;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.repository.CandidateRepository;
+import com.fu.fuatsbe.repository.EmailScheduleRepository;
 import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.NotificationRepository;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
+import com.fu.fuatsbe.service.EmailScheduleService;
 import com.fu.fuatsbe.service.NotificationService;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -40,11 +43,13 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -52,6 +57,8 @@ import java.util.List;
 @EnableScheduling
 public class NotificationServiceImp implements NotificationService {
     private final EmployeeRepository employeeRepository;
+    private final EmailScheduleRepository emailScheduleRepository;
+    private final EmailScheduleService emailScheduleService;
     private final CandidateRepository candidateRepository;
 
     private final NotificationRepository notificationRepository;
@@ -113,8 +120,7 @@ public class NotificationServiceImp implements NotificationService {
                         notificationCreateDTO.getTitle(),
                         notificationCreateDTO.getContent());
             }
-            sendEmail(candidate.getEmail(), notificationCreateDTO.getTitle(), notificationCreateDTO.getContent(),
-                    candidate.getName());
+            sendEmail(candidate.getEmail(), notificationCreateDTO.getTitle(), notificationCreateDTO.getContent());
         }
         for (Employee employee : listEmployee) {
             if (employee.getAccount().getNotificationToken() != null) {
@@ -142,17 +148,35 @@ public class NotificationServiceImp implements NotificationService {
         if (!sendNotificationDTO.getLink().isEmpty()) {
             interviewAddress = "Link meeting: " + sendNotificationDTO.getLink();
         } else {
-            interviewAddress = "Địa chỉ: Phòng " + sendNotificationDTO.getRoom() + ", " + sendNotificationDTO.getAddress();
+            interviewAddress = "Room " + sendNotificationDTO.getRoom() + ", " + sendNotificationDTO.getAddress();
         }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String presentDate = simpleDateFormat.format(Date.valueOf(LocalDate.now()));
-        String dateFormated = sendNotificationDTO.getDate().toString().substring(0, 16);
-
+        String dateFormated = sendNotificationDTO.getDate().toString().substring(0, 10);
         String subject = "Interview Letter";
-        String content = "Bạn có 1 buổi phỏng vấn vào lúc " + dateFormated + "\n"
-                + "Bạn hãy đến địa chỉ này trước thời gian để tiến hành phỏng vấn\n"
-                + interviewAddress + "\n"
-                + "Trân trọng.";
+        String content = "Dear  " + sendNotificationDTO.getCandidate().getName() + "\n"
+                + "Thank you so much for your interested in our job opportunities.  As we discussed, I would like to invite you to join our Interview as schedule below\n"
+                + "• Position: Fresher Java Developer\n"
+                + "• Time: " + sendNotificationDTO.getDate().toString().substring(11, 16) + " at " + dateFormated + "\n"
+                + "• Duration: 45 minutes\n"
+                + "• Address: " + interviewAddress + "\n"
+                + " Notes:\n" +
+                "• Please well prepare your appearance and background because this interview requires your camera to be turned on(if online interview)\n" +
+                "\n" +
+                "• Please join the meeting 5 minutes before the above-mentioned time to prepare your network incident (if any)\n" +
+                "\n" +
+                "• Should you have any further question, please do not hesitate to contact me via email anytime.\n" +
+                "\n" +
+                "Yours Sincerely,\n" +
+                "\n" +
+                " \n" +
+                "Thanks & Best Regards, \n" +
+                "\n" +
+                "HR Department\n" +
+                "\n" +
+                "CKHR Consulting\n" +
+                "\n" +
+                "Ground Floor, Rosana Building, 60 Nguyen Dinh Chieu, Da Kao Ward, District 1, HCMC";
 
         Notification notification = Notification.builder()
                 .subject(subject)
@@ -166,30 +190,41 @@ public class NotificationServiceImp implements NotificationService {
 
         notificationRepository.save(notification);
 
-        for (Employee employee : listEmployee) {
-            sendEmail(employee.getAccount().getEmail(), subject, content, employee.getName());
-        }
-        //        sendEmail(sendNotificationDTO.getCandidate().getEmail(), subject, content,
+        EmailSchedule emailSchedule = EmailSchedule.builder()
+                .email(sendNotificationDTO.getCandidate().getAccount().getEmail())
+                .content(content)
+                .title(subject)
+                .build();
+        emailScheduleRepository.save(emailSchedule);
+
+//        for (Employee employee : listEmployee) {
+//            sendEmail(employee.getAccount().getEmail(), subject, content, employee.getName());
+//        }
+//        sendEmail(sendNotificationDTO.getCandidate().getEmail(), subject, content,
 //                sendNotificationDTO.getCandidate().getName());
 //        for (Candidate candidate : listCandidate) {
-//            pushNotification(candidate.getAccount().getNotificationToken(),
-//                    notification.getSubject(),
-//                    notification.getContent());
+//            if (candidate.getAccount().getNotificationToken() != null) {
+//                pushNotification(candidate.getAccount().getNotificationToken(),
+//                        notification.getSubject(),
+//                        notification.getContent());
+//            }
 //        }
-        for (Employee employee : listEmployee) {
-            pushNotification(employee.getAccount().getNotificationToken(),
-                    notification.getSubject(),
-                    notification.getContent());
-        }
+//        for (Employee employee : listEmployee) {
+//            if (employee.getAccount().getNotificationToken() != null) {
+//                pushNotification(employee.getAccount().getNotificationToken(),
+//                        notification.getSubject(),
+//                        notification.getContent());
+//            }
+//        }
     }
 
-    private void sendEmail(String email, String title, String content, String name) throws MessagingException {
+    private void sendEmail(String email, String title, String content) throws MessagingException {
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
         mimeMessageHelper.setTo(email);
         mimeMessageHelper.setSubject(title);
-        mimeMessageHelper.setText("Thân gửi " + name + ",\n" + content);
+        mimeMessageHelper.setText(content);
         javaMailSender.send(mimeMessage);
     }
 
@@ -254,14 +289,18 @@ public class NotificationServiceImp implements NotificationService {
             throw new ListEmptyException(NotificationErrorMessage.LIST_EMPTY_EXCEPTION);
         return result;
     }
-//lam push noti cho candidate interview luc approve
-    //    @Scheduled(cron = "*/10 * * * * *")//10 second
-//    @Scheduled(cron = "*/60 * * * * *")//1 minute
-//    public void sendMail() {
-//        // Your mail logic will go here
-//        LocalDateTime localDateTime = LocalDateTime.now();
-//        System.out.println("Scheduled task running" + localDateTime.getMinute());
-//
-//    }
+    //    @Scheduled(cron = "*/60 * * * * *")//1 minute
+    @Scheduled(cron = "*/10 * * * * *")//10 second
+    public void sendMailAuto() {
+        EmailSchedule emailSchedule= emailScheduleService.getFirstMailSchedule();
+        try {
+            if(emailSchedule != null){
+                sendEmail(emailSchedule.getEmail(),emailSchedule.getTitle(),emailSchedule.getContent());
+                emailScheduleRepository.delete(emailSchedule);
+            }
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
 
 }

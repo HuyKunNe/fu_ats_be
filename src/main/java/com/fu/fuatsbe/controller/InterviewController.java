@@ -44,9 +44,8 @@ public class InterviewController {
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> createInterview(@RequestBody InterviewCreateDTO dto) throws MessagingException {
         ResponseDTO response = new ResponseDTO();
-        InterviewResponse interviewResponse = interviewService.createInterview(dto);
+        interviewService.createInterview(dto);
         response.setStatus(ResponseStatusDTO.SUCCESS);
-        response.setData(interviewResponse);
         response.setMessage(InterviewSuccessMessage.CREATE_INTERVIEW_SUCCESS);
         return ResponseEntity.ok().body(response);
     }

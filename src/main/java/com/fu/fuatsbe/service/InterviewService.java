@@ -12,7 +12,7 @@ import com.fu.fuatsbe.response.NameAndStatusResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 
 public interface InterviewService {
-    InterviewResponse createInterview(InterviewCreateDTO interviewCreateDTO) throws MessagingException;
+    void createInterview(InterviewCreateDTO interviewCreateDTO) throws MessagingException;
 
     ResponseWithTotalPage<InterviewResponse> getAllInterview(int pageNo, int pageSize);
 

@@ -68,11 +68,9 @@ public class InterviewServiceImp implements InterviewService {
     private final ModelMapper modelMapper;
 
     @Override
-    public InterviewResponse createInterview(InterviewCreateDTO interviewCreateDTO) throws MessagingException {
-        Candidate candidate = candidateRepository.findById(interviewCreateDTO.getCandidateId())
-                .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
-
+    public void createInterview(InterviewCreateDTO interviewCreateDTO) throws MessagingException {
         List<Employee> employeeList = new ArrayList<>();
+        List<Candidate> candidateList = new ArrayList<>();
         List<Integer> intervieweeIdList = new ArrayList<>();
         for (Integer employeeId : interviewCreateDTO.getEmployeeId()) {
             Employee employee = employeeRepository.findById(employeeId)
@@ -80,83 +78,74 @@ public class InterviewServiceImp implements InterviewService {
             employeeList.add(employee);
             intervieweeIdList.add(employeeId);
         }
+        for (Integer candidateId: interviewCreateDTO.getCandidateId()) {
+            Candidate candidate = candidateRepository.findById(candidateId)
+                    .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+            candidateList.add(candidate);
+        }
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        DateTimeFormatter dateFormater = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-        LocalDate localDate = LocalDate.parse(interviewCreateDTO.getDate(), dateFormater);
+        LocalDate localDate = LocalDate.parse(interviewCreateDTO.getDate(), dateFormatter);
         LocalTime localTime = LocalTime.parse(interviewCreateDTO.getTime(), timeFormatter);
-        LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-        String dateInput = localDateTime.format(dateTimeFormatter);
-        Timestamp dateInterview = Timestamp.valueOf(dateInput);
-        LocalDate presentDate = LocalDate.parse(LocalDate.now().toString(), dateFormater);
+
+        LocalDate presentDate = LocalDate.parse(LocalDate.now().toString(), dateFormatter);
+
 
         if (localDate.isBefore(presentDate)) {
             throw new PermissionException(InterviewErrorMessage.DATE_NOT_VALID);
         }
-        JobApply jobApply = jobApplyRepository.getJobAppliesByRecruitmentAndCandidate(
-                interviewCreateDTO.getRecruitmentRequestId(), interviewCreateDTO.getCandidateId())
-                .orElseThrow(() -> new NotValidException(JobApplyErrorMessage.CANDIDATE_NOT_APPLY));
-        Interview interview = Interview.builder()
-                .subject(interviewCreateDTO.getSubject())
-                .purpose(interviewCreateDTO.getPurpose())
-                .date(dateInterview)
-                .address(interviewCreateDTO.getAddress())
-                .room(interviewCreateDTO.getRoom())
-                .linkMeeting(interviewCreateDTO.getLinkMeeting())
-                .round(interviewCreateDTO.getRound())
-                .description(interviewCreateDTO.getDescription())
-                .status(InterviewRequestStatus.PENDING)
-                .type(interviewCreateDTO.getType())
-                .candidate(candidate)
-                .jobApply(jobApply)
-                .build();
-        Interview savedInterview = interviewRepository.save(interview);
+        int loopTimes = 0;
+        LocalTime newLocalTime = null;
+        for (Candidate candidate: candidateList) {
+            newLocalTime = localTime.plusMinutes(45*loopTimes);
+            LocalDateTime localDateTime = LocalDateTime.of(localDate, newLocalTime);
+            String dateInput = localDateTime.format(dateTimeFormatter);
+            Timestamp dateInterview = Timestamp.valueOf(dateInput);
+            JobApply jobApply = jobApplyRepository.getJobAppliesByRecruitmentAndCandidate(
+                            interviewCreateDTO.getRecruitmentRequestId(), candidate.getId())
+                    .orElseThrow(() -> new NotValidException(JobApplyErrorMessage.CANDIDATE_NOT_APPLY));
+            Interview interview = Interview.builder()
+                    .subject(interviewCreateDTO.getSubject())
+                    .purpose(interviewCreateDTO.getPurpose())
+                    .date(dateInterview)
+                    .address(interviewCreateDTO.getAddress())
+                    .room(interviewCreateDTO.getRoom())
+                    .linkMeeting(interviewCreateDTO.getLinkMeeting())
+                    .round(interviewCreateDTO.getRound())
+                    .description(interviewCreateDTO.getDescription())
+                    .status(InterviewRequestStatus.PENDING)
+                    .type(interviewCreateDTO.getType())
+                    .candidate(candidate)
+                    .jobApply(jobApply)
+                    .build();
+            Interview savedInterview = interviewRepository.save(interview);
 
-        List<InterviewEmployee> listInterviewEmployees = new ArrayList<>();
+            List<InterviewEmployee> listInterviewEmployees = new ArrayList<>();
 
-        for (Employee emp : employeeList) {
-            InterviewEmployee interviewEmployee = InterviewEmployee.builder()
-                    .employee(emp)
+            for (Employee emp : employeeList) {
+                InterviewEmployee interviewEmployee = InterviewEmployee.builder()
+                        .employee(emp)
+                        .interview(savedInterview)
+                        .build();
+                InterviewEmployee interviewEmployeeSaved = interviewEmployeeRepository.save(interviewEmployee);
+                listInterviewEmployees.add(interviewEmployeeSaved);
+            }
+
+            SendNotificationDTO sendNotificationDTO = SendNotificationDTO.builder()
+                    .link(savedInterview.getLinkMeeting())
+                    .room(savedInterview.getRoom())
+                    .address(savedInterview.getAddress())
+                    .date(savedInterview.getDate())
+                    .candidate(candidate)
+                    .IntervieweeID(intervieweeIdList)
                     .interview(savedInterview)
                     .build();
-            InterviewEmployee interviewEmployeeSaved = interviewEmployeeRepository.save(interviewEmployee);
-            listInterviewEmployees.add(interviewEmployeeSaved);
+            notificationService.sendNotificationForInterview(sendNotificationDTO);
+            loopTimes++;
         }
+        System.out.println("Check end time "+newLocalTime);
 
-        SendNotificationDTO sendNotificationDTO = SendNotificationDTO.builder()
-                .link(savedInterview.getLinkMeeting())
-                .room(savedInterview.getRoom())
-                .address(savedInterview.getAddress())
-                .date(savedInterview.getDate())
-                .candidate(candidate)
-                .IntervieweeID(intervieweeIdList)
-                .interview(savedInterview)
-                .build();
-        notificationService.sendNotificationForInterview(sendNotificationDTO);
-
-        InterviewResponse response = InterviewResponse.builder()
-                .id(savedInterview.getId())
-                .subject(savedInterview.getSubject())
-                .purpose(savedInterview.getPurpose())
-                .date(localDate.toString())
-                .time(localTime.toString())
-                .room(savedInterview.getRoom())
-                .address(savedInterview.getAddress())
-                .linkMeeting(savedInterview.getLinkMeeting())
-                .round(savedInterview.getRound())
-                .description(savedInterview.getDescription())
-                .status(interview.getStatus())
-                .type(savedInterview.getType())
-                .jobApply(savedInterview.getJobApply())
-                .candidateName(savedInterview.getCandidate().getName())
-                .build();
-
-        List<String> empName = new ArrayList<>();
-        for (InterviewEmployee interviewEmp : listInterviewEmployees) {
-            empName.add(interviewEmp.getEmployee().getName());
-        }
-        response.setEmployeeNames(empName);
-        return response;
     }
 
     @Override
