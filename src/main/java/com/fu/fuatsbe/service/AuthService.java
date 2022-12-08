@@ -8,6 +8,7 @@ import com.fu.fuatsbe.DTO.ChangePasswordDTO;
 import com.fu.fuatsbe.DTO.LoginDto;
 import com.fu.fuatsbe.DTO.RegisterCandidateDto;
 import com.fu.fuatsbe.DTO.RegisterDto;
+import com.fu.fuatsbe.entity.Account;
 import com.fu.fuatsbe.response.LoginResponseDto;
 import com.fu.fuatsbe.response.RegisterResponseDto;
 
@@ -20,5 +21,7 @@ public interface AuthService {
 
     public void changePassword(ChangePasswordDTO changePasswordDTO);
 
+    public LoginResponseDto loginWithGoogle(String token) throws JSONException;
 
+    public Account registerAccountForGoogleLogin(String email, String name, String image);
 }
