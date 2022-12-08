@@ -9,11 +9,17 @@ import java.util.List;
 import java.util.Optional;
 
 import com.fu.fuatsbe.DTO.*;
+import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
+import com.fu.fuatsbe.repository.*;
+import com.fu.fuatsbe.response.CountStatusResponse;
+import com.fu.fuatsbe.response.IdAndNameResponse;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.constant.city.CityErrorMessage;
@@ -31,15 +37,13 @@ import com.fu.fuatsbe.entity.RecruitmentRequest;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.exceptions.NotValidException;
-import com.fu.fuatsbe.repository.CityRepository;
-import com.fu.fuatsbe.repository.EmployeeRepository;
-import com.fu.fuatsbe.repository.PlanDetailRepository;
-import com.fu.fuatsbe.repository.PositionRepository;
-import com.fu.fuatsbe.repository.RecruitmentRequestRepository;
 import com.fu.fuatsbe.response.RecruitmentRequestResponse;
+import com.fu.fuatsbe.response.RecruitmentRequestResponseWithJobApply;
 import com.fu.fuatsbe.service.RecruitmentRequestService;
 
 import lombok.RequiredArgsConstructor;
+
+import javax.persistence.Tuple;
 
 @Service
 @RequiredArgsConstructor
@@ -48,41 +52,48 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     @Autowired
     private final RecruitmentRequestRepository recruitmentRequestRepository;
 
+    private static final String THOA_THUAN = "Negotiable";
+
     private final ModelMapper modelMapper;
     private final EmployeeRepository employeeRepository;
     private final PlanDetailRepository planDetailRepository;
     private final PositionRepository positionRepository;
+    private final DepartmentRepository departmentRepository;
     private final CityRepository cityRepository;
+    private final JobApplyRepository jobApplyRepository;
 
     @Override
-    public RecruitmentRequestResponseWithTotalPages getAllRecruitmentRequests(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<RecruitmentRequestResponse> getAllRecruitmentRequests(int pageNo, int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<RecruitmentRequest> pageResult = recruitmentRequestRepository.findAll(pageable);
-        List<RecruitmentRequestResponse> result = new ArrayList<RecruitmentRequestResponse>();
-        RecruitmentRequestResponseWithTotalPages responseWithTotalPages = null;
+        List<RecruitmentRequestResponse> list = new ArrayList<RecruitmentRequestResponse>();
+        ResponseWithTotalPage<RecruitmentRequestResponse> result = new ResponseWithTotalPage<>();
 
         if (pageResult.hasContent()) {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
-                if (recruitmentRequest.getSalaryTo() != null) {
+                if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
                     response.setSalaryDetail(
-                            (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                            (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+                                    + recruitmentRequest.getSalaryTo())
                                     .trim());
-                } else {
+                } else if (recruitmentRequest.getSalaryFrom() == null
+                        && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+                } else if (recruitmentRequest.getSalaryTo() == null
+                        && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+                } else
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
-                }
-                result.add(response);
-                responseWithTotalPages = RecruitmentRequestResponseWithTotalPages
-                        .builder()
-                        .totalPages(pageResult.getTotalPages())
-                        .responseList(result)
-                        .build();
+                list.add(response);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(RecruitmentRequestErrorMessage.LIST_RECRUITMENT_REQUEST_EMPTY_EXCEPTION);
-        return responseWithTotalPages;
+        return result;
     }
 
     @Override
@@ -91,106 +102,128 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 .orElseThrow(() -> new NotFoundException(
                         RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
         RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest, RecruitmentRequestResponse.class);
-        if (recruitmentRequest.getSalaryTo() != null) {
+
+        if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
             response.setSalaryDetail(
-                    (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                    (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+                            + recruitmentRequest.getSalaryTo())
                             .trim());
-        } else {
+        } else if (recruitmentRequest.getSalaryFrom() == null
+                && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+            response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+        } else if (recruitmentRequest.getSalaryTo() == null
+                && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+            response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+        } else
             response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
-        }
         return response;
     }
 
     @Override
-    public RecruitmentRequestResponseWithTotalPages getAllOpenRecruitmentRequest(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+    public ResponseWithTotalPage<RecruitmentRequestResponseWithJobApply> getAllOpenRecruitmentRequest(int pageNo,
+            int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<RecruitmentRequest> pageResult = recruitmentRequestRepository
                 .findByStatus(RecruitmentRequestStatus.OPENING, pageable);
-        List<RecruitmentRequestResponse> result = new ArrayList<RecruitmentRequestResponse>();
-        RecruitmentRequestResponseWithTotalPages responseWithTotalPages = null;
+
+        List<RecruitmentRequestResponseWithJobApply> list = new ArrayList<RecruitmentRequestResponseWithJobApply>();
+        ResponseWithTotalPage<RecruitmentRequestResponseWithJobApply> result = new ResponseWithTotalPage<>();
+
         if (pageResult.hasContent()) {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
-                RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
-                        RecruitmentRequestResponse.class);
-                if (recruitmentRequest.getSalaryTo() != null) {
+                RecruitmentRequestResponseWithJobApply response = modelMapper.map(recruitmentRequest,
+                        RecruitmentRequestResponseWithJobApply.class);
+                if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
                     response.setSalaryDetail(
-                            (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                            (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+                                    + recruitmentRequest.getSalaryTo())
                                     .trim());
-                } else {
+                } else if (recruitmentRequest.getSalaryFrom() == null
+                        && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+                } else if (recruitmentRequest.getSalaryTo() == null
+                        && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+                } else
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
-                }
-                result.add(response);
-                responseWithTotalPages = RecruitmentRequestResponseWithTotalPages.builder()
-                        .totalPages(pageResult.getTotalPages())
-                        .responseList(result)
-                        .build();
+                int total = jobApplyRepository.countByRecruitmentRequestId(recruitmentRequest.getId());
+                response.setTotalJobApply(total);
+                list.add(response);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(RecruitmentRequestErrorMessage.LIST_RECRUITMENT_REQUEST_EMPTY_EXCEPTION);
-        return responseWithTotalPages;
+        return result;
     }
 
     @Override
-    public RecruitmentRequestResponseWithTotalPages getAllFilledRecruitmentRequest(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<RecruitmentRequestResponse> getAllFilledRecruitmentRequest(int pageNo, int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<RecruitmentRequest> pageResult = recruitmentRequestRepository
                 .findByStatus(RecruitmentRequestStatus.FILLED, pageable);
-        List<RecruitmentRequestResponse> result = new ArrayList<RecruitmentRequestResponse>();
-        RecruitmentRequestResponseWithTotalPages responseWithTotalPages = null;
+        List<RecruitmentRequestResponse> list = new ArrayList<RecruitmentRequestResponse>();
+        ResponseWithTotalPage<RecruitmentRequestResponse> result = new ResponseWithTotalPage<>();
 
         if (pageResult.hasContent()) {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
-                if (recruitmentRequest.getSalaryTo() != null) {
+                if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
                     response.setSalaryDetail(
-                            (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                            (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+                                    + recruitmentRequest.getSalaryTo())
                                     .trim());
-                } else {
+                } else if (recruitmentRequest.getSalaryFrom() == null
+                        && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+                } else if (recruitmentRequest.getSalaryTo() == null
+                        && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+                } else
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
-                }
-                result.add(response);
-                responseWithTotalPages = RecruitmentRequestResponseWithTotalPages
-                        .builder()
-                        .totalPages(pageResult.getTotalPages())
-                        .responseList(result)
-                        .build();
+                list.add(response);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(RecruitmentRequestErrorMessage.LIST_RECRUITMENT_REQUEST_EMPTY_EXCEPTION);
-        return responseWithTotalPages;
+        return result;
     }
 
     @Override
-    public RecruitmentRequestResponseWithTotalPages getAllClosedRecruitmentRequest(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+    public ResponseWithTotalPage<RecruitmentRequestResponse> getAllClosedRecruitmentRequest(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<RecruitmentRequest> pageResult = recruitmentRequestRepository
                 .findByStatus(RecruitmentRequestStatus.CLOSED, pageable);
-        List<RecruitmentRequestResponse> result = new ArrayList<RecruitmentRequestResponse>();
-        RecruitmentRequestResponseWithTotalPages responseWithTotalPages = null;
+        List<RecruitmentRequestResponse> list = new ArrayList<RecruitmentRequestResponse>();
+        ResponseWithTotalPage<RecruitmentRequestResponse> result = new ResponseWithTotalPage<>();
 
         if (pageResult.hasContent()) {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
-                if (recruitmentRequest.getSalaryTo() != null) {
+                if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
                     response.setSalaryDetail(
-                            (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                            (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+                                    + recruitmentRequest.getSalaryTo())
                                     .trim());
-                } else {
+                } else if (recruitmentRequest.getSalaryFrom() == null
+                        && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+                } else if (recruitmentRequest.getSalaryTo() == null
+                        && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+                } else
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
-                }
-                result.add(response);
+                list.add(response);
             }
-            responseWithTotalPages = RecruitmentRequestResponseWithTotalPages
-                    .builder()
-                    .responseList(result)
-                    .totalPages(pageResult.getTotalPages())
-                    .build();
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(RecruitmentRequestErrorMessage.LIST_RECRUITMENT_REQUEST_EMPTY_EXCEPTION);
-        return responseWithTotalPages;
+        return result;
     }
 
     @Override
@@ -199,13 +232,34 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 () -> new NotFoundException(RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
         Position position = positionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        List<City> cities = new ArrayList<>();
-        for (String cityName : updateDTO.getCityName()) {
-            City city = cityRepository.findByName(cityName)
-                    .orElseThrow(() -> new NotFoundException(CityErrorMessage.NOT_FOUND));
+        City city = cityRepository.findByName(updateDTO.getCityName())
+                .orElseThrow(() -> new NotFoundException(CityErrorMessage.NOT_FOUND));
 
-            cities.add(city);
+        LocalDate expiryDate = LocalDate.parse(updateDTO.getExpiryDate().toString(), format);
+
+        LocalDate periodToPlanDetail = LocalDate.parse(recruitmentRequest.getPlanDetail().getPeriodTo().toString(),
+                format);
+
+        if (expiryDate.isAfter(periodToPlanDetail)) {
+            throw new NotValidException(RecruitmentRequestErrorMessage.NOT_VALID_EXPIRY_DATE_EXCEPTION);
+        }
+
+        if (updateDTO.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)
+                && updateDTO.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+            updateDTO.setSalaryTo(null);
+        } else if (updateDTO.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+            updateDTO.setSalaryFrom(null);
+        } else if (updateDTO.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+            updateDTO.setSalaryTo(null);
+        }
+
+        int totalAmount = recruitmentRequestRepository.totalAmount(recruitmentRequest.getPlanDetail().getId());
+
+        if ((updateDTO.getAmount() > (recruitmentRequest.getPlanDetail().getAmount() - totalAmount))
+                || updateDTO.getAmount() <= 0) {
+            throw new NotValidException(RecruitmentRequestErrorMessage.NOT_VALID_AMOUNT_EXCEPTION);
         }
 
         recruitmentRequest.setAmount(updateDTO.getAmount());
@@ -215,10 +269,11 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         recruitmentRequest.setExperience(updateDTO.getExperience());
         recruitmentRequest.setSalaryFrom(updateDTO.getSalaryFrom());
         recruitmentRequest.setSalaryTo(updateDTO.getSalaryTo());
+        recruitmentRequest.setName(updateDTO.getName());
         recruitmentRequest.setEducationLevel(updateDTO.getEducationLevel());
         recruitmentRequest.setAddress(updateDTO.getAddress());
         recruitmentRequest.setForeignLanguage(updateDTO.getForeignLanguage());
-        recruitmentRequest.setCities(cities);
+        recruitmentRequest.setCities(city);
         recruitmentRequest.setTypeOfWork(updateDTO.getTypeOfWork());
         recruitmentRequest.setDescription(updateDTO.getDescription());
         recruitmentRequest.setPosition(position);
@@ -226,13 +281,19 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         RecruitmentRequest recruitmentRequestSaved = recruitmentRequestRepository.save(recruitmentRequest);
         RecruitmentRequestResponse response = modelMapper.map(recruitmentRequestSaved,
                 RecruitmentRequestResponse.class);
-        if (recruitmentRequestSaved.getSalaryTo() != null) {
+        if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
             response.setSalaryDetail(
-                    (recruitmentRequestSaved.getSalaryFrom() + " - " + recruitmentRequestSaved.getSalaryTo())
+                    (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+                            + recruitmentRequest.getSalaryTo())
                             .trim());
-        } else {
-            response.setSalaryDetail(recruitmentRequestSaved.getSalaryFrom());
-        }
+        } else if (recruitmentRequest.getSalaryFrom() == null
+                && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+            response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+        } else if (recruitmentRequest.getSalaryTo() == null
+                && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+            response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+        } else
+            response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
         return response;
 
     }
@@ -242,7 +303,7 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         Optional<Employee> optionalCreator = employeeRepository.findById(createDTO.getEmployeeId());
         PlanDetail planDetail = planDetailRepository.findById(createDTO.getPlanDetailId())
                 .orElseThrow(() -> new NotFoundException(PlanDetailErrorMessage.PLAN_DETAIL_NOT_FOUND_EXCEPTION));
-        Position position = positionRepository.findById(createDTO.getPositionId())
+        Position position = positionRepository.findPositionByName(createDTO.getPositionName())
                 .orElseThrow(() -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
         if (!planDetail.getStatus().equalsIgnoreCase(PlanDetailStatus.APPROVED))
             throw new NotValidException(PlanDetailErrorMessage.PLAN_DETAIL_NOT_APPROVED_EXCEPTION);
@@ -252,21 +313,38 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             LocalDate dateFormat = LocalDate.parse(date.toString(), format);
             LocalDate expiryDate = LocalDate.parse(createDTO.getExpiryDate().toString(), format);
 
-            List<City> cities = new ArrayList<>();
-            for (String cityName : createDTO.getCityName()) {
-                City city = cityRepository.findByName(cityName)
-                        .orElseThrow(() -> new NotFoundException(CityErrorMessage.NOT_FOUND));
+            LocalDate periodToPlanDetail = LocalDate.parse(planDetail.getPeriodTo().toString(), format);
 
-                cities.add(city);
+            if (expiryDate.isAfter(periodToPlanDetail)) {
+                throw new NotValidException(RecruitmentRequestErrorMessage.NOT_VALID_EXPIRY_DATE_EXCEPTION);
+            }
+
+            City city = cityRepository.findByName(createDTO.getCityName())
+                    .orElseThrow(() -> new NotFoundException(CityErrorMessage.NOT_FOUND));
+
+            int totalAmount = recruitmentRequestRepository.totalAmount(createDTO.getPlanDetailId());
+
+            if (createDTO.getAmount() > (planDetail.getAmount() - totalAmount) || createDTO.getAmount() <= 0) {
+                throw new NotValidException(RecruitmentRequestErrorMessage.NOT_VALID_AMOUNT_EXCEPTION);
+            }
+
+            if (createDTO.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)
+                    && createDTO.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+                createDTO.setSalaryTo(null);
+            } else if (createDTO.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+                createDTO.setSalaryFrom(null);
+            } else if (createDTO.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+                createDTO.setSalaryTo(null);
             }
 
             RecruitmentRequest request = RecruitmentRequest.builder().date(Date.valueOf(dateFormat))
                     .expiryDate(Date.valueOf(expiryDate)).industry(createDTO.getIndustry())
                     .amount(createDTO.getAmount()).jobLevel(createDTO.getJobLevel())
                     .status(RecruitmentRequestStatus.OPENING).experience(createDTO.getExperience())
-                    .cities(cities)
+                    .cities(city)
                     .typeOfWork(createDTO.getTypeOfWork())
                     .benefit(createDTO.getBenefit())
+                    .name(createDTO.getName())
                     .foreignLanguage(createDTO.getForeignLanguage())
                     .educationLevel(createDTO.getEducationLevel())
                     .requirement(createDTO.getRequirement())
@@ -276,11 +354,18 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                     .position(position).build();
             recruitmentRequestRepository.save(request);
             RecruitmentRequestResponse response = modelMapper.map(request, RecruitmentRequestResponse.class);
-            if (request.getSalaryTo() != null) {
-                response.setSalaryDetail((request.getSalaryFrom() + " - " + request.getSalaryTo()).trim());
-            } else {
+            if (request.getSalaryTo() != null && request.getSalaryFrom() != null) {
+                response.setSalaryDetail(
+                        (request.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - " + request.getSalaryTo())
+                                .trim());
+            } else if (request.getSalaryFrom() == null
+                    && !request.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+                response.setSalaryDetail("Lên đến " + request.getSalaryTo());
+            } else if (request.getSalaryTo() == null
+                    && !request.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+                response.setSalaryDetail("Trên " + request.getSalaryFrom());
+            } else
                 response.setSalaryDetail(request.getSalaryFrom());
-            }
             return response;
         } else {
             throw new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION);
@@ -296,48 +381,58 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         RecruitmentRequest recruitmentRequestSaved = recruitmentRequestRepository.save(recruitmentRequest);
         RecruitmentRequestResponse response = modelMapper.map(recruitmentRequestSaved,
                 RecruitmentRequestResponse.class);
-        if (recruitmentRequestSaved.getSalaryTo() != null) {
+        if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
             response.setSalaryDetail(
-                    (recruitmentRequestSaved.getSalaryFrom() + " - " + recruitmentRequestSaved.getSalaryTo()).trim());
-        } else {
-            response.setSalaryDetail(recruitmentRequestSaved.getSalaryFrom());
-        }
+                    (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+                            + recruitmentRequest.getSalaryTo())
+                            .trim());
+        } else if (recruitmentRequest.getSalaryFrom() == null
+                && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+            response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+        } else if (recruitmentRequest.getSalaryTo() == null
+                && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+            response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+        } else
+            response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
         return response;
     }
 
     @Override
-    public RecruitmentRequestResponseWithTotalPages getAllRecruitmentRequestByCreator(int id, int pageNo,
+    public ResponseWithTotalPage<RecruitmentRequestResponse> getAllRecruitmentRequestByCreator(int id, int pageNo,
             int pageSize) {
 
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<RecruitmentRequest> pageResult = recruitmentRequestRepository.findByCreator(employee, pageable);
-        List<RecruitmentRequestResponse> result = new ArrayList<RecruitmentRequestResponse>();
-        RecruitmentRequestResponseWithTotalPages responseWithTotalPages = null;
+        List<RecruitmentRequestResponse> list = new ArrayList<RecruitmentRequestResponse>();
+        ResponseWithTotalPage<RecruitmentRequestResponse> result = new ResponseWithTotalPage<>();
 
         if (pageResult.hasContent()) {
             for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
-                if (recruitmentRequest.getSalaryTo() != null) {
+                if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
                     response.setSalaryDetail(
-                            (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                            (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+                                    + recruitmentRequest.getSalaryTo())
                                     .trim());
-                } else {
+                } else if (recruitmentRequest.getSalaryFrom() == null
+                        && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+                } else if (recruitmentRequest.getSalaryTo() == null
+                        && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+                } else
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
-                }
-                result.add(response);
-                responseWithTotalPages = RecruitmentRequestResponseWithTotalPages
-                        .builder()
-                        .totalPages(pageResult.getTotalPages())
-                        .responseList(result)
-                        .build();
+                list.add(response);
             }
+            result.setResponseList(list);
+            result.setTotalPage(pageResult.getTotalPages());
         } else
             throw new ListEmptyException(RecruitmentRequestErrorMessage.LIST_RECRUITMENT_REQUEST_EMPTY_EXCEPTION);
-        return responseWithTotalPages;
+        return result;
     }
 
     @Override
@@ -351,13 +446,19 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             for (RecruitmentRequest recruitmentRequest : list) {
                 RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
                         RecruitmentRequestResponse.class);
-                if (recruitmentRequest.getSalaryTo() != null) {
+                if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
                     response.setSalaryDetail(
-                            (recruitmentRequest.getSalaryFrom() + " - " + recruitmentRequest.getSalaryTo())
+                            (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+                                    + recruitmentRequest.getSalaryTo())
                                     .trim());
-                } else {
+                } else if (recruitmentRequest.getSalaryFrom() == null
+                        && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+                } else if (recruitmentRequest.getSalaryTo() == null
+                        && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+                } else
                     response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
-                }
                 result.add(response);
             }
         }
@@ -368,9 +469,137 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
     public RecruitmentSearchCategoryDTO searchCategory() {
         RecruitmentSearchCategoryDTO recruitmentSearchCategoryDTO = RecruitmentSearchCategoryDTO.builder()
                 .jobTitle(recruitmentRequestRepository.getDistinctByPosition())
+                .position(positionRepository.getAllPositionName())
                 .industry(recruitmentRequestRepository.getDistinctByIndustry())
                 .province(cityRepository.getAllCityName())
                 .build();
         return recruitmentSearchCategoryDTO;
     }
+
+    @Override
+    public List<RecruitmentRequestResponse> getNewestRecruitmentRequest() {
+        Pageable pageable = PageRequest.of(0, 4);
+        Page<RecruitmentRequest> pageResult = recruitmentRequestRepository.findByOrderByIdDesc(pageable);
+        List<RecruitmentRequestResponse> list = new ArrayList<RecruitmentRequestResponse>();
+        if (pageResult.hasContent()) {
+            for (RecruitmentRequest recruitmentRequest : pageResult.getContent()) {
+                RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
+                        RecruitmentRequestResponse.class);
+                if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
+                    response.setSalaryDetail(
+                            (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+                                    + recruitmentRequest.getSalaryTo())
+                                    .trim());
+                } else if (recruitmentRequest.getSalaryFrom() == null
+                        && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+                } else if (recruitmentRequest.getSalaryTo() == null
+                        && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+                } else
+                    response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
+                list.add(response);
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public CountStatusResponse getStatusTotal() {
+        List<Tuple> list = recruitmentRequestRepository.getTotalStatusRequest();
+
+        List<String> statusList = new ArrayList<>();
+        List<Integer> totalList = new ArrayList<>();
+        for (Tuple total : list) {
+            statusList.add(total.get("status").toString());
+            totalList.add(Integer.parseInt(total.get("total").toString()));
+
+        }
+        CountStatusResponse countStatusResponse = CountStatusResponse.builder()
+                .status(statusList)
+                .total(totalList)
+                .build();
+        return countStatusResponse;
+
+    }
+
+    @Override
+    public List<IdAndNameResponse> getIdAndNameRequestByDepartment(int departmentId) {
+        departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
+        List<Tuple> listRepo = recruitmentRequestRepository.getIdAndNameRequestByDepartment(departmentId);
+        List<IdAndNameResponse> responses = new ArrayList<>();
+        for (Tuple tuple : listRepo) {
+            IdAndNameResponse idAndNameResponse = IdAndNameResponse.builder()
+                    .id(Integer.parseInt(tuple.get("id").toString()))
+                    .name(tuple.get("name").toString())
+                    .build();
+            responses.add(idAndNameResponse);
+        }
+        return responses;
+    }
+
+    @Override
+    public List<IdAndNameResponse> getAllActiveRequest() {
+        List<Tuple> request = recruitmentRequestRepository.getAllActiveRequest();
+        List<IdAndNameResponse> responses = new ArrayList<>();
+        for (Tuple tuple : request) {
+            IdAndNameResponse idAndNameResponse = IdAndNameResponse.builder()
+                    .id(Integer.parseInt(tuple.get("id").toString()))
+                    .name(tuple.get("name").toString())
+                    .build();
+            responses.add(idAndNameResponse);
+        }
+        return responses;
+    }
+
+    @Override
+    public List<RecruitmentRequestResponse> getExpiryDateRecruitmentRequest() {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+        String date = localDate.format(format);
+        Date currentDate = Date.valueOf(date);
+
+        List<RecruitmentRequest> pageResult = recruitmentRequestRepository
+                .findByExpiryDateLessThanAndStatusNotLikeOrderByExpiryDateDesc(
+                        currentDate, RecruitmentRequestStatus.CLOSED);
+        List<RecruitmentRequestResponse> list = new ArrayList<RecruitmentRequestResponse>();
+        if (pageResult.size() > 0) {
+            for (RecruitmentRequest recruitmentRequest : pageResult) {
+                RecruitmentRequestResponse response = modelMapper.map(recruitmentRequest,
+                        RecruitmentRequestResponse.class);
+                if (recruitmentRequest.getSalaryTo() != null && recruitmentRequest.getSalaryFrom() != null) {
+                    response.setSalaryDetail(
+                            (recruitmentRequest.getSalaryFrom().replaceAll("VNĐ", "").trim() + " - "
+                                    + recruitmentRequest.getSalaryTo())
+                                    .trim());
+                } else if (recruitmentRequest.getSalaryFrom() == null
+                        && !recruitmentRequest.getSalaryTo().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Lên đến " + recruitmentRequest.getSalaryTo());
+                } else if (recruitmentRequest.getSalaryTo() == null
+                        && !recruitmentRequest.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)) {
+                    response.setSalaryDetail("Trên " + recruitmentRequest.getSalaryFrom());
+                } else
+                    response.setSalaryDetail(recruitmentRequest.getSalaryFrom());
+                list.add(response);
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public boolean closeListRecruitmentRequest(ListRequestClose listId) {
+
+        for (Integer id : listId.getListId()) {
+            RecruitmentRequest recruitmentRequest = recruitmentRequestRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundException(
+                            RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
+
+            recruitmentRequest.setStatus(RecruitmentRequestStatus.CLOSED);
+            recruitmentRequestRepository.save(recruitmentRequest);
+        }
+        return true;
+
+    }
+
 }

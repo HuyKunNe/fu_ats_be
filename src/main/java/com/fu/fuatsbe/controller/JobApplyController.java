@@ -1,5 +1,7 @@
 package com.fu.fuatsbe.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -12,10 +14,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fu.fuatsbe.DTO.JobApplyCreateDTO;
+import com.fu.fuatsbe.DTO.ListJobApplyByEmployee;
 import com.fu.fuatsbe.constant.job_apply.JobApplySuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
+import com.fu.fuatsbe.entity.CVScreening;
 import com.fu.fuatsbe.response.JobApplyResponse;
+import com.fu.fuatsbe.response.ListResponseDTO;
 import com.fu.fuatsbe.response.ResponseDTO;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.JobApplyService;
@@ -31,7 +36,7 @@ public class JobApplyController {
     private final JobApplyService jobApplyService;
 
     @PostMapping("/create")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE_CANDIDATE)
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity<ResponseDTO> createInterview(@RequestBody JobApplyCreateDTO createDTO) {
         ResponseDTO<JobApplyResponse> responseDTO = new ResponseDTO();
         JobApplyResponse jobApplyResponse = jobApplyService.createJobApply(createDTO);
@@ -42,7 +47,7 @@ public class JobApplyController {
     }
 
     @GetMapping("/getAll")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getAllJobApplies(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
@@ -55,7 +60,7 @@ public class JobApplyController {
     }
 
     @GetMapping("/getByRecruitmentRequest")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getAllJobAppliesByRecruitmentRequest(
             @RequestParam int requestId,
             @RequestParam(defaultValue = "0") int pageNo,
@@ -70,7 +75,7 @@ public class JobApplyController {
     }
 
     @GetMapping("/getJobApplyByCandidate")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE_CANDIDATE)
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity<ResponseDTO> getJobApplyByCandidate(
             @RequestParam int candidateId,
             @RequestParam(defaultValue = "0") int pageNo,
@@ -85,8 +90,8 @@ public class JobApplyController {
     }
 
     @GetMapping("/getAllPendingJobApplies")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> getJobApplyByCandidate(
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
+    public ResponseEntity<ResponseDTO> getAllPendingJobApplies(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
         ResponseDTO<ResponseWithTotalPage> responseDTO = new ResponseDTO();
@@ -98,7 +103,7 @@ public class JobApplyController {
     }
 
     @GetMapping("/getAllApprovedJobApplies")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getAllApprovedJobApplies(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
@@ -111,7 +116,7 @@ public class JobApplyController {
     }
 
     @GetMapping("/getAllCancelJobApplies")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getAllCancelJobApplies(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
@@ -124,7 +129,7 @@ public class JobApplyController {
     }
 
     @PutMapping("/cancelJobApply/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> cancelJobApply(@RequestParam("id") int id,
             @RequestParam int employeeId) {
         ResponseDTO<JobApplyResponse> responseDTO = new ResponseDTO();
@@ -136,7 +141,7 @@ public class JobApplyController {
     }
 
     @PutMapping("/approvedJobApply/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> approvedJobApply(@RequestParam("id") int id,
             @RequestParam int employeeId) {
         ResponseDTO<JobApplyResponse> responseDTO = new ResponseDTO();
@@ -148,12 +153,97 @@ public class JobApplyController {
     }
 
     @GetMapping("getById/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE_CANDIDATE)
+    @PreAuthorize(RolePreAuthorize.IS_AUTHENTICATED)
     public ResponseEntity<ResponseDTO> getJobApplyById(@RequestParam("id") int id) {
         ResponseDTO<JobApplyResponse> responseDTO = new ResponseDTO();
         JobApplyResponse jobApplyResponse = jobApplyService.getJobApplyById(id);
         responseDTO.setData(jobApplyResponse);
         responseDTO.setMessage(JobApplySuccessMessage.GET_BY_ID);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/getJobApplyDepartment")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getJobApplyByDepartment(@RequestParam int departmentId,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        ResponseWithTotalPage<JobApplyResponse> responseList = jobApplyService.getJobApplyByDepartment(departmentId,
+                pageNo, pageSize);
+        responseDTO.setData(responseList);
+        responseDTO.setMessage(JobApplySuccessMessage.GET_BY_ID);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/getJobApplyNotReject")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getJobApplyNotReject(@RequestParam int recruitmentRequestId,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        ResponseWithTotalPage<JobApplyResponse> responseList = jobApplyService.getJobApplyNotReject(
+                recruitmentRequestId,
+                pageNo, pageSize);
+        responseDTO.setData(responseList);
+        responseDTO.setMessage(JobApplySuccessMessage.GET_JOB_APPLY_NOT_REJECT);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/getCVScreening")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getCVScreening() {
+        ResponseDTO responseDTO = new ResponseDTO();
+        CVScreening cvScreening = jobApplyService.getCVScreening();
+        responseDTO.setData(cvScreening);
+        responseDTO.setMessage(JobApplySuccessMessage.GET_JOB_APPLY_NOT_REJECT);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/getJobApplyPassScreening")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getJobApplyPassScreening(@RequestParam int recruitmentRequestId,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        ResponseWithTotalPage<JobApplyResponse> responseList = jobApplyService.getJobApplyPassScreening(
+                recruitmentRequestId, pageNo, pageSize);
+        responseDTO.setData(responseList);
+        responseDTO.setMessage(JobApplySuccessMessage.GET_PASS_SCREENING);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/getJobApplyFailScreening")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getJobApplyFailScreening(@RequestParam int recruitmentRequestId,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        ResponseWithTotalPage<JobApplyResponse> responseList = jobApplyService.getJobApplyFailScreening(
+                recruitmentRequestId, pageNo, pageSize);
+        responseDTO.setData(responseList);
+        responseDTO.setMessage(JobApplySuccessMessage.GET_NOT_PASS_SCREENING);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/checkApplyByCandidateAndRequest")
+    @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
+    public boolean checkApplyByCandidateAndRequest(@RequestParam int requestId, @RequestParam int candidateId) {
+        return jobApplyService.checkApplyByRecruitmentRequestAndCandidate(requestId, candidateId);
+    }
+
+    @PostMapping("/createJobApplyByEmployee")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ListResponseDTO> createJobApplyByEmployee(@RequestBody ListJobApplyByEmployee createDTO) {
+        ListResponseDTO<JobApplyResponse> responseDTO = new ListResponseDTO();
+        List<JobApplyResponse> jobApplyResponse = jobApplyService.createJobApplyByEmployee(createDTO);
+        responseDTO.setData(jobApplyResponse);
+        responseDTO.setMessage(JobApplySuccessMessage.APPLY_JOB_BY_EMPLOYEE);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }

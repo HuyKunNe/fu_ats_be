@@ -51,6 +51,8 @@ public class Interview {
     private String description;
     private String status;
     private String type;
+    @Column(name = "candidate_confirm", length = 10)
+    private String candidateConfirm;
 
     @OneToOne(mappedBy = "interview")
     @EqualsAndHashCode.Include

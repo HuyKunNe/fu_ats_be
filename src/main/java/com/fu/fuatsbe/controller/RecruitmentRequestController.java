@@ -3,6 +3,7 @@ package com.fu.fuatsbe.controller;
 import java.util.List;
 
 import com.fu.fuatsbe.DTO.*;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fu.fuatsbe.constant.recruitmentRequest.RecruitmentRequestSuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import com.fu.fuatsbe.response.ListResponseDTO;
 import com.fu.fuatsbe.response.RecruitmentRequestResponse;
 import com.fu.fuatsbe.response.ResponseDTO;
@@ -40,7 +42,7 @@ public class RecruitmentRequestController {
             @RequestParam(defaultValue = "10") int pageSize) {
 
         ResponseDTO response = new ResponseDTO();
-        RecruitmentRequestResponseWithTotalPages responseWithTotalPages = recruitmentRequestService
+        ResponseWithTotalPage responseWithTotalPages = recruitmentRequestService
                 .getAllRecruitmentRequests(pageNo, pageSize);
         response.setData(responseWithTotalPages);
         response.setMessage(RecruitmentRequestSuccessMessage.GET_ALL_RECRUITMENT_REQUEST_SUCCESS);
@@ -48,7 +50,7 @@ public class RecruitmentRequestController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/getById/{id}")
+    @GetMapping("/getById")
     @PermitAll
     public ResponseEntity<ResponseDTO> getRecruitmentRequestById(@RequestParam("id") int id) {
         ResponseDTO<RecruitmentRequestResponse> responseDTO = new ResponseDTO();
@@ -64,9 +66,8 @@ public class RecruitmentRequestController {
     public ResponseEntity<ResponseDTO> getAllOpenRecruitmentRequest(@RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
         ResponseDTO response = new ResponseDTO();
-        RecruitmentRequestResponseWithTotalPages responseWithTotalPages = recruitmentRequestService
-                .getAllOpenRecruitmentRequest(pageNo,
-                        pageSize);
+        ResponseWithTotalPage responseWithTotalPages = recruitmentRequestService
+                .getAllOpenRecruitmentRequest(pageNo, pageSize);
         response.setData(responseWithTotalPages);
         response.setMessage(RecruitmentRequestSuccessMessage.GET_OPEN_RECRUITMENT_PLAN_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);
@@ -78,9 +79,8 @@ public class RecruitmentRequestController {
     public ResponseEntity<ResponseDTO> getAllFilledRecruitmentRequest(@RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
         ResponseDTO response = new ResponseDTO();
-        RecruitmentRequestResponseWithTotalPages responseWithTotalPages = recruitmentRequestService
-                .getAllFilledRecruitmentRequest(pageNo,
-                        pageSize);
+        ResponseWithTotalPage responseWithTotalPages = recruitmentRequestService
+                .getAllFilledRecruitmentRequest(pageNo, pageSize);
         response.setData(responseWithTotalPages);
         response.setMessage(RecruitmentRequestSuccessMessage.GET_FILLED_RECRUITMENT_REQUEST_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);
@@ -92,9 +92,8 @@ public class RecruitmentRequestController {
     public ResponseEntity<ResponseDTO> getAllClosedRecruitmentRequest(@RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
         ResponseDTO response = new ResponseDTO();
-        RecruitmentRequestResponseWithTotalPages responseWithTotalPages = recruitmentRequestService
-                .getAllClosedRecruitmentRequest(pageNo,
-                        pageSize);
+        ResponseWithTotalPage responseWithTotalPages = recruitmentRequestService
+                .getAllClosedRecruitmentRequest(pageNo, pageSize);
         response.setData(responseWithTotalPages);
         response.setMessage(RecruitmentRequestSuccessMessage.GET_CLOSED_RECRUITMENT_REQUEST_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);
@@ -107,9 +106,8 @@ public class RecruitmentRequestController {
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
         ResponseDTO response = new ResponseDTO();
-        RecruitmentRequestResponseWithTotalPages responseWithTotalPages = recruitmentRequestService
-                .getAllRecruitmentRequestByCreator(id, pageNo,
-                        pageSize);
+        ResponseWithTotalPage responseWithTotalPages = recruitmentRequestService
+                .getAllRecruitmentRequestByCreator(id, pageNo, pageSize);
         response.setData(responseWithTotalPages);
         response.setMessage(RecruitmentRequestSuccessMessage.GET_ALL_RECRUITMENT_REQUEST_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);
@@ -117,7 +115,7 @@ public class RecruitmentRequestController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> createRecruitmentRequest(@RequestBody RecruitmentRequestCreateDTO createDTO) {
         ResponseDTO<RecruitmentRequestResponse> responseDTO = new ResponseDTO();
         RecruitmentRequestResponse recruitmentRequest = recruitmentRequestService.createRecruitmentRequest(createDTO);
@@ -128,7 +126,7 @@ public class RecruitmentRequestController {
     }
 
     @PutMapping("/update/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> updateRecruitmentRequest(@RequestParam("id") int id,
             @RequestBody RecruitmentRequestUpdateDTO updateDTO) {
         ResponseDTO<RecruitmentRequestResponse> responseDTO = new ResponseDTO();
@@ -140,7 +138,7 @@ public class RecruitmentRequestController {
     }
 
     @PutMapping("/closeRecruitmentRequest/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> closeRecruitmentRequest(@RequestParam("id") int id) {
         ResponseDTO<RecruitmentRequestResponse> responseDTO = new ResponseDTO();
         RecruitmentRequestResponse planDetailDTO = recruitmentRequestService.closeRecruitmentRequest(id);
@@ -171,5 +169,76 @@ public class RecruitmentRequestController {
         responseDTO.setData(recruitmentSearchCategoryDTO);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/getNewestRecruitmentRequest")
+    @PermitAll
+    public ResponseEntity<ListResponseDTO> getNewestRecruitmentRequest() {
+        ListResponseDTO<RecruitmentRequestResponse> response = new ListResponseDTO();
+        List<RecruitmentRequestResponse> list = recruitmentRequestService.getNewestRecruitmentRequest();
+        response.setData(list);
+        response.setMessage(RecruitmentRequestSuccessMessage.SEARCH_RECRUITMENT_REQUEST_SUCCESS);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/getIdAndNameByDepartment")
+    @PermitAll
+    public ResponseEntity<ResponseDTO> getIdAndNameByDepartment(@RequestParam("department_id") int departmentId) {
+        ResponseDTO response = new ResponseDTO();
+        response.setData(recruitmentRequestService.getIdAndNameRequestByDepartment(departmentId));
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        response.setMessage(RecruitmentRequestSuccessMessage.GET_ID_NAME_BY_DEPARTMENT);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/getAllActiveRequest")
+    @PermitAll
+    public ResponseEntity<ResponseDTO> getAllActiveRequest() {
+        ResponseDTO responseDTO = new ResponseDTO();
+        List<IdAndNameResponse> responseList = recruitmentRequestService.getAllActiveRequest();
+        responseDTO.setData(responseList);
+        responseDTO.setMessage(RecruitmentRequestSuccessMessage.GET_ACTIVE_REQUEST_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    // @GetMapping("/getAllExpiredRecruitmentRequest")
+    // @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    // public ResponseEntity<ResponseDTO> getAllExpiredRecruitmentRequest(
+    // @RequestParam(defaultValue = "0") int pageNo,
+    // @RequestParam(defaultValue = "10") int pageSize) {
+    // ResponseDTO response = new ResponseDTO();
+    // ResponseWithTotalPage responseWithTotalPages =
+    // recruitmentRequestService.getExpiryDateRecruitmentRequest(pageNo,
+    // pageSize);
+    // response.setData(responseWithTotalPages);
+    // response.setMessage(RecruitmentRequestSuccessMessage.GET_EXPIRY_REQUEST_SUCCESS);
+    // response.setStatus(ResponseStatusDTO.SUCCESS);
+    // return ResponseEntity.ok().body(response);
+    // }
+
+    @GetMapping("/getAllExpiredRecruitmentRequest")
+    @PermitAll
+    public ResponseEntity<ListResponseDTO> getAllExpiredRecruitmentRequest() {
+        ListResponseDTO<RecruitmentRequestResponse> response = new ListResponseDTO();
+        List<RecruitmentRequestResponse> list = recruitmentRequestService.getExpiryDateRecruitmentRequest();
+        response.setData(list);
+        response.setMessage(RecruitmentRequestSuccessMessage.GET_EXPIRY_REQUEST_SUCCESS);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PutMapping("/closeListRequest")
+    @PermitAll
+    public ResponseEntity<ResponseDTO> closeListRequest(
+            @RequestBody ListRequestClose listId) {
+        ResponseDTO<String> response = new ResponseDTO();
+        boolean data = recruitmentRequestService.closeListRecruitmentRequest(listId);
+        String result = data ? "true" : "false";
+        response.setData(result);
+        response.setMessage(RecruitmentRequestSuccessMessage.CLOSED_RECRUITMENT_REQUEST_SUCCESS);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(response);
     }
 }

@@ -21,6 +21,7 @@ public class RecruitmentPlanResponse {
     private Date periodFrom;
     private Date periodTo;
     private String totalSalary;
+    private String name;
     private int amount;
     private String status;
     private EmployeeResponse approver;

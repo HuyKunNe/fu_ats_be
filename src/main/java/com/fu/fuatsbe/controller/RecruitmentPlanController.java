@@ -1,5 +1,6 @@
 package com.fu.fuatsbe.controller;
 
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +25,8 @@ import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.RecruitmentPlanService;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/recruitmentPlan")
@@ -153,6 +156,34 @@ public class RecruitmentPlanController {
         return ResponseEntity.ok().body(response);
     }
 
+    @GetMapping("/getByDepartment")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getByDepartmentId(
+            @RequestParam("departmentId") int id,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
+
+        ResponseDTO<ResponseWithTotalPage> response = new ResponseDTO();
+        ResponseWithTotalPage<RecruitmentPlanResponse> list = recruitmentPlanService.getAllRecruitmentPlansByDepartment(id,
+                pageNo,
+                pageSize);
+        response.setData(list);
+        response.setMessage(RecruitmentPlanSuccessMessage.GET_RECRUITMENT_PLAN_BY_DEPARTMENT_ID_SUCCESS);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/getPlanApprovedByDepartment")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getPlanApprovedByDepartmentId(@RequestParam("departmentId") int id) {
+        ResponseDTO response = new ResponseDTO();
+        List<IdAndNameResponse> list = recruitmentPlanService.getApprovedByDepartment(id);
+        response.setData(list);
+        response.setMessage(RecruitmentPlanSuccessMessage.GET_APPROVED_RECRUITMENT_PLAN_BY_DEPARTMENT_ID_SUCCESS);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
+
     @PostMapping("/create")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> createRecruitmentPlan(
@@ -166,7 +197,7 @@ public class RecruitmentPlanController {
     }
 
     @PutMapping("/approved")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> approvedRecruitmentPlan(
             @RequestBody RecruitmentPlanActionDTO actionDTO) {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
@@ -178,7 +209,7 @@ public class RecruitmentPlanController {
     }
 
     @PutMapping("/rejected")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> rejectedRecruitmentPlan(
             @RequestBody RecruitmentPlanActionDTO actionDTO) {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
@@ -190,7 +221,7 @@ public class RecruitmentPlanController {
     }
 
     @PutMapping("/canceled")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> canceledRecruitmentPlan(
             @RequestBody RecruitmentPlanActionDTO actionDTO) {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
@@ -202,9 +233,9 @@ public class RecruitmentPlanController {
     }
 
     @PutMapping("update/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> updateRecruitmentPlan(@RequestParam("id") int id,
-            @RequestBody RecruimentPlanUpdateDTO updateDTO) {
+                                                             @RequestBody RecruimentPlanUpdateDTO updateDTO) {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
         RecruitmentPlanResponse recruitmentPlanResponse = recruitmentPlanService.updateRecruitmentPlan(id, updateDTO);
         responseDTO.setData(recruitmentPlanResponse);
@@ -212,4 +243,14 @@ public class RecruitmentPlanController {
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+
+//    @GetMapping("/getTotalStatus")
+//    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+//    public ResponseEntity<ResponseDTO> getTotalStatusPlan() {
+//        ResponseDTO response = new ResponseDTO();
+//        response.setData(recruitmentPlanService.getStatusTotal());
+//        response.setStatus(ResponseStatusDTO.SUCCESS);
+//        response.setMessage(RecruitmentPlanSuccessMessage.GET_TOTAL_STATUS_SUCCESS);
+//        return ResponseEntity.ok().body(response);
+//    }
 }

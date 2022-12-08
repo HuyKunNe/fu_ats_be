@@ -17,6 +17,8 @@ import lombok.ToString;
 @Builder
 public class CvCreateDTO {
 
+    private String title;
+
     private String linkCV;
 
     private int candidateId;

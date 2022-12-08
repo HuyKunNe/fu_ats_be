@@ -1,5 +1,8 @@
 package com.fu.fuatsbe.controller;
 
+import com.fu.fuatsbe.DTO.PlanDetailUpdateDTO;
+import com.fu.fuatsbe.constant.recruitmentPlan.RecruitmentPlanSuccessMessage;
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,6 +25,8 @@ import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.PlanDetailService;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/planDetail")
@@ -71,13 +76,13 @@ public class PlanDetailController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> createPlanDetail(
             @RequestBody PlanDetailCreateDTO createDTO) {
         ResponseDTO<PlanDetailResponseDTO> responseDTO = new ResponseDTO();
         PlanDetailResponseDTO planDetailDTO = planDetailService.createPlanDetail(createDTO);
         responseDTO.setData(planDetailDTO);
-        responseDTO.setMessage("create plan detail success");
+        responseDTO.setMessage(PlanDetailSuccessMessage.CREATE_PLAN_DETAIL_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
@@ -121,26 +126,45 @@ public class PlanDetailController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @PutMapping("/update")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> updatePlanDetails(@RequestParam int id, @RequestBody PlanDetailUpdateDTO updateDTO) {
+        ResponseDTO<PlanDetailResponseDTO> responseDTO = new ResponseDTO();
+        responseDTO.setData(planDetailService.updatePlanDetailById(id, updateDTO));
+        responseDTO.setMessage(PlanDetailSuccessMessage.UPDATE_PLAN_DETAIL_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
     @PutMapping("/approved")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> approvedPlanDetails(
             @RequestBody PlanDetailActionDTO actionDTO) {
         ResponseDTO<PlanDetailResponseDTO> responseDTO = new ResponseDTO();
         PlanDetailResponseDTO planDetailDTO = planDetailService.approvedPlanDetails(actionDTO);
         responseDTO.setData(planDetailDTO);
-        responseDTO.setMessage("approved plan detail success");
+        responseDTO.setMessage(PlanDetailSuccessMessage.APPROVE_PLAN_DETAIL_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @PutMapping("/canceled")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> canceledPlanDetails(
             @RequestBody PlanDetailActionDTO actionDTO) {
         ResponseDTO<PlanDetailResponseDTO> responseDTO = new ResponseDTO();
         PlanDetailResponseDTO planDetailDTO = planDetailService.canceledPlanDetails(actionDTO);
         responseDTO.setData(planDetailDTO);
-        responseDTO.setMessage("canceled plan detail success");
+        responseDTO.setMessage(PlanDetailSuccessMessage.CANCEL_PLAN_DETAIL_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @GetMapping("/getApprovedByDepartment")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getApprovedByDepartment(@RequestParam int departmentId) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(planDetailService.getPlanDetailApprovedByDepartment(departmentId));
+        responseDTO.setMessage(PlanDetailSuccessMessage.GET_PLAN_DETAIL_APPROVED_BY_RECRUITMENT_PLAN_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
@@ -159,5 +183,24 @@ public class PlanDetailController {
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
-
+    @GetMapping("/getTotalStatusDetail")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getTotalStatusDetail() {
+        ResponseDTO response = new ResponseDTO();
+        response.setData(planDetailService.getStatusTotal());
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        response.setMessage(PlanDetailSuccessMessage.GET_TOTAL_STATUS_SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
+    @GetMapping("/getByDepartment")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getPlanByDepartment( @RequestParam("id") int departmentId,
+                                                            @RequestParam(defaultValue = "0") int pageNo,
+                                                            @RequestParam(defaultValue = "10") int pageSize){
+        ResponseDTO response = new ResponseDTO();
+        response.setData(planDetailService.getPlanDetailsByDepartment(departmentId, pageNo, pageSize));
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        response.setMessage(PlanDetailSuccessMessage.GET_BY_DEPARTMENT_SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
 }

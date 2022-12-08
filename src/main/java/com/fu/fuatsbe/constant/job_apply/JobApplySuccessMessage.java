@@ -11,5 +11,14 @@ public final class JobApplySuccessMessage {
     public static final String GET_BY_ID = "Get job apply by id successfully";
     public static final String CANCEL = "Cancel job apply successfully";
     public static final String APPROVE = "Approve job apply successfully";
+    public static final String GET_JOB_APPLY_NOT_REJECT = "Get all job applies not reject successfully";
+    public static final String GET_CV_SCREENING = "Get cv screening successfully";
+
+    public static final String GET_NOT_PASS_SCREENING = "Get not pass cv screening successfully";
+    public static final String GET_PASS_SCREENING = "Get pass cv screening successfully";
+
+    public static final String GET_FAILED_JOB_APPLY = "Get fail job apply successfully";
+
+    public static final String APPLY_JOB_BY_EMPLOYEE = "Apply job by employee successfully";
 
 }

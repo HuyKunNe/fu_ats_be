@@ -2,7 +2,9 @@ package com.fu.fuatsbe.serviceImp;
 
 import com.fu.fuatsbe.DTO.*;
 import com.fu.fuatsbe.constant.account.AccountErrorMessage;
+import com.fu.fuatsbe.constant.account.AccountProvider;
 import com.fu.fuatsbe.constant.account.AccountStatus;
+import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.candidate.CandidateStatus;
 import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
@@ -29,20 +31,29 @@ import com.fu.fuatsbe.response.LoginResponseDto;
 import com.fu.fuatsbe.response.RegisterResponseDto;
 import com.fu.fuatsbe.service.AuthService;
 import com.fu.fuatsbe.utils.Utils;
+
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
+
+import org.apache.commons.codec.binary.Base64;
 import org.modelmapper.ModelMapper;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import javax.management.relation.RoleNotFoundException;
-import java.sql.Date;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -64,11 +75,11 @@ public class AuthServiceImp implements AuthService {
     @Override
     public RegisterResponseDto register(RegisterCandidateDto registerDTO) throws RoleNotFoundException {
         Optional<Account> optionalUser = accountRepository.findAccountByEmail(registerDTO.getEmail());
-        if (optionalUser.isPresent()) {
-            throw new EmailExistException(EmployeeErrorMessage.EMAIL_EXIST);
-        }
+
         Role role = roleRepository.findByName(RoleName.ROLE_CANDIDATE)
                 .orElseThrow(() -> new NotFoundException(RoleErrorMessage.ROLE_NOT_EXIST));
+
+        RegisterResponseDto registerResponseDto = new RegisterResponseDto();
 
         Optional<Candidate> optionalCandidate = candidateRepository.findByPhone(registerDTO.getPhone());
         if (optionalCandidate.isPresent()) {
@@ -78,28 +89,73 @@ public class AuthServiceImp implements AuthService {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate dob = LocalDate.parse(registerDTO.getDob().toString(), format);
 
-        Candidate candidate = Candidate.builder()
-                .name(registerDTO.getName())
-                .email(registerDTO.getEmail())
-                .phone(registerDTO.getPhone())
-                .image(registerDTO.getImage())
-                .dob(Date.valueOf(dob))
-                .gender(registerDTO.getGender())
-                .address(registerDTO.getAddress())
-                .status(CandidateStatus.ACTIVATED)
-                .build();
+        if (optionalUser.isPresent()) {
+            if (optionalUser.get().getProvider().equalsIgnoreCase(AccountProvider.LOCAL)) {
+                throw new EmailExistException(EmployeeErrorMessage.EMAIL_EXIST);
+            } else {
 
-        Account account = Account.builder()
-                .email(candidate.getEmail())
-                .role(role)
-                .candidate(candidate)
-                .status(AccountStatus.ACTIVATED)
-                .password(passwordEncoder.encode(registerDTO.getPassword())).build();
-        candidateRepository.save(candidate);
-        Account credentialInRepo = accountRepository.save(account);
-        candidate.setAccount(credentialInRepo);
-        candidateRepository.save(candidate);
-        RegisterResponseDto registerResponseDto = modelMapper.map(credentialInRepo, RegisterResponseDto.class);
+                Candidate candidateExist = candidateRepository.findByEmail(registerDTO.getEmail())
+                        .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
+
+                candidateExist.setName(registerDTO.getName());
+                candidateExist.setPhone(registerDTO.getPhone());
+                candidateExist.setImage(registerDTO.getImage());
+                candidateExist.setDob(registerDTO.getDob());
+                candidateExist.setGender(registerDTO.getGender());
+                candidateExist.setAddress(registerDTO.getAddress());
+
+                Candidate candidateSave = candidateRepository.save(candidateExist);
+
+                Optional<Account> accountExist = accountRepository.findAccountByEmail(registerDTO.getEmail());
+
+                if (accountExist.isPresent()) {
+                    accountExist.get().setProvider(AccountProvider.LOCAL);
+                    accountExist.get().setPassword(passwordEncoder.encode(registerDTO.getPassword()));
+                    Account accountSaved = accountRepository.save(accountExist.get());
+                    registerResponseDto = modelMapper.map(accountSaved, RegisterResponseDto.class);
+                } else {
+                    Account newAccount = Account.builder()
+                            .email(registerDTO.getEmail())
+                            .role(role)
+                            .candidate(candidateSave)
+                            .provider(AccountProvider.LOCAL)
+                            .status(AccountStatus.ACTIVATED)
+                            .password(passwordEncoder.encode(registerDTO.getPassword())).build();
+
+                    Account newAccountSaved = accountRepository.save(newAccount);
+                    candidateSave.setAccount(newAccountSaved);
+                    candidateRepository.save(candidateSave);
+                    registerResponseDto = modelMapper.map(newAccountSaved, RegisterResponseDto.class);
+                }
+            }
+
+        } else {
+            Candidate candidate = Candidate.builder()
+                    .name(registerDTO.getName())
+                    .email(registerDTO.getEmail())
+                    .phone(registerDTO.getPhone())
+                    .image(registerDTO.getImage())
+                    .dob(java.sql.Date.valueOf(dob))
+                    .gender(registerDTO.getGender())
+                    .address(registerDTO.getAddress())
+                    .status(CandidateStatus.ACTIVATED)
+                    .build();
+
+            Account account = Account.builder()
+                    .email(candidate.getEmail())
+                    .role(role)
+                    .candidate(candidate)
+                    .provider(AccountProvider.LOCAL)
+                    .status(AccountStatus.ACTIVATED)
+                    .password(passwordEncoder.encode(registerDTO.getPassword())).build();
+
+            candidateRepository.save(candidate);
+            Account credentialInRepo = accountRepository.save(account);
+            candidate.setAccount(credentialInRepo);
+            candidateRepository.save(candidate);
+            registerResponseDto = modelMapper.map(credentialInRepo, RegisterResponseDto.class);
+        }
+
         return registerResponseDto;
     }
 
@@ -114,7 +170,6 @@ public class AuthServiceImp implements AuthService {
         if (!optionalDepartment.isPresent()) {
             throw new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION);
         }
-
         Optional<Position> optionalPosition = PositionRepository.findPositionByName(registerDto.getPositionName());
         if (!optionalPosition.isPresent()) {
             throw new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST);
@@ -131,13 +186,20 @@ public class AuthServiceImp implements AuthService {
         Employee employee = Employee.builder().name(registerDto.getName()).employeeCode(registerDto.getEmployeeCode())
                 .image(registerDto.getImage())
                 .gender(registerDto.getGender())
-                .Dob(Date.valueOf(dob))
+                .dob(java.sql.Date.valueOf(dob))
+                .jobLevel(registerDto.getJobLevel())
                 .status(EmployeeStatus.ACTIVATE)
                 .phone(registerDto.getPhone()).department(optionalDepartment.get()).address(registerDto.getAddress())
                 .position(optionalPosition.get())
                 .build();
-        Role role = roleRepository.findByName(registerDto.getRole())
-                .orElseThrow(() -> new NotFoundException(RoleErrorMessage.ROLE_NOT_EXIST));
+        Role role;
+        if (optionalDepartment.get().getName().equals("Phòng điều hành")) {
+            role = roleRepository.findByName(RoleName.ROLE_ADMIN)
+                    .orElseThrow(() -> new NotFoundException(RoleErrorMessage.ROLE_NOT_EXIST));
+        } else {
+            role = roleRepository.findByName(registerDto.getRole())
+                    .orElseThrow(() -> new NotFoundException(RoleErrorMessage.ROLE_NOT_EXIST));
+        }
         Account account = Account.builder()
                 .email(registerDto.getEmail())
                 .role(role)
@@ -153,13 +215,15 @@ public class AuthServiceImp implements AuthService {
     }
 
     @Override
-    public LoginResponseDto login(LoginDto employee) {
-        Authentication authentication = new UsernamePasswordAuthenticationToken(employee.getEmail(),
-                employee.getPassword());
+    public LoginResponseDto login(LoginDto loginDTO) {
+        Account account = accountRepository.findAccountByEmail(loginDTO.getEmail())
+                .orElseThrow(() -> new NotFoundException(AccountErrorMessage.ACCOUNT_NOT_FOUND));
+        Authentication authentication = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(),
+                loginDTO.getPassword());
         LoginResponseDto loginResponseDTO = null;
         Authentication authenticate = authenticationManager.authenticate(authentication);
         if (authenticate.isAuthenticated()) {
-            Optional<Account> accountAuthencatedOptional = accountRepository.findAccountByEmail(employee.getEmail());
+            Optional<Account> accountAuthencatedOptional = accountRepository.findAccountByEmail(loginDTO.getEmail());
             Account accountAuthencated = accountAuthencatedOptional.get();
             if (accountAuthencated.getEmployee() != null) {
                 if (!accountAuthencated.getEmployee().getStatus().equals(AccountStatus.ACTIVATED)) {
@@ -174,6 +238,10 @@ public class AuthServiceImp implements AuthService {
                     .roleName(accountAuthencated.getRole().getName())
                     .token(token)
                     .build();
+            if (!loginDTO.getNotificationToken().isEmpty()) {
+                account.setNotificationToken(loginDTO.getNotificationToken());
+                accountRepository.save(account);
+            }
             if (accountAuthencated.getRole().getName().equalsIgnoreCase(RoleName.ROLE_CANDIDATE)) {
                 loginResponseDTO.setCandidate(accountAuthencated.getCandidate());
             } else {
@@ -194,9 +262,6 @@ public class AuthServiceImp implements AuthService {
         accountRepository.save(account);
     }
 
-    @Override
-    public LoginResponseDto loginGoogle(OAuth2AuthenticationToken oAuth2AuthenticationToken) {
-        System.out.println(oAuth2AuthenticationToken.getPrincipal().getAttribute("email").toString());
-        return null;
-    }
+
+
 }

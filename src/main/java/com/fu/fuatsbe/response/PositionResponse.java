@@ -19,4 +19,6 @@ public class PositionResponse {
     private int id;
     private String name;
     private Department department;
+    private String status;
+    private int numberUsePosition;
 }

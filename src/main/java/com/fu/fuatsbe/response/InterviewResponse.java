@@ -24,6 +24,8 @@ public class InterviewResponse {
     private String description;
     private String status;
     private String type;
+    private String candidateConfirm;
+    private String employeeConfirm;
     private JobApply jobApply;
     private String candidateName;
     private List<String> employeeNames;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +28,8 @@ import com.fu.fuatsbe.service.DepartmentService;
 
 import lombok.RequiredArgsConstructor;
 
+import javax.persistence.Tuple;
+
 @Service
 @RequiredArgsConstructor
 public class DepartmentServiceImp implements DepartmentService {
@@ -36,7 +39,7 @@ public class DepartmentServiceImp implements DepartmentService {
     private final ModelMapper modelMapper;
 
     @Override
-    public ResponseWithTotalPage<DepartmentResponse> getAllDepartments(int pageNo, int pageSize) {
+    public ResponseWithTotalPage<DepartmentResponse> getAllDepartments(int pageNo, int pageSize, String name) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Department> pageResult = departmentRepository.findAll(pageable);
 
@@ -44,8 +47,10 @@ public class DepartmentServiceImp implements DepartmentService {
         List<DepartmentResponse> list = new ArrayList<>();
         if (pageResult.hasContent()) {
             for (Department department : pageResult.getContent()) {
-                DepartmentResponse response = modelMapper.map(department, DepartmentResponse.class);
-                list.add(response);
+                if(department.getName().toLowerCase().contains(name.toLowerCase())){
+                    DepartmentResponse response = modelMapper.map(department, DepartmentResponse.class);
+                    list.add(response);
+                }
             }
             result.setResponseList(list);
             result.setTotalPage(pageResult.getTotalPages());
@@ -89,7 +94,6 @@ public class DepartmentServiceImp implements DepartmentService {
         department.setName(departmentUpdateDTO.getName());
         department.setRoom(departmentUpdateDTO.getRoom());
         department.setPhone(departmentUpdateDTO.getPhone());
-        department.setStatus(departmentUpdateDTO.getStatus());
         departmentRepository.save(department);
         DepartmentResponse response = modelMapper.map(department, DepartmentResponse.class);
         return response;
@@ -122,6 +126,34 @@ public class DepartmentServiceImp implements DepartmentService {
         } else
             throw new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION);
         return true;
+    }
+    @Override
+    public boolean activeDepartmentById(int id) {
+        Department department = departmentRepository.findById(id).orElseThrow(() -> new NotFoundException(
+                DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
+        if (department != null) {
+            department.setStatus(DepartmentStatus.DEPARTMENT_ACTIVE);
+            departmentRepository.save(department);
+        } else
+            throw new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION);
+        return true;
+    }
+
+    @Override
+    public List<IdAndNameResponse> getDepartmentName() {
+        List<Tuple> tupleList = departmentRepository.getIdAndNameDepartment();
+        if (tupleList.size() <= 0 ){
+            throw new NotFoundException(DepartmentErrorMessage.LIST_DEPARTMENT_EMPTY_EXCEPTION);
+        }
+        List<IdAndNameResponse> responseList = new ArrayList<>();
+        for (Tuple tuple: tupleList) {
+            IdAndNameResponse response = IdAndNameResponse.builder()
+                    .id(Integer.parseInt(tuple.get("id").toString()))
+                    .name(tuple.get("name").toString())
+                    .build();
+            responseList.add(response);
+        }
+        return responseList;
     }
 
 }

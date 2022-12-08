@@ -40,5 +40,4 @@ public class RegisterCandidateDto {
     private String phone;
     @NotBlank(message = ValidationMessage.ADDRESS_VALID_MESSAGE)
     private String address;
-
 }

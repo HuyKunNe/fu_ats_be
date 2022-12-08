@@ -20,7 +20,8 @@ public class VerificationToken {
     private String id;
     private String token;
     private Timestamp expiryDate;
-    @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name="account_id", referencedColumnName = "id")
+
+    @OneToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
     private Account account;
 }

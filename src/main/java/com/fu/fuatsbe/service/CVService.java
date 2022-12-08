@@ -1,5 +1,7 @@
 package com.fu.fuatsbe.service;
 
+import java.util.List;
+
 import com.fu.fuatsbe.DTO.CvCreateDTO;
 import com.fu.fuatsbe.DTO.CvUpdateDTO;
 import com.fu.fuatsbe.entity.CV;
@@ -19,5 +21,11 @@ public interface CVService {
     public CvResponse updateCV(int id, CvUpdateDTO updateDTO);
 
     public CV deleteCV(int id);
+
+    public List<CvResponse> getRejectedCv();
+
+    public List<CvResponse> getCvStore();
+
+    public List<CvResponse> getCvForRequest(String postionName);
 
 }

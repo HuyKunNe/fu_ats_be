@@ -43,10 +43,12 @@ public class CV {
     private int id;
 
     private String linkCV;
-    private String result;
     @Column(columnDefinition = "text")
     private String note;
     private String status;
+    private String recommendPositions;
+    private String title;
+    private String source;
 
     @OneToMany(mappedBy = "cv", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Include
@@ -61,12 +63,8 @@ public class CV {
     @ToString.Include
     private Candidate candidate;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "cv_position", joinColumns = @JoinColumn(name = "cv_id"), inverseJoinColumns = @JoinColumn(name = "position_id"))
     private Collection<Position> positions;
-
-    @ManyToMany
-    @JoinTable(name = "cv_position", joinColumns = @JoinColumn(name = "cv_id"), inverseJoinColumns = @JoinColumn(name = "position_id"))
-    private Collection<Position> suitablePositions;
 
 }

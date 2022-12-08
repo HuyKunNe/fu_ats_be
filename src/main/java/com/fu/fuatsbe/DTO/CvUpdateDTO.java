@@ -17,9 +17,9 @@ import lombok.ToString;
 @Builder
 public class CvUpdateDTO {
 
+    private String title;
     private String linkCV;
     private String experience;
-    private String location;
     private List<String> positionName;
 
 }

@@ -11,6 +11,8 @@ import com.fu.fuatsbe.response.ResponseDTO;
 import com.fu.fuatsbe.service.AuthService;
 import com.fu.fuatsbe.service.EmailService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -38,18 +40,6 @@ public class AuthController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    // @PostMapping("/loginGoogle")
-    // public ResponseEntity<ResponseDTO> loginGoole(OAuth2AuthenticationToken
-    // oAuth2AuthenticationToken) {
-    // ResponseDTO<LoginResponseDto> responseDTO = new ResponseDTO();
-    // LoginResponseDto loginResponseDTO =
-    // authService.loginGoogle(oAuth2AuthenticationToken);
-    // responseDTO.setData(loginResponseDTO);
-    // responseDTO.setMessage("Login success");
-    // responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
-    // return ResponseEntity.ok().body(responseDTO);
-    // }
-
     @PostMapping("/register")
     public ResponseEntity<ResponseDTO> register(@Validated @RequestBody RegisterCandidateDto candidate)
             throws RoleNotFoundException {
@@ -74,7 +64,7 @@ public class AuthController {
     }
 
     @PermitAll
-    @GetMapping("forgot-password")
+    @GetMapping("/forgot-password")
     public ResponseEntity<ResponseDTO> sendEmailToGetPassword(@RequestParam String email) throws MessagingException {
         ResponseDTO<Void> responseDTO = new ResponseDTO();
         emailService.sendEmailToGetBackPassword(email);
@@ -95,7 +85,7 @@ public class AuthController {
     }
 
     @PermitAll
-    @PatchMapping("change-password")
+    @PatchMapping("/change-password")
     public ResponseEntity<ResponseDTO> changePassword(@Validated @RequestBody ChangePasswordDTO changePasswordDTO) {
         ResponseDTO<Void> responseDTO = new ResponseDTO();
         authService.changePassword(changePasswordDTO);
@@ -103,4 +93,6 @@ public class AuthController {
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+
+
 }

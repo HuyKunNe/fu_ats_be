@@ -1,7 +1,6 @@
 package com.fu.fuatsbe.response;
 
 import java.sql.Date;
-import java.util.List;
 
 import com.fu.fuatsbe.entity.City;
 import com.fu.fuatsbe.entity.Employee;
@@ -27,14 +26,13 @@ public class RecruitmentRequestResponse {
     private Date date;
     private Date expiryDate;
     private String industry;
+    private String name;
     private int amount;
     private String jobLevel;
     private String experience;
     private String typeOfWork;
-    private String gender;
     private String address;
     private String salaryDetail;
-    private String age;
     private String foreignLanguage;
     private String description;
     private String benefit;
@@ -43,6 +41,6 @@ public class RecruitmentRequestResponse {
     private Employee creator;
     private PlanDetail planDetail;
     private Position position;
-    private List<City> cities;
+    private City cities;
 
 }

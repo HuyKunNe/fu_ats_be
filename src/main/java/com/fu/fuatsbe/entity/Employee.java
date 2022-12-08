@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,11 +18,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.Nationalized;
+import org.hibernate.annotations.*;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -36,6 +34,7 @@ public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
     @Nationalized
@@ -43,15 +42,15 @@ public class Employee {
     private String employeeCode;
     private String image;
     private String gender;
-    private Date Dob;
+    private Date dob;
+    @Nationalized
+    private String jobLevel;
     private String phone;
     @Nationalized
     private String address;
     private String status;
 
-    @JsonBackReference
     @OneToOne(fetch = FetchType.LAZY)
-    @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     @EqualsAndHashCode.Include
     @ToString.Include
@@ -111,10 +110,9 @@ public class Employee {
     @JsonIgnore
     private Collection<InterviewEmployee> interviewEmployees;
 
-    @JsonBackReference
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)
-    @JoinColumn(name = "position_id", referencedColumnName = "id")
+    @JoinColumn(name = "positionId")
     @EqualsAndHashCode.Include
     @ToString.Include
     private Position position;

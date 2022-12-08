@@ -1,11 +1,10 @@
 package com.fu.fuatsbe.DTO;
 
-import com.fu.fuatsbe.entity.Candidate;
-import com.fu.fuatsbe.entity.Interview;
-
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
+
+import com.fu.fuatsbe.entity.Candidate;
+import com.fu.fuatsbe.entity.Interview;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +23,7 @@ public class SendNotificationDTO {
     private String link;
     private String room;
     private String address;
+    private String jobTitle;
     private Timestamp date;
     private Candidate candidate;
     private List<Integer> IntervieweeID;

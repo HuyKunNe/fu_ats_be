@@ -1,7 +1,5 @@
 package com.fu.fuatsbe.DTO;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,11 +15,13 @@ import lombok.ToString;
 @Builder
 public class JobApplyCreateDTO {
 
+    private int cvId;
     private String educationLevel;
     private String foreignLanguage;
-    private List<String> cityName;
+    private String titleCV;
+    private String cityName;
     private String linkCV;
-    private List<String> positionName;
+    private String experience;
     private int recruitmentRequestId;
     private int candidateId;
 }

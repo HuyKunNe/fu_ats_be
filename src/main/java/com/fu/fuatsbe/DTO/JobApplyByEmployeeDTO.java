@@ -1,7 +1,5 @@
 package com.fu.fuatsbe.DTO;
 
-import java.util.List;
-import com.fu.fuatsbe.response.RecruitmentRequestResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,8 +13,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RecruitmentRequestResponseWithTotalPages {
-   private int totalPages;
-   private List<RecruitmentRequestResponse> responseList;
-
+public class JobApplyByEmployeeDTO {
+    private String name;
+    private String email;
+    private String linkCV;
+    private String source;
 }

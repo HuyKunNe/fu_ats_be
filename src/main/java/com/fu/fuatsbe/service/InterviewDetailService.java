@@ -14,4 +14,7 @@ public interface InterviewDetailService {
     InterviewDetailResponse updateInterviewDetail(int id, InterviewDetailDTO interviewDetailDTO);
 
     InterviewDetailResponse getInterviewDetailByInterviewId(int interviewId);
+
+    ResponseWithTotalPage<InterviewDetailResponse> getAllInterviewDetailByDepartment(String departmentName, int pageNo,
+            int pageSize);
 }

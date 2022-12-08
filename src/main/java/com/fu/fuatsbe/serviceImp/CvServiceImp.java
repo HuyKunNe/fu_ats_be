@@ -8,12 +8,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.DTO.CvCreateDTO;
 import com.fu.fuatsbe.DTO.CvUpdateDTO;
 import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.cv.CVErrorMessage;
+import com.fu.fuatsbe.constant.cv.CVSource;
 import com.fu.fuatsbe.constant.cv.CVStatus;
 import com.fu.fuatsbe.constant.postion.PositionErrorMessage;
 import com.fu.fuatsbe.entity.CV;
@@ -41,7 +43,7 @@ public class CvServiceImp implements CVService {
 
     @Override
     public ResponseWithTotalPage<CvResponse> getAllCvs(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<CV> pageResult = cvRepository.findAll(pageable);
 
         ResponseWithTotalPage<CvResponse> result = new ResponseWithTotalPage<>();
@@ -50,6 +52,17 @@ public class CvServiceImp implements CVService {
         if (pageResult.hasContent()) {
             for (CV cv : pageResult.getContent()) {
                 CvResponse cvResponse = modelMapper.map(cv, CvResponse.class);
+                List<String> listPosition = cvRepository.getPositionAppliedById(cv.getId());
+                String positionApplied = "";
+                if (listPosition.size() > 0) {
+                    for (String positionName : listPosition) {
+                        positionApplied = positionApplied + ", " + positionName;
+                    }
+                    positionApplied = positionApplied.substring(1);
+                } else {
+                    positionApplied = "N/A";
+                }
+                cvResponse.setPositionApplied(positionApplied.trim());
                 list.add(cvResponse);
             }
             result.setResponseList(list);
@@ -68,7 +81,7 @@ public class CvServiceImp implements CVService {
             throw new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION);
         }
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<CV> pageResult = cvRepository.findByCandidate(candidate.get(), pageable);
         ResponseWithTotalPage<CvResponse> result = new ResponseWithTotalPage<>();
         List<CvResponse> list = new ArrayList<>();
@@ -76,12 +89,22 @@ public class CvServiceImp implements CVService {
         if (pageResult.hasContent()) {
             for (CV cv : pageResult.getContent()) {
                 CvResponse cvResponse = modelMapper.map(cv, CvResponse.class);
+                List<String> listPosition = cvRepository.getPositionAppliedById(cv.getId());
+                String positionApplied = "";
+                if (listPosition.size() > 0) {
+                    for (String positionName : listPosition) {
+                        positionApplied = positionApplied + ", " + positionName;
+                    }
+                    positionApplied = positionApplied.substring(1);
+                } else {
+                    positionApplied = "N/A";
+                }
+                cvResponse.setPositionApplied(positionApplied.trim());
                 list.add(cvResponse);
             }
             result.setResponseList(list);
             result.setTotalPage(pageResult.getTotalPages());
-        } else
-            throw new ListEmptyException(CVErrorMessage.LIST_EMPTY);
+        }
         return result;
     }
 
@@ -98,7 +121,7 @@ public class CvServiceImp implements CVService {
 
         List<Position> listPositions = new ArrayList<Position>();
 
-        if (!createDTO.getPositionName().isEmpty()) {
+        if (createDTO.getPositionName().size() != 0) {
             for (String positionName : createDTO.getPositionName()) {
                 Position position = positionRepository.findPositionByName(positionName)
                         .orElseThrow(() -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
@@ -108,12 +131,15 @@ public class CvServiceImp implements CVService {
 
         CV cv = CV.builder().linkCV(createDTO.getLinkCV())
                 .candidate(candidate).positions(listPositions)
+                .title(createDTO.getTitle())
+                .source(CVSource.CKHR)
                 .status(CVStatus.ACTIVE)
                 .build();
 
         CV cvSaved = cvRepository.save(cv);
 
         CvResponse response = modelMapper.map(cvSaved, CvResponse.class);
+        response.setPositionApplied("N/A");
         return response;
     }
 
@@ -132,10 +158,21 @@ public class CvServiceImp implements CVService {
 
         cv.setLinkCV(updateDTO.getLinkCV());
         cv.setPositions(listPositions);
-
+        cv.setTitle(updateDTO.getTitle());
         CV cvSaved = cvRepository.save(cv);
 
         CvResponse response = modelMapper.map(cvSaved, CvResponse.class);
+        List<String> listPosition = cvRepository.getPositionAppliedById(cvSaved.getId());
+        String positionApplied = "";
+        if (listPosition.size() > 0) {
+            for (String positionName : listPosition) {
+                positionApplied = positionApplied + ", " + positionName;
+            }
+            positionApplied = positionApplied.substring(1);
+        } else {
+            positionApplied = "N/A";
+        }
+        response.setPositionApplied(positionApplied.trim());
         return response;
     }
 
@@ -146,4 +183,75 @@ public class CvServiceImp implements CVService {
         return cvRepository.save(cv);
     }
 
+    @Override
+    public List<CvResponse> getRejectedCv() {
+        List<CV> cvs = cvRepository.getRejectedCV();
+        List<CvResponse> list = new ArrayList<>();
+        for (CV cv : cvs) {
+            CvResponse response = modelMapper.map(cv, CvResponse.class);
+            List<String> listPosition = cvRepository.getPositionAppliedById(cv.getId());
+            String positionApplied = "";
+            if (listPosition.size() > 0) {
+                for (String positionName : listPosition) {
+                    positionApplied = positionApplied + ", " + positionName;
+                }
+                positionApplied = positionApplied.substring(1);
+            } else {
+                positionApplied = "N/A";
+            }
+            response.setPositionApplied(positionApplied.trim());
+            list.add(response);
+        }
+        return list;
+    }
+
+    @Override
+    public List<CvResponse> getCvStore() {
+        List<CvResponse> response = new ArrayList<>();
+        List<CV> listCv = cvRepository.getCVs();
+
+        if (listCv.size() > 0) {
+            for (CV cv : listCv) {
+                CvResponse cvResponse = modelMapper.map(cv, CvResponse.class);
+                List<String> listPosition = cvRepository.getPositionAppliedById(cv.getId());
+                String positionApplied = "";
+                if (listPosition.size() > 0) {
+                    for (String positionName : listPosition) {
+                        positionApplied = positionApplied + ", " + positionName;
+                    }
+                    positionApplied = positionApplied.substring(1);
+                } else {
+                    positionApplied = "N/A";
+                }
+                cvResponse.setPositionApplied(positionApplied.trim());
+                response.add(cvResponse);
+            }
+        } else {
+            throw new ListEmptyException(CVErrorMessage.LIST_EMPTY);
+        }
+        return response;
+    }
+
+    @Override
+    public List<CvResponse> getCvForRequest(String postionName) {
+
+        List<CV> cvs = cvRepository.getCvForRequest(postionName);
+        List<CvResponse> list = new ArrayList<>();
+        for (CV cv : cvs) {
+            CvResponse response = modelMapper.map(cv, CvResponse.class);
+            List<String> listPosition = cvRepository.getPositionAppliedById(cv.getId());
+            String positionApplied = "";
+            if (listPosition.size() > 0) {
+                for (String positionName : listPosition) {
+                    positionApplied = positionApplied + ", " + positionName;
+                }
+                positionApplied = positionApplied.substring(1);
+            } else {
+                positionApplied = "N/A";
+            }
+            response.setPositionApplied(positionApplied.trim());
+            list.add(response);
+        }
+        return list;
+    }
 }

@@ -1,9 +1,13 @@
 package com.fu.fuatsbe.service;
 
+import com.fu.fuatsbe.DTO.CountTotalDTO;
 import com.fu.fuatsbe.DTO.EmployeeUpdateDTO;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.response.EmployeeResponse;
+import com.fu.fuatsbe.response.IdAndNameResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
+
+import java.util.List;
 
 public interface EmployeeService {
 
@@ -19,5 +23,8 @@ public interface EmployeeService {
     public EmployeeResponse updateEmployee(int id, EmployeeUpdateDTO updateDTO);
 
     public Employee deleteEmployeeById(int id);
+    Employee activeEmployeeById(int id);
+    List<IdAndNameResponse> getIdAndNameEmployeeByRequest(int requestId);
+    CountTotalDTO countTotal();
 
 }

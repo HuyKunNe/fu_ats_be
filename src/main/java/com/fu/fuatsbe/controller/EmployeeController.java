@@ -1,7 +1,20 @@
 package com.fu.fuatsbe.controller;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.fu.fuatsbe.DTO.EmployeeUpdateDTO;
-import com.fu.fuatsbe.DTO.ResetPasswordDto;
 import com.fu.fuatsbe.constant.employee.EmployeeSuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
@@ -10,15 +23,8 @@ import com.fu.fuatsbe.response.ResponseDTO;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.EmailService;
 import com.fu.fuatsbe.service.EmployeeService;
+
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.security.PermitAll;
-import javax.mail.MessagingException;
 
 @RestController
 @RequestMapping("/employee")
@@ -79,29 +85,8 @@ public class EmployeeController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PermitAll
-    @GetMapping("forgot-password")
-    public ResponseEntity<ResponseDTO> sendEmailToGetPassword(@RequestParam String email) throws MessagingException {
-        ResponseDTO<Void> responseDTO = new ResponseDTO();
-        emailService.sendEmailToGetBackPassword(email);
-        responseDTO.setMessage(EmployeeSuccessMessage.SEND_LINK_VERIFY_TO_GET_BACK_PASSWORD_SUCCESS);
-        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
-        return ResponseEntity.ok().body(responseDTO);
-    }
-
-    @PermitAll
-    @PatchMapping("/reset-password")
-    public ResponseEntity<ResponseDTO> resetPassword(@Validated @RequestBody ResetPasswordDto resetPasswordDto) {
-        ResponseDTO<Void> responseDTO = new ResponseDTO();
-        emailService.resetPassword(resetPasswordDto.getEmail(), resetPasswordDto.getToken(),
-                resetPasswordDto.getNewPassword());
-        responseDTO.setMessage(EmployeeSuccessMessage.RESET_PASSWORD_SUCCESS);
-        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
-        return ResponseEntity.ok().body(responseDTO);
-    }
-
-    @PutMapping("update/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_EMPLOYEE)
+    @PutMapping("/update/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> updateEmployee(@RequestParam("id") int id,
             @RequestBody EmployeeUpdateDTO updateDTO) {
         ResponseDTO<EmployeeResponse> responseDTO = new ResponseDTO();
@@ -110,6 +95,43 @@ public class EmployeeController {
         responseDTO.setMessage(EmployeeSuccessMessage.UPDATE_EMPLOYEE_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/getEmployeeByRequest")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getEmpByReq(@RequestParam("requestId") int id){
+        ResponseDTO<List> responseDTO = new ResponseDTO<>();
+        responseDTO.setData(employeeService.getIdAndNameEmployeeByRequest(id));
+        responseDTO.setMessage(EmployeeSuccessMessage.GET_EMPLOYEE_BY_REQUEST);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @PutMapping ("/disable/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ResponseEntity<ResponseDTO> disableEmployee(@PathVariable("id") int id){
+        ResponseDTO responseDTO = new ResponseDTO<>();
+        responseDTO.setData(employeeService.deleteEmployeeById(id));
+        responseDTO.setMessage(EmployeeSuccessMessage.DISABLE_EMPLOYEE_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @PatchMapping ("/active/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ResponseEntity<ResponseDTO> activeEmployee(@PathVariable("id") int id){
+        ResponseDTO responseDTO = new ResponseDTO<>();
+        responseDTO.setData(employeeService.activeEmployeeById(id));
+        responseDTO.setMessage(EmployeeSuccessMessage.ACTIVE_EMPLOYEE_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @GetMapping("/countTotal")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> countTotal(){
+        ResponseDTO response = new ResponseDTO();
+        response.setData(employeeService.countTotal());
+        response.setMessage(EmployeeSuccessMessage.COUNT_EMPLOYEE_SUCCESS);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(response);
     }
 
 }

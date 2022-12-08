@@ -12,9 +12,11 @@ import java.sql.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InterviewDetailResponse {
+    private int id;
     private Date start;
     private Date end;
     private String result;
+    private String recommendPositions;
     private String recordMeeting;
     private String description;
     private Interview interview;

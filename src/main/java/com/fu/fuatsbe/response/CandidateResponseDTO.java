@@ -1,6 +1,7 @@
 package com.fu.fuatsbe.response;
 
 import java.sql.Date;
+import java.util.Collection;
 
 import com.fu.fuatsbe.entity.CV;
 
@@ -26,5 +27,6 @@ public class CandidateResponseDTO {
     private Date dob;
     private String address;
     private String status;
-    private CV cv;
+    private String positionApplied;
+    private Collection<CV> cvs;
 }

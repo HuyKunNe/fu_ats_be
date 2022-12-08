@@ -7,5 +7,6 @@ public final class CandidateSuccessMessage {
     public final static String GET_ALL_CANDIDATE_SUCCESS = "Get all candidates successfully";
     public final static String DELETE_CANDIDATE_SUCCESS = "Delete candidate by id successfully";
     public final static String UPDATE_CANDIDATE_SUCCESS = "Update candidate successfully";
+    public final static String GET_ALL_ACTIVE_CANDIDATE_SUCCESS = "Get all active candidates successfully";
 
 }

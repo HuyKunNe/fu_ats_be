@@ -43,6 +43,7 @@ public class RecruitmentPlan {
     private Date periodFrom;
     private Date periodTo;
     private String totalSalary;
+    private String name;
     private int amount;
     private String status;
 

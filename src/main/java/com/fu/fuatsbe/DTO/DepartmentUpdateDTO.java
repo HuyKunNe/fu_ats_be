@@ -17,5 +17,4 @@ public class DepartmentUpdateDTO {
     private String room;
     private String name;
     private String phone;
-    private String status;
 }

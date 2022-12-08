@@ -2,6 +2,8 @@ package com.fu.fuatsbe.controller;
 
 import java.util.List;
 
+import com.fu.fuatsbe.constant.job_apply.JobApplySuccessMessage;
+import com.fu.fuatsbe.response.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -11,10 +13,6 @@ import com.fu.fuatsbe.constant.candidate.CandidateSuccessMessage;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.entity.Candidate;
-import com.fu.fuatsbe.response.CandidateResponseDTO;
-import com.fu.fuatsbe.response.ListResponseDTO;
-import com.fu.fuatsbe.response.ResponseDTO;
-import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.CandidateService;
 
 import lombok.RequiredArgsConstructor;
@@ -111,7 +109,7 @@ public class CandidateController {
     }
 
     @PutMapping("/update/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_CANDIDATE)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_CANDIDATE)
     public ResponseEntity<ResponseDTO> updateCandidateById(@RequestParam("id") int id,
             @RequestBody CandidateUpdateDTO updateDTO) {
         ResponseDTO<CandidateResponseDTO> responseDTO = new ResponseDTO();
@@ -122,4 +120,25 @@ public class CandidateController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @GetMapping("/getCandidateAppliedByRecruitment")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getCandidateApplied(@RequestParam int recruitmentId) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        List<IdAndNameResponse> responseList = candidateService.getCandidateAppliedByRecruitment(recruitmentId);
+        responseDTO.setData(responseList);
+        responseDTO.setMessage(JobApplySuccessMessage.GET_BY_ID);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/getIdAndNameAcitveCandidate")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getIdAndNameAcitveCandidate() {
+        ResponseDTO responseDTO = new ResponseDTO();
+        List<IdAndNameResponse> responseList = candidateService.getAllAcitveCandidate();
+        responseDTO.setData(responseList);
+        responseDTO.setMessage(CandidateSuccessMessage.GET_ALL_ACTIVE_CANDIDATE_SUCCESS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }

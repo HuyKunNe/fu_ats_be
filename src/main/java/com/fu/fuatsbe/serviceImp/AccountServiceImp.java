@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.fu.fuatsbe.constant.account.AccountErrorMessage;
@@ -23,6 +24,7 @@ import com.fu.fuatsbe.repository.CandidateRepository;
 import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.RoleRepository;
 import com.fu.fuatsbe.response.AccountResponse;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.AccountService;
 
 import lombok.RequiredArgsConstructor;
@@ -40,7 +42,7 @@ public class AccountServiceImp implements AccountService {
     @Override
     public List<AccountResponse> getAllAccounts(int pageNo, int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<Account> pageResult = accountRepository.findAll(pageable);
         List<AccountResponse> result = new ArrayList<AccountResponse>();
         if (pageResult.hasContent()) {
@@ -58,7 +60,7 @@ public class AccountServiceImp implements AccountService {
         Role role = roleRepository.findById(roleId)
                 .orElseThrow(() -> new NotFoundException(RoleErrorMessage.ROLE_NOT_EXIST));
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<Account> pageResult = accountRepository.findByRole(role, pageable);
 
         List<AccountResponse> result = new ArrayList<AccountResponse>();
@@ -108,7 +110,7 @@ public class AccountServiceImp implements AccountService {
     @Override
     public List<AccountResponse> getActivateAccounts(int pageNo, int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<Account> pageResult = accountRepository.findByStatus(AccountStatus.ACTIVATED, pageable);
 
         List<AccountResponse> result = new ArrayList<AccountResponse>();
@@ -125,7 +127,7 @@ public class AccountServiceImp implements AccountService {
     @Override
     public List<AccountResponse> getDisableAccounts(int pageNo, int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<Account> pageResult = accountRepository.findByStatus(AccountStatus.DISABLED, pageable);
 
         List<AccountResponse> result = new ArrayList<AccountResponse>();
@@ -139,4 +141,23 @@ public class AccountServiceImp implements AccountService {
         return result;
     }
 
+    @Override
+    public ResponseWithTotalPage getEmployeeAccount(int pageNo, int pageSize, String name) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Account> pageResult = accountRepository.getEmployeeAccount(pageable);
+        ResponseWithTotalPage response = new ResponseWithTotalPage();
+        List<AccountResponse> list = new ArrayList<>();
+        if (pageResult.hasContent()) {
+            for (Account account : pageResult.getContent()) {
+                if(account.getEmployee().getName().toLowerCase().contains(name.toLowerCase())){
+                    AccountResponse accountResponse = modelMapper.map(account, AccountResponse.class);
+                    list.add(accountResponse);
+                }
+            }
+            response.setTotalPage(pageResult.getTotalPages());
+            response.setResponseList(list);
+        } else
+            throw new ListEmptyException(AccountErrorMessage.LIST_ACCOUNT_IS_EMPTY);
+        return response;
+    }
 }
