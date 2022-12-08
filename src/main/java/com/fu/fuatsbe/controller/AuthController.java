@@ -41,7 +41,7 @@ public class AuthController {
     }
 
     @PostMapping("/loginGoogle")
-    public ResponseEntity<ResponseDTO> loginGoogle(@RequestBody String token) throws JSONException {
+    public ResponseEntity<ResponseDTO> loginGoogle(@RequestBody String token) {
         ResponseDTO<LoginResponseDto> responseDTO = new ResponseDTO();
         LoginResponseDto loginResponseDTO = authService.loginGoogle(token);
         responseDTO.setData(loginResponseDTO);

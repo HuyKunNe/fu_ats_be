@@ -21,7 +21,7 @@ public interface AuthService {
 
     public void changePassword(ChangePasswordDTO changePasswordDTO);
 
-    public LoginResponseDto loginGoogle(String token) throws JSONException;
+    public LoginResponseDto loginGoogle(String token);
 
     public Account registerAccountForGoogleLogin(String email, String name, String image);
 }
