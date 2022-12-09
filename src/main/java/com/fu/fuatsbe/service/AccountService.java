@@ -20,5 +20,5 @@ public interface AccountService {
 
     boolean deleteAccountById(int id);
 
-    ResponseWithTotalPage getEmployeeAccount(int pageNo, int pageSize, String name);
+    ResponseWithTotalPage<AccountResponse> getEmployeeAccount(int pageNo, int pageSize, String name);
 }

@@ -142,14 +142,14 @@ public class AccountServiceImp implements AccountService {
     }
 
     @Override
-    public ResponseWithTotalPage getEmployeeAccount(int pageNo, int pageSize, String name) {
+    public ResponseWithTotalPage<AccountResponse> getEmployeeAccount(int pageNo, int pageSize, String name) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Account> pageResult = accountRepository.getEmployeeAccount(pageable);
-        ResponseWithTotalPage response = new ResponseWithTotalPage();
+        ResponseWithTotalPage<AccountResponse> response = new ResponseWithTotalPage<>();
         List<AccountResponse> list = new ArrayList<>();
         if (pageResult.hasContent()) {
             for (Account account : pageResult.getContent()) {
-                if(account.getEmployee().getName().toLowerCase().contains(name.toLowerCase())){
+                if (account.getEmployee().getName().toLowerCase().contains(name.toLowerCase())) {
                     AccountResponse accountResponse = modelMapper.map(account, AccountResponse.class);
                     list.add(accountResponse);
                 }

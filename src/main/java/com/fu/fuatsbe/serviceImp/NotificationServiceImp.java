@@ -1,12 +1,34 @@
 package com.fu.fuatsbe.serviceImp;
 
+import java.io.IOException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
 import com.fu.fuatsbe.DTO.NotificationCreateDTO;
 import com.fu.fuatsbe.DTO.SendNotificationDTO;
 import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.notification.NotificationErrorMessage;
 import com.fu.fuatsbe.constant.notification.NotificationStatus;
-import com.fu.fuatsbe.constant.notification.NotificationType;
 import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.EmailSchedule;
 import com.fu.fuatsbe.entity.Employee;
@@ -23,33 +45,12 @@ import com.fu.fuatsbe.service.NotificationService;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.messaging.*;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import java.io.IOException;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -161,9 +162,11 @@ public class NotificationServiceImp implements NotificationService {
                 + "• Duration: 45 minutes\n"
                 + "• Address: " + interviewAddress + "\n"
                 + " Notes:\n" +
-                "• Please well prepare your appearance and background because this interview requires your camera to be turned on(if online interview)\n" +
+                "• Please well prepare your appearance and background because this interview requires your camera to be turned on(if online interview)\n"
+                +
                 "\n" +
-                "• Please join the meeting 5 minutes before the above-mentioned time to prepare your network incident (if any)\n" +
+                "• Please join the meeting 5 minutes before the above-mentioned time to prepare your network incident (if any)\n"
+                +
                 "\n" +
                 "• Should you have any further question, please do not hesitate to contact me via email anytime.\n" +
                 "\n" +
@@ -197,25 +200,26 @@ public class NotificationServiceImp implements NotificationService {
                 .build();
         emailScheduleRepository.save(emailSchedule);
 
-//        for (Employee employee : listEmployee) {
-//            sendEmail(employee.getAccount().getEmail(), subject, content, employee.getName());
-//        }
-//        sendEmail(sendNotificationDTO.getCandidate().getEmail(), subject, content,
-//                sendNotificationDTO.getCandidate().getName());
-//        for (Candidate candidate : listCandidate) {
-//            if (candidate.getAccount().getNotificationToken() != null) {
-//                pushNotification(candidate.getAccount().getNotificationToken(),
-//                        notification.getSubject(),
-//                        notification.getContent());
-//            }
-//        }
-//        for (Employee employee : listEmployee) {
-//            if (employee.getAccount().getNotificationToken() != null) {
-//                pushNotification(employee.getAccount().getNotificationToken(),
-//                        notification.getSubject(),
-//                        notification.getContent());
-//            }
-//        }
+        // for (Employee employee : listEmployee) {
+        // sendEmail(employee.getAccount().getEmail(), subject, content,
+        // employee.getName());
+        // }
+        // sendEmail(sendNotificationDTO.getCandidate().getEmail(), subject, content,
+        // sendNotificationDTO.getCandidate().getName());
+        // for (Candidate candidate : listCandidate) {
+        // if (candidate.getAccount().getNotificationToken() != null) {
+        // pushNotification(candidate.getAccount().getNotificationToken(),
+        // notification.getSubject(),
+        // notification.getContent());
+        // }
+        // }
+        // for (Employee employee : listEmployee) {
+        // if (employee.getAccount().getNotificationToken() != null) {
+        // pushNotification(employee.getAccount().getNotificationToken(),
+        // notification.getSubject(),
+        // notification.getContent());
+        // }
+        // }
     }
 
     private void sendEmail(String email, String title, String content) throws MessagingException {
@@ -289,16 +293,17 @@ public class NotificationServiceImp implements NotificationService {
             throw new ListEmptyException(NotificationErrorMessage.LIST_EMPTY_EXCEPTION);
         return result;
     }
-    //    @Scheduled(cron = "*/60 * * * * *")//1 minute
-    @Scheduled(cron = "*/10 * * * * *")//10 second
+
+    // @Scheduled(cron = "*/60 * * * * *")//1 minute
+    @Scheduled(cron = "*/10 * * * * *") // 10 second
     public void sendMailAuto() {
-        EmailSchedule emailSchedule= emailScheduleService.getFirstMailSchedule();
+        EmailSchedule emailSchedule = emailScheduleService.getFirstMailSchedule();
         try {
-            if(emailSchedule != null){
-                sendEmail(emailSchedule.getEmail(),emailSchedule.getTitle(),emailSchedule.getContent());
+            if (emailSchedule != null) {
+                sendEmail(emailSchedule.getEmail(), emailSchedule.getTitle(), emailSchedule.getContent());
                 emailScheduleRepository.delete(emailSchedule);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

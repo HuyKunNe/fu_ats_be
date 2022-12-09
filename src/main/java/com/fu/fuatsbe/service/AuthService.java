@@ -2,8 +2,6 @@ package com.fu.fuatsbe.service;
 
 import javax.management.relation.RoleNotFoundException;
 
-import org.springframework.boot.configurationprocessor.json.JSONException;
-
 import com.fu.fuatsbe.DTO.ChangePasswordDTO;
 import com.fu.fuatsbe.DTO.LoginDto;
 import com.fu.fuatsbe.DTO.RegisterCandidateDto;

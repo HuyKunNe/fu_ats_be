@@ -12,11 +12,6 @@ import java.util.List;
 import javax.mail.MessagingException;
 import javax.persistence.Tuple;
 
-import com.fu.fuatsbe.constant.candidate.CandidateStatus;
-
-import com.fu.fuatsbe.entity.*;
-import com.fu.fuatsbe.repository.*;
-import com.fu.fuatsbe.response.NameAndStatusResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,21 +25,34 @@ import com.fu.fuatsbe.DTO.InterviewUpdateDTO;
 import com.fu.fuatsbe.DTO.NotificationCreateDTO;
 import com.fu.fuatsbe.DTO.SendNotificationDTO;
 import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
+import com.fu.fuatsbe.constant.candidate.CandidateStatus;
 import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.interview.InterviewErrorMessage;
 import com.fu.fuatsbe.constant.interview.InterviewRequestStatus;
 import com.fu.fuatsbe.constant.interview_employee.InterviewEmployeeRequestStatus;
 import com.fu.fuatsbe.constant.job_apply.JobApplyErrorMessage;
+import com.fu.fuatsbe.entity.Candidate;
+import com.fu.fuatsbe.entity.Department;
+import com.fu.fuatsbe.entity.Employee;
+import com.fu.fuatsbe.entity.Interview;
+import com.fu.fuatsbe.entity.InterviewEmployee;
+import com.fu.fuatsbe.entity.JobApply;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.exceptions.NotValidException;
 import com.fu.fuatsbe.exceptions.PermissionException;
+import com.fu.fuatsbe.repository.CandidateRepository;
+import com.fu.fuatsbe.repository.DepartmentRepository;
+import com.fu.fuatsbe.repository.EmployeeRepository;
+import com.fu.fuatsbe.repository.InterviewEmployeeRepository;
+import com.fu.fuatsbe.repository.InterviewRepository;
+import com.fu.fuatsbe.repository.JobApplyRepository;
 import com.fu.fuatsbe.response.InterviewResponse;
+import com.fu.fuatsbe.response.NameAndStatusResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.InterviewService;
 import com.fu.fuatsbe.service.NotificationService;
-import com.fu.fuatsbe.service.EmailService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -58,10 +66,8 @@ public class InterviewServiceImp implements InterviewService {
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
     private final JobApplyRepository jobApplyRepository;
-    private final NotificationRepository notificationRepository;
 
     private final NotificationService notificationService;
-    private final EmailService emailService;
 
     private final InterviewEmployeeRepository interviewEmployeeRepository;
 
@@ -78,7 +84,7 @@ public class InterviewServiceImp implements InterviewService {
             employeeList.add(employee);
             intervieweeIdList.add(employeeId);
         }
-        for (Integer candidateId: interviewCreateDTO.getCandidateId()) {
+        for (Integer candidateId : interviewCreateDTO.getCandidateId()) {
             Candidate candidate = candidateRepository.findById(candidateId)
                     .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
             candidateList.add(candidate);
@@ -91,19 +97,18 @@ public class InterviewServiceImp implements InterviewService {
 
         LocalDate presentDate = LocalDate.parse(LocalDate.now().toString(), dateFormatter);
 
-
         if (localDate.isBefore(presentDate)) {
             throw new PermissionException(InterviewErrorMessage.DATE_NOT_VALID);
         }
         int loopTimes = 0;
         LocalTime newLocalTime = null;
-        for (Candidate candidate: candidateList) {
-            newLocalTime = localTime.plusMinutes(45*loopTimes);
+        for (Candidate candidate : candidateList) {
+            newLocalTime = localTime.plusMinutes(45 * loopTimes);
             LocalDateTime localDateTime = LocalDateTime.of(localDate, newLocalTime);
             String dateInput = localDateTime.format(dateTimeFormatter);
             Timestamp dateInterview = Timestamp.valueOf(dateInput);
             JobApply jobApply = jobApplyRepository.getJobAppliesByRecruitmentAndCandidate(
-                            interviewCreateDTO.getRecruitmentRequestId(), candidate.getId())
+                    interviewCreateDTO.getRecruitmentRequestId(), candidate.getId())
                     .orElseThrow(() -> new NotValidException(JobApplyErrorMessage.CANDIDATE_NOT_APPLY));
             Interview interview = Interview.builder()
                     .subject(interviewCreateDTO.getSubject())
@@ -144,7 +149,7 @@ public class InterviewServiceImp implements InterviewService {
             notificationService.sendNotificationForInterview(sendNotificationDTO);
             loopTimes++;
         }
-        System.out.println("Check end time "+newLocalTime);
+        System.out.println("Check end time " + newLocalTime);
 
     }
 
