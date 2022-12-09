@@ -29,5 +29,7 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     @Query(nativeQuery = true, value = "select * from account where role_id != 3")
     Page<Account> getEmployeeAccount(Pageable pageable);
+    @Query(nativeQuery = true, value = "select notification_token from account where email like ?1 limit 1")
+    String getNotiTokenByMail(String mail);
 
 }

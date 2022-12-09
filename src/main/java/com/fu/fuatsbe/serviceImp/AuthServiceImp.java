@@ -288,7 +288,7 @@ public class AuthServiceImp implements AuthService {
 
         String tokenResponse = Jwts.builder().setSubject(authentication.getName())
                 .claim(("authorities"), simpleGrantedAuthorities).claim("id", account.getId())
-                .setIssuedAt((new Date())).setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(1)))
+                .setIssuedAt((new Date())).setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(14)))
                 .signWith(jwtConfig.secretKey()).compact();
 
         loginResponseDTO = LoginResponseDto.builder()

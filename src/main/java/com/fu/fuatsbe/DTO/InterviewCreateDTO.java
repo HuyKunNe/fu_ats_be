@@ -37,6 +37,8 @@ public class InterviewCreateDTO {
     private String linkMeeting;
 
     private String round;
+    private String jobName;
+    private int duration;
     @NotBlank(message = ValidationMessage.INTERVIEW_TYPE_VALID_MESSAGE)
     private String type;
     @NotBlank(message = ValidationMessage.DESCRIPTION_VALID_MESSAGE)

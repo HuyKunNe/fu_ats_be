@@ -23,7 +23,8 @@ public class SendNotificationDTO {
     private String link;
     private String room;
     private String address;
-    private String jobTitle;
+    private String jobName;
+    private int duration;
     private Timestamp date;
     private Candidate candidate;
     private List<Integer> IntervieweeID;

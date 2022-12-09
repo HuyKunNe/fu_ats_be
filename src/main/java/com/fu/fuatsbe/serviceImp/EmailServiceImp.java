@@ -2,12 +2,16 @@ package com.fu.fuatsbe.serviceImp;
 
 import com.fu.fuatsbe.DTO.InviteReapplyDTO;
 import com.fu.fuatsbe.constant.account.AccountErrorMessage;
+import com.fu.fuatsbe.entity.EmailSchedule;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.exceptions.PermissionException;
 import com.fu.fuatsbe.repository.AccountRepository;
 import com.fu.fuatsbe.repository.CvRepository;
+import com.fu.fuatsbe.repository.EmailScheduleRepository;
 import com.fu.fuatsbe.repository.VerificationRepository;
+import com.fu.fuatsbe.service.EmailScheduleService;
 import com.fu.fuatsbe.service.EmailService;
+import com.fu.fuatsbe.service.NotificationService;
 import com.fu.fuatsbe.service.VerificationTokenService;
 import com.fu.fuatsbe.constant.common.CommonMessage;
 import com.fu.fuatsbe.entity.Account;
@@ -35,6 +39,7 @@ public class EmailServiceImp implements EmailService {
 
     private final VerificationRepository verificationRepository;
     private final VerificationTokenService verificationTokenService;
+    private final EmailScheduleRepository emailScheduleRepository;
     private final JavaMailSender javaMailSender;
     private final PasswordEncoder passwordEncoder;
 
@@ -103,12 +108,12 @@ public class EmailServiceImp implements EmailService {
         for (Integer cvId: invite.getCvIds()) {
             String email = cvRepository.getEmailByCVId(cvId);
             if(email != null){
-                MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-                MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
-                mimeMessageHelper.setTo(email);
-                mimeMessageHelper.setSubject(invite.getTitle());
-                mimeMessageHelper.setText(invite.getContent());
-                javaMailSender.send(mimeMessage);
+                EmailSchedule emailSchedule = EmailSchedule.builder()
+                        .email(email)
+                        .title(invite.getTitle())
+                        .content(invite.getContent())
+                        .build();
+                emailScheduleRepository.save(emailSchedule);
             }
         }
 
