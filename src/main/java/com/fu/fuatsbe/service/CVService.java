@@ -7,6 +7,7 @@ import com.fu.fuatsbe.DTO.CvUpdateDTO;
 import com.fu.fuatsbe.entity.CV;
 import com.fu.fuatsbe.response.CvResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
+import com.fu.fuatsbe.response.TitleAndValueResponse;
 
 public interface CVService {
 
@@ -28,4 +29,5 @@ public interface CVService {
 
     public List<CvResponse> getCvForRequest(String postionName);
 
+    public List<TitleAndValueResponse> getAllSourceCV();
 }

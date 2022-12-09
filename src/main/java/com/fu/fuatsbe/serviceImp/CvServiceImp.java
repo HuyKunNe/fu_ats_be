@@ -28,6 +28,7 @@ import com.fu.fuatsbe.repository.CvRepository;
 import com.fu.fuatsbe.repository.PositionRepository;
 import com.fu.fuatsbe.response.CvResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
+import com.fu.fuatsbe.response.TitleAndValueResponse;
 import com.fu.fuatsbe.service.CVService;
 
 import lombok.RequiredArgsConstructor;
@@ -253,5 +254,16 @@ public class CvServiceImp implements CVService {
             list.add(response);
         }
         return list;
+    }
+
+    @Override
+    public List<TitleAndValueResponse> getAllSourceCV() {
+
+        List<String> listSources = cvRepository.getAllSource();
+        List<TitleAndValueResponse> result = new ArrayList<>();
+        for (String source : listSources) {
+            result.add(new TitleAndValueResponse(source, source));
+        }
+        return result;
     }
 }

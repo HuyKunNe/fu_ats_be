@@ -26,6 +26,7 @@ import com.fu.fuatsbe.response.CvResponse;
 import com.fu.fuatsbe.response.ListResponseDTO;
 import com.fu.fuatsbe.response.ResponseDTO;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
+import com.fu.fuatsbe.response.TitleAndValueResponse;
 import com.fu.fuatsbe.service.CVService;
 
 import lombok.RequiredArgsConstructor;
@@ -128,6 +129,17 @@ public class CVController {
     public ResponseEntity<ListResponseDTO> getCVForRequest(@RequestParam String positionName) {
         ListResponseDTO<CvResponse> responseDTO = new ListResponseDTO();
         List<CvResponse> list = cvService.getCvForRequest(positionName);
+        responseDTO.setData(list);
+        responseDTO.setMessage(CVSuccessMessage.GET_ALL_CVS);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/getAllSourceCV")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ListResponseDTO> getAllSourceCV() {
+        ListResponseDTO<TitleAndValueResponse> responseDTO = new ListResponseDTO();
+        List<TitleAndValueResponse> list = cvService.getAllSourceCV();
         responseDTO.setData(list);
         responseDTO.setMessage(CVSuccessMessage.GET_ALL_CVS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
