@@ -22,7 +22,6 @@ public interface InterviewService {
 
     InterviewResponse getInterviewByID(int id);
 
-    InterviewResponse updateInterview(int id, InterviewUpdateDTO interviewUpdateDTO) throws MessagingException;
 
     void closeInterview(int id);
 

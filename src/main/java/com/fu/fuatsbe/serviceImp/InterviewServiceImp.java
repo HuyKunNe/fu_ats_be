@@ -12,6 +12,12 @@ import java.util.List;
 import javax.mail.MessagingException;
 import javax.persistence.Tuple;
 
+import com.fu.fuatsbe.DTO.*;
+import com.fu.fuatsbe.constant.candidate.CandidateStatus;
+
+import com.fu.fuatsbe.entity.*;
+import com.fu.fuatsbe.repository.*;
+import com.fu.fuatsbe.response.NameAndStatusResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,40 +25,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.fu.fuatsbe.DTO.CancelInterviewDTO;
-import com.fu.fuatsbe.DTO.InterviewCreateDTO;
-import com.fu.fuatsbe.DTO.InterviewUpdateDTO;
-import com.fu.fuatsbe.DTO.NotificationCreateDTO;
-import com.fu.fuatsbe.DTO.SendNotificationDTO;
 import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
-import com.fu.fuatsbe.constant.candidate.CandidateStatus;
 import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.interview.InterviewErrorMessage;
 import com.fu.fuatsbe.constant.interview.InterviewRequestStatus;
 import com.fu.fuatsbe.constant.interview_employee.InterviewEmployeeRequestStatus;
 import com.fu.fuatsbe.constant.job_apply.JobApplyErrorMessage;
-import com.fu.fuatsbe.entity.Candidate;
-import com.fu.fuatsbe.entity.Department;
-import com.fu.fuatsbe.entity.Employee;
-import com.fu.fuatsbe.entity.Interview;
-import com.fu.fuatsbe.entity.InterviewEmployee;
-import com.fu.fuatsbe.entity.JobApply;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.exceptions.NotValidException;
 import com.fu.fuatsbe.exceptions.PermissionException;
-import com.fu.fuatsbe.repository.CandidateRepository;
-import com.fu.fuatsbe.repository.DepartmentRepository;
-import com.fu.fuatsbe.repository.EmployeeRepository;
-import com.fu.fuatsbe.repository.InterviewEmployeeRepository;
-import com.fu.fuatsbe.repository.InterviewRepository;
-import com.fu.fuatsbe.repository.JobApplyRepository;
 import com.fu.fuatsbe.response.InterviewResponse;
-import com.fu.fuatsbe.response.NameAndStatusResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.InterviewService;
 import com.fu.fuatsbe.service.NotificationService;
+import com.fu.fuatsbe.service.EmailService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -66,8 +54,10 @@ public class InterviewServiceImp implements InterviewService {
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
     private final JobApplyRepository jobApplyRepository;
+    private final NotificationRepository notificationRepository;
 
     private final NotificationService notificationService;
+    private final EmailScheduleRepository emailScheduleRepository;
 
     private final InterviewEmployeeRepository interviewEmployeeRepository;
 
@@ -97,18 +87,19 @@ public class InterviewServiceImp implements InterviewService {
 
         LocalDate presentDate = LocalDate.parse(LocalDate.now().toString(), dateFormatter);
 
+
         if (localDate.isBefore(presentDate)) {
             throw new PermissionException(InterviewErrorMessage.DATE_NOT_VALID);
         }
         int loopTimes = 0;
         LocalTime newLocalTime = null;
         for (Candidate candidate : candidateList) {
-            newLocalTime = localTime.plusMinutes(45 * loopTimes);
+            newLocalTime = localTime.plusMinutes(interviewCreateDTO.getDuration() * loopTimes);
             LocalDateTime localDateTime = LocalDateTime.of(localDate, newLocalTime);
             String dateInput = localDateTime.format(dateTimeFormatter);
             Timestamp dateInterview = Timestamp.valueOf(dateInput);
             JobApply jobApply = jobApplyRepository.getJobAppliesByRecruitmentAndCandidate(
-                    interviewCreateDTO.getRecruitmentRequestId(), candidate.getId())
+                            interviewCreateDTO.getRecruitmentRequestId(), candidate.getId())
                     .orElseThrow(() -> new NotValidException(JobApplyErrorMessage.CANDIDATE_NOT_APPLY));
             Interview interview = Interview.builder()
                     .subject(interviewCreateDTO.getSubject())
@@ -126,15 +117,12 @@ public class InterviewServiceImp implements InterviewService {
                     .build();
             Interview savedInterview = interviewRepository.save(interview);
 
-            List<InterviewEmployee> listInterviewEmployees = new ArrayList<>();
-
             for (Employee emp : employeeList) {
                 InterviewEmployee interviewEmployee = InterviewEmployee.builder()
                         .employee(emp)
                         .interview(savedInterview)
                         .build();
-                InterviewEmployee interviewEmployeeSaved = interviewEmployeeRepository.save(interviewEmployee);
-                listInterviewEmployees.add(interviewEmployeeSaved);
+                interviewEmployeeRepository.save(interviewEmployee);
             }
 
             SendNotificationDTO sendNotificationDTO = SendNotificationDTO.builder()
@@ -142,20 +130,37 @@ public class InterviewServiceImp implements InterviewService {
                     .room(savedInterview.getRoom())
                     .address(savedInterview.getAddress())
                     .date(savedInterview.getDate())
+                    .duration(interviewCreateDTO.getDuration())
                     .candidate(candidate)
                     .IntervieweeID(intervieweeIdList)
                     .interview(savedInterview)
+                    .jobName(interviewCreateDTO.getJobName())
                     .build();
             notificationService.sendNotificationForInterview(sendNotificationDTO);
             loopTimes++;
         }
-        System.out.println("Check end time " + newLocalTime);
+        for (Employee emp: employeeList) {
+            String time = interviewCreateDTO.getTime();
+            if(!interviewCreateDTO.getTime().equals(newLocalTime.toString())){
+                time = interviewCreateDTO.getTime() +"-"+newLocalTime.plusMinutes(interviewCreateDTO.getDuration());
+            }
+            SendInviteInterviewEmployee sendInviteInterviewEmployee = SendInviteInterviewEmployee.builder()
+                    .link(interviewCreateDTO.getLinkMeeting())
+                    .address(interviewCreateDTO.getAddress())
+                    .room(interviewCreateDTO.getRoom())
+                    .jobName(interviewCreateDTO.getJobName())
+                    .date(interviewCreateDTO.getDate())
+                    .time(time)
+                    .employee(emp)
+                    .build();
+            notificationService.sendInterviewNotiForEmployee(sendInviteInterviewEmployee);
+        }
 
     }
 
     @Override
     public ResponseWithTotalPage<InterviewResponse> getInterviewByCandidateID(int candidateId, int pageNo,
-            int pageSize) {
+                                                                              int pageSize) {
         Candidate candidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
 
@@ -329,95 +334,6 @@ public class InterviewServiceImp implements InterviewService {
     }
 
     @Override
-    public InterviewResponse updateInterview(int id, InterviewUpdateDTO interviewUpdateDTO) throws MessagingException {
-        Interview interview = interviewRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
-        Candidate candidate = candidateRepository.findById(interviewUpdateDTO.getCandidateId())
-                .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
-        List<Employee> employeeList = new ArrayList<>();
-        for (Integer employeeId : interviewUpdateDTO.getEmployeeIds()) {
-            Employee employee = employeeRepository.findById(employeeId)
-                    .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
-            employeeList.add(employee);
-        }
-
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        DateTimeFormatter dateFormater = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-
-        LocalDate localDate = LocalDate.parse(interviewUpdateDTO.getDate(), dateFormater);
-        LocalTime localTime = LocalTime.parse(interviewUpdateDTO.getTime(), timeFormatter);
-        LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-
-        String dateInput = localDateTime.format(dateTimeFormatter);
-        Timestamp dateInterview = Timestamp.valueOf(dateInput);
-
-        JobApply jobApply = jobApplyRepository.findById(interviewUpdateDTO.getJobApplyId())
-                .orElseThrow(() -> new NotFoundException(JobApplyErrorMessage.JOB_APPLY_NOT_FOUND));
-        interview.setSubject(interviewUpdateDTO.getSubject());
-        interview.setPurpose(interviewUpdateDTO.getPurpose());
-        interview.setDate(dateInterview);
-        interview.setAddress(interviewUpdateDTO.getAddress());
-        interview.setRoom(interviewUpdateDTO.getRoom());
-        interview.setLinkMeeting(interviewUpdateDTO.getLinkMeeting());
-        interview.setRound(interviewUpdateDTO.getRound());
-        interview.setType(interviewUpdateDTO.getType());
-        interview.setDescription(interviewUpdateDTO.getDescription());
-        interview.setJobApply(jobApply);
-        interview.setCandidate(candidate);
-
-        List<InterviewEmployee> interviewEmployeeList = new ArrayList<>();
-        for (InterviewEmployee interviewEmployee : interview.getInterviewEmployees()) {
-            interviewEmployeeList.add(interviewEmployee);
-        }
-        interview.setInterviewEmployees(interviewEmployeeList);
-        Interview savedInterview = interviewRepository.save(interview);
-        interviewEmployeeRepository.deleteInterviewEmployeeByInterviewId(savedInterview.getId());
-
-        for (Employee emp : employeeList) {
-            InterviewEmployee interviewEmployee = InterviewEmployee.builder()
-                    .employee(emp)
-                    .interview(savedInterview)
-                    .build();
-            interviewEmployeeRepository.save(interviewEmployee);
-        }
-
-        SendNotificationDTO sendNotificationDTO = SendNotificationDTO.builder()
-                .link(savedInterview.getLinkMeeting())
-                .room(savedInterview.getRoom())
-                .address(savedInterview.getAddress())
-                .date(savedInterview.getDate())
-                .candidate(candidate)
-                .IntervieweeID(interviewUpdateDTO.getEmployeeIds())
-                .interview(savedInterview)
-                .build();
-        notificationService.sendNotificationForInterview(sendNotificationDTO);
-
-        List<String> empName = new ArrayList<>();
-        for (InterviewEmployee interEmp : savedInterview.getInterviewEmployees()) {
-            empName.add(interEmp.getEmployee().getName());
-        }
-        InterviewResponse interviewResponse = InterviewResponse.builder()
-                .id(savedInterview.getId())
-                .subject(savedInterview.getSubject())
-                .purpose(savedInterview.getPurpose())
-                .date(Date.valueOf(savedInterview.getDate().toLocalDateTime().toLocalDate()).toString())
-                .time(localTime.toString())
-                .address(savedInterview.getAddress())
-                .room(savedInterview.getRoom())
-                .linkMeeting(savedInterview.getLinkMeeting())
-                .round(savedInterview.getRound())
-                .description(savedInterview.getDescription())
-                .status(savedInterview.getStatus())
-                .type(savedInterview.getType())
-                .jobApply(savedInterview.getJobApply())
-                .candidateName(savedInterview.getCandidate().getName())
-                .employeeNames(empName)
-                .build();
-        return interviewResponse;
-    }
-
-    @Override
     public void closeInterview(int id) {
         Interview interview = interviewRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
@@ -439,10 +355,19 @@ public class InterviewServiceImp implements InterviewService {
             employeeIDs.add(employee.getEmployee().getId());
         }
         String dateFormated = interview.getDate().toString().substring(0, 16);
-        String message = "Lịch phỏng vấn vào ngày " + dateFormated + " đã huỷ\n"
-                + "Lý do: " + cancelInterviewDTO.getReason() + "\n" + "Xin thứ lỗi.";
+        String message = "The interview at " + dateFormated + " has canceled\n"
+                + "Reason: " + cancelInterviewDTO.getReason() + "\n" + "So sorry for this inconvenience."+
+                "\n" +
+                " \n" +
+                "Thanks & Best Regards,\n" +
+                "\n" +
+                "--------------------\n" +
+                "HR Department | CKHR Consulting\n" +
+                "Ground Floor, Rosana Building, 60 Nguyen Dinh Chieu, Da Kao Ward, District 1, HCMC\n" +
+                "\n" +
+                "Phone: (+8428) 7106 8279 Email: info@ckhrconsulting.vn Website: ckhrconsulting.vn";
         NotificationCreateDTO notificationCreateDTO = NotificationCreateDTO.builder()
-                .title("Huỷ lịch phỏng vấn")
+                .title("Cancel Interview Schedule")
                 .content(message)
                 .candidateIDs(candidateIDs)
                 .employeeIDs(employeeIDs)
@@ -452,7 +377,7 @@ public class InterviewServiceImp implements InterviewService {
 
     @Override
     public ResponseWithTotalPage<InterviewResponse> getInterviewByDepartment(int departmentId, int pageNo,
-            int pageSize) {
+                                                                             int pageSize) {
         Department department = departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
 
@@ -520,12 +445,21 @@ public class InterviewServiceImp implements InterviewService {
                 checkAllConfirm = false;
             }
         }
-        if (!interview.getCandidateConfirm().equals(CandidateStatus.INTERVIEW_ACCEPTABLE)) {
-            checkAllConfirm = false;
-        }
+//        if (!interview.getCandidateConfirm().equals(CandidateStatus.INTERVIEW_ACCEPTABLE) &&
+//                interview.getCandidateConfirm() == null) {
+//            checkAllConfirm = false;
+//        }
         if (checkAllConfirm) {
             interview.setStatus(InterviewRequestStatus.APPROVED);
             interviewRepository.save(interview);
+            Tuple tuple = notificationRepository.getNotificationByInterview(idInterview);
+            Candidate candidate = interview.getCandidate();
+            EmailSchedule emailSchedule = EmailSchedule.builder()
+                    .email(candidate.getAccount().getEmail())
+                    .content(tuple.get("content").toString())
+                    .title(tuple.get("subject").toString())
+                    .build();
+            emailScheduleRepository.save(emailSchedule);
         }
 
     }
@@ -536,6 +470,14 @@ public class InterviewServiceImp implements InterviewService {
                 .orElseThrow(() -> new NotFoundException(InterviewErrorMessage.INTERVIEW_NOT_FOUND));
         interview.setStatus(InterviewRequestStatus.APPROVED);
         interviewRepository.save(interview);
+        Tuple tuple = notificationRepository.getNotificationByInterview(idInterview);
+        Candidate candidate = interview.getCandidate();
+        EmailSchedule emailSchedule = EmailSchedule.builder()
+                .email(candidate.getAccount().getEmail())
+                .content(tuple.get("content").toString())
+                .title(tuple.get("subject").toString())
+                .build();
+        emailScheduleRepository.save(emailSchedule);
     }
 
     @Override
@@ -604,10 +546,19 @@ public class InterviewServiceImp implements InterviewService {
             employeeIDs.add(employee.getEmployee().getId());
         }
         String dateFormated = interview.getDate().toString().substring(0, 16);
-        String message = "Lịch phỏng vấn vào ngày " + dateFormated + " đã huỷ\n"
-                + "Lý do: Ứng viên từ chối tham gia\n" + "Xin thứ lỗi.";
+        String message = "The interview at " + dateFormated + " is canceled\n"
+                + "Reason: Candidate reject to join the interview\n" + "So sorry for this inconvenience."+
+                "\n" +
+                " \n" +
+                "Thanks & Best Regards,\n" +
+                "\n" +
+                "--------------------\n" +
+                "HR Department | CKHR Consulting\n" +
+                "Ground Floor, Rosana Building, 60 Nguyen Dinh Chieu, Da Kao Ward, District 1, HCMC\n" +
+                "\n" +
+                "Phone: (+8428) 7106 8279 Email: info@ckhrconsulting.vn Website: ckhrconsulting.vn";
         NotificationCreateDTO notificationCreateDTO = NotificationCreateDTO.builder()
-                .title("Huỷ lịch phỏng vấn")
+                .title("Cancel Interview Schedule")
                 .content(message)
                 .candidateIDs(candidateIDs)
                 .employeeIDs(employeeIDs)
@@ -617,7 +568,7 @@ public class InterviewServiceImp implements InterviewService {
 
     @Override
     public List<InterviewResponse> searchInterview(String candidateName, String type, String status, String date,
-            String round) {
+                                                   String round) {
         List<InterviewResponse> result = new ArrayList<InterviewResponse>();
         List<Interview> list = interviewRepository.searchInterview(candidateName, type, status, date, round);
         if (list.size() > 0) {
@@ -649,7 +600,7 @@ public class InterviewServiceImp implements InterviewService {
 
     @Override
     public ResponseWithTotalPage<InterviewResponse> getAcceptableByEmployee(int employeeId, int pageNo,
-            int pageSize) {
+                                                                            int pageSize) {
         ResponseWithTotalPage<InterviewResponse> result = new ResponseWithTotalPage<>();
         List<InterviewResponse> listResponse = new ArrayList<>();
         pageNo *= pageSize;
@@ -695,7 +646,7 @@ public class InterviewServiceImp implements InterviewService {
 
     @Override
     public ResponseWithTotalPage<InterviewResponse> getAcceptableByDepartment(int departmentId, int pageNo,
-            int pageSize) {
+                                                                              int pageSize) {
         ResponseWithTotalPage<InterviewResponse> result = new ResponseWithTotalPage<>();
         List<InterviewResponse> listResponse = new ArrayList<>();
         pageNo *= pageSize;

@@ -94,17 +94,6 @@ public class InterviewController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PutMapping("/updateInterview")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> updateInterview(@RequestParam int interviewId,
-            @RequestBody InterviewUpdateDTO interviewUpdateDTO) throws MessagingException {
-        ResponseDTO response = new ResponseDTO();
-        response.setData(interviewService.updateInterview(interviewId, interviewUpdateDTO));
-        response.setStatus(ResponseStatusDTO.SUCCESS);
-        response.setMessage(InterviewSuccessMessage.UPDATE_INTERVIEW);
-        return ResponseEntity.ok().body(response);
-    }
-
     @PutMapping("/closeInterview")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> closeInterview(@RequestParam int id) {

@@ -10,7 +10,12 @@ import org.springframework.data.jpa.repository.Query;
 import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.JobApply;
 import com.fu.fuatsbe.entity.RecruitmentRequest;
+import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
+
+@Repository
+@Transactional
 public interface JobApplyRepository extends JpaRepository<JobApply, Integer> {
         public Optional<JobApply> findById(int id);
 

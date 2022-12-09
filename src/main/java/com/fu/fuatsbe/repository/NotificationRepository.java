@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import javax.persistence.Tuple;
 import javax.transaction.Transactional;
 
 @Repository
@@ -27,5 +28,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Inte
     @Query(nativeQuery = true, value = "select * from notification where is_mail_send_candidate = false and " +
             "type like 'INTERVIEW' and id in(select notifice_id from notified_candidate where candidate_id = ?1)")
     List<Notification> findNotiNotSendByCandidate(int candidateId);
+    @Query(nativeQuery = true, value = "select content, subject from notification where interview_id = ?1")
+    Tuple getNotificationByInterview(int interviewId);
 
 }
