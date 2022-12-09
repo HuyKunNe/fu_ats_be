@@ -93,6 +93,14 @@ public class AuthServiceImp implements AuthService {
                 throw new EmailExistException(EmployeeErrorMessage.EMAIL_EXIST);
             } else {
 
+                if (candidateRepository.existsByPhone(registerDTO.getPhone())) {
+                    throw new ExistException(ValidationMessage.PHONE_IS_EXIST);
+                }
+
+                if (employeeRepository.existsByPhone(registerDTO.getPhone())) {
+                    throw new ExistException(ValidationMessage.PHONE_IS_EXIST);
+                }
+
                 Candidate candidateExist = candidateRepository.findByEmail(registerDTO.getEmail())
                         .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
 
@@ -174,9 +182,16 @@ public class AuthServiceImp implements AuthService {
             throw new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST);
         }
 
-        Optional<Employee> optionalEmployee = employeeRepository.findByPhone(registerDto.getPhone());
-        if (optionalEmployee.isPresent()) {
+        if (candidateRepository.existsByPhone(registerDto.getPhone())) {
             throw new ExistException(ValidationMessage.PHONE_IS_EXIST);
+        }
+
+        if (employeeRepository.existsByPhone(registerDto.getPhone())) {
+            throw new ExistException(ValidationMessage.PHONE_IS_EXIST);
+        }
+
+        if (employeeRepository.existsByEmployeeCode(registerDto.getEmployeeCode())) {
+            throw new ExistException(EmployeeErrorMessage.EMPLOYEE_CODE_EXIST);
         }
 
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -203,6 +218,7 @@ public class AuthServiceImp implements AuthService {
                 .email(registerDto.getEmail())
                 .role(role)
                 .employee(employee)
+                .provider(AccountProvider.LOCAL)
                 .status(AccountStatus.ACTIVATED)
                 .password(passwordEncoder.encode(registerDto.getPassword())).build();
         employeeRepository.save(employee);

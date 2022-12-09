@@ -15,16 +15,17 @@ public interface EmployeeService {
 
     public EmployeeResponse getEmployeeById(int id);
 
-    public EmployeeResponse getEmployeeByCode(String code);
-
     public ResponseWithTotalPage<EmployeeResponse> getAllEmployeeByDepartment(int departmentId, int pageNo,
             int pageSize);
 
     public EmployeeResponse updateEmployee(int id, EmployeeUpdateDTO updateDTO);
 
     public Employee deleteEmployeeById(int id);
+
     Employee activeEmployeeById(int id);
+
     List<IdAndNameResponse> getIdAndNameEmployeeByRequest(int requestId);
+
     CountTotalDTO countTotal();
 
 }

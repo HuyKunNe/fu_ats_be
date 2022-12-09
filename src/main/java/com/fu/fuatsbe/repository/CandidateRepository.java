@@ -20,6 +20,8 @@ public interface CandidateRepository extends JpaRepository<Candidate, Integer> {
 
         Optional<Candidate> findById(int id);
 
+        boolean existsByPhone(String phone);
+
         Page<Candidate> findByStatus(String status, Pageable pageable);
 
         Optional<Candidate> findByEmail(String email);

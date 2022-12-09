@@ -23,11 +23,13 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     public Optional<Employee> findById(int id);
 
-    public Optional<Employee> findByEmployeeCode(String employeeCode);
+    public boolean existsByEmployeeCode(String code);
+
+    boolean existsByPhone(String phone);
 
     public Optional<Employee> findByPhone(String phone);
 
-    List<Employee> findByPositionAndStatus(Position position, String status);
+    public List<Employee> findByPositionAndStatus(Position position, String status);
 
     public Page<Employee> findByDepartment(Department department, Pageable pageable);
 
@@ -37,8 +39,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     @Query(nativeQuery = true, value = "select id, name from employee where department_id " +
             "in( select department_id from position where id in (select position_id from recruitment_request where id = ?1))")
-    List<Tuple> getEmployeeByRequest(int requestId);
+    public List<Tuple> getEmployeeByRequest(int requestId);
+
     @Query(nativeQuery = true, value = "SELECT  (SELECT COUNT(id)FROM   department) AS totalDep,(SELECT COUNT(id) FROM   employee) AS totalEmp,(SELECT COUNT(id) FROM   position) AS totalPos FROM DUAL")
-    Tuple countTotal();
+    public Tuple countTotal();
 
 }
