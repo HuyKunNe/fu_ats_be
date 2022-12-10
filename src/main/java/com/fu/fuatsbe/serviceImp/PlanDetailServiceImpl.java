@@ -258,7 +258,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
     @Override
     public ResponseWithTotalPage<PlanDetailResponseDTO> getCanceledPlanDetails(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
-        Page<PlanDetail> pageResult = planDetailRepository.findByStatus(PlanDetailStatus.CANCELED, pageable);
+        Page<PlanDetail> pageResult = planDetailRepository.findByStatus(PlanDetailStatus.REJECTED, pageable);
         List<PlanDetailResponseDTO> list = new ArrayList<PlanDetailResponseDTO>();
         ResponseWithTotalPage<PlanDetailResponseDTO> result = new ResponseWithTotalPage<>();
 
@@ -299,7 +299,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         Employee approver = employeeRepository.findById(actionDTO.getEmployeeId())
                 .orElseThrow(() -> new NotFoundException(
                         EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
-        planDetail.setStatus(PlanDetailStatus.CANCELED);
+        planDetail.setStatus(PlanDetailStatus.REJECTED);
         planDetail.setApprover(approver);
         PlanDetail planDetailSaved = planDetailRepository.save(planDetail);
         PlanDetailResponseDTO response = modelMapper.map(planDetailSaved,
