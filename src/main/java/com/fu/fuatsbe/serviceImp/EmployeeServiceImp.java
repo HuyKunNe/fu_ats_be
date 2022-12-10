@@ -75,14 +75,6 @@ public class EmployeeServiceImp implements EmployeeService {
     }
 
     @Override
-    public EmployeeResponse getEmployeeByCode(String code) {
-        Employee employee = employeeRepository.findByEmployeeCode(code)
-                .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
-        EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
-        return employeeResponse;
-    }
-
-    @Override
     public ResponseWithTotalPage<EmployeeResponse> getAllEmployeeByDepartment(int departmentId, int pageNo,
             int pageSize) {
 

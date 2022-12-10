@@ -21,6 +21,7 @@ import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.exceptions.ExistException;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
+import com.fu.fuatsbe.exceptions.NotValidException;
 import com.fu.fuatsbe.repository.DepartmentRepository;
 import com.fu.fuatsbe.response.DepartmentResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
@@ -47,7 +48,7 @@ public class DepartmentServiceImp implements DepartmentService {
         List<DepartmentResponse> list = new ArrayList<>();
         if (pageResult.hasContent()) {
             for (Department department : pageResult.getContent()) {
-                if(department.getName().toLowerCase().contains(name.toLowerCase())){
+                if (department.getName().toLowerCase().contains(name.toLowerCase())) {
                     DepartmentResponse response = modelMapper.map(department, DepartmentResponse.class);
                     list.add(response);
                 }
@@ -91,6 +92,11 @@ public class DepartmentServiceImp implements DepartmentService {
     public DepartmentResponse updateDepartment(int id, DepartmentUpdateDTO departmentUpdateDTO) {
         Department department = departmentRepository.findById(id).orElseThrow(() -> new NotFoundException(
                 DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
+        int totalDepartment = departmentRepository.totalDepartmentbyname(departmentUpdateDTO.getName(), id);
+
+        if (totalDepartment > 0) {
+            throw new NotValidException(DepartmentErrorMessage.DEPARTMENT_NAME_EXIST_EXCEPTION);
+        }
         department.setName(departmentUpdateDTO.getName());
         department.setRoom(departmentUpdateDTO.getRoom());
         department.setPhone(departmentUpdateDTO.getPhone());
@@ -127,6 +133,7 @@ public class DepartmentServiceImp implements DepartmentService {
             throw new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION);
         return true;
     }
+
     @Override
     public boolean activeDepartmentById(int id) {
         Department department = departmentRepository.findById(id).orElseThrow(() -> new NotFoundException(
@@ -142,11 +149,11 @@ public class DepartmentServiceImp implements DepartmentService {
     @Override
     public List<IdAndNameResponse> getDepartmentName() {
         List<Tuple> tupleList = departmentRepository.getIdAndNameDepartment();
-        if (tupleList.size() <= 0 ){
+        if (tupleList.size() <= 0) {
             throw new NotFoundException(DepartmentErrorMessage.LIST_DEPARTMENT_EMPTY_EXCEPTION);
         }
         List<IdAndNameResponse> responseList = new ArrayList<>();
-        for (Tuple tuple: tupleList) {
+        for (Tuple tuple : tupleList) {
             IdAndNameResponse response = IdAndNameResponse.builder()
                     .id(Integer.parseInt(tuple.get("id").toString()))
                     .name(tuple.get("name").toString())

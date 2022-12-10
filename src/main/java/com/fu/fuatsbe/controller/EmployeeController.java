@@ -74,17 +74,6 @@ public class EmployeeController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/getEmployeeByCode/{code}")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> getEmployeeByEmployeeCode(@RequestParam("code") String employeeCode) {
-        ResponseDTO<EmployeeResponse> responseDTO = new ResponseDTO();
-        EmployeeResponse employee = employeeService.getEmployeeByCode(employeeCode);
-        responseDTO.setData(employee);
-        responseDTO.setMessage(EmployeeSuccessMessage.GET_EMPLOYEE_BY_ID_SUCCESS);
-        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
-        return ResponseEntity.ok().body(responseDTO);
-    }
-
     @PutMapping("/update/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> updateEmployee(@RequestParam("id") int id,
@@ -99,34 +88,37 @@ public class EmployeeController {
 
     @GetMapping("/getEmployeeByRequest")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> getEmpByReq(@RequestParam("requestId") int id){
+    public ResponseEntity<ResponseDTO> getEmpByReq(@RequestParam("requestId") int id) {
         ResponseDTO<List> responseDTO = new ResponseDTO<>();
         responseDTO.setData(employeeService.getIdAndNameEmployeeByRequest(id));
         responseDTO.setMessage(EmployeeSuccessMessage.GET_EMPLOYEE_BY_REQUEST);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
-    @PutMapping ("/disable/{id}")
+
+    @PutMapping("/disable/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDTO> disableEmployee(@PathVariable("id") int id){
+    public ResponseEntity<ResponseDTO> disableEmployee(@PathVariable("id") int id) {
         ResponseDTO responseDTO = new ResponseDTO<>();
         responseDTO.setData(employeeService.deleteEmployeeById(id));
         responseDTO.setMessage(EmployeeSuccessMessage.DISABLE_EMPLOYEE_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
-    @PatchMapping ("/active/{id}")
+
+    @PatchMapping("/active/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDTO> activeEmployee(@PathVariable("id") int id){
+    public ResponseEntity<ResponseDTO> activeEmployee(@PathVariable("id") int id) {
         ResponseDTO responseDTO = new ResponseDTO<>();
         responseDTO.setData(employeeService.activeEmployeeById(id));
         responseDTO.setMessage(EmployeeSuccessMessage.ACTIVE_EMPLOYEE_SUCCESS);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+
     @GetMapping("/countTotal")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> countTotal(){
+    public ResponseEntity<ResponseDTO> countTotal() {
         ResponseDTO response = new ResponseDTO();
         response.setData(employeeService.countTotal());
         response.setMessage(EmployeeSuccessMessage.COUNT_EMPLOYEE_SUCCESS);

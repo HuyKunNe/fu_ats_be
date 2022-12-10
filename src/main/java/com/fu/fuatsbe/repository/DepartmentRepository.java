@@ -22,12 +22,18 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
 
     boolean existsByName(String name);
 
+    @Query(nativeQuery = true, value = "select count(*) from department d \n" +
+            " where d.name = ?1 and id != ?2")
+    int totalDepartmentbyname(String name, int id);
+
     Optional<Department> findDepartmentByName(String name);
+
     @Query(nativeQuery = true, value = "select id, name from department")
     List<Tuple> getIdAndNameDepartment();
 
-    @Query(nativeQuery = true,value = "select * from department where status like 'ACTIVATE'")
+    @Query(nativeQuery = true, value = "select * from department where status like 'ACTIVATE'")
     Page<Department> getAll(Pageable pageable);
+
     @Query(nativeQuery = true, value = "select count(id) as total from department")
     int countTotal();
 }

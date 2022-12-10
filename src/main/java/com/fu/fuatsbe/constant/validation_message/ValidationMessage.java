@@ -19,6 +19,7 @@ public final class ValidationMessage {
     public static final String EMPLOYEE_CODE_VALID_MESSAGE = "Employee Code must be filled";
 
     public static final String PHONE_IS_EXIST = "Phone number is already exist";
+    public static final String EMPLOYEE_CODE_IS_EXIST = "Employee code is already exist";
 
     public static final String TOKEN_VALID_MESSAGE = "Token must be filled";
     public static final String GENDER_VALID_MESSAGE = "Gender must be filled";
@@ -30,10 +31,10 @@ public final class ValidationMessage {
     public static final String INTERVIEW_ID_VALID_MESSAGE = "Interview must be assigned";
 
     public static final String SUBJECT_VALID_MESSAGE = "Subject must be filled";
-    public static final String PURPOSE_VALID_MESSAGE ="Purpose must be filled";
-    public static final String DATE_VALID_MESSAGE ="Date must be filled";
-    public static final String DESCRIPTION_VALID_MESSAGE ="Description must be filled";
-    public static final String RECRUITMENT_REQUEST_VALID_MESSAGE ="Recruitment request must be chosen";
-    public static final String INTERVIEW_TYPE_VALID_MESSAGE ="Interview type must be chosen";
-    public static final String REASON_CANCEL_INTERVIEW_VALID ="Reason why cancel interview must be filled";
+    public static final String PURPOSE_VALID_MESSAGE = "Purpose must be filled";
+    public static final String DATE_VALID_MESSAGE = "Date must be filled";
+    public static final String DESCRIPTION_VALID_MESSAGE = "Description must be filled";
+    public static final String RECRUITMENT_REQUEST_VALID_MESSAGE = "Recruitment request must be chosen";
+    public static final String INTERVIEW_TYPE_VALID_MESSAGE = "Interview type must be chosen";
+    public static final String REASON_CANCEL_INTERVIEW_VALID = "Reason why cancel interview must be filled";
 }
