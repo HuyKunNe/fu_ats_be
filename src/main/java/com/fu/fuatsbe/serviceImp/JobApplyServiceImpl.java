@@ -175,6 +175,7 @@ public class JobApplyServiceImpl implements JobApplyService {
         JobApply jobApply = JobApply.builder().date(Date.valueOf(dateFormat)).cities(city)
                 .educationLevel(createDTO.getEducationLevel())
                 .foreignLanguage(createDTO.getForeignLanguage())
+                .experience(createDTO.getExperience())
                 .status(JobApplyStatus.PENDING)
                 .screeningStatus(ScreeningStatus.PASS)
                 .candidate(candidate).recruitmentRequest(recruitmentRequest).cv(cvSaved).build();
