@@ -58,6 +58,7 @@ public class InterviewServiceImp implements InterviewService {
 
     private final NotificationService notificationService;
     private final EmailScheduleRepository emailScheduleRepository;
+    private final PositionRepository positionRepository;
 
     private final InterviewEmployeeRepository interviewEmployeeRepository;
 
@@ -86,7 +87,7 @@ public class InterviewServiceImp implements InterviewService {
         LocalTime localTime = LocalTime.parse(interviewCreateDTO.getTime(), timeFormatter);
 
         LocalDate presentDate = LocalDate.parse(LocalDate.now().toString(), dateFormatter);
-
+        String jobName = positionRepository.getNamePositionByRecruitmentRequest(interviewCreateDTO.getRecruitmentRequestId());
 
         if (localDate.isBefore(presentDate)) {
             throw new PermissionException(InterviewErrorMessage.DATE_NOT_VALID);
@@ -134,7 +135,7 @@ public class InterviewServiceImp implements InterviewService {
                     .candidate(candidate)
                     .IntervieweeID(intervieweeIdList)
                     .interview(savedInterview)
-                    .jobName(interviewCreateDTO.getJobName())
+                    .jobName(jobName)
                     .build();
             notificationService.sendNotificationForInterview(sendNotificationDTO);
             loopTimes++;
@@ -148,7 +149,7 @@ public class InterviewServiceImp implements InterviewService {
                     .link(interviewCreateDTO.getLinkMeeting())
                     .address(interviewCreateDTO.getAddress())
                     .room(interviewCreateDTO.getRoom())
-                    .jobName(interviewCreateDTO.getJobName())
+                    .jobName(jobName)
                     .date(interviewCreateDTO.getDate())
                     .time(time)
                     .employee(emp)

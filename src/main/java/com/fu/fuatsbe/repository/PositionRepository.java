@@ -33,4 +33,6 @@ public interface PositionRepository extends JpaRepository<Position, Integer> {
     int countUsedPosition(int positionId);
     @Query(nativeQuery = true, value = "select count(id) as total from position")
     int countTotal();
+    @Query(nativeQuery = true,value = "select name from position where id in(select position_id from recruitment_request where id = ?1)")
+    String getNamePositionByRecruitmentRequest(int requestId);
 }
