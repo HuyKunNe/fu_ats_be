@@ -62,7 +62,7 @@ public class ExceptionHandlers extends RuntimeException {
         ListResponseDTO dto = new ListResponseDTO();
         dto.setMessage(exception.getMessage());
         dto.setStatus(ResponseStatusDTO.FAILURE);
-        return ResponseEntity.badRequest().body(dto);
+        return ResponseEntity.ok().body(dto);
     }
 
     @ExceptionHandler(value = ExistException.class)
