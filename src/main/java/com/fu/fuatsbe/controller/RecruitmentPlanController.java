@@ -164,7 +164,8 @@ public class RecruitmentPlanController {
             @RequestParam(defaultValue = "10") int pageSize) {
 
         ResponseDTO<ResponseWithTotalPage> response = new ResponseDTO();
-        ResponseWithTotalPage<RecruitmentPlanResponse> list = recruitmentPlanService.getAllRecruitmentPlansByDepartment(id,
+        ResponseWithTotalPage<RecruitmentPlanResponse> list = recruitmentPlanService.getAllRecruitmentPlansByDepartment(
+                id,
                 pageNo,
                 pageSize);
         response.setData(list);
@@ -235,7 +236,7 @@ public class RecruitmentPlanController {
     @PutMapping("update/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> updateRecruitmentPlan(@RequestParam("id") int id,
-                                                             @RequestBody RecruimentPlanUpdateDTO updateDTO) {
+            @RequestBody RecruimentPlanUpdateDTO updateDTO) {
         ResponseDTO<RecruitmentPlanResponse> responseDTO = new ResponseDTO();
         RecruitmentPlanResponse recruitmentPlanResponse = recruitmentPlanService.updateRecruitmentPlan(id, updateDTO);
         responseDTO.setData(recruitmentPlanResponse);
@@ -244,13 +245,13 @@ public class RecruitmentPlanController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-//    @GetMapping("/getTotalStatus")
-//    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-//    public ResponseEntity<ResponseDTO> getTotalStatusPlan() {
-//        ResponseDTO response = new ResponseDTO();
-//        response.setData(recruitmentPlanService.getStatusTotal());
-//        response.setStatus(ResponseStatusDTO.SUCCESS);
-//        response.setMessage(RecruitmentPlanSuccessMessage.GET_TOTAL_STATUS_SUCCESS);
-//        return ResponseEntity.ok().body(response);
-//    }
+    @GetMapping("/getTotalSalaryFund")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getTotalSalaryFund(@RequestParam("id") int id) {
+        ResponseDTO response = new ResponseDTO();
+        response.setData(recruitmentPlanService.getSalaryFund(id));
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        response.setMessage(RecruitmentPlanSuccessMessage.GET_SALARY_FUND_SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
 }

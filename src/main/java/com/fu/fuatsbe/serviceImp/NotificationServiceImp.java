@@ -1,29 +1,16 @@
 package com.fu.fuatsbe.serviceImp;
 
-import com.fu.fuatsbe.DTO.NotificationCreateDTO;
-import com.fu.fuatsbe.DTO.SendInviteInterviewEmployee;
-import com.fu.fuatsbe.DTO.SendNotificationDTO;
-import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
-import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
-import com.fu.fuatsbe.constant.notification.NotificationErrorMessage;
-import com.fu.fuatsbe.constant.notification.NotificationStatus;
-import com.fu.fuatsbe.constant.notification.NotificationType;
-import com.fu.fuatsbe.entity.Candidate;
-import com.fu.fuatsbe.entity.EmailSchedule;
-import com.fu.fuatsbe.entity.Employee;
-import com.fu.fuatsbe.entity.Notification;
-import com.fu.fuatsbe.exceptions.ListEmptyException;
-import com.fu.fuatsbe.exceptions.NotFoundException;
-import com.fu.fuatsbe.repository.*;
-import com.fu.fuatsbe.response.ResponseWithTotalPage;
-import com.fu.fuatsbe.service.EmailScheduleService;
-import com.fu.fuatsbe.service.NotificationService;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.google.firebase.messaging.*;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
@@ -36,18 +23,36 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import java.io.IOException;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import com.fu.fuatsbe.DTO.NotificationCreateDTO;
+import com.fu.fuatsbe.DTO.SendInviteInterviewEmployee;
+import com.fu.fuatsbe.DTO.SendNotificationDTO;
+import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
+import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
+import com.fu.fuatsbe.constant.notification.NotificationErrorMessage;
+import com.fu.fuatsbe.constant.notification.NotificationStatus;
+import com.fu.fuatsbe.entity.Candidate;
+import com.fu.fuatsbe.entity.EmailSchedule;
+import com.fu.fuatsbe.entity.Employee;
+import com.fu.fuatsbe.entity.Notification;
+import com.fu.fuatsbe.exceptions.ListEmptyException;
+import com.fu.fuatsbe.exceptions.NotFoundException;
+import com.fu.fuatsbe.repository.AccountRepository;
+import com.fu.fuatsbe.repository.CandidateRepository;
+import com.fu.fuatsbe.repository.EmailScheduleRepository;
+import com.fu.fuatsbe.repository.EmployeeRepository;
+import com.fu.fuatsbe.repository.NotificationRepository;
+import com.fu.fuatsbe.response.ResponseWithTotalPage;
+import com.fu.fuatsbe.service.EmailScheduleService;
+import com.fu.fuatsbe.service.NotificationService;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service

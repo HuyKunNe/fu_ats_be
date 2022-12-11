@@ -17,5 +17,6 @@ public class RecruitmentPlanSuccessMessage {
     public final static String CREATE_RECRUITMENT_PLAN_SUCCESS = "Create recruitment plan successfully";
     public final static String UPDATE_RECRUITMENT_PLAN_SUCCESS = "Update recruitment plan successfully";
     public final static String GET_TOTAL_STATUS_SUCCESS = "Get total status successfully";
+    public final static String GET_SALARY_FUND_SUCCESS = "Get remaining salary fund successfully";
 
 }

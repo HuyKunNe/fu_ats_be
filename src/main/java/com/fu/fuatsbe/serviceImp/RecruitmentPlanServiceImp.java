@@ -382,4 +382,16 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
                 .build();
         return countStatusResponse;
     }
+
+    @Override
+    public int getSalaryFund(int recruitmentRequestPlanId) {
+        RecruitmentPlan recruitmentPlan = recruitmentPlanRepository.findById(recruitmentRequestPlanId)
+                .orElseThrow(() -> new NotFoundException(
+                        RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION));
+
+        int result = 0;
+        result = recruitmentPlanRepository.totalSalaryFund(recruitmentRequestPlanId);
+
+        return result;
+    }
 }

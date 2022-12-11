@@ -122,12 +122,21 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         Optional<Position> optionalPosition = positionRepository.findPositionByName(updateDTO.getPositionName());
         if (!optionalPosition.isPresent())
             throw new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST);
+
         int totalAmount = planDetailRepository
                 .totalAmount(planDetail.getRecruitmentPlan().getId());
 
         if (updateDTO.getAmount() > (planDetail.getRecruitmentPlan().getAmount() -
                 totalAmount)) {
             throw new NotValidException(PlanDetailErrorMessage.NOT_VALID_AMOUNT_EXCEPTION);
+        }
+
+        int salary = Integer.parseInt(updateDTO.getSalary().replaceAll("\\D+", ""));
+
+        int salaryFund = recruitmentPlanRepository.totalSalaryFund(planDetail.getRecruitmentPlan().getId());
+
+        if (salary * updateDTO.getAmount() > salaryFund) {
+            throw new NotValidException(PlanDetailErrorMessage.NOT_VALID_SALARY_EXCEPTION);
         }
 
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -182,6 +191,14 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         if (createDTO.getAmount() > (optionalRecruitmentPlan.get().getAmount() -
                 totalAmount)) {
             throw new NotValidException(PlanDetailErrorMessage.NOT_VALID_AMOUNT_EXCEPTION);
+        }
+
+        int salary = Integer.parseInt(createDTO.getSalary().replaceAll("\\D+", ""));
+
+        int salaryFund = recruitmentPlanRepository.totalSalaryFund(createDTO.getRecruitmentPlanId());
+
+        if (salary * createDTO.getAmount() > salaryFund) {
+            throw new NotValidException(PlanDetailErrorMessage.NOT_VALID_SALARY_EXCEPTION);
         }
 
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");

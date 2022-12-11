@@ -12,38 +12,42 @@ import java.util.List;
 
 public interface RecruitmentPlanService {
 
-    public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlans(int pageNo, int pageSize);
+        public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlans(int pageNo, int pageSize);
 
-    public RecruitmentPlanResponse getRecruitmentPlanById(int id);
+        public RecruitmentPlanResponse getRecruitmentPlanById(int id);
 
-    public ResponseWithTotalPage<RecruitmentPlanResponse> getAllApprovedRecruitmentPlan(int pageNo, int pageSize);
+        public ResponseWithTotalPage<RecruitmentPlanResponse> getAllApprovedRecruitmentPlan(int pageNo, int pageSize);
 
-    public ResponseWithTotalPage<RecruitmentPlanResponse> getAllCanceledRecruitmentPlans(int pageNo, int pageSize);
+        public ResponseWithTotalPage<RecruitmentPlanResponse> getAllCanceledRecruitmentPlans(int pageNo, int pageSize);
 
-    public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRejectedRecruitmentPlans(int pageNo, int pageSize);
+        public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRejectedRecruitmentPlans(int pageNo, int pageSize);
 
-    public ResponseWithTotalPage<RecruitmentPlanResponse> getAllPedingRecruitmentPlans(int pageNo, int pageSize);
+        public ResponseWithTotalPage<RecruitmentPlanResponse> getAllPedingRecruitmentPlans(int pageNo, int pageSize);
 
-    public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlansByApprover(int approverId, int pageNo,
-            int pageSize);
+        public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlansByApprover(int approverId,
+                        int pageNo,
+                        int pageSize);
 
-    public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlansByCreator(int creatorId, int pageNo,
-            int pageSize);
-     ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlansByDepartment(int departmentId, int pageNo,
-                                                                                          int pageSize);
-    List<IdAndNameResponse> getApprovedByDepartment(int id);
+        public ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlansByCreator(int creatorId, int pageNo,
+                        int pageSize);
 
-    public RecruitmentPlanResponse updateRecruitmentPlan(int id, RecruimentPlanUpdateDTO updateDTO);
+        ResponseWithTotalPage<RecruitmentPlanResponse> getAllRecruitmentPlansByDepartment(int departmentId, int pageNo,
+                        int pageSize);
 
-    public RecruitmentPlanResponse createRecruitmentPlan(RecruitmentPlanCreateDTO createDTO);
+        List<IdAndNameResponse> getApprovedByDepartment(int id);
 
-    public RecruitmentPlanResponse approvedRecruitmentPlan(RecruitmentPlanActionDTO actionDTO);
+        public RecruitmentPlanResponse updateRecruitmentPlan(int id, RecruimentPlanUpdateDTO updateDTO);
 
-    public RecruitmentPlanResponse canceledRecruitmentPlan(RecruitmentPlanActionDTO actionDTO);
+        public RecruitmentPlanResponse createRecruitmentPlan(RecruitmentPlanCreateDTO createDTO);
 
-    public RecruitmentPlanResponse rejectedRecruitmentPlan(RecruitmentPlanActionDTO actionDTO);
+        public RecruitmentPlanResponse approvedRecruitmentPlan(RecruitmentPlanActionDTO actionDTO);
 
-    CountStatusResponse getStatusTotal();
+        public RecruitmentPlanResponse canceledRecruitmentPlan(RecruitmentPlanActionDTO actionDTO);
 
+        public RecruitmentPlanResponse rejectedRecruitmentPlan(RecruitmentPlanActionDTO actionDTO);
+
+        public CountStatusResponse getStatusTotal();
+
+        public int getSalaryFund(int recruitmentRequestPlanId);
 
 }

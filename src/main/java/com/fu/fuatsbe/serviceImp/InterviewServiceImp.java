@@ -12,12 +12,6 @@ import java.util.List;
 import javax.mail.MessagingException;
 import javax.persistence.Tuple;
 
-import com.fu.fuatsbe.DTO.*;
-import com.fu.fuatsbe.constant.candidate.CandidateStatus;
-
-import com.fu.fuatsbe.entity.*;
-import com.fu.fuatsbe.repository.*;
-import com.fu.fuatsbe.response.NameAndStatusResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,22 +19,44 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.fu.fuatsbe.DTO.CancelInterviewDTO;
+import com.fu.fuatsbe.DTO.InterviewCreateDTO;
+import com.fu.fuatsbe.DTO.NotificationCreateDTO;
+import com.fu.fuatsbe.DTO.SendInviteInterviewEmployee;
+import com.fu.fuatsbe.DTO.SendNotificationDTO;
 import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
+import com.fu.fuatsbe.constant.candidate.CandidateStatus;
 import com.fu.fuatsbe.constant.department.DepartmentErrorMessage;
 import com.fu.fuatsbe.constant.employee.EmployeeErrorMessage;
 import com.fu.fuatsbe.constant.interview.InterviewErrorMessage;
 import com.fu.fuatsbe.constant.interview.InterviewRequestStatus;
 import com.fu.fuatsbe.constant.interview_employee.InterviewEmployeeRequestStatus;
 import com.fu.fuatsbe.constant.job_apply.JobApplyErrorMessage;
+import com.fu.fuatsbe.entity.Candidate;
+import com.fu.fuatsbe.entity.Department;
+import com.fu.fuatsbe.entity.EmailSchedule;
+import com.fu.fuatsbe.entity.Employee;
+import com.fu.fuatsbe.entity.Interview;
+import com.fu.fuatsbe.entity.InterviewEmployee;
+import com.fu.fuatsbe.entity.JobApply;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
 import com.fu.fuatsbe.exceptions.NotValidException;
 import com.fu.fuatsbe.exceptions.PermissionException;
+import com.fu.fuatsbe.repository.CandidateRepository;
+import com.fu.fuatsbe.repository.DepartmentRepository;
+import com.fu.fuatsbe.repository.EmailScheduleRepository;
+import com.fu.fuatsbe.repository.EmployeeRepository;
+import com.fu.fuatsbe.repository.InterviewEmployeeRepository;
+import com.fu.fuatsbe.repository.InterviewRepository;
+import com.fu.fuatsbe.repository.JobApplyRepository;
+import com.fu.fuatsbe.repository.NotificationRepository;
+import com.fu.fuatsbe.repository.PositionRepository;
 import com.fu.fuatsbe.response.InterviewResponse;
+import com.fu.fuatsbe.response.NameAndStatusResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.InterviewService;
 import com.fu.fuatsbe.service.NotificationService;
-import com.fu.fuatsbe.service.EmailService;
 
 import lombok.RequiredArgsConstructor;
 
