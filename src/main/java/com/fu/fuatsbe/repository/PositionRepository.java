@@ -26,7 +26,7 @@ public interface PositionRepository extends JpaRepository<Position, Integer> {
 
     @Query(nativeQuery = true, value = "select name from position")
     List<String> getAllPositionName();
-    @Query(nativeQuery = true, value = "select id,name from position where department_id = ?1")
+    @Query(nativeQuery = true, value = "select id,name from position where department_id = ?1 and status like 'ACTIVATE'")
     List<Tuple> getPositionIdAndName(int departmentId);
     @Query(nativeQuery = true, value = "select count(e.position_id) as total from position p " +
             "inner join employee e on p.id = e.position_id and p.id = ?1")

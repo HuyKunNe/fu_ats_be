@@ -5,6 +5,7 @@ import com.fu.fuatsbe.DTO.EmployeeUpdateDTO;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.response.EmployeeResponse;
 import com.fu.fuatsbe.response.IdAndNameResponse;
+import com.fu.fuatsbe.response.NameAndCodeResponse;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 
 import java.util.List;
@@ -27,5 +28,6 @@ public interface EmployeeService {
     List<IdAndNameResponse> getIdAndNameEmployeeByRequest(int requestId);
 
     CountTotalDTO countTotal();
+    ResponseWithTotalPage<NameAndCodeResponse> getNameAndCodeByJobLevel(String level, int pageNo, int pageSize);
 
 }
