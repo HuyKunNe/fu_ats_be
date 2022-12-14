@@ -52,6 +52,7 @@ import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.JobApplyRepository;
 import com.fu.fuatsbe.repository.RecruitmentRequestRepository;
 import com.fu.fuatsbe.response.JobApplyResponse;
+import com.fu.fuatsbe.response.ReportDTO;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.JobApplyService;
 
@@ -537,6 +538,16 @@ public class JobApplyServiceImpl implements JobApplyService {
             result.add(jobApplyResponse);
         }
 
+        return result;
+    }
+
+    @Override
+    public List<ReportDTO> getReport() {
+        List<ReportDTO> result = new ArrayList<>();
+        result = jobApplyRepository.getReport();
+        if (result.size() == 0) {
+            throw new ListEmptyException("List is empty");
+        }
         return result;
     }
 

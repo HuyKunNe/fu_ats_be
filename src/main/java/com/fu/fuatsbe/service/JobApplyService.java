@@ -7,6 +7,7 @@ import com.fu.fuatsbe.DTO.JobApplyCreateDTO;
 import com.fu.fuatsbe.DTO.ListJobApplyByEmployee;
 import com.fu.fuatsbe.entity.CVScreening;
 import com.fu.fuatsbe.response.JobApplyResponse;
+import com.fu.fuatsbe.response.ReportDTO;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 
 public interface JobApplyService {
@@ -53,4 +54,6 @@ public interface JobApplyService {
         public boolean checkApplyByRecruitmentRequestAndCandidate(int requestId, int candidateId);
 
         public List<JobApplyResponse> createJobApplyByEmployee(ListJobApplyByEmployee listJobApplyByEmployee);
+
+        public List<ReportDTO> getReport();
 }
