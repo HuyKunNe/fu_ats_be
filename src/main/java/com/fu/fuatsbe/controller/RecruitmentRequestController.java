@@ -203,21 +203,6 @@ public class RecruitmentRequestController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    // @GetMapping("/getAllExpiredRecruitmentRequest")
-    // @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    // public ResponseEntity<ResponseDTO> getAllExpiredRecruitmentRequest(
-    // @RequestParam(defaultValue = "0") int pageNo,
-    // @RequestParam(defaultValue = "10") int pageSize) {
-    // ResponseDTO response = new ResponseDTO();
-    // ResponseWithTotalPage responseWithTotalPages =
-    // recruitmentRequestService.getExpiryDateRecruitmentRequest(pageNo,
-    // pageSize);
-    // response.setData(responseWithTotalPages);
-    // response.setMessage(RecruitmentRequestSuccessMessage.GET_EXPIRY_REQUEST_SUCCESS);
-    // response.setStatus(ResponseStatusDTO.SUCCESS);
-    // return ResponseEntity.ok().body(response);
-    // }
-
     @GetMapping("/getAllExpiredRecruitmentRequest")
     @PermitAll
     public ResponseEntity<ListResponseDTO> getAllExpiredRecruitmentRequest() {

@@ -137,30 +137,51 @@ public class AuthServiceImp implements AuthService {
             }
 
         } else {
-            Candidate candidate = Candidate.builder()
-                    .name(registerDTO.getName())
-                    .email(registerDTO.getEmail())
-                    .phone(registerDTO.getPhone())
-                    .image(registerDTO.getImage())
-                    .dob(java.sql.Date.valueOf(dob))
-                    .gender(registerDTO.getGender())
-                    .address(registerDTO.getAddress())
-                    .status(CandidateStatus.ACTIVATED)
-                    .build();
-
             Account account = Account.builder()
-                    .email(candidate.getEmail())
+                    .email(registerDTO.getEmail())
                     .role(role)
-                    .candidate(candidate)
                     .provider(AccountProvider.LOCAL)
                     .status(AccountStatus.ACTIVATED)
                     .password(passwordEncoder.encode(registerDTO.getPassword())).build();
 
-            candidateRepository.save(candidate);
-            Account credentialInRepo = accountRepository.save(account);
-            candidate.setAccount(credentialInRepo);
-            candidateRepository.save(candidate);
-            registerResponseDto = modelMapper.map(credentialInRepo, RegisterResponseDto.class);
+            Candidate candidateExist = candidateRepository.findCandidateByEmail(registerDTO.getEmail());
+            if (candidateExist != null) {
+                candidateExist.setDob(java.sql.Date.valueOf(dob));
+                candidateExist.setPhone(registerDTO.getPhone());
+                candidateExist.setImage(registerDTO.getEmail());
+                candidateExist.setAddress(registerDTO.getAddress());
+                candidateExist.setName(registerDTO.getName());
+                candidateExist.setGender(registerDTO.getGender());
+
+                candidateRepository.save(candidateExist);
+                account.setCandidate(candidateExist);
+
+                accountRepository.save(account);
+
+                candidateExist.setAccount(account);
+                candidateRepository.save(candidateExist);
+
+            } else {
+                Candidate candidate = Candidate.builder()
+                        .name(registerDTO.getName())
+                        .email(registerDTO.getEmail())
+                        .phone(registerDTO.getPhone())
+                        .image(registerDTO.getImage())
+                        .dob(java.sql.Date.valueOf(dob))
+                        .gender(registerDTO.getGender())
+                        .address(registerDTO.getAddress())
+                        .status(CandidateStatus.ACTIVATED)
+                        .build();
+
+                candidateRepository.save(candidate);
+
+                account.setCandidate(candidate);
+                accountRepository.save(account);
+                candidate.setAccount(account);
+                candidateRepository.save(candidate);
+
+            }
+            registerResponseDto = modelMapper.map(account, RegisterResponseDto.class);
         }
 
         return registerResponseDto;

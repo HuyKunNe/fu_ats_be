@@ -22,6 +22,7 @@ import com.fu.fuatsbe.DTO.JobApplyByEmployeeDTO;
 import com.fu.fuatsbe.DTO.JobApplyCreateDTO;
 import com.fu.fuatsbe.DTO.ListJobApplyByEmployee;
 import com.fu.fuatsbe.constant.candidate.CandidateErrorMessage;
+import com.fu.fuatsbe.constant.candidate.CandidateStatus;
 import com.fu.fuatsbe.constant.city.CityErrorMessage;
 import com.fu.fuatsbe.constant.cv.CVSource;
 import com.fu.fuatsbe.constant.cv.CVStatus;
@@ -517,6 +518,7 @@ public class JobApplyServiceImpl implements JobApplyService {
                 Candidate newCandidate = Candidate.builder().email(jobApplyByEmployeeDTO.getEmail())
                         .positions(list)
                         .name(jobApplyByEmployeeDTO.getName())
+                        .status(CandidateStatus.ACTIVATED)
                         .build();
 
                 Candidate candidateSaved = candidateRepository.save(newCandidate);
