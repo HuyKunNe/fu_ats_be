@@ -159,8 +159,10 @@ public class NotificationServiceImp implements NotificationService {
                 "\n" +
                 "• Please join the meeting 5 minutes before the above-mentioned time to prepare your network incident (if any)\n" +
                 "\n" +
-                "• Should you have any further question, please do not hesitate to contact me via email anytime.\n" +
+                "• Should you have any further question, please do not hesitate to contact me via email anytime\n" +
                 "\n" +
+                "• Please confirm to join this interview via the link below.\n" +
+                "https://ats-recruitments.tech/#/manage-profile/notification\n" +
                 "Yours Sincerely,\n" +
                 "\n" +
                 " \n" +
