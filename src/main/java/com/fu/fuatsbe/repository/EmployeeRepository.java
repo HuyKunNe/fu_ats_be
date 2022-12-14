@@ -43,5 +43,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     @Query(nativeQuery = true, value = "SELECT  (SELECT COUNT(id)FROM   department) AS totalDep,(SELECT COUNT(id) FROM   employee) AS totalEmp,(SELECT COUNT(id) FROM   position) AS totalPos FROM DUAL")
     public Tuple countTotal();
+    @Query(nativeQuery = true, value = "select name, employee_code from `employee` where job_level like %?1% and  status like 'ACTIVATE'")
+    Page<Tuple> getEmployeeByJobLevel(String jobLevel, Pageable pageable);
 
 }

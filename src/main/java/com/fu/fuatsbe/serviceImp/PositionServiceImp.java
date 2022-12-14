@@ -6,6 +6,9 @@ import java.util.Optional;
 
 import javax.persistence.Tuple;
 
+import com.fu.fuatsbe.constant.employee.EmployeeStatus;
+import com.fu.fuatsbe.entity.Employee;
+import com.fu.fuatsbe.exceptions.ExistException;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -107,9 +110,15 @@ public class PositionServiceImp implements PositionService {
     public void deletePosition(int id) {
         Position position = positionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
+        if (position != null) {
+            for (Employee employee : position.getEmployees()) {
+                if (employee.getStatus().equalsIgnoreCase(EmployeeStatus.ACTIVATE))
+                    throw new ExistException(PositionErrorMessage.POSITION_DISABLE_ERROR);
+            }
+            position.setStatus(PositionStatus.DISABLE);
+            positionRepository.save(position);
+        }
 
-        position.setStatus(PositionStatus.DISABLE);
-        positionRepository.save(position);
     }
 
     @Override

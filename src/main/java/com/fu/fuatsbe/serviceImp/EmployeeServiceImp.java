@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.Tuple;
 
 import com.fu.fuatsbe.DTO.CountTotalDTO;
+import com.fu.fuatsbe.response.NameAndCodeResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -175,5 +176,26 @@ public class EmployeeServiceImp implements EmployeeService {
                 .totalPosition(Integer.parseInt(tuple.get("totalPos").toString()))
                 .build();
         return count;
+    }
+
+    @Override
+    public ResponseWithTotalPage<NameAndCodeResponse> getNameAndCodeByJobLevel(String level, int pageNo, int pageSize) {
+        List<NameAndCodeResponse> nameAndCodeResponses = new ArrayList<>();
+        ResponseWithTotalPage responseWithTotalPage = new ResponseWithTotalPage();
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Tuple> pageResult = employeeRepository.getEmployeeByJobLevel(level, pageable);
+        if(pageResult.hasContent()){
+            for (Tuple tuple: pageResult.getContent()) {
+                NameAndCodeResponse response = NameAndCodeResponse.builder()
+                        .name(tuple.get("name").toString())
+                        .code(tuple.get("employee_code").toString())
+                        .build();
+                nameAndCodeResponses.add(response);
+            }
+            responseWithTotalPage.setResponseList(nameAndCodeResponses);
+            responseWithTotalPage.setTotalPage(pageResult.getTotalPages());
+        }
+
+        return responseWithTotalPage;
     }
 }

@@ -77,7 +77,7 @@ public class EmployeeController {
     @PutMapping("/update/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> updateEmployee(@RequestParam("id") int id,
-            @RequestBody EmployeeUpdateDTO updateDTO) {
+                                                      @RequestBody EmployeeUpdateDTO updateDTO) {
         ResponseDTO<EmployeeResponse> responseDTO = new ResponseDTO();
         EmployeeResponse employee = employeeService.updateEmployee(id, updateDTO);
         responseDTO.setData(employee);
@@ -122,6 +122,27 @@ public class EmployeeController {
         ResponseDTO response = new ResponseDTO();
         response.setData(employeeService.countTotal());
         response.setMessage(EmployeeSuccessMessage.COUNT_EMPLOYEE_SUCCESS);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/getEmployeeByManager")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getNameAndCodeManager(@RequestParam(defaultValue = "0") int pageNo,
+                                                             @RequestParam(defaultValue = "5") int pageSize) {
+        ResponseDTO response = new ResponseDTO();
+        response.setData(employeeService.getNameAndCodeByJobLevel("Manager", pageNo, pageSize));
+        response.setMessage(EmployeeSuccessMessage.GET_BY_LEVEL_SUCCESS);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
+    @GetMapping("/getEmployeeByDirector")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getNameAndCodeDirector(@RequestParam(defaultValue = "0") int pageNo,
+                                                             @RequestParam(defaultValue = "5") int pageSize) {
+        ResponseDTO response = new ResponseDTO();
+        response.setData(employeeService.getNameAndCodeByJobLevel("Director", pageNo, pageSize));
+        response.setMessage(EmployeeSuccessMessage.GET_BY_LEVEL_SUCCESS);
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
