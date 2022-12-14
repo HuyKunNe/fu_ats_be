@@ -107,11 +107,19 @@ public class EmailServiceImp implements EmailService {
     public void sendEmailToInviteReapply(InviteReapplyDTO invite) throws MessagingException {
         for (Integer cvId: invite.getCvIds()) {
             String email = cvRepository.getEmailByCVId(cvId);
+            String content = invite.getContent() +
+                    "\n"
+                    +
+                    "--------------------\n" +
+                    "HR Department | CKHR Consulting\n" +
+                    "Ground Floor, Rosana Building, 60 Nguyen Dinh Chieu, Da Kao Ward, District 1, HCMC\n" +
+                    "\n" +
+                    "Phone: (+8428) 7106 8279 Email: info@ckhrconsulting.vn Website: ckhrconsulting.vn";
             if(email != null){
                 EmailSchedule emailSchedule = EmailSchedule.builder()
                         .email(email)
                         .title(invite.getTitle())
-                        .content(invite.getContent())
+                        .content(content)
                         .build();
                 emailScheduleRepository.save(emailSchedule);
             }
