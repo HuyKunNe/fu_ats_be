@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fu.fuatsbe.constant.response.ResponseStatusDTO;
 import com.fu.fuatsbe.constant.role.RolePreAuthorize;
 import com.fu.fuatsbe.response.ListResponseDTO;
-import com.fu.fuatsbe.response.ReportDTO;
+import com.fu.fuatsbe.response.ReportGroupByJobRequest;
 import com.fu.fuatsbe.service.JobApplyService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,8 +28,8 @@ public class ReportController {
     @GetMapping("/getReport")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ListResponseDTO> report() {
-        ListResponseDTO<ReportDTO> responseDTO = new ListResponseDTO();
-        List<ReportDTO> list = jobApplyService.getReport();
+        ListResponseDTO<ReportGroupByJobRequest> responseDTO = new ListResponseDTO();
+        List<ReportGroupByJobRequest> list = jobApplyService.getReport();
         responseDTO.setData(list);
         responseDTO.setMessage("Get report successfully");
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);

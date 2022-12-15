@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fu.fuatsbe.DTO.CVScreeningDTO;
 import com.fu.fuatsbe.DTO.JobApplyCreateDTO;
 import com.fu.fuatsbe.DTO.ListJobApplyByEmployee;
 import com.fu.fuatsbe.constant.job_apply.JobApplySuccessMessage;
@@ -244,6 +245,17 @@ public class JobApplyController {
         List<JobApplyResponse> jobApplyResponse = jobApplyService.createJobApplyByEmployee(createDTO);
         responseDTO.setData(jobApplyResponse);
         responseDTO.setMessage(JobApplySuccessMessage.APPLY_JOB_BY_EMPLOYEE);
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PutMapping("/screeningSetting")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> screeningSetting(@RequestBody CVScreeningDTO cvScreeningDTO) {
+        ResponseDTO<CVScreening> responseDTO = new ResponseDTO();
+        CVScreening jobApplyResponse = jobApplyService.cvScreeningSetting(cvScreeningDTO);
+        responseDTO.setData(jobApplyResponse);
+        responseDTO.setMessage(JobApplySuccessMessage.CV_SCREENING_SETTING);
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }

@@ -1,17 +1,16 @@
 package com.fu.fuatsbe.response;
 
 public interface ReportDTO {
-    String getPlanName();
 
-    String getDepartmentName();
+    Integer getJobRequestId();
 
-    String getJobRequestName();
+    Integer getPlanId();
+
+    Integer getPlanDetailId();
+
+    Integer getDepartmentId();
 
     String getSource();
-
-    String getDateRecruited();
-
-    String getExpiryDate();
 
     Integer getTotalCV();
 

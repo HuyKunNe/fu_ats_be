@@ -7,8 +7,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -37,9 +41,12 @@ import com.fu.fuatsbe.entity.CV;
 import com.fu.fuatsbe.entity.CVScreening;
 import com.fu.fuatsbe.entity.Candidate;
 import com.fu.fuatsbe.entity.City;
+import com.fu.fuatsbe.entity.Department;
 import com.fu.fuatsbe.entity.Employee;
 import com.fu.fuatsbe.entity.JobApply;
+import com.fu.fuatsbe.entity.PlanDetail;
 import com.fu.fuatsbe.entity.Position;
+import com.fu.fuatsbe.entity.RecruitmentPlan;
 import com.fu.fuatsbe.entity.RecruitmentRequest;
 import com.fu.fuatsbe.exceptions.ListEmptyException;
 import com.fu.fuatsbe.exceptions.NotFoundException;
@@ -48,16 +55,27 @@ import com.fu.fuatsbe.repository.CVScreeningRepository;
 import com.fu.fuatsbe.repository.CandidateRepository;
 import com.fu.fuatsbe.repository.CityRepository;
 import com.fu.fuatsbe.repository.CvRepository;
+import com.fu.fuatsbe.repository.DepartmentRepository;
 import com.fu.fuatsbe.repository.EmployeeRepository;
 import com.fu.fuatsbe.repository.JobApplyRepository;
+import com.fu.fuatsbe.repository.PlanDetailRepository;
+import com.fu.fuatsbe.repository.RecruitmentPlanRepository;
 import com.fu.fuatsbe.repository.RecruitmentRequestRepository;
 import com.fu.fuatsbe.response.JobApplyResponse;
+import com.fu.fuatsbe.response.RecruitmentRequestResponse;
 import com.fu.fuatsbe.response.ReportDTO;
+import com.fu.fuatsbe.response.ReportDetailDTO;
+import com.fu.fuatsbe.response.ReportGroupByDepartment;
+import com.fu.fuatsbe.response.ReportGroupByJobRequest;
+import com.fu.fuatsbe.response.ReportGroupByPlan;
+import com.fu.fuatsbe.response.ReportGroupByPlanDetail;
 import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.JobApplyService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JobApplyServiceImpl implements JobApplyService {
@@ -65,6 +83,9 @@ public class JobApplyServiceImpl implements JobApplyService {
     private final JobApplyRepository jobApplyRepository;
     private final CandidateRepository candidateRepository;
     private final RecruitmentRequestRepository recruitmentRequestRepository;
+    private final DepartmentRepository departmentRepository;
+    private final RecruitmentPlanRepository recruitmentPlanRepository;
+    private final PlanDetailRepository planDetailRepository;
     private final EmployeeRepository employeeRepository;
     private final CvRepository cvRepository;
     private final ModelMapper modelMapper;
@@ -542,13 +563,111 @@ public class JobApplyServiceImpl implements JobApplyService {
     }
 
     @Override
-    public List<ReportDTO> getReport() {
-        List<ReportDTO> result = new ArrayList<>();
-        result = jobApplyRepository.getReport();
-        if (result.size() == 0) {
-            throw new ListEmptyException("List is empty");
-        }
-        return result;
-    }
+    public List<ReportGroupByJobRequest> getReport() {
+        List<ReportGroupByDepartment> result = new ArrayList<ReportGroupByDepartment>();
+        List<ReportDTO> list = jobApplyRepository.getReport();
 
+        List<ReportGroupByJobRequest> jobRequests = new ArrayList<ReportGroupByJobRequest>();
+        List<ReportGroupByPlanDetail> planDetails = new ArrayList<ReportGroupByPlanDetail>();
+        List<ReportGroupByPlan> plans = new ArrayList<ReportGroupByPlan>();
+        List<ReportDetailDTO> details = new ArrayList<ReportDetailDTO>();
+
+        int lastRequestId = list.get(0).getJobRequestId();
+        int lastPlanId = list.get(0).getPlanId();
+        int lastPlanDetailId = list.get(0).getPlanDetailId();
+        int lastDepartmentId = list.get(0).getDepartmentId();
+
+        RecruitmentRequest recruitmentRequest = recruitmentRequestRepository
+                .findById(lastRequestId).orElseThrow(
+                        () -> new NotFoundException(
+                                RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
+
+        log.info(recruitmentRequest.toString());
+
+        PlanDetail planDetail = planDetailRepository.findById(lastPlanDetailId).get();
+        RecruitmentPlan recruitmentPlan = recruitmentPlanRepository.findById(lastPlanId).get();
+        Department department = departmentRepository.findById(lastDepartmentId).get();
+
+        for (ReportDTO reportDTO : list) {
+
+            ReportDetailDTO detail = ReportDetailDTO.builder().source(reportDTO.getSource())
+                    .totalCV(reportDTO.getTotalCV())
+                    .totalAcceptableCV(reportDTO.getTotalAcceptableCV())
+                    .totalJoinInterview(reportDTO.getTotalJoinInterview())
+                    .totalPassInterview(reportDTO.getTotalPassInterview())
+                    .build();
+
+            if (lastRequestId != reportDTO.getJobRequestId()) {
+
+                RecruitmentRequestResponse recruitmentRequestResponse = modelMapper.map(recruitmentRequest,
+                        RecruitmentRequestResponse.class);
+
+                ReportGroupByJobRequest reportGroupByJobRequest = ReportGroupByJobRequest.builder()
+                        .details(details)
+                        .recruitmentRequest(recruitmentRequestResponse)
+                        .build();
+
+                jobRequests.add(reportGroupByJobRequest);
+                details.clear();
+                recruitmentRequest = recruitmentRequestRepository
+                        .findById(reportDTO.getJobRequestId()).get();
+
+                details.add(detail);
+                lastRequestId = reportDTO.getJobRequestId();
+            } else {
+                details.add(detail);
+            }
+
+            if (lastPlanDetailId != reportDTO.getPlanDetailId()) {
+
+                ReportGroupByPlanDetail reportGroupByPlanDetail = new ReportGroupByPlanDetail();
+                reportGroupByPlanDetail.setPlanDetail(planDetail);
+                reportGroupByPlanDetail.setJobRequests(jobRequests);
+                planDetails.add(reportGroupByPlanDetail);
+
+                // jobRequests.clear();
+
+                planDetail = planDetailRepository
+                        .findById(reportDTO.getPlanDetailId()).get();
+
+                lastPlanDetailId = reportDTO.getPlanDetailId();
+
+            }
+
+            if (lastPlanId != reportDTO.getPlanId()) {
+
+                ReportGroupByPlan reportGroupByPlan = new ReportGroupByPlan();
+                reportGroupByPlan.setRecruitmentPlan(recruitmentPlan);
+                reportGroupByPlan.setPlanDetails(planDetails);
+
+                plans.add(reportGroupByPlan);
+                planDetails.clear();
+
+                recruitmentPlan = recruitmentPlanRepository
+                        .findById(reportDTO.getPlanId()).get();
+
+                lastPlanId = reportDTO.getPlanId();
+
+            }
+
+            if (lastDepartmentId != reportDTO.getDepartmentId()) {
+
+                ReportGroupByDepartment reportGroupByDepartment = new ReportGroupByDepartment();
+                reportGroupByDepartment.setDepartment(department);
+                reportGroupByDepartment.setRecruitmentPlans(plans);
+
+                result.add(reportGroupByDepartment);
+
+                plans.clear();
+
+                department = departmentRepository
+                        .findById(reportDTO.getDepartmentId()).get();
+
+                lastDepartmentId = reportDTO.getDepartmentId();
+
+            }
+
+        }
+        return jobRequests;
+    }
 }

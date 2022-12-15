@@ -51,7 +51,7 @@ public interface JobApplyRepository extends JpaRepository<JobApply, Integer> {
 
         Page<JobApply> findByScreeningStatusLikeOrStatusLike(String screeningStatus, String status, Pageable pageable);
 
-        @Query(nativeQuery = true, value = "select distinct rp.name as planName, d.name as departmentName, rr.name as jobRequestName, c.source as source, rr.date as dateRecruited, rr.expiry_date as expiryDate, count(distinct(ja.id)) as totalCV, \n"
+        @Query(nativeQuery = true, value = "select distinct rr.id as jobRequestId,rp.id as planId,pd.id as planDetailId ,d.id as departmentId, c.source as source, count(distinct(ja.id)) as totalCV, \n"
                         + "     (select (count(distinct(ja.id))) from job_apply ja \n"
                         + "             join cv on cv.id = ja.cv_id \n"
                         + "            where ja.screening_status like 'PASSED' \n"

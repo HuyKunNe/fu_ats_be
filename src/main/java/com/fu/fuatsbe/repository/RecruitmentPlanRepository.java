@@ -43,7 +43,7 @@ public interface RecruitmentPlanRepository extends JpaRepository<RecruitmentPlan
                         "union(select  coalesce(status, 'REJECTED') ,count(status) from recruitment_plan where status like'REJECTED')")
         List<Tuple> getTotalStatus();
 
-        @Query(nativeQuery = true, value = "select (cast(replace(r.total_salary, ',', '') as unsigned) - COALESCE(sum(cast(replace(p.salary, ',', '') as unsigned) * p.amount),0)) \n"
+        @Query(nativeQuery = true, value = "select COALESCE(cast(replace(r.total_salary, ',', '') as unsigned) - COALESCE(sum(cast(replace(p.salary, ',', '') as unsigned) * p.amount),0),0) \n"
                         + " from plan_detail p join recruitment_plan r on p.recruitment_plan_id = r.id \n"
                         + " where p.status like 'APPROVED' and r.id = ?1")
         int totalSalaryFund(int recruitment_plan_id);
