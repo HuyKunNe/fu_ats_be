@@ -18,6 +18,6 @@ public class EmailSchedule {
     private int id;
     private String email;
     private String title;
-    @Column(columnDefinition="TEXT")
+    @Column(columnDefinition = "VARCHAR(10000)")
     private String content;
 }

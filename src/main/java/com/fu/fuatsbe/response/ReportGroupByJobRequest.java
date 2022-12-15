@@ -16,6 +16,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 public class ReportGroupByJobRequest {
-    private RecruitmentRequestResponse recruitmentRequest;
+    private String recruitmentRequestName;
     private List<ReportDetailDTO> details;
 }

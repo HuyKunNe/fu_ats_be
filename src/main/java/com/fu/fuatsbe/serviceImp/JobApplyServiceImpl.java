@@ -7,12 +7,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -62,7 +58,6 @@ import com.fu.fuatsbe.repository.PlanDetailRepository;
 import com.fu.fuatsbe.repository.RecruitmentPlanRepository;
 import com.fu.fuatsbe.repository.RecruitmentRequestRepository;
 import com.fu.fuatsbe.response.JobApplyResponse;
-import com.fu.fuatsbe.response.RecruitmentRequestResponse;
 import com.fu.fuatsbe.response.ReportDTO;
 import com.fu.fuatsbe.response.ReportDetailDTO;
 import com.fu.fuatsbe.response.ReportGroupByDepartment;
@@ -73,9 +68,7 @@ import com.fu.fuatsbe.response.ResponseWithTotalPage;
 import com.fu.fuatsbe.service.JobApplyService;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JobApplyServiceImpl implements JobApplyService {
@@ -83,10 +76,11 @@ public class JobApplyServiceImpl implements JobApplyService {
     private final JobApplyRepository jobApplyRepository;
     private final CandidateRepository candidateRepository;
     private final RecruitmentRequestRepository recruitmentRequestRepository;
-    private final DepartmentRepository departmentRepository;
+    private final EmployeeRepository employeeRepository;
     private final RecruitmentPlanRepository recruitmentPlanRepository;
     private final PlanDetailRepository planDetailRepository;
-    private final EmployeeRepository employeeRepository;
+    private final RecruitmentRequestRepository recruitmentRequestRepository2;
+    private final DepartmentRepository departmentRepository;
     private final CvRepository cvRepository;
     private final ModelMapper modelMapper;
     private final CityRepository cityRepository;
@@ -563,7 +557,7 @@ public class JobApplyServiceImpl implements JobApplyService {
     }
 
     @Override
-    public List<ReportGroupByJobRequest> getReport() {
+    public List<ReportGroupByDepartment> getReport() {
         List<ReportGroupByDepartment> result = new ArrayList<ReportGroupByDepartment>();
         List<ReportDTO> list = jobApplyRepository.getReport();
 
@@ -577,17 +571,14 @@ public class JobApplyServiceImpl implements JobApplyService {
         int lastPlanDetailId = list.get(0).getPlanDetailId();
         int lastDepartmentId = list.get(0).getDepartmentId();
 
-        RecruitmentRequest recruitmentRequest = recruitmentRequestRepository
-                .findById(lastRequestId).orElseThrow(
-                        () -> new NotFoundException(
-                                RecruitmentRequestErrorMessage.RECRUITMENT_REQUEST_NOT_FOUND_EXCEPTION));
+        list.add(list.get(list.size() - 1));
 
-        log.info(recruitmentRequest.toString());
+        ReportGroupByDepartment reportGroupByDepartment = new ReportGroupByDepartment();
+        ReportGroupByPlan reportGroupByPlan = new ReportGroupByPlan();
+        ReportGroupByPlanDetail reportGroupByPlanDetail = new ReportGroupByPlanDetail();
+        ReportGroupByJobRequest reportGroupByJobRequest = new ReportGroupByJobRequest();
 
-        PlanDetail planDetail = planDetailRepository.findById(lastPlanDetailId).get();
-        RecruitmentPlan recruitmentPlan = recruitmentPlanRepository.findById(lastPlanId).get();
-        Department department = departmentRepository.findById(lastDepartmentId).get();
-
+        int index = 1;
         for (ReportDTO reportDTO : list) {
 
             ReportDetailDTO detail = ReportDetailDTO.builder().source(reportDTO.getSource())
@@ -597,77 +588,71 @@ public class JobApplyServiceImpl implements JobApplyService {
                     .totalPassInterview(reportDTO.getTotalPassInterview())
                     .build();
 
-            if (lastRequestId != reportDTO.getJobRequestId()) {
+            if (lastRequestId != reportDTO.getJobRequestId() || index >= list.size()) {
 
-                RecruitmentRequestResponse recruitmentRequestResponse = modelMapper.map(recruitmentRequest,
-                        RecruitmentRequestResponse.class);
+                RecruitmentRequest recruitmentRequest = recruitmentRequestRepository.findById(lastRequestId).get();
 
-                ReportGroupByJobRequest reportGroupByJobRequest = ReportGroupByJobRequest.builder()
+                reportGroupByJobRequest = ReportGroupByJobRequest.builder()
                         .details(details)
-                        .recruitmentRequest(recruitmentRequestResponse)
+                        .recruitmentRequestName(recruitmentRequest.getName())
                         .build();
-
                 jobRequests.add(reportGroupByJobRequest);
-                details.clear();
-                recruitmentRequest = recruitmentRequestRepository
-                        .findById(reportDTO.getJobRequestId()).get();
-
+                details = new ArrayList<ReportDetailDTO>();
                 details.add(detail);
                 lastRequestId = reportDTO.getJobRequestId();
             } else {
                 details.add(detail);
             }
 
-            if (lastPlanDetailId != reportDTO.getPlanDetailId()) {
+            if (lastPlanDetailId != reportDTO.getPlanDetailId() || index >= list.size()) {
 
-                ReportGroupByPlanDetail reportGroupByPlanDetail = new ReportGroupByPlanDetail();
-                reportGroupByPlanDetail.setPlanDetail(planDetail);
-                reportGroupByPlanDetail.setJobRequests(jobRequests);
+                PlanDetail planDetail = planDetailRepository.findById(lastPlanDetailId).get();
+
+                reportGroupByPlanDetail = ReportGroupByPlanDetail.builder()
+                        .jobRequests(jobRequests)
+                        .planDetailName(planDetail.getName())
+                        .build();
+
                 planDetails.add(reportGroupByPlanDetail);
 
-                // jobRequests.clear();
-
-                planDetail = planDetailRepository
-                        .findById(reportDTO.getPlanDetailId()).get();
+                jobRequests = new ArrayList<>();
 
                 lastPlanDetailId = reportDTO.getPlanDetailId();
-
             }
 
-            if (lastPlanId != reportDTO.getPlanId()) {
+            if (lastPlanId != reportDTO.getPlanId() || index >= list.size()) {
+                RecruitmentPlan recruitmentPlan = recruitmentPlanRepository.findById(lastPlanId).get();
 
-                ReportGroupByPlan reportGroupByPlan = new ReportGroupByPlan();
-                reportGroupByPlan.setRecruitmentPlan(recruitmentPlan);
-                reportGroupByPlan.setPlanDetails(planDetails);
-
+                reportGroupByPlan = ReportGroupByPlan.builder()
+                        .recruitmentPlanName(recruitmentPlan.getName())
+                        .planDetails(planDetails)
+                        .build();
                 plans.add(reportGroupByPlan);
-                planDetails.clear();
-
-                recruitmentPlan = recruitmentPlanRepository
-                        .findById(reportDTO.getPlanId()).get();
+                planDetails = new ArrayList<>();
 
                 lastPlanId = reportDTO.getPlanId();
 
             }
 
-            if (lastDepartmentId != reportDTO.getDepartmentId()) {
+            if (lastDepartmentId != reportDTO.getDepartmentId() || index >= list.size()) {
 
-                ReportGroupByDepartment reportGroupByDepartment = new ReportGroupByDepartment();
-                reportGroupByDepartment.setDepartment(department);
-                reportGroupByDepartment.setRecruitmentPlans(plans);
+                Department department = departmentRepository.findById(lastDepartmentId).get();
+
+                reportGroupByDepartment = ReportGroupByDepartment.builder()
+                        .departmentName(department.getName())
+                        .recruitmentPlans(plans)
+                        .build();
 
                 result.add(reportGroupByDepartment);
+                reportGroupByDepartment = new ReportGroupByDepartment();
 
-                plans.clear();
-
-                department = departmentRepository
-                        .findById(reportDTO.getDepartmentId()).get();
+                plans = new ArrayList<>();
 
                 lastDepartmentId = reportDTO.getDepartmentId();
 
             }
-
+            ++index;
         }
-        return jobRequests;
+        return result;
     }
 }

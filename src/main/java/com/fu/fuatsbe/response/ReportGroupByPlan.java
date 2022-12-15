@@ -2,8 +2,6 @@ package com.fu.fuatsbe.response;
 
 import java.util.List;
 
-import com.fu.fuatsbe.entity.RecruitmentPlan;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +16,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 public class ReportGroupByPlan {
-    private RecruitmentPlan recruitmentPlan;
+    private String recruitmentPlanName;
     private List<ReportGroupByPlanDetail> planDetails;
 }
