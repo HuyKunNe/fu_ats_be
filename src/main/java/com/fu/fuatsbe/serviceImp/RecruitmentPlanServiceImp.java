@@ -390,7 +390,8 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
                         RecruitmentPlanErrorMessage.RECRUITMENTPLAN_NOT_FOUND_EXCEPTION));
 
         int result = 0;
-        result = recruitmentPlanRepository.totalSalaryFund(recruitmentRequestPlanId);
+        int salary = Integer.parseInt(recruitmentPlan.getTotalSalary().replaceAll("\\D+", ""));
+        result = salary - recruitmentPlanRepository.totalSalaryFund(recruitmentRequestPlanId);
 
         return result;
     }

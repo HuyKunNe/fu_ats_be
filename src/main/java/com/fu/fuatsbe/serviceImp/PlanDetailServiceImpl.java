@@ -132,8 +132,10 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         }
 
         int salary = Integer.parseInt(updateDTO.getSalary().replaceAll("\\D+", ""));
+        int totalSalary = Integer.parseInt(planDetail.getRecruitmentPlan().getTotalSalary().replaceAll("\\D+", ""));
 
-        int salaryFund = recruitmentPlanRepository.totalSalaryFund(planDetail.getRecruitmentPlan().getId());
+        int salaryFund = totalSalary
+                - recruitmentPlanRepository.totalSalaryFund(planDetail.getRecruitmentPlan().getId());
 
         if (salary * updateDTO.getAmount() > salaryFund) {
             throw new NotValidException(PlanDetailErrorMessage.NOT_VALID_SALARY_EXCEPTION);
@@ -195,7 +197,9 @@ public class PlanDetailServiceImpl implements PlanDetailService {
 
         int salary = Integer.parseInt(createDTO.getSalary().replaceAll("\\D+", ""));
 
-        int salaryFund = recruitmentPlanRepository.totalSalaryFund(createDTO.getRecruitmentPlanId());
+        int totalSalary = Integer.parseInt(optionalRecruitmentPlan.get().getTotalSalary().replaceAll("\\D+", ""));
+
+        int salaryFund = totalSalary - recruitmentPlanRepository.totalSalaryFund(createDTO.getRecruitmentPlanId());
 
         if (salary * createDTO.getAmount() > salaryFund) {
             throw new NotValidException(PlanDetailErrorMessage.NOT_VALID_SALARY_EXCEPTION);
