@@ -103,7 +103,8 @@ public class InterviewServiceImp implements InterviewService {
         LocalTime localTime = LocalTime.parse(interviewCreateDTO.getTime(), timeFormatter);
 
         LocalDate presentDate = LocalDate.parse(LocalDate.now().toString(), dateFormatter);
-        String jobName = positionRepository.getNamePositionByRecruitmentRequest(interviewCreateDTO.getRecruitmentRequestId());
+        String jobName = positionRepository
+                .getNamePositionByRecruitmentRequest(interviewCreateDTO.getRecruitmentRequestId());
 
         if (localDate.isBefore(presentDate)) {
             throw new PermissionException(InterviewErrorMessage.DATE_NOT_VALID);
@@ -116,7 +117,7 @@ public class InterviewServiceImp implements InterviewService {
             String dateInput = localDateTime.format(dateTimeFormatter);
             Timestamp dateInterview = Timestamp.valueOf(dateInput);
             JobApply jobApply = jobApplyRepository.getJobAppliesByRecruitmentAndCandidate(
-                            interviewCreateDTO.getRecruitmentRequestId(), candidate.getId())
+                    interviewCreateDTO.getRecruitmentRequestId(), candidate.getId())
                     .orElseThrow(() -> new NotValidException(JobApplyErrorMessage.CANDIDATE_NOT_APPLY));
             Interview interview = Interview.builder()
                     .subject(interviewCreateDTO.getSubject())
@@ -156,10 +157,10 @@ public class InterviewServiceImp implements InterviewService {
             notificationService.sendNotificationForInterview(sendNotificationDTO);
             loopTimes++;
         }
-        for (Employee emp: employeeList) {
+        for (Employee emp : employeeList) {
             String time = interviewCreateDTO.getTime();
-            if(!interviewCreateDTO.getTime().equals(newLocalTime.toString())){
-                time = interviewCreateDTO.getTime() +"-"+newLocalTime.plusMinutes(interviewCreateDTO.getDuration());
+            if (!interviewCreateDTO.getTime().equals(newLocalTime.toString())) {
+                time = interviewCreateDTO.getTime() + "-" + newLocalTime.plusMinutes(interviewCreateDTO.getDuration());
             }
             SendInviteInterviewEmployee sendInviteInterviewEmployee = SendInviteInterviewEmployee.builder()
                     .link(interviewCreateDTO.getLinkMeeting())
@@ -177,7 +178,7 @@ public class InterviewServiceImp implements InterviewService {
 
     @Override
     public ResponseWithTotalPage<InterviewResponse> getInterviewByCandidateID(int candidateId, int pageNo,
-                                                                              int pageSize) {
+            int pageSize) {
         Candidate candidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new NotFoundException(CandidateErrorMessage.CANDIDATE_NOT_FOUND_EXCEPTION));
 
@@ -225,7 +226,7 @@ public class InterviewServiceImp implements InterviewService {
     public ResponseWithTotalPage<InterviewResponse> getInterviewByEmployeeID(int employeeId, int pageNo, int pageSize) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<Interview> interviewList = interviewRepository.findInterviewByEmployeeId(employee.getId(), pageable);
 
         List<String> empName = new ArrayList<>();
@@ -373,7 +374,7 @@ public class InterviewServiceImp implements InterviewService {
         }
         String dateFormated = interview.getDate().toString().substring(0, 16);
         String message = "The interview at " + dateFormated + " has canceled\n"
-                + "Reason: " + cancelInterviewDTO.getReason() + "\n" + "So sorry for this inconvenience."+
+                + "Reason: " + cancelInterviewDTO.getReason() + "\n" + "So sorry for this inconvenience." +
                 "\n" +
                 " \n" +
                 "Thanks & Best Regards,\n" +
@@ -394,7 +395,7 @@ public class InterviewServiceImp implements InterviewService {
 
     @Override
     public ResponseWithTotalPage<InterviewResponse> getInterviewByDepartment(int departmentId, int pageNo,
-                                                                             int pageSize) {
+            int pageSize) {
         Department department = departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new NotFoundException(DepartmentErrorMessage.DEPARTMENT_NOT_FOUND_EXCEPTION));
 
@@ -462,10 +463,12 @@ public class InterviewServiceImp implements InterviewService {
                 checkAllConfirm = false;
             }
         }
-//        if (!interview.getCandidateConfirm().equals(CandidateStatus.INTERVIEW_ACCEPTABLE) &&
-//                interview.getCandidateConfirm() == null) {
-//            checkAllConfirm = false;
-//        }
+        // if
+        // (!interview.getCandidateConfirm().equals(CandidateStatus.INTERVIEW_ACCEPTABLE)
+        // &&
+        // interview.getCandidateConfirm() == null) {
+        // checkAllConfirm = false;
+        // }
         if (checkAllConfirm) {
             interview.setStatus(InterviewRequestStatus.APPROVED);
             interviewRepository.save(interview);
@@ -564,7 +567,7 @@ public class InterviewServiceImp implements InterviewService {
         }
         String dateFormated = interview.getDate().toString().substring(0, 16);
         String message = "The interview at " + dateFormated + " is canceled\n"
-                + "Reason: Candidate reject to join the interview\n" + "So sorry for this inconvenience."+
+                + "Reason: Candidate reject to join the interview\n" + "So sorry for this inconvenience." +
                 "\n" +
                 " \n" +
                 "Thanks & Best Regards,\n" +
@@ -585,7 +588,7 @@ public class InterviewServiceImp implements InterviewService {
 
     @Override
     public List<InterviewResponse> searchInterview(String candidateName, String type, String status, String date,
-                                                   String round) {
+            String round) {
         List<InterviewResponse> result = new ArrayList<InterviewResponse>();
         List<Interview> list = interviewRepository.searchInterview(candidateName, type, status, date, round);
         if (list.size() > 0) {
@@ -617,7 +620,7 @@ public class InterviewServiceImp implements InterviewService {
 
     @Override
     public ResponseWithTotalPage<InterviewResponse> getAcceptableByEmployee(int employeeId, int pageNo,
-                                                                            int pageSize) {
+            int pageSize) {
         ResponseWithTotalPage<InterviewResponse> result = new ResponseWithTotalPage<>();
         List<InterviewResponse> listResponse = new ArrayList<>();
         pageNo *= pageSize;
@@ -663,7 +666,7 @@ public class InterviewServiceImp implements InterviewService {
 
     @Override
     public ResponseWithTotalPage<InterviewResponse> getAcceptableByDepartment(int departmentId, int pageNo,
-                                                                              int pageSize) {
+            int pageSize) {
         ResponseWithTotalPage<InterviewResponse> result = new ResponseWithTotalPage<>();
         List<InterviewResponse> listResponse = new ArrayList<>();
         pageNo *= pageSize;
