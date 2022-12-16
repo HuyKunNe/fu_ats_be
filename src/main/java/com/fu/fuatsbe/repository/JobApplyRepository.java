@@ -72,15 +72,15 @@ public interface JobApplyRepository extends JpaRepository<JobApply, Integer> {
                         + "             and ja.recruitment_request_id = rr.id \n"
                         + "             and ind.result like 'PASSED' \n"
                         + "             and cv.source = c.source \n"
-                        +"              and ja.id not in( \n"
-                        +"                      select distinct(ja.id) from job_apply ja \n"
-                        +"                              join interview i on i.job_apply_id = ja.id \n"
-                        +"                              join interview_detail ind on ind.interview_id = i.id \n"
-                        +"                              join cv on cv.id = ja.cv_id \n"
+                        + "              and ja.id not in( \n"
+                        + "                      select distinct(ja.id) from job_apply ja \n"
+                        + "                              join interview i on i.job_apply_id = ja.id \n"
+                        + "                              join interview_detail ind on ind.interview_id = i.id \n"
+                        + "                              join cv on cv.id = ja.cv_id \n"
                         + "                     where i.candidate_confirm like 'ACCEPTABLE' \n"
-                        +"                              and ja.recruitment_request_id = rr.id \n"
-                        +"                              and ind.result like 'FAILURE' \n"
-                        +"                              and cv.source = c.source) \n"
+                        + "                              and ja.recruitment_request_id = rr.id \n"
+                        + "                              and ind.result like 'FAILURE' \n"
+                        + "                              and cv.source = c.source) \n"
                         + "     ) as totalPassInterview \n"
                         + "from employee e join department d on e.department_id = d.id \n"
                         + "	join recruitment_plan rp on rp.creator_id = e.id \n"
@@ -88,10 +88,10 @@ public interface JobApplyRepository extends JpaRepository<JobApply, Integer> {
                         + "     join recruitment_request rr on rr.plan_detail_id = pd.id \n"
                         + "     join job_apply ja on ja.recruitment_request_id = rr.id \n"
                         + "     join cv c on c.id = ja.cv_id \n"
-                        // + "     join interview i on i.job_apply_id = ja.id \n"
-                        // + "     join interview_detail ind on i.id = ind.interview_id \n"
+                        // + " join interview i on i.job_apply_id = ja.id \n"
+                        // + " join interview_detail ind on i.id = ind.interview_id \n"
                         + "group by rp.name, d.name, rr.name, c.source \n"
-                        + "order by rp.id desc")
+                        + "order by rr.id desc")
         List<ReportDTO> getReport();
 
 }
