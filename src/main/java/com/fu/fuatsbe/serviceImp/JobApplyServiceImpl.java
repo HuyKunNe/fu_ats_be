@@ -573,6 +573,11 @@ public class JobApplyServiceImpl implements JobApplyService {
 
         list.add(list.get(list.size() - 1));
 
+        int totalByJobRequest = 0;
+        int totalByPlanDetail = 0;
+        int totalByPlan = 0;
+        int totalByDepartment = 0;
+
         ReportGroupByDepartment reportGroupByDepartment = new ReportGroupByDepartment();
         ReportGroupByPlan reportGroupByPlan = new ReportGroupByPlan();
         ReportGroupByPlanDetail reportGroupByPlanDetail = new ReportGroupByPlanDetail();
@@ -592,13 +597,17 @@ public class JobApplyServiceImpl implements JobApplyService {
 
                 RecruitmentRequest recruitmentRequest = recruitmentRequestRepository.findById(lastRequestId).get();
 
+                totalByJobRequest = details.size();
+
                 reportGroupByJobRequest = ReportGroupByJobRequest.builder()
                         .details(details)
+                        .totalDetailByJobRequest(totalByJobRequest)
                         .recruitmentRequestName(recruitmentRequest.getName())
                         .build();
                 jobRequests.add(reportGroupByJobRequest);
                 details = new ArrayList<ReportDetailDTO>();
                 details.add(detail);
+                totalByJobRequest = 0;
                 lastRequestId = reportDTO.getJobRequestId();
             } else {
                 details.add(detail);
@@ -608,8 +617,15 @@ public class JobApplyServiceImpl implements JobApplyService {
 
                 PlanDetail planDetail = planDetailRepository.findById(lastPlanDetailId).get();
 
+                for (ReportGroupByJobRequest jobRequest : jobRequests) {
+
+                    totalByPlanDetail += jobRequest.getTotalDetailByJobRequest();
+
+                }
+
                 reportGroupByPlanDetail = ReportGroupByPlanDetail.builder()
                         .jobRequests(jobRequests)
+                        .totalDetailByPlanDetail(totalByPlanDetail)
                         .planDetailName(planDetail.getName())
                         .build();
 
@@ -617,18 +633,28 @@ public class JobApplyServiceImpl implements JobApplyService {
 
                 jobRequests = new ArrayList<>();
 
+                totalByPlanDetail = 0;
+
                 lastPlanDetailId = reportDTO.getPlanDetailId();
             }
 
             if (lastPlanId != reportDTO.getPlanId() || index >= list.size()) {
                 RecruitmentPlan recruitmentPlan = recruitmentPlanRepository.findById(lastPlanId).get();
 
+                for (ReportGroupByPlanDetail planDetail : planDetails) {
+                    totalByPlan += planDetail.getTotalDetailByPlanDetail();
+                }
+
                 reportGroupByPlan = ReportGroupByPlan.builder()
                         .recruitmentPlanName(recruitmentPlan.getName())
+                        .totalDetailByPlan(totalByPlan)
                         .planDetails(planDetails)
                         .build();
+
                 plans.add(reportGroupByPlan);
                 planDetails = new ArrayList<>();
+
+                totalByPlan = 0;
 
                 lastPlanId = reportDTO.getPlanId();
 
@@ -638,8 +664,13 @@ public class JobApplyServiceImpl implements JobApplyService {
 
                 Department department = departmentRepository.findById(lastDepartmentId).get();
 
+                for (ReportGroupByPlan plan : plans) {
+                    totalByDepartment += plan.getTotalDetailByPlan();
+                }
+
                 reportGroupByDepartment = ReportGroupByDepartment.builder()
                         .departmentName(department.getName())
+                        .totalDetailByDepartment(totalByDepartment)
                         .recruitmentPlans(plans)
                         .build();
 
@@ -647,6 +678,7 @@ public class JobApplyServiceImpl implements JobApplyService {
                 reportGroupByDepartment = new ReportGroupByDepartment();
 
                 plans = new ArrayList<>();
+                totalByDepartment = 0;
 
                 lastDepartmentId = reportDTO.getDepartmentId();
 

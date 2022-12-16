@@ -17,5 +17,6 @@ import lombok.ToString;
 @Builder
 public class ReportGroupByPlan {
     private String recruitmentPlanName;
+    private int totalDetailByPlan;
     private List<ReportGroupByPlanDetail> planDetails;
 }

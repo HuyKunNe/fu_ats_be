@@ -17,5 +17,6 @@ import lombok.ToString;
 @Builder
 public class ReportGroupByJobRequest {
     private String recruitmentRequestName;
+    private int totalDetailByJobRequest;
     private List<ReportDetailDTO> details;
 }
