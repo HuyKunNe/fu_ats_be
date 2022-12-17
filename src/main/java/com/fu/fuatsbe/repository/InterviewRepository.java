@@ -16,6 +16,7 @@ import com.fu.fuatsbe.entity.Interview;
 @Transactional
 public interface InterviewRepository extends JpaRepository<Interview, Integer> {
 
+        @Query(nativeQuery = true, value = "select * from interview where candidate_id = ?1 and (status like 'APPROVED' or status like 'DONE')")
         Page<Interview> findInterviewByCandidateId(int candidate_id, Pageable pageable);
 
         @Query(nativeQuery = true, value = "select * from interview where id in \n" +
