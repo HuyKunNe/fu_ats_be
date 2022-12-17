@@ -556,9 +556,13 @@ public class JobApplyServiceImpl implements JobApplyService {
     }
 
     @Override
-    public List<ReportGroupByDepartment> getReport() {
+    public List<ReportGroupByDepartment> getReport(String year, String departmentName) {
         List<ReportGroupByDepartment> result = new ArrayList<ReportGroupByDepartment>();
-        List<ReportDTO> list = jobApplyRepository.getReport();
+        List<ReportDTO> list = jobApplyRepository.getReport(year, departmentName);
+
+        if (list.size() == 0) {
+            throw new ListEmptyException("No data for " + year);
+        }
 
         List<ReportGroupByJobRequest> jobRequests = new ArrayList<ReportGroupByJobRequest>();
         List<ReportGroupByPlanDetail> planDetails = new ArrayList<ReportGroupByPlanDetail>();

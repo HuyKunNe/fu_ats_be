@@ -48,4 +48,7 @@ public interface RecruitmentPlanRepository extends JpaRepository<RecruitmentPlan
                         + " where p.status like 'APPROVED' and r.id = ?1")
         int totalSalaryFund(int recruitment_plan_id);
 
+        @Query(nativeQuery = true, value = "SELECT distinct(year(rp.period_from)) FROM fu_ats.recruitment_plan rp;")
+        List<String> getYearFromPlan();
+
 }

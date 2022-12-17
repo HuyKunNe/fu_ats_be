@@ -56,5 +56,5 @@ public interface JobApplyService {
 
         public List<JobApplyResponse> createJobApplyByEmployee(ListJobApplyByEmployee listJobApplyByEmployee);
 
-        public List<ReportGroupByDepartment> getReport();
+        public List<ReportGroupByDepartment> getReport(String year, String departmentName);
 }

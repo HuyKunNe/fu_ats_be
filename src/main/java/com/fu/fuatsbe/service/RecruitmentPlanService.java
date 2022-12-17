@@ -50,4 +50,6 @@ public interface RecruitmentPlanService {
 
         public int getSalaryFund(int recruitmentRequestPlanId);
 
+        public List<String> getYearFromPlan();
+
 }

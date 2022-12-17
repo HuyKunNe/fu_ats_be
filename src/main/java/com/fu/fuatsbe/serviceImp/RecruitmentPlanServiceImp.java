@@ -395,4 +395,12 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
 
         return result;
     }
+
+    @Override
+    public List<String> getYearFromPlan() {
+        List<String> result = new ArrayList<String>();
+
+        result = recruitmentPlanRepository.getYearFromPlan();
+        return result;
+    }
 }
