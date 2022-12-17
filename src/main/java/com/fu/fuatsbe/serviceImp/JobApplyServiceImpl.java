@@ -79,7 +79,6 @@ public class JobApplyServiceImpl implements JobApplyService {
     private final EmployeeRepository employeeRepository;
     private final RecruitmentPlanRepository recruitmentPlanRepository;
     private final PlanDetailRepository planDetailRepository;
-    private final RecruitmentRequestRepository recruitmentRequestRepository2;
     private final DepartmentRepository departmentRepository;
     private final CvRepository cvRepository;
     private final ModelMapper modelMapper;
@@ -578,6 +577,11 @@ public class JobApplyServiceImpl implements JobApplyService {
         int totalByPlan = 0;
         int totalByDepartment = 0;
 
+        int totalRowByDepartment = 0;
+        int totalRowByPlan = 0;
+        int totalRowByPlanDetail = 0;
+        int totalRowByJobRequest = 0;
+
         ReportGroupByDepartment reportGroupByDepartment = new ReportGroupByDepartment();
         ReportGroupByPlan reportGroupByPlan = new ReportGroupByPlan();
         ReportGroupByPlanDetail reportGroupByPlanDetail = new ReportGroupByPlanDetail();
@@ -599,15 +603,19 @@ public class JobApplyServiceImpl implements JobApplyService {
 
                 totalByJobRequest = details.size();
 
+                totalRowByJobRequest = totalByJobRequest + 1;
+
                 reportGroupByJobRequest = ReportGroupByJobRequest.builder()
                         .details(details)
                         .totalDetailByJobRequest(totalByJobRequest)
+                        .totalRowByJobRequest(totalRowByJobRequest)
                         .recruitmentRequestName(recruitmentRequest.getName())
                         .build();
                 jobRequests.add(reportGroupByJobRequest);
                 details = new ArrayList<ReportDetailDTO>();
                 details.add(detail);
                 totalByJobRequest = 0;
+                totalRowByJobRequest = 0;
                 lastRequestId = reportDTO.getJobRequestId();
             } else {
                 details.add(detail);
@@ -620,12 +628,13 @@ public class JobApplyServiceImpl implements JobApplyService {
                 for (ReportGroupByJobRequest jobRequest : jobRequests) {
 
                     totalByPlanDetail += jobRequest.getTotalDetailByJobRequest();
-
+                    totalRowByPlanDetail += jobRequest.getTotalRowByJobRequest();
                 }
 
                 reportGroupByPlanDetail = ReportGroupByPlanDetail.builder()
                         .jobRequests(jobRequests)
                         .totalDetailByPlanDetail(totalByPlanDetail)
+                        .totalRowByPlanDetail(totalRowByPlanDetail + 1)
                         .planDetailName(planDetail.getName())
                         .build();
 
@@ -634,6 +643,7 @@ public class JobApplyServiceImpl implements JobApplyService {
                 jobRequests = new ArrayList<>();
 
                 totalByPlanDetail = 0;
+                totalRowByPlanDetail = 0;
 
                 lastPlanDetailId = reportDTO.getPlanDetailId();
             }
@@ -643,11 +653,13 @@ public class JobApplyServiceImpl implements JobApplyService {
 
                 for (ReportGroupByPlanDetail planDetail : planDetails) {
                     totalByPlan += planDetail.getTotalDetailByPlanDetail();
+                    totalRowByPlan += planDetail.getTotalRowByPlanDetail();
                 }
 
                 reportGroupByPlan = ReportGroupByPlan.builder()
                         .recruitmentPlanName(recruitmentPlan.getName())
                         .totalDetailByPlan(totalByPlan)
+                        .totalRowByPlan(totalRowByPlan + 1)
                         .planDetails(planDetails)
                         .build();
 
@@ -655,6 +667,7 @@ public class JobApplyServiceImpl implements JobApplyService {
                 planDetails = new ArrayList<>();
 
                 totalByPlan = 0;
+                totalRowByPlan = 0;
 
                 lastPlanId = reportDTO.getPlanId();
 
@@ -666,11 +679,13 @@ public class JobApplyServiceImpl implements JobApplyService {
 
                 for (ReportGroupByPlan plan : plans) {
                     totalByDepartment += plan.getTotalDetailByPlan();
+                    totalRowByDepartment += plan.getTotalRowByPlan();
                 }
 
                 reportGroupByDepartment = ReportGroupByDepartment.builder()
                         .departmentName(department.getName())
                         .totalDetailByDepartment(totalByDepartment)
+                        .totalRowByDepartment(totalRowByDepartment + 1)
                         .recruitmentPlans(plans)
                         .build();
 
@@ -679,6 +694,7 @@ public class JobApplyServiceImpl implements JobApplyService {
 
                 plans = new ArrayList<>();
                 totalByDepartment = 0;
+                totalRowByDepartment = 0;
 
                 lastDepartmentId = reportDTO.getDepartmentId();
 

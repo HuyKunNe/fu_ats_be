@@ -14,5 +14,6 @@ import lombok.NoArgsConstructor;
 public class ReportGroupByPlanDetail {
     private String planDetailName;
     private int totalDetailByPlanDetail;
+    private int totalRowByPlanDetail;
     private List<ReportGroupByJobRequest> jobRequests;
 }

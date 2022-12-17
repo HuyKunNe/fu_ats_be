@@ -18,5 +18,6 @@ import lombok.ToString;
 public class ReportGroupByDepartment {
     private String departmentName;
     private int totalDetailByDepartment;
+    private int totalRowByDepartment;
     private List<ReportGroupByPlan> recruitmentPlans;
 }
