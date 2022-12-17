@@ -30,14 +30,14 @@ public class ReportController {
     private final JobApplyService jobApplyService;
     private final RecruitmentPlanService recruitmentPlanService;
 
-    @PutMapping("/getReport")
+    @PutMapping("/search")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ListResponseDTO> report(@RequestBody ReportDTO reportDTO) {
+    public ResponseEntity<ListResponseDTO> searchReport(@RequestBody ReportDTO reportDTO) {
         ListResponseDTO<ReportGroupByDepartment> responseDTO = new ListResponseDTO();
         List<ReportGroupByDepartment> list = jobApplyService.getReport(reportDTO.getYear(),
                 reportDTO.getDepartmentName());
         responseDTO.setData(list);
-        responseDTO.setMessage("Get report successfully");
+        responseDTO.setMessage("Search report successfully");
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
@@ -49,6 +49,17 @@ public class ReportController {
         List<String> list = recruitmentPlanService.getYearFromPlan();
         responseDTO.setData(list);
         responseDTO.setMessage("Get year from plan successfully");
+        responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/getReport")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ListResponseDTO> report() {
+        ListResponseDTO<ReportGroupByDepartment> responseDTO = new ListResponseDTO();
+        List<ReportGroupByDepartment> list = jobApplyService.getReport("", "");
+        responseDTO.setData(list);
+        responseDTO.setMessage("Get report successfully");
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }

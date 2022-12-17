@@ -88,9 +88,13 @@ public interface JobApplyRepository extends JpaRepository<JobApply, Integer> {
                         + "     join recruitment_request rr on rr.plan_detail_id = pd.id \n"
                         + "     join job_apply ja on ja.recruitment_request_id = rr.id \n"
                         + "     join cv c on c.id = ja.cv_id \n"
-                        + " where year(rp.period_from) = ?1 and d.name like ?2 \n"
-                        // + " join interview i on i.job_apply_id = ja.id \n"
-                        // + " join interview_detail ind on i.id = ind.interview_id \n"
+                        + " where (case  \n"
+                        + "      when ?1 like '' then true \n"
+                        + "      when ?1 not like '' then year(rp.period_from) = ?1 \n"
+                        + " end) and (case \n"
+                        + "      when ?2 like '' then true \n"
+                        + "      when ?2 not like '' then d.name like ?2\n"
+                        + " end)\n"
                         + " group by d.id, rp.id , pd.id, rr.id, c.source \n"
                         + " order by d.id, rp.id , pd.id, rr.id")
         List<ReportDTO> getReport(String year, String departmentName);
