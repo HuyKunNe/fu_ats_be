@@ -33,7 +33,7 @@ public interface RecruitmentPlanRepository extends JpaRepository<RecruitmentPlan
 
         @Query(nativeQuery = true, value = "select * from recruitment_plan r where r.creator_id " +
                         "in(select id from employee where department_id = ?1) " +
-                        "and status like 'APPROVED'")
+                        "and status like 'APPROVED' and CURDATE() <= r.period_to ")
         List<RecruitmentPlan> findApprovedByDepartment(int id);
 
         @Query(nativeQuery = true, value = "(select  coalesce(status, 'PENDING') as status,count(status) as total from recruitment_plan where status like 'PENDING') "

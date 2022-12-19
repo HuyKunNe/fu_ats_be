@@ -126,9 +126,10 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         int totalAmount = planDetailRepository
                 .totalAmount(planDetail.getRecruitmentPlan().getId());
 
-        if (updateDTO.getAmount() > (planDetail.getRecruitmentPlan().getAmount() -
-                totalAmount)) {
-            throw new NotValidException(PlanDetailErrorMessage.NOT_VALID_AMOUNT_EXCEPTION);
+        int remaining = (planDetail.getRecruitmentPlan().getAmount() - totalAmount);
+
+        if (updateDTO.getAmount() > remaining) {
+            throw new NotValidException(PlanDetailErrorMessage.NOT_VALID_AMOUNT_EXCEPTION + remaining + ")");
         }
 
         int salary = Integer.parseInt(updateDTO.getSalary().replaceAll("\\D+", ""));
@@ -150,7 +151,8 @@ public class PlanDetailServiceImpl implements PlanDetailService {
                 format);
 
         if (periodTo.isAfter(endDateOfRecruitmentPlan)) {
-            throw new NotValidException(PlanDetailErrorMessage.NOT_VALID_PERIOD_TO_EXCEPTION);
+            throw new NotValidException(
+                    PlanDetailErrorMessage.NOT_VALID_PERIOD_TO_EXCEPTION + endDateOfRecruitmentPlan + ")");
         }
 
         planDetail.setAmount(updateDTO.getAmount());
@@ -190,9 +192,10 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         int totalAmount = planDetailRepository
                 .totalAmount(optionalRecruitmentPlan.get().getId());
 
-        if (createDTO.getAmount() > (optionalRecruitmentPlan.get().getAmount() -
-                totalAmount)) {
-            throw new NotValidException(PlanDetailErrorMessage.NOT_VALID_AMOUNT_EXCEPTION);
+        int remaining = optionalRecruitmentPlan.get().getAmount() - totalAmount;
+
+        if (createDTO.getAmount() > remaining) {
+            throw new NotValidException(PlanDetailErrorMessage.NOT_VALID_AMOUNT_EXCEPTION + remaining + ")");
         }
 
         long salary = Long.parseLong(createDTO.getSalary().replaceAll("\\D+", ""));
@@ -215,7 +218,8 @@ public class PlanDetailServiceImpl implements PlanDetailService {
                 format);
 
         if (periodTo.isAfter(endDateOfRecruitmentPlan)) {
-            throw new NotValidException(PlanDetailErrorMessage.NOT_VALID_PERIOD_TO_EXCEPTION);
+            throw new NotValidException(
+                    PlanDetailErrorMessage.NOT_VALID_PERIOD_TO_EXCEPTION + endDateOfRecruitmentPlan + ")");
         }
 
         PlanDetail planDetail = PlanDetail.builder().amount(createDTO.getAmount())
@@ -302,6 +306,26 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         Employee approver = employeeRepository.findById(actionDTO.getEmployeeId())
                 .orElseThrow(() -> new NotFoundException(
                         EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
+
+        int totalAmount = planDetailRepository
+                .totalAmount(planDetail.getId());
+
+        int remaining = planDetail.getRecruitmentPlan().getAmount() - totalAmount;
+
+        if (planDetail.getAmount() > remaining) {
+            throw new NotValidException(PlanDetailErrorMessage.NOT_VALID_AMOUNT_EXCEPTION + remaining + ")");
+        }
+
+        long salary = Long.parseLong(planDetail.getSalary().replaceAll("\\D+", ""));
+
+        long totalSalary = Long.parseLong(planDetail.getRecruitmentPlan().getTotalSalary().replaceAll("\\D+", ""));
+
+        long salaryFund = totalSalary
+                - recruitmentPlanRepository.totalSalaryFund(planDetail.getRecruitmentPlan().getId());
+
+        if (salary * planDetail.getAmount() > salaryFund) {
+            throw new NotValidException(PlanDetailErrorMessage.NOT_VALID_SALARY_EXCEPTION);
+        }
 
         planDetail.setApprover(approver);
         planDetail.setStatus(PlanDetailStatus.APPROVED);

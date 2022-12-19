@@ -243,7 +243,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 format);
 
         if (expiryDate.isAfter(periodToPlanDetail)) {
-            throw new NotValidException(RecruitmentRequestErrorMessage.NOT_VALID_EXPIRY_DATE_EXCEPTION);
+            throw new NotValidException(
+                    RecruitmentRequestErrorMessage.NOT_VALID_EXPIRY_DATE_EXCEPTION + periodToPlanDetail + ")");
         }
 
         if (updateDTO.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)
@@ -257,9 +258,11 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
 
         int totalAmount = recruitmentRequestRepository.totalAmount(recruitmentRequest.getPlanDetail().getId());
 
-        if ((updateDTO.getAmount() > (recruitmentRequest.getPlanDetail().getAmount() - totalAmount))
+        int remaining = (recruitmentRequest.getPlanDetail().getAmount() - totalAmount);
+
+        if ((updateDTO.getAmount() > remaining)
                 || updateDTO.getAmount() <= 0) {
-            throw new NotValidException(RecruitmentRequestErrorMessage.NOT_VALID_AMOUNT_EXCEPTION);
+            throw new NotValidException(RecruitmentRequestErrorMessage.NOT_VALID_AMOUNT_EXCEPTION + remaining + ")");
         }
 
         recruitmentRequest.setAmount(updateDTO.getAmount());
@@ -305,9 +308,11 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
                 .orElseThrow(() -> new NotFoundException(PlanDetailErrorMessage.PLAN_DETAIL_NOT_FOUND_EXCEPTION));
         Position position = positionRepository.findPositionByName(createDTO.getPositionName())
                 .orElseThrow(() -> new NotFoundException(PositionErrorMessage.POSITION_NOT_EXIST));
+
         if (!planDetail.getStatus().equalsIgnoreCase(PlanDetailStatus.APPROVED))
             throw new NotValidException(PlanDetailErrorMessage.PLAN_DETAIL_NOT_APPROVED_EXCEPTION);
         if (optionalCreator.isPresent()) {
+
             DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate date = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
             LocalDate dateFormat = LocalDate.parse(date.toString(), format);
@@ -316,7 +321,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             LocalDate periodToPlanDetail = LocalDate.parse(planDetail.getPeriodTo().toString(), format);
 
             if (expiryDate.isAfter(periodToPlanDetail)) {
-                throw new NotValidException(RecruitmentRequestErrorMessage.NOT_VALID_EXPIRY_DATE_EXCEPTION);
+                throw new NotValidException(
+                        RecruitmentRequestErrorMessage.NOT_VALID_EXPIRY_DATE_EXCEPTION + periodToPlanDetail + ")");
             }
 
             City city = cityRepository.findByName(createDTO.getCityName())
@@ -324,8 +330,11 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
 
             int totalAmount = recruitmentRequestRepository.totalAmount(createDTO.getPlanDetailId());
 
-            if (createDTO.getAmount() > (planDetail.getAmount() - totalAmount) || createDTO.getAmount() <= 0) {
-                throw new NotValidException(RecruitmentRequestErrorMessage.NOT_VALID_AMOUNT_EXCEPTION);
+            int remaining = planDetail.getAmount() - totalAmount;
+
+            if (createDTO.getAmount() > remaining || createDTO.getAmount() <= 0) {
+                throw new NotValidException(
+                        RecruitmentRequestErrorMessage.NOT_VALID_AMOUNT_EXCEPTION + remaining + ")");
             }
 
             if (createDTO.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)

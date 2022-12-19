@@ -26,13 +26,21 @@ public interface PositionRepository extends JpaRepository<Position, Integer> {
 
     @Query(nativeQuery = true, value = "select name from position")
     List<String> getAllPositionName();
+
+    @Query(nativeQuery = true, value = "select p.name from position p join department d on p.department_id = d.id \n"
+            + " where d.name like ?1 and p.name not like 'System admin'")
+    List<String> getPositionNameByDepartment(String id);
+
     @Query(nativeQuery = true, value = "select id,name from position where department_id = ?1 and status like 'ACTIVATE'")
     List<Tuple> getPositionIdAndName(int departmentId);
+
     @Query(nativeQuery = true, value = "select count(e.position_id) as total from position p " +
             "inner join employee e on p.id = e.position_id and p.id = ?1")
     int countUsedPosition(int positionId);
+
     @Query(nativeQuery = true, value = "select count(id) as total from position")
     int countTotal();
-    @Query(nativeQuery = true,value = "select name from position where id in(select position_id from recruitment_request where id = ?1)")
+
+    @Query(nativeQuery = true, value = "select name from position where id in(select position_id from recruitment_request where id = ?1)")
     String getNamePositionByRecruitmentRequest(int requestId);
 }

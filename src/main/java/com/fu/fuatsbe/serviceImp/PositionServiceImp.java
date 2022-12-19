@@ -169,4 +169,14 @@ public class PositionServiceImp implements PositionService {
         }
         return responseList;
     }
+
+    @Override
+    public List<String> getPositionNameByDepartment(String departmentName) {
+        List<String> result = new ArrayList<>();
+        result = positionRepository.getPositionNameByDepartment(departmentName);
+        if (result.size() == 0) {
+            throw new ListEmptyException("List position is empty");
+        }
+        return result;
+    }
 }

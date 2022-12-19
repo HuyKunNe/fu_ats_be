@@ -2,6 +2,7 @@ package com.fu.fuatsbe.serviceImp;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -202,6 +203,12 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
             DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate periodFrom = LocalDate.parse(createDTO.getPeriodFrom().toString(), format);
             LocalDate periodTo = LocalDate.parse(createDTO.getPeriodTo().toString(), format);
+
+            LocalDate currentDate = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+
+            if (currentDate.isAfter(periodTo)) {
+                throw new NotValidException("The end date must be greater than the current date");
+            }
 
             RecruitmentPlan recruitmentPlan = RecruitmentPlan.builder().periodFrom(Date.valueOf(periodFrom))
                     .periodTo(Date.valueOf(periodTo))

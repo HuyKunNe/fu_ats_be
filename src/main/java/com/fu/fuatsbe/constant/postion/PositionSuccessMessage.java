@@ -9,5 +9,6 @@ public final class PositionSuccessMessage {
     public static final String UPDATE_POSITION = "update position successfully";
     public static final String GET_POSITION_BY_DEPARTMENT = "get position successfully";
     public static final String GET_POSITION_ID_NAME = "get position id and name successfully";
+    public static final String GET_POSITION_NAME_BY_DEPARTMENT = "get position name by department successfully";
 
 }

@@ -33,7 +33,7 @@ public interface PlanDetailRepository extends JpaRepository<PlanDetail, Integer>
         Integer totalAmount(int id);
 
         @Query(nativeQuery = true, value = "select * from plan_detail where creator_id " +
-                        "in(select id from employee where department_id = ?1) and status like 'APPROVED';")
+                        "in(select id from employee where department_id = ?1) and status like 'APPROVED' and CURDATE() <= period_to")
         List<PlanDetail> findApprovedByDepartment(int departmentId);
 
         @Query(nativeQuery = true, value = "(select coalesce(status, 'PENDING')  as status, count(status) as total from plan_detail where status like 'PENDING') "

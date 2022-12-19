@@ -84,6 +84,7 @@ public class PositionController {
         responseDTO.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+
     @PatchMapping("/active/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity<ResponseDTO> activePosition(@RequestParam("id") int id) {
@@ -106,11 +107,22 @@ public class PositionController {
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
     }
+
     @GetMapping("/getIdName")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
     public ResponseEntity<ResponseDTO> getPositionIdAndName(@RequestParam String departmentName) {
         ResponseDTO response = new ResponseDTO();
         response.setData(positionService.getPositionIdAndName(departmentName));
+        response.setMessage(PositionSuccessMessage.GET_POSITION_ID_NAME);
+        response.setStatus(ResponseStatusDTO.SUCCESS);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/getPositionNameByDepartment")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
+    public ResponseEntity<ResponseDTO> getPositionNameByDepartment(@RequestParam String departmentName) {
+        ResponseDTO response = new ResponseDTO();
+        response.setData(positionService.getPositionNameByDepartment(departmentName));
         response.setMessage(PositionSuccessMessage.GET_POSITION_ID_NAME);
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);
