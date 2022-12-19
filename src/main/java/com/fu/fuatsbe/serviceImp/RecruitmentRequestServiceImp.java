@@ -237,6 +237,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         City city = cityRepository.findByName(updateDTO.getCityName())
                 .orElseThrow(() -> new NotFoundException(CityErrorMessage.NOT_FOUND));
 
+        LocalDate date = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+        LocalDate currentDateFormat = LocalDate.parse(date.toString(), format);
         LocalDate expiryDate = LocalDate.parse(updateDTO.getExpiryDate().toString(), format);
 
         LocalDate periodToPlanDetail = LocalDate.parse(recruitmentRequest.getPlanDetail().getPeriodTo().toString(),
@@ -245,6 +247,10 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
         if (expiryDate.isAfter(periodToPlanDetail)) {
             throw new NotValidException(
                     RecruitmentRequestErrorMessage.NOT_VALID_EXPIRY_DATE_EXCEPTION + periodToPlanDetail + ")");
+        }
+
+        if (currentDateFormat.isAfter(expiryDate)) {
+            throw new NotValidException("The expiry date must be after current date");
         }
 
         if (updateDTO.getSalaryFrom().equalsIgnoreCase(THOA_THUAN)
@@ -323,6 +329,10 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
             if (expiryDate.isAfter(periodToPlanDetail)) {
                 throw new NotValidException(
                         RecruitmentRequestErrorMessage.NOT_VALID_EXPIRY_DATE_EXCEPTION + periodToPlanDetail + ")");
+            }
+
+            if (dateFormat.isAfter(expiryDate)) {
+                throw new NotValidException("The expiry date must be after current date");
             }
 
             City city = cityRepository.findByName(createDTO.getCityName())

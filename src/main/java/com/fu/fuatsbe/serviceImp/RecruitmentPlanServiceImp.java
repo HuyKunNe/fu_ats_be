@@ -178,7 +178,12 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate periodFrom = LocalDate.parse(updateDTO.getPeriodFrom().toString(), format);
         LocalDate periodTo = LocalDate.parse(updateDTO.getPeriodTo().toString(), format);
+        LocalDate currentDate = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+        LocalDate currentDateFormat = LocalDate.parse(currentDate.toString(), format);
 
+        if (currentDateFormat.isAfter(periodTo)) {
+            throw new NotValidException("The expiry date must be after current date");
+        }
         RecruitmentPlan recruitmentPlanUpdate = new RecruitmentPlan();
 
         recruitmentPlanUpdate.setPeriodFrom(Date.valueOf(periodFrom));
@@ -205,9 +210,10 @@ public class RecruitmentPlanServiceImp implements RecruitmentPlanService {
             LocalDate periodTo = LocalDate.parse(createDTO.getPeriodTo().toString(), format);
 
             LocalDate currentDate = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+            LocalDate currentDateFormat = LocalDate.parse(currentDate.toString(), format);
 
-            if (currentDate.isAfter(periodTo)) {
-                throw new NotValidException("The end date must be greater than the current date");
+            if (currentDateFormat.isAfter(periodTo)) {
+                throw new NotValidException("The expiry date must be after current date");
             }
 
             RecruitmentPlan recruitmentPlan = RecruitmentPlan.builder().periodFrom(Date.valueOf(periodFrom))

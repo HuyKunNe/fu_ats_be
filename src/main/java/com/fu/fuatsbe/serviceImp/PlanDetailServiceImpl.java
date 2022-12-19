@@ -147,6 +147,12 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         LocalDate periodFrom = LocalDate.parse(updateDTO.getPeriodFrom().toString(), format);
         LocalDate periodTo = LocalDate.parse(updateDTO.getPeriodTo().toString(), format);
 
+        LocalDate currentDate = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+        LocalDate currentDateFormat = LocalDate.parse(currentDate.toString(), format);
+
+        if (currentDateFormat.isAfter(periodTo)) {
+            throw new NotValidException("The expiry date must be after current date");
+        }
         LocalDate endDateOfRecruitmentPlan = LocalDate.parse(planDetail.getRecruitmentPlan().getPeriodTo().toString(),
                 format);
 
@@ -220,6 +226,10 @@ public class PlanDetailServiceImpl implements PlanDetailService {
         if (periodTo.isAfter(endDateOfRecruitmentPlan)) {
             throw new NotValidException(
                     PlanDetailErrorMessage.NOT_VALID_PERIOD_TO_EXCEPTION + endDateOfRecruitmentPlan + ")");
+        }
+
+        if (dateFormat.isAfter(periodTo)) {
+            throw new NotValidException("The expiry date must be after current date");
         }
 
         PlanDetail planDetail = PlanDetail.builder().amount(createDTO.getAmount())
