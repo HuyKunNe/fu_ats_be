@@ -341,6 +341,15 @@ public class JobApplyServiceImpl implements JobApplyService {
 
     }
 
+    public int multiplePercent(int noOfTurn, int value) {
+        int result = value;
+        if (noOfTurn <= 0) {
+            return result;
+        } else {
+            return multiplePercent(noOfTurn - 1, value / 2);
+        }
+    }
+
     public boolean screeningCV(JobApply jobApply) {
         int total = 0;
 
@@ -350,7 +359,10 @@ public class JobApplyServiceImpl implements JobApplyService {
         int educationLevelRequired = EducationLevel.LIST_EDUCATION_LEVEL
                 .indexOf(jobApply.getRecruitmentRequest().getEducationLevel());
 
-        total += (educationLevel >= educationLevelRequired ? cvScreening.getEducationLevel() : 0);
+        int noOfTurn = educationLevelRequired - educationLevel;
+
+        total += (educationLevel >= educationLevelRequired ? cvScreening.getEducationLevel()
+                : (multiplePercent(noOfTurn, cvScreening.getEducationLevel())));
 
         String foreignLanguageRequired = jobApply.getForeignLanguage();
         String[] foreignLanguages = jobApply.getForeignLanguage().split(",");
@@ -370,6 +382,7 @@ public class JobApplyServiceImpl implements JobApplyService {
         int experienceRequired = listExperiences.indexOf(jobApply.getRecruitmentRequest().getExperience());
 
         total += (experience >= experienceRequired ? cvScreening.getExperience() : 0);
+        System.out.println("total: " + total);
 
         return total >= cvScreening.getPercentRequired() ? true : false;
 
