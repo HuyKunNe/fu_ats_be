@@ -143,7 +143,7 @@ public class AccountServiceImp implements AccountService {
 
     @Override
     public ResponseWithTotalPage<AccountResponse> getEmployeeAccount(int pageNo, int pageSize, String name) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.ASC, "id"));
         Page<Account> pageResult = accountRepository.getEmployeeAccount(pageable);
         ResponseWithTotalPage<AccountResponse> response = new ResponseWithTotalPage<>();
         List<AccountResponse> list = new ArrayList<>();
