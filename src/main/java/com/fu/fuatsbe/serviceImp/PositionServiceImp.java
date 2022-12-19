@@ -171,9 +171,9 @@ public class PositionServiceImp implements PositionService {
     }
 
     @Override
-    public List<String> getPositionNameByDepartment(String departmentName) {
+    public List<String> getPositionNameByDepartment(int id) {
         List<String> result = new ArrayList<>();
-        result = positionRepository.getPositionNameByDepartment(departmentName);
+        result = positionRepository.getPositionNameByDepartment_Id(id);
         if (result.size() == 0) {
             throw new ListEmptyException("List position is empty");
         }
