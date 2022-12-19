@@ -120,9 +120,9 @@ public class PositionController {
 
     @GetMapping("/getPositionNameByDepartment")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_EMPLOYEE)
-    public ResponseEntity<ResponseDTO> getPositionNameByDepartment(@RequestParam String departmentName) {
+    public ResponseEntity<ResponseDTO> getPositionNameByDepartment(@RequestParam int id) {
         ResponseDTO response = new ResponseDTO();
-        response.setData(positionService.getPositionNameByDepartment(departmentName));
+        response.setData(positionService.getPositionNameByDepartment(id));
         response.setMessage(PositionSuccessMessage.GET_POSITION_ID_NAME);
         response.setStatus(ResponseStatusDTO.SUCCESS);
         return ResponseEntity.ok().body(response);

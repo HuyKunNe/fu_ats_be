@@ -27,9 +27,9 @@ public interface PositionRepository extends JpaRepository<Position, Integer> {
     @Query(nativeQuery = true, value = "select name from position")
     List<String> getAllPositionName();
 
-    @Query(nativeQuery = true, value = "select p.name from position p join department d on p.department_id = d.id \n"
-            + " where d.name like ?1 and p.name not like 'System admin'")
-    List<String> getPositionNameByDepartment(String id);
+    @Query(nativeQuery = true, value = "select p.name from position p \n"
+            + " where p.department_id = ?1 and p.name not like 'System admin'")
+    List<String> getPositionNameByDepartment_Id(int id);
 
     @Query(nativeQuery = true, value = "select id,name from position where department_id = ?1 and status like 'ACTIVATE'")
     List<Tuple> getPositionIdAndName(int departmentId);

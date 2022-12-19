@@ -25,6 +25,6 @@ public interface PositionService {
 
     List<IdAndNameResponse> getPositionIdAndName(String departmentName);
 
-    public List<String> getPositionNameByDepartment(String departmentName);
+    public List<String> getPositionNameByDepartment(int od);
 
 }
