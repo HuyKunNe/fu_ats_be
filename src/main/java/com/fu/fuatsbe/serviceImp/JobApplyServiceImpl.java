@@ -374,7 +374,8 @@ public class JobApplyServiceImpl implements JobApplyService {
 
         total += ((foreignLanguageContain / foreignLanguages.length) * cvScreening.getForeignLanguage());
 
-        if (jobApply.getCities().getId() == jobApply.getRecruitmentRequest().getCities().getId()) {
+        if (jobApply.getCities().getId() == jobApply.getRecruitmentRequest().getCities().getId()
+                || jobApply.getRecruitmentRequest().getTypeOfWork().equalsIgnoreCase("Work from home")) {
             total += cvScreening.getCity();
         }
 
