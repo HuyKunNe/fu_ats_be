@@ -318,7 +318,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
                         EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_EXCEPTION));
 
         int totalAmount = planDetailRepository
-                .totalAmount(planDetail.getId());
+                .totalAmount(planDetail.getRecruitmentPlan().getId());
 
         int remaining = planDetail.getRecruitmentPlan().getAmount() - totalAmount;
 
