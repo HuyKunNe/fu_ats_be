@@ -246,7 +246,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
 
         if (expiryDate.isAfter(periodToPlanDetail)) {
             throw new NotValidException(
-                    RecruitmentRequestErrorMessage.NOT_VALID_EXPIRY_DATE_EXCEPTION + periodToPlanDetail + ")");
+                    RecruitmentRequestErrorMessage.NOT_VALID_EXPIRY_DATE_EXCEPTION + periodToPlanDetail.plusDays(1)
+                            + ")");
         }
 
         if (currentDateFormat.isAfter(expiryDate)) {
@@ -328,7 +329,8 @@ public class RecruitmentRequestServiceImp implements RecruitmentRequestService {
 
             if (expiryDate.isAfter(periodToPlanDetail)) {
                 throw new NotValidException(
-                        RecruitmentRequestErrorMessage.NOT_VALID_EXPIRY_DATE_EXCEPTION + periodToPlanDetail + ")");
+                        RecruitmentRequestErrorMessage.NOT_VALID_EXPIRY_DATE_EXCEPTION + periodToPlanDetail.plusDays(1)
+                                + ")");
             }
 
             if (dateFormat.isAfter(expiryDate)) {

@@ -158,7 +158,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
 
         if (periodTo.isAfter(endDateOfRecruitmentPlan)) {
             throw new NotValidException(
-                    PlanDetailErrorMessage.NOT_VALID_PERIOD_TO_EXCEPTION + endDateOfRecruitmentPlan + ")");
+                    PlanDetailErrorMessage.NOT_VALID_PERIOD_TO_EXCEPTION + endDateOfRecruitmentPlan.plusDays(1) + ")");
         }
 
         planDetail.setAmount(updateDTO.getAmount());
@@ -225,7 +225,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
 
         if (periodTo.isAfter(endDateOfRecruitmentPlan)) {
             throw new NotValidException(
-                    PlanDetailErrorMessage.NOT_VALID_PERIOD_TO_EXCEPTION + endDateOfRecruitmentPlan + ")");
+                    PlanDetailErrorMessage.NOT_VALID_PERIOD_TO_EXCEPTION + endDateOfRecruitmentPlan.plusDays(1) + ")");
         }
 
         if (dateFormat.isAfter(periodTo)) {
