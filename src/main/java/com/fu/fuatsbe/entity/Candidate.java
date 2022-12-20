@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -37,6 +38,7 @@ public class Candidate {
     @Nationalized
     private String name;
     private String phone;
+    @Column(columnDefinition = "text")
     private String image;
     private String gender;
     private Date dob;

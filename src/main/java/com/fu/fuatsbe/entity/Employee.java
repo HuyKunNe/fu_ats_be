@@ -40,6 +40,7 @@ public class Employee {
     @Nationalized
     private String name;
     private String employeeCode;
+    @Column(columnDefinition = "text")
     private String image;
     private String gender;
     private Date dob;

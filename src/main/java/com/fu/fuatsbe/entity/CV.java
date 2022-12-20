@@ -42,6 +42,7 @@ public class CV {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(columnDefinition = "text")
     private String linkCV;
     @Column(columnDefinition = "text")
     private String note;
